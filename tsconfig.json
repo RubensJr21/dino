@@ -1,17 +1,26 @@
 {
-  "extends": "expo/tsconfig.base",
-  "compilerOptions": {
-    "strict": true,
-    "paths": {
-      "@/*": [
-        "./*"
-      ]
-    }
-  },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
-  ]
+	"extends": "expo/tsconfig.base",
+	"compilerOptions": {
+		"target": "ES5",
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+
+		"allowJs": true,
+		"strict": true,
+		"baseUrl": "./src",
+		"paths": {
+			"@root/*": ["../*"],
+			"@/*": ["./*"],
+			"@components/*": ["./components/*"],
+			"@app/*": ["./app/*"],
+			"@decorators/*": ["./decorators/*"]
+		}
+	},
+	"include": [
+		"**/*.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		".expo/types/**/*.ts",
+		"expo-env.d.ts"
+	]
 }

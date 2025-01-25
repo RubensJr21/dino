@@ -34,3 +34,6 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# Arquivo de rascunho das rotas
+Partes do sistema.txt

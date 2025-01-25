@@ -1,0 +1,18 @@
+{
+	"workbench.editor.customLabels.patterns": {
+		// Arquivos com mais de 3 níveis dentro de "dino/src"
+		"dino/src/*/*/*/**.{tsx,ts,jsx,js,css}": "${dirname(-3)}/.../${dirname} • ${filename}",
+
+		// Arquivos com exatamente 3 níveis dentro de "dino/src"
+		"dino/src/*/*/*.{tsx,ts,jsx,js,css}": "${dirname(-3)}/${dirname} • ${filename}",
+
+		// Arquivos com 2 níveis dentro de "dino/src" (diretamente dentro de uma subpasta de "src")
+		"dino/src/*/*.{tsx,ts,jsx,js,css}": "${dirname(0)} • ${filename}",
+
+		// Arquivos diretamente dentro de "dino/src"
+		"dino/src/*.{tsx,ts,jsx,js,css}": "${filename}"
+	},
+	"todo-tree.tree.showBadges": true,
+	"todo-tree.tree.showCountsInTree": true,
+	"todo-tree.tree.disableCompactFolders": false
+}
