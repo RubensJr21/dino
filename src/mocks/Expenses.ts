@@ -20,7 +20,7 @@ const DADOS_RECUPERADOS: Expense[] = Array.from({ length: 50 }, (_, index) => {
 	return {
 		id,
 		get description() {
-			return `Descrição ${this.id}`;
+			return `Meu pagamento nº ${this.id}`;
 		},
 		datePicker: randomDate(),
 		currency: randomCurrency(),
