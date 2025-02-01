@@ -20,6 +20,7 @@ const TabScreens = () => {
 			initialRouteName="index"
 			screenOptions={{
 				tabBarHideOnKeyboard: true,
+				headerShown: false,
 			}}
 		>
 			<Tabs.Screen
@@ -35,9 +36,9 @@ const TabScreens = () => {
 				}}
 			/>
 			<Tabs.Screen
-				name="expenses"
+				name="incomes"
 				options={{
-					title: "Entradas",
+					title: "Recebimentos",
 					tabBarIcon: (props) => (
 						<MdiIcons
 							name="cash-plus"
@@ -47,9 +48,9 @@ const TabScreens = () => {
 				}}
 			/>
 			<Tabs.Screen
-				name="incomes"
+				name="expenses"
 				options={{
-					title: "Saídas",
+					title: "Pagamentos",
 					tabBarIcon: (props) => (
 						<MdiIcons
 							name="cash-minus"
@@ -58,6 +59,7 @@ const TabScreens = () => {
 					),
 				}}
 			/>
+
 			<Tabs.Screen
 				name="manage"
 				options={{
