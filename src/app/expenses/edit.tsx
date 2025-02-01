@@ -50,7 +50,7 @@ export default function ExpensesEdit() {
 		<BaseView>
 			<ScrollView>
 				<TitlePage>
-					Edição da entrada - <TextBold>{description}</TextBold>
+					Edição de pagamento - <TextBold>{description}</TextBold>
 				</TitlePage>
 				<View style={styles.view_form}>
 					<InputDescription
@@ -88,7 +88,7 @@ const EditButton = ({ onPress }: EditButtonProps) => {
 			contentStyle={{ flexDirection: "row-reverse" }}
 			onPress={onPress}
 		>
-			Editar
+			Editar pagamento
 		</Button>
 	);
 };

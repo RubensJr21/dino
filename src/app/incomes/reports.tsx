@@ -11,7 +11,7 @@ import { getRandomInt } from "@/lib/math";
 
 import { CardData, generateCardsData } from "@/mocks/CardData";
 
-export default function Incomes() {
+export default function IncomesReports() {
 	const theme = useTheme();
 	const getSchemeCharts = useCallback(
 		() => (theme.dark ? "light" : "dark"),

@@ -134,17 +134,17 @@ export default function Incomes() {
 				actions={[
 					{
 						icon: "plus",
-						label: "Registrar saída",
+						label: "Registrar entrada",
 						onPress: navigateToIncomesCreate,
 					},
 					{
 						icon: "update",
-						label: "Registrar saída recorrente",
+						label: "Registrar entrada recorrente",
 						onPress: navigateToIncomesCreate,
 					},
 					{
 						icon: "calendar-plus",
-						label: "Registrar saída à prazo",
+						label: "Registrar entrada à prazo",
 						onPress: navigateToIncomesCreate,
 					},
 					{

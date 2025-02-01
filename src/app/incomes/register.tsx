@@ -44,7 +44,7 @@ export default function IncomesRegister() {
 	return (
 		<BaseView>
 			<ScrollView>
-				<TitlePage>Registrar saídas</TitlePage>
+				<TitlePage>Registrar recebimento</TitlePage>
 				<View style={styles.view_form}>
 					<InputDescription ref={inputDescriptionRef} />
 					<InputDatePicker ref={inputDatePickerRef} />
@@ -77,7 +77,7 @@ const RegisterButton = ({ onPress }: RegisterButtonProps) => {
 			contentStyle={{ flexDirection: "row-reverse" }}
 			onPress={onPress}
 		>
-			Registrar despesa
+			Registrar recebimento
 		</Button>
 	);
 };

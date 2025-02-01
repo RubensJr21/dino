@@ -39,12 +39,12 @@ export default function ExpensesRegister() {
 		});
 	};
 
-	// TODO: Preciso informar para onde está chegando aquele valor
+	// TODO: Preciso informar para onde está saindo aquele valor
 
 	return (
 		<BaseView>
 			<ScrollView>
-				<TitlePage>Registrar entrada</TitlePage>
+				<TitlePage>Registrar pagamento</TitlePage>
 				<View style={styles.view_form}>
 					<InputDescription ref={inputDescriptionRef} />
 					<InputDatePicker ref={inputDatePickerRef} />
@@ -77,7 +77,7 @@ const RegisterButton = ({ onPress }: RegisterButtonProps) => {
 			contentStyle={{ flexDirection: "row-reverse" }}
 			onPress={onPress}
 		>
-			Registrar recebimento
+			Registrar pagamento
 		</Button>
 	);
 };

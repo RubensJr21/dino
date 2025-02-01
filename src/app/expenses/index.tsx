@@ -132,17 +132,17 @@ export default function Expenses() {
 				actions={[
 					{
 						icon: "plus",
-						label: "Registrar entrada",
+						label: "Registrar pagamento",
 						onPress: navigateToExpensesCreate,
 					},
 					{
 						icon: "update",
-						label: "Registrar entrada recorrente",
+						label: "Registrar pagamento recorrente",
 						onPress: navigateToExpensesCreate,
 					},
 					{
 						icon: "calendar-plus",
-						label: "Registrar entrada à prazo",
+						label: "Registrar pagamento à prazo",
 						onPress: navigateToExpensesCreate,
 					},
 					{
