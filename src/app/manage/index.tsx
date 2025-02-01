@@ -1,5 +1,6 @@
 import BaseView from "@/components/BaseView";
 import ScreenMenu, { ItemsType } from "@/components/ScreenMenu";
+import TitlePage from "@/components/TitlePage";
 import { carryingHandleNextPage } from "@/lib/router-functions";
 import { useRouter } from "expo-router";
 
@@ -41,6 +42,7 @@ export default function Manage() {
 	];
 	return (
 		<BaseView>
+			<TitlePage>Gerenciar</TitlePage>
 			<ScreenMenu items={items} />
 		</BaseView>
 	);
