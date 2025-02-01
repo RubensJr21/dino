@@ -39,7 +39,7 @@ export default function IncomesRegister() {
 		});
 	};
 
-	// TODO: Preciso informar de onde está saindo aquele valor
+	// TODO: Preciso informar de onde está chegando aquele valor
 
 	return (
 		<BaseView>
