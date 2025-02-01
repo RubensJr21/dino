@@ -1,12 +1,13 @@
 import BaseView from "@/components/BaseView";
+import TitlePage from "@/components/TitlePage";
 import { Link } from "expo-router";
 import { View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Button } from "react-native-paper";
 
 export default function Root() {
 	return (
 		<BaseView>
-			<Text variant="headlineMedium">Bem vindo ao Dino</Text>
+			<TitlePage variant="headlineMedium">Bem vindo ao Dinô</TitlePage>
 			<View>
 				<Link
 					href="/incomes"
