@@ -13,7 +13,9 @@
 			"@/*": ["./*"],
 			"@components/*": ["./components/*"],
 			"@app/*": ["./app/*"],
-			"@decorators/*": ["./decorators/*"]
+			"@decorators/*": ["./decorators/*"],
+			"@api/*": ["./api/*"],
+			"@core/*": ["./api/core/*"]
 		}
 	},
 	"include": [
