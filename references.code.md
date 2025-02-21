@@ -52,3 +52,9 @@
 ## (Libs)
 
 1. [Biblioteca de ícones usados](https://pictogrammers.com/library/mdi/)
+
+## Typescript
+
+1. [Omit tipado](https://stackoverflow.com/a/79135663)
+
+> Resolve problema do Omit não estar tipado e o segundo parâmetro não ter Intellisense
