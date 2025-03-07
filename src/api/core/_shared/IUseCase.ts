@@ -1,3 +1,3 @@
 export default interface IUseCase<IN, OUT> {
-	execute(input: IN): Promise<OUT>;
+	execute(input: IN): Promise<OUT | undefined>;
 }

@@ -41,6 +41,7 @@
 ## (expo): Resolve problema dos ícones da barra de status "sumirem"
 
 1. [Update status-bar while app is running](https://docs.expo.dev/guides/configuring-statusbar/#update-the-status-bar-while-app-is-running)
+1. [Expo SQLite](https://docs.expo.dev/versions/v52.0.0/sdk/sqlite/)
 
 ## (react-native)
 
@@ -58,3 +59,9 @@
 1. [Omit tipado](https://stackoverflow.com/a/79135663)
 
 > Resolve problema do Omit não estar tipado e o segundo parâmetro não ter Intellisense
+
+1. [Como Implementar sobrecarga de função em Typescript](https://www.telerik.com/blogs/how-implement-function-overloading-typescript)
+
+## SQLite
+
+1. [Datatypes In SQLite](https://www.sqlite.org/datatype3.html)

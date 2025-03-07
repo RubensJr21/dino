@@ -9,28 +9,54 @@
     - Informar o método específico de recebimento
 */
 
-import { RepositoryReceiptMemory } from "@api/adapters/receipt/RepositoryReceiptMemory";
+import { RepositoryReceiptSQLite } from "@api/adapters/receipt/RepositoryReceiptSQLite";
+import Database from "@api/database/Database";
+import Receipt from "@core/receipt/model/Receipt";
+import { RegisterReceiptDTO } from "@core/receipt/ports/IRepositoryReceipt";
 import RegisterReceipt from "@core/receipt/use_cases/RegisterReceipt";
-import Receipt from "./core/receipt/model/Receipt";
 
-const repository_receipt = new RepositoryReceiptMemory();
+const db = new Database("test.db");
+console.log("Conexão aberta");
 
-const registrar_receipt = new RegisterReceipt(repository_receipt);
+export default class API {
+	static readonly repository_receipt = new RepositoryReceiptSQLite(db);
 
-registrar_receipt
-	.execute({
-		description: "",
-		type: "",
-		schedule_at: new Date(),
-		amount: 0,
-		was_processed: false,
-		transfer_method_type: "",
-		tag: "",
-	})
-	.then((r: Receipt) => {
-		console.log(r);
-		console.log("Recebimento registrado com sucesso!");
-	})
-	.catch((error) => {
-		console.error("Erro ao registrar recebimento: ", error);
-	});
+	static async cadastrarRecebimento(
+		data: RegisterReceiptDTO
+	): Promise<Receipt | undefined> {
+		const registrar_receipt = new RegisterReceipt(API.repository_receipt);
+
+		return await registrar_receipt
+			.execute(data)
+			.then((receipt) => {
+				console.log("Recebimento registrado com sucesso!");
+				return receipt;
+			})
+			.catch((error) => {
+				console.error("Erro ao registrar recebimento: ", error);
+				return undefined;
+			});
+	}
+
+	static async listarRecebimentos(): Promise<Receipt[]> {
+		return await API.repository_receipt.findAll();
+	}
+	static async listarRecebimentoEspecifico(
+		id: Receipt["id"]
+	): Promise<Receipt | undefined> {
+		return API.repository_receipt.findById(id);
+	}
+	static async atualizarRecebimento(
+		data: Receipt
+	): Promise<Receipt | undefined> {
+		return API.repository_receipt.update(data);
+	}
+	static async deletarRecebimento(id: Receipt["id"]): Promise<boolean> {
+		return API.repository_receipt.delete(id);
+	}
+	static async informarRecebimentoExecutado(
+		id: Receipt["id"]
+	): Promise<Receipt | undefined> {
+		return API.repository_receipt.mark_receipt_as_executed(id);
+	}
+}
