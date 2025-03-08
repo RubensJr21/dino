@@ -12,8 +12,8 @@
 import { RepositoryReceiptSQLite } from "@api/adapters/receipt/RepositoryReceiptSQLite";
 import Database from "@api/database/Database";
 import Receipt from "@core/receipt/model/Receipt";
-import { RegisterReceiptDTO } from "@core/receipt/ports/IRepositoryReceipt";
 import RegisterReceipt from "@core/receipt/use_cases/RegisterReceipt";
+import { RepositoryReceiptRegisterParam } from "./core/receipt/ports/IRepositoryReceipt_Base";
 
 const db = new Database("test.db");
 console.log("Conexão aberta");
@@ -22,7 +22,7 @@ export default class API {
 	static readonly repository_receipt = new RepositoryReceiptSQLite(db);
 
 	static async cadastrarRecebimento(
-		data: RegisterReceiptDTO
+		data: RepositoryReceiptRegisterParam
 	): Promise<Receipt | undefined> {
 		const registrar_receipt = new RegisterReceipt(API.repository_receipt);
 
@@ -54,9 +54,9 @@ export default class API {
 	static async deletarRecebimento(id: Receipt["id"]): Promise<boolean> {
 		return API.repository_receipt.delete(id);
 	}
-	static async informarRecebimentoExecutado(
+	static async informarRecebimentoProcessado(
 		id: Receipt["id"]
 	): Promise<Receipt | undefined> {
-		return API.repository_receipt.mark_receipt_as_executed(id);
+		return API.repository_receipt.mark_receipt_as_processed(id);
 	}
 }

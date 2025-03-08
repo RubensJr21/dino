@@ -1,13 +1,11 @@
-import BaseItemValue from "@/api/core/_shared/model/Base_ItemValue";
-import { RepositoryRegisterParam } from "@/api/core/_shared/ports/IRepository";
 import Receipt from "@/api/core/receipt/model/Receipt";
 import IRepositoryReceipt from "@/api/core/receipt/ports/IRepositoryReceipt";
+import { RepositoryReceiptRegisterParam } from "@/api/core/receipt/ports/IRepositoryReceipt_Base";
 import Database from "@/api/database/Database";
 import {
 	prepareDataForInsert,
 	prepareDataForUpdate,
 } from "@/api/database/utils";
-import { withObject } from "@/utils/objectHelpers";
 
 type ReceiptDatabaseModel = StrictOmit<
 	Receipt,
@@ -18,47 +16,13 @@ type ReceiptDatabaseModel = StrictOmit<
 	scheduled_at: string;
 };
 
-export class RepositoryReceiptSQLite implements IRepositoryReceipt {
-	constructor(private db: Database) {}
-
-	get_id_from_receipt_fk_column(
-		search_table_name: string,
-		value: string,
-		target_column: string
-	): number | undefined {
-		return withObject(
-			this.db.instance.prepareSync(
-				`SELECT id FROM ${search_table_name} WHERE ${target_column} = ?`
-			),
-			(statement) => {
-				const result = statement.executeSync<Receipt>([value]).getFirstSync();
-				statement.finalizeSync();
-				return result?.id;
-			}
-		);
-	}
-
-	get_value_from_receipt_fk_base_item_value_column(
-		item_value_id: Receipt["id"]
-	): BaseItemValue["id"] | undefined {
-		type type_export = { fk_id_base_item_value: BaseItemValue["id"] };
-		return withObject(
-			this.db.instance.prepareSync(
-				`SELECT fk_id_base_item_value FROM item_value WHERE id = ?`
-			),
-			(statement) => {
-				const result = statement
-					.executeSync<type_export>([item_value_id])
-					.getFirstSync();
-				statement.finalizeSync();
-
-				return result?.fk_id_base_item_value ?? undefined;
-			}
-		);
+export class RepositoryReceiptSQLite extends IRepositoryReceipt {
+	constructor(protected db: Database) {
+		super(db);
 	}
 
 	async register(
-		entity: RepositoryRegisterParam<Receipt>
+		entity: RepositoryReceiptRegisterParam
 	): Promise<Receipt | undefined> {
 		return new Promise(async (resolve, reject) => {
 			try {
@@ -94,6 +58,8 @@ export class RepositoryReceiptSQLite implements IRepositoryReceipt {
 					scheduled_at: scheduled_at.toISOString().split("T")[0],
 					fk_id_transfer_method_type,
 					fk_id_tag,
+					was_processed: this.was_processed,
+					type: this.type,
 				};
 
 				await this.db.instance.withExclusiveTransactionAsync(async (txn) => {
@@ -126,6 +92,8 @@ export class RepositoryReceiptSQLite implements IRepositoryReceipt {
 					resolve({
 						...entity,
 						id: last_insert_rowid,
+						was_processed: this.was_processed,
+						type: this.type,
 					});
 				});
 			} catch (error) {
@@ -273,7 +241,7 @@ export class RepositoryReceiptSQLite implements IRepositoryReceipt {
 		});
 	}
 
-	async mark_receipt_as_executed(
+	async mark_receipt_as_processed(
 		id: Receipt["id"]
 	): Promise<Receipt | undefined> {
 		return new Promise(async (resolve, reject) => {

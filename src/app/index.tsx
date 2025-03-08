@@ -76,7 +76,7 @@ export default function Root() {
 					onPress={async () => {
 						const id_search = 1;
 
-						const receipt = await Api.informarRecebimentoExecutado(id_search);
+						const receipt = await Api.informarRecebimentoProcessado(id_search);
 
 						if (receipt) {
 							console.log(receipt);
