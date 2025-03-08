@@ -12,6 +12,8 @@ export default abstract class RepositoryReceipt_Recurring extends IRepositoryRec
 	Receipt_Recurring,
 	RepositoryReceipt_RecurringRegisterParam
 > {
+	protected default_is_disabled: boolean = false;
+
 	constructor(protected db: Database) {
 		super();
 	}
