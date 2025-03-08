@@ -28,7 +28,7 @@ export default abstract class IRepositoryReceipt<
 	extends IRepository_Base_ItemValue<T>
 	implements IRepository<T, RegisterType>
 {
-	protected type: string = "Entrada";
+	protected default_receipt_type: string = "Entrada";
 	protected abstract db: Database;
 
 	constructor() {
