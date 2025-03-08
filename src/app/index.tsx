@@ -90,7 +90,7 @@ export default function Root() {
 
 				<Button
 					onPress={async () => {
-						const id_search = 1;
+						const id_search = 3;
 
 						if (await Api.deletarRecebimento(id_search)) {
 							console.log("Recebimento deletado com sucesso");
@@ -99,7 +99,7 @@ export default function Root() {
 						}
 					}}
 				>
-					Deletar Recebimento (1)
+					Deletar Recebimento (3)
 				</Button>
 			</View>
 		</BaseView>

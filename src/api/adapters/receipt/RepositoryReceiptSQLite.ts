@@ -256,14 +256,17 @@ export class RepositoryReceiptSQLite implements IRepositoryReceipt {
 					throw new Error("Base item não encontrado");
 				}
 				// Para fazer um rollback basta lançar um Erro dentro da função
+
+				var removed = false;
 				await this.db.instance.withExclusiveTransactionAsync(async (txn) => {
 					const query = `DELETE FROM base_item_value WHERE id = ?`;
 
 					const statement = await txn.prepareAsync(query);
-					await statement.executeAsync([fk_id_base_item_value]);
+					const result = await statement.executeAsync([fk_id_base_item_value]);
+					removed = result.changes > 0;
 					await statement.finalizeAsync();
 				});
-				resolve(true);
+				resolve(removed);
 			} catch (error) {
 				if (error instanceof Error) {
 					console.log("Erro ao marcar como executado:", error.message);
