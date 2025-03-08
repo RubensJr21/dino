@@ -1,3 +1,4 @@
+import Database from "@/api/database/Database";
 import { RepositoryRegisterParam } from "../../_shared/ports/IRepository";
 import Receipt_Recurring from "../model/Receipt_Recurring";
 import IRepositoryReceipt_Base from "./IRepositoryReceipt_Base";
@@ -11,6 +12,9 @@ export default abstract class RepositoryReceipt_Recurring extends IRepositoryRec
 	Receipt_Recurring,
 	RepositoryReceipt_RecurringRegisterParam
 > {
+	constructor(protected db: Database) {
+		super();
+	}
 	abstract register(
 		entityForRegister: RepositoryReceipt_RecurringRegisterParam
 	): Promise<Receipt_Recurring | undefined>;
