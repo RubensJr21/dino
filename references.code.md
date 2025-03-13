@@ -65,3 +65,4 @@
 ## SQLite
 
 1. [Datatypes In SQLite](https://www.sqlite.org/datatype3.html)
+1. [Como implementar o ON DELETE e ON UPDATE]

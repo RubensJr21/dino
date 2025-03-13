@@ -1,20 +1,14 @@
-import IUseCase from "@/api/core/_shared/IUseCase";
-import RepositoryReceipt, {
-	RepositoryReceiptRegisterParam,
-} from "@/api/core/receipt/ports/IRepositoryReceipt_Base";
+import IUseCase from "@core/_shared/IUseCase";
 import Receipt from "@core/receipt/model/Receipt";
+import RepositoryReceipt from "@core/receipt/ports/IRepositoryReceipt";
+import { RepositoryReceipt_BaseRegisterParam } from "@core/receipt/ports/IRepositoryReceipt_Base";
 
 export default class RegisterReceipt
-	implements IUseCase<RepositoryReceiptRegisterParam, Receipt>
+	implements IUseCase<RepositoryReceipt_BaseRegisterParam, Receipt | undefined>
 {
-	constructor(
-		private repository: RepositoryReceipt<
-			Receipt,
-			RepositoryReceiptRegisterParam
-		>
-	) {}
+	constructor(private repository: RepositoryReceipt) {}
 	async execute(
-		input: RepositoryReceiptRegisterParam
+		input: RepositoryReceipt_BaseRegisterParam
 	): Promise<Receipt | undefined> {
 		return await this.repository.register(input);
 	}

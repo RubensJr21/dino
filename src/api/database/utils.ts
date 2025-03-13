@@ -14,7 +14,7 @@ export function addDollarSign<T extends Record<string, any>>(
 export function prepareDataForInsert<T extends object>(
 	table_name: string,
 	data: T
-) {
+): [string, string[]] {
 	const columns = Object.keys(data);
 	const columns_string = columns.join(", ");
 	const values_string = columns.map(() => "?").join(", ");
@@ -23,14 +23,14 @@ export function prepareDataForInsert<T extends object>(
 
 	const values = Object.values(data);
 
-	return { query, values };
+	return [query, values];
 }
 
 export function prepareDataForUpdate<T extends object, TYPE_ID>(
 	table_name: string,
 	data: T,
 	id: TYPE_ID
-) {
+): [string, AddDollarSign<T>] {
 	const columns = Object.keys(data);
 	const columns_and_values_string = columns
 		.map((c) => `${c} = $${c}`)
@@ -40,5 +40,5 @@ export function prepareDataForUpdate<T extends object, TYPE_ID>(
 
 	const values = addDollarSign({ ...data, id });
 
-	return { query, values };
+	return [query, values];
 }

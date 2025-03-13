@@ -15,7 +15,11 @@ export default class Database {
 	}
 }
 
-const DATABASE_SCHEMA: string = `CREATE TABLE IF NOT EXISTS tag (
+// https://www.sqlite.org/foreignkeys.html#fk_actions
+
+const DATABASE_SCHEMA: string = `
+PRAGMA foreign_keys = ON;
+CREATE TABLE IF NOT EXISTS tag (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	'description' TEXT NOT NULL
 );
@@ -43,7 +47,7 @@ CREATE TABLE IF NOT EXISTS base_item_value (
 CREATE TABLE IF NOT EXISTS item_value (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	fk_id_base_item_value INTEGER NOT NULL,
-	FOREIGN KEY(fk_id_base_item_value) REFERENCES base_item_value(id)
+	FOREIGN KEY(fk_id_base_item_value) REFERENCES base_item_value(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS recurrence_type (
@@ -56,13 +60,13 @@ CREATE TABLE IF NOT EXISTS recurring_item_value (
 	fk_id_recurrence_type INTEGER NOT NULL,
 	fk_id_base_item_value INTEGER NOT NULL,
 	FOREIGN KEY(fk_id_recurrence_type) REFERENCES recurrence_type(id),
-	FOREIGN KEY(fk_id_base_item_value) REFERENCES base_item_value(id)
+	FOREIGN KEY(fk_id_base_item_value) REFERENCES base_item_value(id) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS installment_item_value (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	number_of_installments INTEGER NOT NULL,
 	fk_id_base_item_value INTEGER NOT NULL,
-	FOREIGN KEY(fk_id_base_item_value) REFERENCES base_item_value(id)
+	FOREIGN KEY(fk_id_base_item_value) REFERENCES base_item_value(id) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS bank_account (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,

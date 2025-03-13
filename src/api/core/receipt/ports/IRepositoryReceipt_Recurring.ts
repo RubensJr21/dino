@@ -1,24 +1,33 @@
-import Database from "@/api/database/Database";
-import { RepositoryRegisterParam } from "../../_shared/ports/IRepository";
-import Receipt_Recurring from "../model/Receipt_Recurring";
-import IRepositoryReceipt_Base from "./IRepositoryReceipt_Base";
+import Database from "@api/database/Database";
+import Receipt_Recurring from "@core/receipt/model/Receipt_Recurring";
+import IRepositoryReceipt_Base, {
+	RepositoryReceiptRegisterParam,
+} from "@core/receipt/ports/IRepositoryReceipt_Base";
 
-export type RepositoryReceipt_RecurringRegisterParam = RepositoryRegisterParam<
-	Receipt_Recurring,
-	"id" | "is_disabled"
->;
+export type RepositoryReceipt_RecurringRegisterParam =
+	RepositoryReceiptRegisterParam<Receipt_Recurring, "is_disabled">;
 
 export default abstract class RepositoryReceipt_Recurring extends IRepositoryReceipt_Base<
 	Receipt_Recurring,
 	RepositoryReceipt_RecurringRegisterParam
 > {
-	protected default_is_disabled: boolean = false;
-
-	constructor(protected db: Database) {
-		super();
+	constructor(db: Database) {
+		super(db);
 	}
+
+	protected get_id_recurrence_type(
+		value: Receipt_Recurring["recurrence_type"]
+	) {
+		const id = this.resolve_fk_column("recurrence_type", value, "type");
+		if (id) {
+			return id;
+		} else {
+			throw new Error("Recurrence type not found");
+		}
+	}
+
 	abstract register(
-		entityForRegister: RepositoryReceipt_RecurringRegisterParam
+		entity: RepositoryReceipt_RecurringRegisterParam
 	): Promise<Receipt_Recurring | undefined>;
 	abstract findById(
 		id: Receipt_Recurring["id"]
@@ -28,7 +37,4 @@ export default abstract class RepositoryReceipt_Recurring extends IRepositoryRec
 		entity: Receipt_Recurring
 	): Promise<Receipt_Recurring | undefined>;
 	abstract delete(id: Receipt_Recurring["id"]): Promise<boolean>;
-	abstract mark_receipt_as_processed(
-		id: Receipt_Recurring["id"]
-	): Promise<Receipt_Recurring | undefined>;
 }
