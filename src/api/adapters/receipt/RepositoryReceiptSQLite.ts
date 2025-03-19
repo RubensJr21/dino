@@ -22,20 +22,7 @@ export class RepositoryReceiptSQLite extends IRepositoryReceipt {
 		super(db);
 	}
 	protected get_id_fk_base_item_value_column(item_value_id: Receipt["id"]): Receipt["id"] {
-		type type_export = { fk_id_base_item_value: Receipt["id"] };
-		const query = `SELECT fk_id_base_item_value FROM item_value WHERE id = ?`
-		const statement = this.db.instance.prepareSync(query);
-
-		const result = statement
-			.executeSync<type_export>([item_value_id])
-			.getFirstSync();
-		statement.finalizeSync();
-
-		if (result) {
-			return result.fk_id_base_item_value;
-		} else {
-			throw new Error("Item Value not found.");
-		}
+		return this.get_fk_id_base_item_value("item_value", item_value_id)
 	}
 
 	async register(entity: RepositoryReceipt_BaseRegisterParam): Promise<Receipt | undefined> {

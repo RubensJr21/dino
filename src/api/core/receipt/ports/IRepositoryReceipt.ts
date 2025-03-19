@@ -1,5 +1,5 @@
 import Database from "@api/database/Database";
-import Receipt from "../model/Receipt";
+import Receipt from "@core/receipt/model/Receipt";
 import IRepositoryReceipt_Base, {
 	RepositoryReceipt_BaseRegisterParam,
 } from "./IRepositoryReceipt_Base";

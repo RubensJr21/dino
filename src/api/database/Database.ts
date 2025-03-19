@@ -1,5 +1,5 @@
+import IEntityBase from "@core/_shared/model/IEntityBase";
 import * as SQLite from "expo-sqlite";
-import IEntityBase from "../core/_shared/model/IEntityBase";
 
 export default class Database {
 	private db: SQLite.SQLiteDatabase;
@@ -25,6 +25,26 @@ export default class Database {
 			return result.id
 		} else {
 			throw new Error("Foreign key not found.");
+		}
+	}
+
+	public get_fk_id(search_table_name: string, id_value: IEntityBase["id"], target_fk: string){
+		const query = `SELECT $target_fk FROM $search_table_name WHERE id = $id_value`
+		const statement = this.db.prepareSync(query);
+		const dataSearch = {
+			target_fk,
+			id_value,
+			search_table_name
+		}
+		const result = statement
+			.executeSync<{[target_fk]: IEntityBase["id"]}>(dataSearch)
+			.getFirstSync();
+		statement.finalizeSync();
+
+		if (result) {
+			return result[target_fk];
+		} else {
+			throw new Error("Item Value not found.");
 		}
 	}
 }

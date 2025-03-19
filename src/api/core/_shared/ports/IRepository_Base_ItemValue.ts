@@ -1,5 +1,6 @@
 import Database from "@api/database/Database";
 import Base_ItemValue from "@core/_shared/model/Base_ItemValue";
+import IEntityBase from "@core/_shared/model/IEntityBase";
 
 export default abstract class IRepository_Base_ItemValue<
 	T extends Base_ItemValue
@@ -28,5 +29,9 @@ export default abstract class IRepository_Base_ItemValue<
 			if (error instanceof Error) console.log("get_id_tag() =>", error.message);
 			throw new Error("Recurrence type not found");
 		}
+	}
+
+	protected get_fk_id_base_item_value(search_table_name: string, id_item_value: IEntityBase["id"]){
+		return this.db.get_fk_id(search_table_name, id_item_value, "fk_id_base_item_value")
 	}
 }
