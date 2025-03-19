@@ -1,4 +1,5 @@
 import * as SQLite from "expo-sqlite";
+import IEntityBase from "../core/_shared/model/IEntityBase";
 
 export default class Database {
 	private db: SQLite.SQLiteDatabase;
@@ -12,6 +13,19 @@ export default class Database {
 
 	public get instance() {
 		return this.db;
+	}
+
+	public resolve_fk_column(search_table_name: string,column_value: string,target_column: string): IEntityBase["id"] {
+		const query = `SELECT id FROM ${search_table_name} WHERE ${target_column} = ?`
+		const stmt = this.db.prepareSync(query)
+		const result = stmt.executeSync<IEntityBase>([column_value]).getFirstSync()
+		stmt.finalizeSync()
+
+		if (result) {
+			return result.id
+		} else {
+			throw new Error("Foreign key not found.");
+		}
 	}
 }
 

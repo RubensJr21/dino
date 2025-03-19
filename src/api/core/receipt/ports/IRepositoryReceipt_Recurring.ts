@@ -18,7 +18,7 @@ export default abstract class RepositoryReceipt_Recurring extends IRepositoryRec
 	protected get_id_recurrence_type(
 		value: Receipt_Recurring["recurrence_type"]
 	) {
-		const id = this.resolve_fk_column("recurrence_type", value, "type");
+		const id = this.db.resolve_fk_column("recurrence_type", value, "type");
 		if (id) {
 			return id;
 		} else {

@@ -23,20 +23,6 @@ export class RepositoryReceipt_RecurringSQLite extends IRepositoryReceipt_Recurr
 	constructor(protected db: Database) {
 		super(db);
 	}
-	protected resolve_fk_column(search_table_name: string,column_value: string,target_column: string): Receipt_Recurring["id"] {
-		const query = `SELECT id FROM ${search_table_name} WHERE ${target_column} = ?`
-		const stmt = this.db.instance.prepareSync(query);
-		const result = stmt
-			.executeSync<{ id: Receipt_Recurring["id"] }>([column_value])
-			.getFirstSync();
-		stmt.finalizeSync();
-
-		if (result) {
-			return result.id;
-		} else {
-			throw new Error("Foreign key not found.");
-		}
-	}
 	protected get_id_fk_base_item_value_column(item_value_id: Receipt_Recurring["id"]): Receipt_Recurring["id"] {
 		type type_export = { fk_id_base_item_value: Receipt_Recurring["id"] };
 		const query = `SELECT fk_id_base_item_value FROM recurring_item_value WHERE id = ?`
