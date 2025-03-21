@@ -74,3 +74,8 @@
 ## Links úteis
 
 1. [Comentário com sugestão de Autocomplete (arquivos de config) no VSCode](https://github.com/microsoft/TypeScript/issues/42054#issuecomment-1704023560)
+
+## Git
+
+1. [git stash documentation - "salvar" modificações e não rastreados para usar em outra branch](https://git-scm.com/docs/git-stash/pt_BR)
+1. [git push documentation](https://git-scm.com/docs/git-push)
