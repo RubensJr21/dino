@@ -1,5 +1,6 @@
 import IEntityBase from "@core/_shared/model/IEntityBase";
 import * as SQLite from "expo-sqlite";
+import { prepareDataForInsert } from "./utils";
 
 export default class Database {
 	private db: SQLite.SQLiteDatabase;
@@ -46,6 +47,34 @@ export default class Database {
 		} else {
 			throw new Error("Item Value not found.");
 		}
+	}
+
+	public async insert<T extends object, R extends object>(table_name: string, data: T, returning: boolean = true): Promise<R>{
+		return new Promise(async (resolve, reject) => {
+			const [query, values] = prepareDataForInsert<T>(table_name,data, returning);
+
+			const stmt = await this.db.prepareAsync(query);
+			try {
+				const result_insert = await stmt.executeAsync<R>(values);
+				if(result_insert.changes === 0){
+					throw new Error("Erro ao inserir")
+				}
+				for await (const row of result_insert) {
+					resolve(row)
+				}
+			}
+			finally {
+				await stmt.finalizeAsync();
+			}
+		})
+	}
+
+	public async insertWithExclusiveTransactionAsync(){
+		return new Promise(async (resolve, reject) => {
+			this.db.withExclusiveTransactionAsync(async (txn) => {
+				
+			})
+		})
 	}
 }
 

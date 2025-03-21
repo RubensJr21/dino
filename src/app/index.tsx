@@ -1,8 +1,10 @@
 import Api from "@/api";
 import { RepositoryReceipt_BaseRegisterParam } from "@/api/core/receipt/ports/IRepositoryReceipt_Base";
 import { RepositoryReceipt_RecurringRegisterParam } from "@/api/core/receipt/ports/IRepositoryReceipt_Recurring";
+import Database from "@/api/database/Database";
 import BaseView from "@/components/BaseView";
 import TitlePage from "@/components/TitlePage";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { Link } from "expo-router";
 import { View } from "react-native";
 import { Button, Text } from "react-native-paper";
@@ -115,6 +117,7 @@ const handle_DeleteReceipt_Recurring1 = async () => {
 };
 
 export default function Root() {
+	useDrizzleStudio(new Database("test").instance)
 	return (
 		<BaseView>
 			<TitlePage variant="headlineMedium">Bem vindo ao Dinô</TitlePage>
@@ -189,3 +192,4 @@ export default function Root() {
 		</BaseView>
 	);
 }
+

@@ -1,7 +1,6 @@
 {
 	"extends": "expo/tsconfig.base",
 	"compilerOptions": {
-		"target": "ES5",
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 

@@ -13,18 +13,21 @@ export function addDollarSign<T extends Record<string, any>>(
 
 export function prepareDataForInsert<T extends object>(
 	table_name: string,
-	data: T
+	data: T,
+	returning: boolean = true
 ): [string, string[]] {
 	const columns = Object.keys(data);
 	const columns_string = columns.join(", ");
 	const values_string = columns.map(() => "?").join(", ");
 
-	const query = `INSERT INTO ${table_name} (${columns_string}) VALUES (${values_string})`;
+	const query = `INSERT INTO ${table_name} (${columns_string}) VALUES (${values_string})${returning ? " RETURNING *" : ""}`;
 
 	const values = Object.values(data);
 
 	return [query, values];
 }
+
+
 
 export function prepareDataForUpdate<T extends object, TYPE_ID>(
 	table_name: string,

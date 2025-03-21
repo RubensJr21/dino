@@ -27,6 +27,7 @@ export class RepositoryReceipt_RecurringSQLite extends IRepositoryReceipt_Recurr
 		return this.get_fk_id_base_item_value("recurring_item_value", item_value_id)
 	}
 
+	// TODO: Reimplementar passar detalhes técnicos para dentro de Database. Parar de usar db.instance
 	async register(entity: RepositoryReceipt_RecurringRegisterParam): Promise<Receipt_Recurring | undefined> {
 		return new Promise(async (resolve, reject) => {
 			try {
@@ -51,7 +52,7 @@ export class RepositoryReceipt_RecurringSQLite extends IRepositoryReceipt_Recurr
 				};
 
 				await this.db.instance.withExclusiveTransactionAsync(async (txn) => {
-					const [query_base, values_base] = prepareDataForInsert<Receipt_RecurringDatabaseModel>("base_item_value",dataForInsert);
+					const [query_base, values_base] = prepareDataForInsert<Receipt_RecurringDatabaseModel, Receipt_RecurringDatabaseModel>("base_item_value",dataForInsert);
 
 					// insert into base_item_value
 					const stmt_base_item_value = await txn.prepareAsync(query_base);
@@ -66,7 +67,7 @@ export class RepositoryReceipt_RecurringSQLite extends IRepositoryReceipt_Recurr
 						fk_id_base_item_value: result_insert_base.lastInsertRowId,
 					};
 
-					const [query_recurrence, values_recurrence] = prepareDataForInsert<typeof data_recurrence>("recurring_item_value", data_recurrence);
+					const [query_recurrence, values_recurrence] = prepareDataForInsert<typeof data_recurrence, typeof data_recurrence>("recurring_item_value", data_recurrence);
 					const stmt_recurring_item_value = await txn.prepareAsync(query_recurrence);
 					const result_insert_in_recurring_item_value = await stmt_recurring_item_value.executeAsync(values_recurrence);
 					await stmt_recurring_item_value.finalizeAsync();
@@ -90,6 +91,7 @@ export class RepositoryReceipt_RecurringSQLite extends IRepositoryReceipt_Recurr
 		});
 	}
 
+	// TODO: Reimplementar passar detalhes técnicos para dentro de Database. Parar de usar db.instance
 	async findById(id: Receipt_Recurring["id"]): Promise<Receipt_Recurring | undefined> {
 		const SQL = `SELECT riv.id, biv.description, biv.type, biv.scheduled_at,
 		biv.amount, biv.was_processed, t.description as tag, tmt.name as transfer_method_type,
@@ -117,6 +119,7 @@ export class RepositoryReceipt_RecurringSQLite extends IRepositoryReceipt_Recurr
 		};
 	}
 
+	// TODO: Reimplementar passar detalhes técnicos para dentro de Database. Parar de usar db.instance
 	async findAll(): Promise<Receipt_Recurring[]> {
 		const SQL = `SELECT riv.id, biv.description, biv.type, biv.scheduled_at,
 		biv.amount, biv.was_processed, t.description as tag, tmt.name as transfer_method_type,
@@ -144,6 +147,7 @@ export class RepositoryReceipt_RecurringSQLite extends IRepositoryReceipt_Recurr
 		});
 	}
 
+	// TODO: Reimplementar passar detalhes técnicos para dentro de Database. Parar de usar db.instance
 	async update(entity: Receipt_Recurring): Promise<Receipt_Recurring | undefined> {
 		return new Promise(async (resolve, reject) => {
 			try {
@@ -192,7 +196,8 @@ export class RepositoryReceipt_RecurringSQLite extends IRepositoryReceipt_Recurr
 			}
 		});
 	}
-
+	
+	// TODO: Reimplementar passar detalhes técnicos para dentro de Database. Parar de usar db.instance
 	async delete(id: Receipt_Recurring["id"]): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
 			try {

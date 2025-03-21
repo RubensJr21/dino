@@ -53,6 +53,9 @@
 ## (Libs)
 
 1. [Biblioteca de ícones usados](https://pictogrammers.com/library/mdi/)
+1. [Manipulando o banco de dados com Drizzle Studio](https://docs.expo.dev/versions/v52.0.0/sdk/sqlite/#browse-an-on-device-database)
+1. [Drizzle Studio for Expo SQLite](https://github.com/drizzle-team/drizzle-studio-expo?tab=readme-ov-file#drizzle-studio-for-expo-sqlite)
+1. [Drizzle ORM - Expo SQLite](https://orm.drizzle.team/docs/connect-expo-sqlite)
 
 ## Typescript
 
@@ -65,4 +68,9 @@
 ## SQLite
 
 1. [Datatypes In SQLite](https://www.sqlite.org/datatype3.html)
-1. [Como implementar o ON DELETE e ON UPDATE]
+1. [Como implementar o ON DELETE e ON UPDATE](https://www.sqlite.org/foreignkeys.html#fk_actions)
+1. [Definição da interface 'SQLiteExecuteAsyncResult'](https://docs.expo.dev/versions/v52.0.0/sdk/sqlite/#sqliteexecuteasyncresult)
+
+## Links úteis
+
+1. [Comentário com sugestão de Autocomplete (arquivos de config) no VSCode](https://github.com/microsoft/TypeScript/issues/42054#issuecomment-1704023560)

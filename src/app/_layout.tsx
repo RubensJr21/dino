@@ -79,7 +79,17 @@ const TabScreens = () => {
 	);
 };
 
+import migrations from '@root/drizzle/migrations';
+import { drizzle } from "drizzle-orm/expo-sqlite";
+import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
+import { openDatabaseSync } from "expo-sqlite";
+
+const DATABASE_NAME = "teste.db"
+const expoDB = openDatabaseSync(DATABASE_NAME)
+const db = drizzle(expoDB)
+
 export default function LayoutRoot() {
+	const {success, error} = useMigrations(db, migrations)
 	const scheme: ColorSchemeName = useColorScheme();
 	const isDark: boolean = scheme === "dark";
 

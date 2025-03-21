@@ -1,21 +1,34 @@
 import Database from "@api/database/Database";
 import {
 	prepareDataForInsert,
-	prepareDataForUpdate,
+	prepareDataForUpdate
 } from "@api/database/utils";
 import Receipt from "@core/receipt/model/Receipt";
 import IRepositoryReceipt from "@core/receipt/ports/IRepositoryReceipt";
 import { RepositoryReceipt_BaseRegisterParam } from "@core/receipt/ports/IRepositoryReceipt_Base";
 
-// REVIEW: Talvez exista uma forma de generalizar para mais casos
-type ReceiptDatabaseModel = StrictOmit<
-	Receipt,
-	"transfer_method_type" | "tag" | "scheduled_at" | "id" | "was_processed"
-> & {
-	fk_id_transfer_method_type: number;
-	fk_id_tag: number;
+interface ReceiptDatabaseModel {
+	description: string;
 	scheduled_at: string;
-};
+	amount: number;
+	type: Receipt["type"];
+	fk_id_transfer_method_type: Receipt["id"];
+	fk_id_tag: Receipt["id"];
+}
+
+interface ReturnReceiptDatabaseModel extends ReceiptDatabaseModel {
+	id: Receipt["id"]
+	was_processed: Receipt["was_processed"];
+}
+
+
+type input_item_value = {
+	fk_id_base_item_value: Receipt["id"]
+}
+type output_item_value = {
+	id: number,
+	fk_id_base_item_value: Receipt["id"]
+}
 
 export class RepositoryReceiptSQLite extends IRepositoryReceipt {
 	constructor(protected db: Database) {
@@ -25,6 +38,7 @@ export class RepositoryReceiptSQLite extends IRepositoryReceipt {
 		return this.get_fk_id_base_item_value("item_value", item_value_id)
 	}
 
+	// TODO: Reimplementar passar detalhes técnicos para dentro de Database. Parar de usar db.instance
 	async register(entity: RepositoryReceipt_BaseRegisterParam): Promise<Receipt | undefined> {
 		return new Promise(async (resolve, reject) => {
 			try {
@@ -46,34 +60,48 @@ export class RepositoryReceiptSQLite extends IRepositoryReceipt {
 					type: this.default_receipt_type,
 				};
 
-				await this.db.instance.withExclusiveTransactionAsync(async (txn) => {
-					const [query, values] = prepareDataForInsert<ReceiptDatabaseModel>("base_item_value",dataForInsert);
-
-					// insert into base_item_value
-					const statement_base_item_value = await txn.prepareAsync(query);
-					const result_insert_in_base_item_value = await statement_base_item_value.executeAsync(values);
-					await statement_base_item_value.finalizeAsync();
-
-					// create as item_value
-					const fk_id_base_item_value = result_insert_in_base_item_value.lastInsertRowId;
-					const data_item_value = {
-						fk_id_base_item_value,
-					};
-
-					const [query_recurrence, values_recurrence] = prepareDataForInsert<typeof data_item_value>("item_value", data_item_value);
-					const statement_item_value = await txn.prepareAsync(query_recurrence);
-					const result_insert_item_value = await statement_item_value.executeAsync(values_recurrence);
-					await statement_item_value.finalizeAsync();
-
-					const last_insert_rowid = result_insert_item_value.lastInsertRowId;
-
-					resolve({
-						...entity,
-						id: last_insert_rowid,
-						was_processed: false,
-						type: this.default_receipt_type,
-					});
+				const [query, values] = prepareDataForInsert<ReceiptDatabaseModel>("base_item_value",dataForInsert);
+				
+				const result = await this.db.insert<ReceiptDatabaseModel, ReturnReceiptDatabaseModel>("base_item_value", dataForInsert)
+								
+				const fk_id_base_item_value = result.id;
+				const data_item_value = {fk_id_base_item_value};
+				
+				const result_item_value = await this.db.insert<input_item_value, output_item_value>("item_value", data_item_value)
+				
+				resolve({
+					...entity,
+					id: result_item_value.id,
+					was_processed: Boolean(result.was_processed),
+					type: result.type,
 				});
+
+				// await this.db.instance.withExclusiveTransactionAsync(async (txn) => {
+				// 	const [query, values] = prepareDataForInsert<ReceiptDatabaseModel>("base_item_value",dataForInsert);
+
+				// 	// insert into base_item_value
+				// 	const statement_base_item_value = await txn.prepareAsync(query);
+				// 	const result_insert_in_base_item_value = await statement_base_item_value.executeAsync(values);
+				// 	await statement_base_item_value.finalizeAsync();
+
+				// 	// create as item_value
+				// 	const fk_id_base_item_value = result_insert_in_base_item_value.lastInsertRowId;
+				// 	const data_item_value = {fk_id_base_item_value};
+
+				// 	const [query_recurrence, values_recurrence] = prepareDataForInsert<typeof data_item_value>("item_value", data_item_value);
+				// 	const statement_item_value = await txn.prepareAsync(query_recurrence);
+				// 	const result_insert_item_value = await statement_item_value.executeAsync(values_recurrence);
+				// 	await statement_item_value.finalizeAsync();
+
+				// 	const last_insert_rowid = result_insert_item_value.lastInsertRowId;
+
+				// 	resolve({
+				// 		...entity,
+				// 		id: last_insert_rowid,
+				// 		was_processed: false,
+				// 		type: this.default_receipt_type,
+				// 	});
+				// });
 			} catch (error) {
 				if (error instanceof Error) {
 					console.log("Erro ao marcar como executado:", error.message);
@@ -83,6 +111,7 @@ export class RepositoryReceiptSQLite extends IRepositoryReceipt {
 		});
 	}
 
+	// TODO: Reimplementar passar detalhes técnicos para dentro de Database. Parar de usar db.instance
 	async findById(id: Receipt["id"]): Promise<Receipt | undefined> {
 		const SQL = `SELECT iv.id, biv.description, biv.type, biv.scheduled_at,
 			biv.amount, biv.was_processed, t.description as tag, tmt.name as transfer_method_type,
@@ -109,6 +138,7 @@ export class RepositoryReceiptSQLite extends IRepositoryReceipt {
 		};
 	}
 
+	// TODO: Reimplementar passar detalhes técnicos para dentro de Database. Parar de usar db.instance
 	async findAll(): Promise<Receipt[]> {
 		const SQL = `SELECT biv.id, biv.description, biv.type, biv.scheduled_at,
 		biv.amount, biv.was_processed, t.description as tag, tmt.name as transfer_method_type,
@@ -133,6 +163,7 @@ export class RepositoryReceiptSQLite extends IRepositoryReceipt {
 		});
 	}
 
+	// TODO: Reimplementar passar detalhes técnicos para dentro de Database. Parar de usar db.instance
 	async update(entity: Receipt): Promise<Receipt | undefined> {
 		return new Promise(async (resolve, reject) => {
 			try {
@@ -166,6 +197,7 @@ export class RepositoryReceiptSQLite extends IRepositoryReceipt {
 		});
 	}
 
+	// TODO: Reimplementar passar detalhes técnicos para dentro de Database. Parar de usar db.instance
 	async delete(id: Receipt["id"]): Promise<boolean> {
 		return new Promise(async (resolve, reject) => {
 			try {
