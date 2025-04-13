@@ -3,18 +3,25 @@
 	"compilerOptions": {
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
-
 		"allowJs": true,
 		"strict": true,
-		"baseUrl": "./src",
+		"baseUrl": "./src/",
 		"paths": {
 			"@root/*": ["../*"],
-			"@/*": ["./*"],
-			"@components/*": ["./components/*"],
-			"@app/*": ["./app/*"],
-			"@decorators/*": ["./decorators/*"],
-			"@api/*": ["./api/*"],
-			"@core/*": ["./api/core/*"]
+			"@src/*": ["./*"],
+			
+			// camadas clean architecture
+			"@application/*": ["./application/*"],
+			"@core/*": ["./core/*"],
+			"@infrastructure/*": ["./infrastructure/*"],
+			"@schemas/*": ["./infrastructure/database/drizzle/schemas/*"],
+			
+			"@tests/*": ["./tests/*"],
+			
+
+			"@app-components/*": ["./application/components/*"],
+			"@app/*": ["./application/app/*"],
+			"@api/*": ["./application/api/*"],
 		}
 	},
 	"include": [
