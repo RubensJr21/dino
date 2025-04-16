@@ -97,3 +97,4 @@
 
 1. [git stash documentation - "salvar" modificações e não rastreados para usar em outra branch](https://git-scm.com/docs/git-stash/pt_BR)
 1. [git push documentation](https://git-scm.com/docs/git-push)
+1. [Como excluir branches locais e remotos do Git - freeCodeCamp](https://www.freecodecamp.org/portuguese/news/como-excluir-branches-locais-e-remotos-do-git#vers-o-resumida)
