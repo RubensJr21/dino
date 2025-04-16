@@ -1,0 +1,3 @@
+import Create_UseCase_RecurringItemValue_UnmarkAsProcessed from "@src/core/shared/factory_use_case_items/recurring_item_value/unmark_as_processed";
+const RecurringPayment_UnmarkAsProcessed = Create_UseCase_RecurringItemValue_UnmarkAsProcessed("Payment")
+export default RecurringPayment_UnmarkAsProcessed

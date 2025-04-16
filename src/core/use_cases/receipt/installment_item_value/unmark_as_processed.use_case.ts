@@ -1,0 +1,3 @@
+import Create_UseCase_InstallmentItemValue_UnmarkAsProcessed from "@src/core/shared/factory_use_case_items/installment_item_value/unmark_as_processed";
+const InstallmentReceipt_UnmarkAsProcessed = Create_UseCase_InstallmentItemValue_UnmarkAsProcessed("Receipt")
+export default InstallmentReceipt_UnmarkAsProcessed

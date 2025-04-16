@@ -1,0 +1,3 @@
+import Create_UseCase_RecurringItemValue_Delete from "@src/core/shared/factory_use_case_items/recurring_item_value/delete"
+const RecurringPayment_Delete = Create_UseCase_RecurringItemValue_Delete("Payment")
+export default RecurringPayment_Delete

@@ -1,0 +1,3 @@
+import Create_UseCase_RecurringItemValue_ListAll from "@src/core/shared/factory_use_case_items/recurring_item_value/list_all";
+const RecurringPayment_ListAll = Create_UseCase_RecurringItemValue_ListAll("Payment")
+export default RecurringPayment_ListAll
