@@ -14,5 +14,7 @@
 	},
 	"todo-tree.tree.showBadges": true,
 	"todo-tree.tree.showCountsInTree": true,
-	"todo-tree.tree.disableCompactFolders": false
+	"todo-tree.tree.disableCompactFolders": false,
+	"typescript.tsdk": "node_modules\\typescript\\lib",
+	"explorer.sortOrder": "default"
 }

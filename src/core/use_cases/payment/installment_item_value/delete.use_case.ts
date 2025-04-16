@@ -1,0 +1,3 @@
+import Create_UseCase_InstallmentItemValue_Delete from "@src/core/shared/factory_use_case_items/installment_item_value/delete"
+const InstallmentPayment_Delete = Create_UseCase_InstallmentItemValue_Delete("Payment")
+export default InstallmentPayment_Delete

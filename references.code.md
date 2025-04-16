@@ -42,6 +42,8 @@
 
 1. [Update status-bar while app is running](https://docs.expo.dev/guides/configuring-statusbar/#update-the-status-bar-while-app-is-running)
 1. [Expo SQLite](https://docs.expo.dev/versions/v52.0.0/sdk/sqlite/)
+1. [Use Custom Directory app](https://docs.expo.dev/router/reference/src-directory/#custom-directory)
+1. [Use Custom expo-router entrypoint](https://docs.expo.dev/router/installation/#custom-entry-point-to-initialize-and-load)
 
 ## (react-native)
 
@@ -53,6 +55,19 @@
 ## (Libs)
 
 1. [Biblioteca de ícones usados](https://pictogrammers.com/library/mdi/)
+1. [Third-party library integrations](https://docs.expo.dev/versions/v52.0.0/sdk/sqlite/#third-party-library-integrations)
+1. [Third-party library integrations - Drizzle ORM](https://docs.expo.dev/versions/v52.0.0/sdk/sqlite/#drizzle-orm)
+1. [Manipulando o banco de dados com Drizzle Studio](https://docs.expo.dev/versions/v52.0.0/sdk/sqlite/#browse-an-on-device-database)
+1. [Drizzle Studio for Expo SQLite](https://github.com/drizzle-team/drizzle-studio-expo?tab=readme-ov-file#drizzle-studio-for-expo-sqlite)
+1. [Drizzle ORM - Why Drizzle?](https://orm.drizzle.team/docs/overview)
+1. [Drizzle ORM - Expo SQLite](https://orm.drizzle.team/docs/connect-expo-sqlite)
+1. [Drizzle ORM - Transactions](https://orm.drizzle.team/docs/transactions)
+1. [Drizzle ORM - SQLite column types](https://orm.drizzle.team/docs/column-types/sqlite)
+1. [Drizzle ORM - SQLite Indexes & Constraints (#check)](https://orm.drizzle.team/docs/indexes-constraints#check)
+1. [Drizzle ORM - updated_at sempre atualizado pelo banco](https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v0305)
+1. [Drizzle ORM - Composite Primary Key](https://orm.drizzle.team/docs/indexes-constraints#composite-primary-key)
+1. [Drizzle ORM Comprehensive Course](https://youtube.com/playlist?list=PLhnVDNT5zYN8PLdYddaU3jiZXeOyehhoU&si=ntG5gtrzOpWscmnS)
+1. [Banco de dados com Drizzle ORM no React Native + Expo](https://youtu.be/1inzzYvbgO8?si=myD7-AZLgHwOvn06)
 
 ## Typescript
 
@@ -65,4 +80,17 @@
 ## SQLite
 
 1. [Datatypes In SQLite](https://www.sqlite.org/datatype3.html)
-1. [Como implementar o ON DELETE e ON UPDATE]
+1. [Como implementar o ON DELETE e ON UPDATE](https://www.sqlite.org/foreignkeys.html#fk_actions)
+1. [Definição da interface 'SQLiteExecuteAsyncResult'](https://docs.expo.dev/versions/v52.0.0/sdk/sqlite/#sqliteexecuteasyncresult)
+
+## Links úteis
+
+1. [Comentário com sugestão de Autocomplete (arquivos de config) no VSCode](https://github.com/microsoft/TypeScript/issues/42054#issuecomment-1704023560)
+1. [Engenharia de Software Moderna - 1 O que é uma Arquitetura Hexagonal?](https://engsoftmoderna.info/artigos/arquitetura-hexagonal.html)
+1. [Clean Architecture: Simplified and In-Depth Guide - Article - 23/03/2025 11h55](https://medium.com/@DrunknCode/clean-architecture-simplified-and-in-depth-guide-026333c54454)
+1. [Run 'npm clean-install'](https://stackoverflow.com/a/64552347)
+
+## Git
+
+1. [git stash documentation - "salvar" modificações e não rastreados para usar em outra branch](https://git-scm.com/docs/git-stash/pt_BR)
+1. [git push documentation](https://git-scm.com/docs/git-push)

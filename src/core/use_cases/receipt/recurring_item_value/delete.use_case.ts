@@ -1,0 +1,3 @@
+import Create_UseCase_RecurringItemValue_Delete from "@src/core/shared/factory_use_case_items/recurring_item_value/delete"
+const RecurringReceipt_Delete = Create_UseCase_RecurringItemValue_Delete("Receipt")
+export default RecurringReceipt_Delete

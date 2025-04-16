@@ -1,0 +1,3 @@
+import Create_UseCase_InstallmentItemValue_Update from "@src/core/shared/factory_use_case_items/installment_item_value/register";
+const InstallmentReceipt_Update = Create_UseCase_InstallmentItemValue_Update("Receipt")
+export default InstallmentReceipt_Update

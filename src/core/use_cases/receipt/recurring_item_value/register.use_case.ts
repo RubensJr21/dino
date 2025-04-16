@@ -1,0 +1,3 @@
+import Create_UseCase_RecurringItemValue_Register from "@src/core/shared/factory_use_case_items/recurring_item_value/register";
+const RecurringReceipt_Register = Create_UseCase_RecurringItemValue_Register("Receipt")
+export default RecurringReceipt_Register

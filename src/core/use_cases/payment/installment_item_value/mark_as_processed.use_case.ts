@@ -1,0 +1,3 @@
+import Create_UseCase_InstallmentItemValue_MarkAsProcessed from "@src/core/shared/factory_use_case_items/installment_item_value/mark_as_processed";
+const InstallmentPayment_MarkAsProcessed = Create_UseCase_InstallmentItemValue_MarkAsProcessed("Payment")
+export default InstallmentPayment_MarkAsProcessed
