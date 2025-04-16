@@ -72,6 +72,8 @@
 ## Typescript
 
 1. [Omit tipado](https://stackoverflow.com/a/79135663)
+2. [Enum - Reverse mappings](https://www.typescriptlang.org/docs/handbook/enums.html#reverse-mappings)
+3. [Enums at compile time](https://www.typescriptlang.org/docs/handbook/enums.html#enums-at-compile-time)
 
 > Resolve problema do Omit não estar tipado e o segundo parâmetro não ter Intellisense
 
@@ -89,6 +91,7 @@
 1. [Engenharia de Software Moderna - 1 O que é uma Arquitetura Hexagonal?](https://engsoftmoderna.info/artigos/arquitetura-hexagonal.html)
 1. [Clean Architecture: Simplified and In-Depth Guide - Article - 23/03/2025 11h55](https://medium.com/@DrunknCode/clean-architecture-simplified-and-in-depth-guide-026333c54454)
 1. [Run 'npm clean-install'](https://stackoverflow.com/a/64552347)
+1. [Factory Method - Refactoring Guru](https://refactoring.guru/pt-br/design-patterns/factory-method)
 
 ## Git
 
