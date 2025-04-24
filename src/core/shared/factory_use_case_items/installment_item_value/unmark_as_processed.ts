@@ -1,7 +1,7 @@
 import { InstallmentItemValue } from "@core/entities/installment_item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
 import { IRepoBaseItemValue, IRepoInstallmentItemValue } from "@core/shared/RepositoryTypes";
-import { Variants_Of_ItemValue } from "../types/variants_items";
+import { Variants_Of_ItemValue } from "../../types/variants_items";
 
 interface UnmarkInstallmentItemValueAsProcessed_Input {
     id: number

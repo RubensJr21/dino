@@ -1,5 +1,5 @@
 import { Color_Generate, Color_Get } from "@application/lib/colors";
-import { CSSPropertiesColor, PreferenceType } from "@application/types/color";
+import { CSSPropertiesColor, PreferenceType } from "@src/types/color";
 
 type Info = {
     type: 'Entrada'|'Saída'

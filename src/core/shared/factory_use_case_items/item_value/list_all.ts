@@ -1,7 +1,7 @@
 import { ItemValue } from "@core/entities/item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
 import { IRepoItemValue } from "@core/shared/RepositoryTypes";
-import { Variants_Of_ItemValue } from "../types/variants_items";
+import { Variants_Of_ItemValue } from "../../types/variants_items";
 
 export default function Create_UseCase_ItemValue_ListAll(variant: keyof typeof Variants_Of_ItemValue){
     return class ListAllReceipts implements IUseCase<void, ItemValue[]> {

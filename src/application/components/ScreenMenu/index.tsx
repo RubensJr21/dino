@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 
 import { MdiNamesIcon } from "@app-components/ChooseIcon";
-import { NonEmptyArray } from "@src/application/types/utility-types";
+import { NonEmptyArray } from "@src/types/utility-types";
 import ItemMenu from "./ItemMenu";
 
 type ItemType = {

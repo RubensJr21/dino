@@ -1,6 +1,6 @@
-import { BaseItemValue } from "./base_item_value.entity";
+import { ABaseItemValue } from "./base_item_value.entity";
 
 export interface ItemValue {
     readonly id: number;
-    base_item_value: BaseItemValue
+    base_item_value: ABaseItemValue
 }

@@ -1,107 +1,92 @@
-import { BaseItemValue } from '@core/entities/base_item_value.entity'
-import { ItemValue } from '@core/entities/item_value.entity'
-import { DTO_ItemValue } from '@core/shared/DTOTypes'
-import { Partial_DTO_ItemValue } from '@core/shared/PartialEntitiesTypes'
-import { IRepoItemValue } from '@core/shared/RepositoryTypes'
 import { db } from '@infrastructure/database/drizzle/client'
 import { item_value } from '@infrastructure/database/drizzle/schemas'
+import IRepository from '@src/core/shared/IRepository'
+import { MItemValue } from '@src/infrastructure/models/item_value.model'
 import { eq } from 'drizzle-orm/sql'
 
-export default class ItemValueDrizzleRepository implements IRepoItemValue {
-    public async create(data: DTO_ItemValue): Promise<ItemValue | undefined> {
-		const forInsert = {
-			baseItemValueId: data.base_item_value.id
-		}
-		const itemValues = await db.insert(item_value).values(forInsert).returning()
-        const item_value_instanced: ItemValue = {
-            ...data,
-            id: itemValues[0].id
-        }
-        return item_value_instanced
-    }
+type MItemValueWithoutAts = StrictOmit<MItemValue, "created_at" | "updated_at">
 
-    public async findById(id: number): Promise<ItemValue | undefined> {
+type MItemValueWithoutDate = StrictOmit<MItemValueWithoutAts, "scheduled_at">
+
+interface MItemValueOutput extends MItemValueWithoutDate {
+  created_at: string;
+  updated_at: string;
+  scheduled_at: string;
+}
+
+export type IRepoItemValue = IRepository<MItemValue>
+
+export default class ItemValueDrizzleRepository implements IRepoItemValue {
+  private formatOutput(output: MItemValueOutput): MItemValue {
+    return {
+      ...output,
+      created_at: new Date(output.created_at),
+      updated_at: new Date(output.updated_at),
+      scheduled_at: new Date(output.scheduled_at)
+    }
+  }
+  public async create(data: StrictOmit<MItemValue, "id">): Promise<MItemValue | undefined> {
+		const forInsert = {
+			base_item_value_id: data.biv_id
+		}
+		const results = await db.insert(item_value).values(forInsert).returning()
+    return this.findById(results[0].id)
+  }
+
+  public async findById(id: number): Promise<MItemValue | undefined> {
 		const result = await db.query.item_value.findFirst({
 			where: eq(item_value.id, id),
 			with: {
-                baseItemValue: {
-                    with: {
-                        tag: true,
-                        transferMethodType: true
-                    }
-                }
-            }
-        })
+        base_item_value: true
+      }
+    })
 		if(!result) return undefined;
 
-		const {id: item_value_id, baseItemValue} = result
+		const {
+      base_item_value: _,
+      ...item_value_searched
+    } = {
+      ...result,
+      ...result.base_item_value,
+      biv_id: result.base_item_value.id
+    } 
 
-		const base_item_value_instanced: BaseItemValue = {
-			id: baseItemValue.id,
-			description: baseItemValue.description,
-			type: baseItemValue.type,
-			scheduled_at: new Date(baseItemValue.scheduledAt),
-			amount: baseItemValue.amount,
-			was_processed: baseItemValue.wasProcessed,
-			transfer_method_type: baseItemValue.transferMethodType,
-			tag: baseItemValue.tag,
-			created_at: new Date(baseItemValue.createdAt),
-			updated_at: new Date(baseItemValue.updatedAt)
-		}
+    return this.formatOutput(item_value_searched)
+  }
 
-		const item_value_instanced: ItemValue = {
-			id: item_value_id,
-			base_item_value: base_item_value_instanced
-		} 
+  public async findAll(): Promise<MItemValue[]>{
+    const result = await db.query.item_value.findMany({
+      with: {
+        base_item_value: true
+      }
+    })
+    return result.map((iv) => {
+      const {
+        base_item_value: _,
+        ...item_value_searched
+      } = {
+        ...iv,
+        ...iv.base_item_value,
+        biv_id: iv.base_item_value.id
+      } 
+  
+      return this.formatOutput(item_value_searched)
+    }) 
+  }
 
-        return item_value_instanced
+  public async update(id: number, data: StrictOmit<MItemValue, "id">): Promise<MItemValue | undefined> {
+    const forUpdate = {
+      base_item_value_id: data.biv_id
     }
+    const results = await db.update(item_value).set(forUpdate).where(eq(item_value.id, id))
 
-    public async findAll(): Promise<ItemValue[]>{
-        const result = await db.query.item_value.findMany({
-            with: {
-                baseItemValue: {
-                    with: {
-                        tag: true,
-                        transferMethodType: true
-                    }
-                }
-            }
-        })
-        return result.map((iv) => {
-            const iv_transformed: ItemValue = {
-                ...iv,
-                base_item_value: {
-                    ...iv.baseItemValue,
-                    scheduled_at: new Date(iv.baseItemValue.scheduledAt),
-                    was_processed: iv.baseItemValue.wasProcessed,
-                    transfer_method_type: iv.baseItemValue.transferMethodType,
-                    tag: iv.baseItemValue.tag,
-                    created_at: new Date(iv.baseItemValue.createdAt),
-                    updated_at: new Date(iv.baseItemValue.updatedAt)
-                }
-            }
-            return iv_transformed
-        }) 
-    }
+    if(!results) return undefined;
 
-    public async update(data: Partial_DTO_ItemValue): Promise<ItemValue | undefined> {
-        const {
-            id: idForUpdate,
-            ...forUpdate
-        } = {
-            ...data,
-            baseItemValueId: data.base_item_value?.id
-        }
-        const results = await db.update(item_value).set(forUpdate).where(eq(item_value.id, idForUpdate))
+    return this.findById(id)
+  }
 
-        if(!results) return undefined;
-
-        return this.findById(idForUpdate)
-    }
-
-    public async delete(id: number): Promise<boolean>{
-        await db.delete(item_value).where(eq(item_value.id, id))
-        return true
-    }
+  public async delete(id: number): Promise<boolean>{
+    await db.delete(item_value).where(eq(item_value.id, id))
+    return true
+  }
 }

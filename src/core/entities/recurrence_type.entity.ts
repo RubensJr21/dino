@@ -1,4 +1,4 @@
 export interface RecurrenceType {
-    readonly id: number;
-    type: string
+  readonly id: number;
+  type: string
 }

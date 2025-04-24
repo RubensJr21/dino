@@ -1,6 +1,6 @@
 import IUseCase from "@core/shared/IUseCase";
 import { IRepoBaseItemValue, IRepoRecurringItemValue } from "@core/shared/RepositoryTypes";
-import { Variants_Of_ItemValue } from "../types/variants_items";
+import { Variants_Of_ItemValue } from "../../types/variants_items";
 
 interface DeleteRecurringItemValue_Input {
     id: number

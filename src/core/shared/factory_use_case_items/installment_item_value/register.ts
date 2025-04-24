@@ -1,19 +1,13 @@
-import { BaseItemValue } from "@core/entities/base_item_value.entity";
 import { InstallmentItemValue } from "@core/entities/installment_item_value.entity";
-import { Tag } from "@core/entities/tag.entity";
-import { TransferMethodType } from "@core/entities/transfer_method_type.entity";
-import { DTO_InstallmentItemValue } from "@core/shared/DTOTypes";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoBaseItemValue, IRepoInstallmentItemValue, IRepoTag, IRepoTransferMethodType } from "@core/shared/RepositoryTypes";
-import { Variants_Of_ItemValue } from "../types/variants_items";
+import { IRepoBaseItemValue, IRepoInstallmentItemValue } from "@core/shared/RepositoryTypes";
+import { BaseItemValue } from "@src/core/entities/base_item_value.entity";
+import { Variants_Of_ItemValue } from "../../types/variants_items";
 
-interface BaseItemValue_RegisterInput extends StrictOmit<BaseItemValue, "tag"|"transfer_method_type"|"type"> {
-    tag: string;
-    transfer_method_type: string;
-}
-
-interface RegisterInstallmentInput extends StrictOmit<DTO_InstallmentItemValue, "base_item_value"|"installments_number"> {
-    base_item_value: BaseItemValue_RegisterInput;
+interface RegisterInstallmentInput {
+    // REVIEW: provavelmente ao invés de receber o objeto
+    // aqui eu vou receber os atributos de um BaseItemValue
+    base_item_value: BaseItemValue;
     installments_number: number;
 }
 
@@ -21,38 +15,26 @@ export default function Create_UseCase_InstallmentItemValue_Register(variant: ke
     return class UseCase_InstallmentItemValue_Register implements IUseCase<RegisterInstallmentInput, InstallmentItemValue> {
         constructor(
             private repo_biv: IRepoBaseItemValue,
-            private repo_tag: IRepoTag,
-            private repo_tmt: IRepoTransferMethodType,
             private repo_iiv: IRepoInstallmentItemValue
         ){}
     
-        private async validate_tag(description: Tag["description"]): Promise<Tag>{
-            const tag_searched = await this.repo_tag.findByDescription(description)
-            if(!tag_searched) {throw new Error("Invalid tag provided!")}
-            return tag_searched;
-        }
-        private async validate_transfer_method_type(name: TransferMethodType["name"]): Promise<TransferMethodType>{
-            const transfer_method_type_searched = await this.repo_tmt.findByName(name)
-            if(!transfer_method_type_searched) {throw new Error("Invalid transfer method type provided!")}
-            return transfer_method_type_searched;
-        }
-        private validate_installments_number(installments_number: InstallmentItemValue["installments_number"]): void{
-            if(installments_number <= 1){
-                throw new Error("Valor informado para o número de parcelas é inválido")
-            }
-        }
-    
         async execute(input: RegisterInstallmentInput): Promise<InstallmentItemValue> {
-            const tag = await this.validate_tag(input.base_item_value.tag)
-            const transfer_method_type = await this.validate_transfer_method_type(input.base_item_value.transfer_method_type)
-    
-            this.validate_installments_number(input.installments_number)
+            // TODO: envolver com try/catch
+            input.base_item_value.tag.validate()
+            // TODO: envolver com try/catch
+            input.base_item_value.transfer_method_type.validate();
+
+            const iiv = new InstallmentItemValue({
+                installments_number: input.installments_number,
+                base_item_value: input.base_item_value
+            })
+            iiv.validate()
             
             const base_item_value = await this.repo_biv.create({
                 ...input.base_item_value,
                 type: Variants_Of_ItemValue[variant],
-                tag,
-                transfer_method_type
+                tag: input.base_item_value.tag.properties,
+                transfer_method_type: input.base_item_value.transfer_method_type.properties
             })
     
             if(!base_item_value) throw new Error("Error creating base item value!")

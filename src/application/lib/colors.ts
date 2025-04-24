@@ -1,4 +1,4 @@
-import { CSSPropertiesColor, PreferenceType } from "@application/types/color";
+import { CSSPropertiesColor, PreferenceType } from "@src/types/color";
 
 export namespace Color_Parses {
 	// Função para converter RGB para hexadecimal

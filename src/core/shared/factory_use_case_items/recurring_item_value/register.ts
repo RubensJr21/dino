@@ -6,7 +6,7 @@ import { TransferMethodType } from "@core/entities/transfer_method_type.entity";
 import { DTO_RecurringItemValue } from "@core/shared/DTOTypes";
 import IUseCase from "@core/shared/IUseCase";
 import { IRepoBaseItemValue, IRepoRecurrenceType, IRepoRecurringItemValue, IRepoTag, IRepoTransferMethodType } from "@core/shared/RepositoryTypes";
-import { Variants_Of_ItemValue } from "../types/variants_items";
+import { Variants_Of_ItemValue } from "../../types/variants_items";
 
 interface BaseItemValue_RegisterInput extends StrictOmit<BaseItemValue, "tag"|"transfer_method_type"|"type"> {
     tag: string;

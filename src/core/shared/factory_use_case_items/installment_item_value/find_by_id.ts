@@ -1,7 +1,7 @@
 import { ItemValue } from "@core/entities/item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
 import { IRepoInstallmentItemValue } from "@core/shared/RepositoryTypes";
-import { Variants_Of_ItemValue } from "../types/variants_items";
+import { Variants_Of_ItemValue } from "../../types/variants_items";
 
 interface FindInstallmentItemValueById_Input {
     id: number

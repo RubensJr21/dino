@@ -4,7 +4,7 @@ import { TransferMethodType } from "@core/entities/transfer_method_type.entity";
 import IUseCase from "@core/shared/IUseCase";
 import { Partial_DTO_BaseItemValue } from "@core/shared/PartialEntitiesTypes";
 import { IRepoBaseItemValue, IRepoItemValue, IRepoTag, IRepoTransferMethodType } from "@core/shared/RepositoryTypes";
-import { Variants_Of_ItemValue } from "../types/variants_items";
+import { Variants_Of_ItemValue } from "../../types/variants_items";
 
 interface UpdateBaseItemValue extends StrictOmit<Partial_DTO_BaseItemValue, "tag"|"transfer_method_type"> {
     tag?: string;

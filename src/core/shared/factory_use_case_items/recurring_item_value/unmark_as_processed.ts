@@ -1,7 +1,7 @@
 import { RecurringItemValue } from "@core/entities/recurring_item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
 import { IRepoBaseItemValue, IRepoRecurringItemValue } from "@core/shared/RepositoryTypes";
-import { Variants_Of_ItemValue } from "../types/variants_items";
+import { Variants_Of_ItemValue } from "../../types/variants_items";
 
 interface UnmarkRecurringItemValueAsProcessed_Input {
     id: number

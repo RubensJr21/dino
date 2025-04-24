@@ -1,79 +1,66 @@
-import { BankAccount } from "@core/entities/bank_account.entity";
-import { DTO_BankAccount } from "@core/shared/DTOTypes";
-import { Partial_DTO_BankAccount } from "@core/shared/PartialEntitiesTypes";
-import { IRepoBankAccount } from "@core/shared/RepositoryTypes";
 import { db } from "@infrastructure/database/drizzle/client";
+import IRepository from "@src/core/shared/IRepository";
 import { bank_account } from "@src/infrastructure/database/drizzle/schemas";
+import { MBankAccount } from "@src/infrastructure/models/bank_account.model";
 import { eq } from "drizzle-orm/sql";
 
+type MBankAccountWithoutAts = StrictOmit<MBankAccount, "created_at" | "updated_at">
+
+interface MBankAccountOutput extends MBankAccountWithoutAts {
+  created_at: string;
+  updated_at: string;
+}
+export interface IRepoBankAccount extends IRepository<MBankAccount> {
+  findByNickname(nickname: string): Promise<MBankAccount | undefined>
+}
+
 export default class BankAccountDrizzleRepository implements IRepoBankAccount {
-    async create(data: DTO_BankAccount): Promise<BankAccount | undefined> {
-        const {
-            is_disabled,
-            ...forInsert
-        } = {
-            ...data,
-            isDisabled: data.is_disabled
-        }
-        
-        const results = await db.insert(bank_account).values(forInsert).returning()
-        
-        if(!results) return;
-        
-        return {
-            ...data,
-            id: results[0].id,
-            is_disabled: results[0].isDisabled,
-            created_at: new Date(results[0].createdAt),
-            updated_at: new Date(results[0].updatedAt)
-        }
+  private formatOutput(output: MBankAccountOutput): MBankAccount{
+    return {
+      ...output,
+      created_at: new Date(output.created_at),
+      updated_at: new Date(output.updated_at)
     }
-    async findById(id: number): Promise<BankAccount | undefined> {
-        const result = await db.query.bank_account.findFirst({where: eq(bank_account.id, id)})
-        if(!result) return;
-        return {
-            ...result,
-            is_disabled: result.isDisabled,
-            created_at: new Date(result.createdAt),
-            updated_at: new Date(result.updatedAt)
-        }
-    }
-    findByNickname(nickname: string): Promise<BankAccount | undefined> {
-        throw new Error("Method not implemented.");
-    }
-    async findAll(): Promise<BankAccount[]> {
-        const results = await db.query.bank_account.findMany()
-        return results.map((bankAccount) => {
-            const bankAccountTransformed: BankAccount = {
-                ...bankAccount,
-                is_disabled: bankAccount.isDisabled,
-                created_at: new Date(bankAccount.createdAt),
-                updated_at: new Date(bankAccount.updatedAt)
-            }
-            return bankAccountTransformed
-        })
-    }
-    async update(data: Partial_DTO_BankAccount): Promise<BankAccount | undefined> {
-        const {
-            id: idForUpdate,
-            is_disabled,
-            ...forUpdate
-        } = {
-            ...data,
-            isDisabled: data.is_disabled
-        }
+  }
 
-        const results = await db.update(bank_account).set(forUpdate).where(eq(bank_account.id, idForUpdate)).returning()
+  async create(data: StrictOmit<MBankAccountWithoutAts, "id">): Promise<MBankAccount | undefined> {
+    const results = await db.insert(bank_account).values(data).returning()
+    if(!results) return;
+    return this.formatOutput(results[0])
+  }
 
-        if(!results) return;
+  async findById(id: number): Promise<MBankAccount | undefined> {
+    const result = await db.query.bank_account.findFirst({
+      where: eq(bank_account.id, id)
+    })
+    if(!result) return;
+    return this.formatOutput(result)
+  }
 
-        return this.findById(idForUpdate)
+  async findByNickname(nickname: string): Promise<MBankAccount | undefined> {
+    const result = await db.query.bank_account.findFirst({where: eq(bank_account.nickname, nickname)})
+    if(!result) return;
+    return this.formatOutput(result)
+  }
 
-    }
-    async delete(id: number): Promise<boolean> {
-        const results = await db.delete(bank_account).where(eq(bank_account.id, id)).returning()
-        if(!results) return false;
-        return true
-    }
-    
+  async findAll(): Promise<MBankAccount[]> {
+    const results = await db.query.bank_account.findMany()
+    return results.map(this.formatOutput)
+  }
+
+  async update(id: MBankAccount["id"], data: StrictOmit<MBankAccountWithoutAts, "id">): Promise<MBankAccount | undefined> {
+    const results = await db.update(bank_account).set(data).where(
+      eq(bank_account.id, id)
+    ).returning()
+    if(!results) return;
+    return this.findById(id)
+
+  }
+  async delete(id: number): Promise<boolean> {
+    const results = await db.delete(bank_account).where(
+      eq(bank_account.id, id)
+    ).returning()
+    if(!results) return false;
+    return true
+  }
 }
