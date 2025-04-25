@@ -7,16 +7,12 @@ interface IInstallmentItemValue extends IBaseItemValue {
 	installments_number: number;
 }
 
-interface ReturnProperties
-	extends StrictOmit<IInstallmentItemValue, "tag" | "transfer_method_type"> {
+interface ReturnProperties extends StrictOmit<IInstallmentItemValue, "tag" | "transfer_method_type"> {
 	transfer_method_type: TransferMethodType["properties"];
 	tag: Tag["properties"];
 }
 
-export class InstallmentItemValue
-	extends ABaseItemValue
-	implements IInstallmentItemValue
-{
+export class InstallmentItemValue extends ABaseItemValue implements IInstallmentItemValue {
 	protected readonly _id: IInstallmentItemValue["id"];
 	private _installments_number: IInstallmentItemValue["installments_number"];
 	protected readonly _biv_id: IInstallmentItemValue["biv_id"];
@@ -66,6 +62,7 @@ export class InstallmentItemValue
 	public get installments_number(): InstallmentItemValue["_installments_number"] {
 		return this._installments_number;
 	}
+
 	public change_installments_number(new_value: InstallmentItemValue["_installments_number"]): undefined | Error {
 		// Runtime Error
 		if (this.installments_number <= 1) {

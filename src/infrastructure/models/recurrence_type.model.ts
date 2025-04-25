@@ -1,3 +1,3 @@
-import { RecurrenceType } from "@src/core/entities/recurrence_type.entity";
+import { IRecurrenceType } from "@src/core/entities/recurrence_type.entity";
 
-export interface MRecurrenceType extends RecurrenceType {}
+export interface MRecurrenceType extends IRecurrenceType {}
