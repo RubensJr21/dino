@@ -1,3 +1,3 @@
-import { BankAccount } from "@src/core/entities/bank_account.entity";
+import { IBankAccount } from "@src/core/entities/bank_account.entity";
 
-export interface MBankAccount extends BankAccount {}
+export interface MBankAccount extends IBankAccount {}

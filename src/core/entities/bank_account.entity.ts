@@ -1,4 +1,4 @@
-export interface BankAccount {
+export interface IBankAccount {
   readonly id: number;
   nickname: string;
   is_disabled: boolean;
