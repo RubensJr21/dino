@@ -1,4 +1,4 @@
-export interface CreditCard {
+export interface ICreditCard {
   readonly id: number;
   nickname: string;
   last_four_digits: string;

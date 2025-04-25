@@ -1,4 +1,3 @@
-import { CreditCard } from "@src/core/entities/credit_card.entity";
+import { ICreditCard } from "@src/core/entities/credit_card.entity";
 
-
-export interface MCreditCard extends CreditCard {}
+export interface MCreditCard extends ICreditCard {}
