@@ -64,7 +64,9 @@ export class InstallmentItemValue extends ABaseItemValue implements IInstallment
 	public change_installments_number(new_value: InstallmentItemValue["_installments_number"]): undefined | Error {
 		// Runtime Error
 		if (this.installments_number < 2) {
-			return new Error("Valor informado para o número de parcelas é inválido");
+			return new Error("Valor informado para o número de parcelas é inválido!", {
+        cause: "Número de parcela precisa ser maior ou igual à 2"
+      });
 		}
 		this._installments_number = new_value;
 		return undefined;
