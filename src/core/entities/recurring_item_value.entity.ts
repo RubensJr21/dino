@@ -1,9 +1,9 @@
 import { ABaseItemValue } from "./base_item_value.entity";
-import { IRecurrenceType } from "./recurrence_type.entity";
+import { RecurrenceType } from "./recurrence_type.entity";
 
 export interface IRecurringItemValue {
   readonly id: number;
   is_disabled: boolean;
-  recurrence_type: IRecurrenceType;
+  recurrence_type: RecurrenceType;
   base_item_value: ABaseItemValue;
 }
