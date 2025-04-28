@@ -3,6 +3,8 @@ export interface ITransferMethodType {
   name: string;
 }
 
+type ReturnProperties = ITransferMethodType
+
 export class TransferMethodType implements ITransferMethodType{
   private readonly _id?: ITransferMethodType["id"]
   private _name: ITransferMethodType["name"]
@@ -24,10 +26,10 @@ export class TransferMethodType implements ITransferMethodType{
     return undefined;
   }
     
-  get properties(): ITransferMethodType {
+  get properties(): ReturnProperties {
     return {
       id: this.id,
       name: this.name
-    }
+    } as const
   }
 }

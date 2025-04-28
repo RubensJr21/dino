@@ -3,6 +3,8 @@ export interface ITag {
 	description: string;
 }
 
+type ReturnProperties = ITag
+
 export class Tag implements ITag {
 	public readonly id: ITag["id"];
 	private _description: ITag["description"];
@@ -23,10 +25,10 @@ export class Tag implements ITag {
 		return undefined;
 	}
 
-	get properties(): ITag{
+	get properties(): ReturnProperties{
 		return {
 			id: this.id,
 			description: this._description
-		};
+		} as const;
 	}
 }
