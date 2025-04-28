@@ -65,6 +65,6 @@ export class ItemValue extends ABaseItemValue implements IItemValue {
 			tag: this.tag.properties,
       created_at: this._created_at,
       updated_at: this._updated_at
-		};
+		} as const;
 	}
 }
