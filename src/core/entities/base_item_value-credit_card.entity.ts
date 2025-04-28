@@ -1,8 +1,8 @@
 import { ABaseItemValue } from "./base_item_value.entity";
-import { ICreditCard } from "./credit_card.entity";
+import { CreditCard } from "./credit_card.entity";
 
-export interface BaseItemValue_CreditCard {
+export interface IBaseItemValue_CreditCard<T extends ABaseItemValue> {
   readonly id: number;
-  base_item_value: ABaseItemValue;
-  credit_card: ICreditCard
+  base_item_value: T;
+  credit_card: CreditCard
 }
