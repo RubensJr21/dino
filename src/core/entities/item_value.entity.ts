@@ -49,7 +49,7 @@ export class ItemValue extends ABaseItemValue implements IItemValue {
     this._updated_at = updated_at;
   }
 
-  public get id(): IItemValue["id"] {
+  public get id(): ItemValue["_id"] {
     return this._id
   }
 
