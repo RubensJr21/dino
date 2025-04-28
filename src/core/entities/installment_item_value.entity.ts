@@ -1,6 +1,4 @@
 import { ABaseItemValue, IBaseItemValue } from "./base_item_value.entity";
-import { Tag } from "./tag.entity";
-import { TransferMethodType } from "./transfer_method_type.entity";
 
 interface IInstallmentItemValue extends IBaseItemValue {
 	readonly id?: number;
@@ -8,8 +6,8 @@ interface IInstallmentItemValue extends IBaseItemValue {
 }
 
 interface ReturnProperties extends StrictOmit<IInstallmentItemValue, "tag" | "transfer_method_type"> {
-	transfer_method_type: TransferMethodType["properties"];
-	tag: Tag["properties"];
+	transfer_method_type: ABaseItemValue["_transfer_method_type"]["properties"];
+	tag: ABaseItemValue["tag"]["properties"];
 }
 
 export class InstallmentItemValue extends ABaseItemValue implements IInstallmentItemValue {
