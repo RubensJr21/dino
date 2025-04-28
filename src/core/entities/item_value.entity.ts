@@ -1,14 +1,12 @@
 import { ABaseItemValue, IBaseItemValue } from "./base_item_value.entity";
-import { Tag } from "./tag.entity";
-import { TransferMethodType } from "./transfer_method_type.entity";
 
 export interface IItemValue extends IBaseItemValue {
   readonly id: number;
 }
 
 interface ReturnProperties extends StrictOmit<IItemValue, "tag" | "transfer_method_type"> {
-  transfer_method_type: TransferMethodType["properties"];
-  tag: Tag["properties"];
+  transfer_method_type: ABaseItemValue["_transfer_method_type"]["properties"];
+  tag: ABaseItemValue["_tag"]["properties"];
 }
 
 export class ItemValue extends ABaseItemValue implements IItemValue {
