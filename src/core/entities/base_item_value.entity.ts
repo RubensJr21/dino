@@ -10,8 +10,8 @@ export interface IBaseItemValue {
   was_processed: boolean;
   transfer_method_type: TransferMethodType;
   tag: Tag;
-  created_at: Date;
-  updated_at: Date;
+  readonly created_at: Date;
+  readonly updated_at: Date;
 }
 
 export abstract class ABaseItemValue implements IBaseItemValue {

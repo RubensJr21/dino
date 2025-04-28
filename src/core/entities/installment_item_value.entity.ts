@@ -23,8 +23,8 @@ export class InstallmentItemValue extends ABaseItemValue implements IInstallment
 	protected _was_processed: IInstallmentItemValue["was_processed"];
 	protected _transfer_method_type: IInstallmentItemValue["transfer_method_type"];
 	protected _tag: IInstallmentItemValue["tag"];
-  protected _created_at: Date;
-  protected _updated_at: Date;
+  protected readonly _created_at: Date;
+  protected readonly _updated_at: Date;
 
 	constructor({
 		id,

@@ -21,8 +21,8 @@ export class ItemValue extends ABaseItemValue implements IItemValue {
 	protected _was_processed: IItemValue["was_processed"];
 	protected _transfer_method_type: IItemValue["transfer_method_type"];
 	protected _tag: IItemValue["tag"];
-  protected _created_at: Date;
-  protected _updated_at: Date;
+  protected readonly _created_at: Date;
+  protected readonly _updated_at: Date;
 
   constructor({
 		id,

@@ -3,6 +3,6 @@ export interface IBankAccount {
   nickname: string;
   is_disabled: boolean;
   balance: number;
-  created_at: Date;
-  updated_at: Date;
+  readonly created_at: Date;
+  readonly updated_at: Date;
 }

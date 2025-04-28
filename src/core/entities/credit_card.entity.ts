@@ -6,6 +6,6 @@ export interface ICreditCard {
   closing_date: Date;
   due_date: Date;
   is_disabled: boolean;
-  created_at: Date;
-  updated_at: Date;
+  readonly created_at: Date;
+  readonly updated_at: Date;
 }
