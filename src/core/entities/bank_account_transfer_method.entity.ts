@@ -1,9 +1,9 @@
-import { IBankAccount } from "./bank_account.entity";
+import { BankAccount } from "./bank_account.entity";
 
 export interface IBankAccountTransferMethod {
   readonly id: number;
   type: string;
-  bank_account: IBankAccount;
+  readonly bank_account: BankAccount;
   readonly created_at: Date;
   readonly updated_at: Date;
 }
