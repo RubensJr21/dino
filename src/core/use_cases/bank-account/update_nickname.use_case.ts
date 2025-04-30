@@ -27,7 +27,9 @@ export default class UpdateNicknameBankAccount implements IUseCase<UpdateNicknam
     const {id, ...bank_account_without_id} = bank_account.properties
 
     const bank_account_updated = await this.repo_ba.update(id, bank_account_without_id)
-    if(!bank_account_updated) throw new Error("Invalid Bank Account returned!")
+    if(!bank_account_updated) {
+      throw new Error("An error occurred while updating the bank account.")
+    }
 
     return bank_account;
   }
