@@ -85,6 +85,12 @@ export class CreditCard implements ICreditCard {
     return this._is_disabled
   }
   public enabled(): void {
+    // TODO: Será retornado um erro para que
+    // não seja necessário enviar os dados para o banco de dados
+    // sem uma mudança efetiva 
+    // if (credit_card.is_disabled === false){
+    //   throw new Error("Credit card is already enable!")
+    // }
     this._is_disabled = false;
   }
   public disable(): void {
