@@ -48,6 +48,12 @@ export class BankAccount implements IBankAccount {
     return this._is_disabled;
   }
   public enabled(): void {
+    // TODO: Será retornado um erro para que
+    // não seja necessário enviar os dados para o banco de dados
+    // sem uma mudança efetiva 
+    // if (bank_account.is_disabled === false){
+    //   throw new Error("Bank account is already enable!")
+    // }
     this._is_disabled = false;
   }
   public disable(): void {
