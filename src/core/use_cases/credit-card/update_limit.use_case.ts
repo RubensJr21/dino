@@ -24,7 +24,9 @@ export default class UpdateLimitCreditCard implements IUseCase<UpdateLimitCredit
 
     const credit_card_updated = await this.repo_cc.update(id, credit_card_without_id)
 
-    if(!credit_card_updated) throw new Error("Invalid Credit Card returned!")
+    if(!credit_card_updated) {
+      throw new Error("An error occurred while updating the credit card.")
+    }
 
     return credit_card
   }
