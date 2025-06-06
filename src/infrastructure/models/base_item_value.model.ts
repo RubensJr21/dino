@@ -3,6 +3,6 @@ import { MTag } from "./tag.model";
 import { MTransferMethodType } from "./transfer_method_type.model";
 
 export interface MBaseItemValue extends StrictOmit<Required<IBaseItemValue>, "tag"|"transfer_method_type">{
-  tag_id: MTag["id"]
-  transfer_method_type_id: MTransferMethodType["id"]
+  fk_id_tag: MTag["id"]
+  fk_id_transfer_method_type: MTransferMethodType["id"]
 }

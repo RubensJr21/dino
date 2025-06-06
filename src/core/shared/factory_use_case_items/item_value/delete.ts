@@ -1,26 +1,40 @@
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoBaseItemValue, IRepoItemValue } from "@core/shared/RepositoryTypes";
-import { Variants_Of_ItemValue } from "../../types/variants_items";
+import { IRepositoryBaseItemValue } from "@src/infrastructure/repositories/drizzle/base_item_value.repository";
+import { IRepoItemValue } from "@src/infrastructure/repositories/drizzle/item_value.repository";
+import { isItemValueNotFoundById, ItemValueUnknownError } from "../../errors/item_value";
+import { TypeOfVariants } from "../../types/variants_items";
 
 interface DeleteItemValue_Input {
-    id: number
+  id: number
 }
 
-export default function Create_UseCase_ItemValue_Delete(variant: keyof typeof Variants_Of_ItemValue){
-    return class UseCase_ItemValue_Delete implements IUseCase<DeleteItemValue_Input, boolean>{
-        constructor(
-            private repo_biv: IRepoBaseItemValue,
-            private repo_iv: IRepoItemValue
-        ){}
-        async execute(input: DeleteItemValue_Input): Promise<boolean> {
-            const receipt = await this.repo_iv.findById(input.id)
-            if(receipt){
-                // Removendo o base_item_value a remoção é propagada
-                await this.repo_biv.delete(receipt.base_item_value.id)
-            } else {
-                throw new Error(`${variant} not found!`);
-            }
-            return true;
-        }
+export default abstract class UseCase_ItemValue_Delete implements IUseCase<DeleteItemValue_Input, boolean>{
+  protected abstract variant: TypeOfVariants
+  /**
+   * Constructs an instance of the item value deletion use case.
+   * @param {IRepositoryBaseItemValue} repo_biv Repository for base item values
+   * @param {IRepoItemValue} repo_iv Repository for item values
+   */
+  constructor(
+    private repo_biv: IRepositoryBaseItemValue,
+    private repo_iv: IRepoItemValue
+  ){}
+  /**
+   * Executes the deletion of an item value by its ID.
+   * @param {DeleteItemValue_Input} input - The input containing the ID of the item value to delete
+   * @returns {Promise<boolean>} A promise that resolves to true if the deletion was successful
+   * @throws {Error} If the item value is not found
+   */
+  async execute(input: DeleteItemValue_Input): Promise<boolean> {
+    try {
+      // Removendo o base_item_value a remoção é propagada
+      const receipt = this.repo_iv.findById(input.id)
+      return this.repo_biv.delete(receipt.fk_id_base_item_value)
+    } catch(error) {
+      if(isItemValueNotFoundById(error)){
+        throw error
+      }
+      throw new ItemValueUnknownError();
     }
+  }
 }

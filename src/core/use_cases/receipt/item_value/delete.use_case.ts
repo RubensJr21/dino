@@ -1,3 +1,6 @@
-import Create_UseCase_ItemValue_Delete from "@src/core/shared/factory_use_case_items/item_value/delete"
-const Receipt_Delete = Create_UseCase_ItemValue_Delete("Receipt")
-export default Receipt_Delete
+import UseCase_ItemValue_Delete from "@src/core/shared/factory_use_case_items/item_value/delete";
+import { TypeOfVariants } from "@src/core/shared/types/variants_items";
+
+export default class Receipt_Delete extends UseCase_ItemValue_Delete {
+  protected variant: TypeOfVariants = "Receipt";
+}

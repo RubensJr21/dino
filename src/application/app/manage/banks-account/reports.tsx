@@ -16,16 +16,12 @@ import { UnknownOutputParams } from "expo-router";
 
 export interface AccountsBankReportsParams extends UnknownOutputParams {
 	id: string;
-	bank_name: string;
-	agency: string;
-	account: string;
+	nickname: string;
 }
 
 export default function AccountsBankReports({
 	id,
-	bank_name,
-	agency,
-	account,
+	nickname
 }: AccountsBankReportsParams) {
 	const theme = useTheme();
 	const getSchemeCharts = useCallback(
@@ -39,7 +35,7 @@ export default function AccountsBankReports({
 	return (
 		<BaseView style={{ paddingHorizontal: 0 }}>
 			<TitlePage>
-				Relatórios da conta no <TextBold>{bank_name}</TextBold>
+				Relatórios da conta no <TextBold>{nickname}</TextBold>
 			</TitlePage>
 			<FlatList
 				style={styles.flatlist_style}

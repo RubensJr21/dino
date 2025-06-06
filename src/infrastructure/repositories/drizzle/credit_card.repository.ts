@@ -1,31 +1,67 @@
-import IRepository from "@src/core/shared/IRepository";
+import { CreditCard } from "@src/core/entities/credit_card.entity";
+import { CreditCardNotFoundById, CreditCardNotFoundByNickname } from "@src/core/shared/errors/credit_card";
+import { IRepository, IRepositoryCreateProps, IRepositoryUpdateProps } from "@src/core/shared/IRepository";
 import { db } from "@src/infrastructure/database/drizzle/client";
 import { credit_card } from "@src/infrastructure/database/drizzle/schemas";
 import { MCreditCard } from "@src/infrastructure/models/credit_card.model";
 import { eq } from "drizzle-orm/sql";
 
-type MCreditCardWithoutAts = StrictOmit<MCreditCard, "created_at" | "updated_at">
-
-type MCreditCardWithoutDate = StrictOmit<MCreditCardWithoutAts, "closing_date" | "due_date">
-
-interface MCreditCardInput extends MCreditCardWithoutDate {
+interface MCreditCardInput extends StrictOmit<IRepositoryCreateProps<MCreditCard>, "closing_date" | "due_date"> {
   closing_date: string;
   due_date: string;
 }
 
-interface MCreditCardOutput extends MCreditCardWithoutDate {
+interface MCreditCardOutput extends StrictOmit<MCreditCard, "closing_date" | "due_date"|"created_at"|"updated_at"> {
   created_at: string;
   updated_at: string;
   closing_date: string;
   due_date: string;
 }
 
-export interface IRepoCreditCard extends IRepository<MCreditCard> {
-  findByNickname(nickname: string): Promise<MCreditCard | undefined>
+export interface IRepoCreditCard extends IRepository<MCreditCard, CreditCard> {
+  /**
+   * @param {IRepositoryWithoutDatesCreateProps<MCreditCard>} data Atributos que são passados para a criação de uma nova CreditCard
+   * @returns {CreditCard} Retorna objeto que representa a entidade CreditCard que contém os dados informados para criação
+   */
+  create(data: IRepositoryCreateProps<MCreditCard>): CreditCard
+  
+  /**
+   * @param {MCreditCard["id"]} id id pelo qual a bank account será buscada
+   * @throws {CreditCardNotFoundById}
+   * @returns {CreditCard} Retorna objeto que representa a entidade CreditCard que contém o id informado
+   */
+  findById(id: MCreditCard["id"]): CreditCard
+
+  /**
+   * @param {MCreditCard["nickname"]} nickname descrição pela qual a bank account será procurada
+   * @throws {CreditCardNotFoundByNickname}
+   * @returns {CreditCard} Retorna objeto que representa a entidade CreditCard que contém a nickname informada
+   */
+  findByNickname(nickname: MCreditCard["nickname"]): CreditCard
+
+  /**
+   * @returns {CreditCard[]} retorna uma lista de CreditCards
+   */
+  findAll(): CreditCard[]
+
+  /**
+   * @param {MCreditCard["id"]} id id pela qual a CreditCard será buscada
+   * @param {IRepositoryWithoutDatesUpdateProps<MCreditCard>} data valores que serão atualizado
+   * @throws {CreditCardNotFoundById}
+   * @returns {CreditCard} Retorna um objeto que representa a entidade CreditCard que contém a id informada
+   */
+  update(id: MCreditCard["id"], data: IRepositoryUpdateProps<MCreditCard>): CreditCard
+
+  /**
+   * @param {MCreditCard["id"]} id id da CreditCard a ser excluída
+   * @returns {boolean} retorna true se conseguiu excluir e false caso contrário
+   */
+  delete(id: MCreditCard["id"]): boolean
 }
 
 export default class CreditCardDrizzleRepository implements IRepoCreditCard {
-  private formatInput(input: StrictOmit<MCreditCardWithoutAts, "id">): StrictOmit<MCreditCardInput, "id">{
+  // eslint-disable-next-line jsdoc/require-jsdoc
+  private formatInput(input: IRepositoryCreateProps<MCreditCard>): MCreditCardInput {
     return {
       ...input,
       closing_date: input.closing_date.toISOString().split('T')[0],
@@ -33,6 +69,7 @@ export default class CreditCardDrizzleRepository implements IRepoCreditCard {
     }
   }  
   
+  // eslint-disable-next-line jsdoc/require-jsdoc
   private formatOutput(output: MCreditCardOutput): MCreditCard {
     return {
       ...output,
@@ -43,42 +80,46 @@ export default class CreditCardDrizzleRepository implements IRepoCreditCard {
     }
   }
 
-  async create(data: StrictOmit<MCreditCardWithoutAts, "id">): Promise<MCreditCard | undefined> {
+  // eslint-disable-next-line jsdoc/require-jsdoc
+  public create(data: IRepositoryCreateProps<MCreditCard>): CreditCard {
     const forInsert = this.formatInput(data)
-    const results = await db.insert(credit_card).values(forInsert).returning()
-    if(!results) return;
-    return this.formatOutput(results[0])
+    const result = db.insert(credit_card).values(forInsert).returning().get()
+    return new CreditCard(this.formatOutput(result))
   }
 
-  async findById(id: number): Promise<MCreditCard | undefined> {
-    const result = await db.query.credit_card.findFirst({where: eq(credit_card.id, id)})
+  // eslint-disable-next-line jsdoc/require-jsdoc
+  public findById(id: MCreditCard["id"]): CreditCard {
+    const result = db.query.credit_card.findFirst({where: eq(credit_card.id, id)}).sync()
     
-    if (!result) return;
+    if (!result) throw new CreditCardNotFoundById(id)
     
-    return this.formatOutput(result)
+    return new CreditCard(this.formatOutput(result))
   }
 
-  async findByNickname(nickname: string): Promise<MCreditCard | undefined> {
-    const result = await db.query.credit_card.findFirst({where: eq(credit_card.nickname, nickname)})
-    if (!result) return;
-    return this.formatOutput(result)
+  // eslint-disable-next-line jsdoc/require-jsdoc
+  public findByNickname(nickname: MCreditCard["nickname"]): CreditCard {
+    const result = db.query.credit_card.findFirst({where: eq(credit_card.nickname, nickname)}).sync()
+    if (!result) throw new CreditCardNotFoundByNickname(nickname);
+    return new CreditCard(this.formatOutput(result))
   }
 
-  async findAll(): Promise<MCreditCard[]> {
-    const result = await db.query.credit_card.findMany()
-    return result.map(this.formatOutput)
+  // eslint-disable-next-line jsdoc/require-jsdoc
+  public findAll(): CreditCard[] {
+    const result = db.query.credit_card.findMany().sync()
+    return result.map(this.formatOutput).map(cc => new CreditCard(cc))
   }
   
-  async update(id: number, data: StrictOmit<MCreditCardWithoutAts, "id">): Promise<MCreditCard | undefined> {
+  // eslint-disable-next-line jsdoc/require-jsdoc
+  public update(id: MCreditCard["id"], data: IRepositoryUpdateProps<MCreditCard>): CreditCard {
     const forUpdate = this.formatInput(data)
-    const results = await db.update(credit_card).set(forUpdate).where(eq(credit_card.id, id)).returning()
-    if(!results) return;
+    const results = db.update(credit_card).set(forUpdate).where(eq(credit_card.id, id)).returning().get()
+    if(!results) throw new CreditCardNotFoundById(id);
     return this.findById(id)
   }
 
-  async delete(id: number): Promise<boolean> {
-    const result = await db.delete(credit_card).where(eq(credit_card.id, id)).returning()
-    if(!result) return false;
-    return true
+  // eslint-disable-next-line jsdoc/require-jsdoc
+  public delete(id: MCreditCard["id"]): boolean {
+    const result = db.delete(credit_card).where(eq(credit_card.id, id)).returning().get()
+    return !result ? false : true
   }
 }

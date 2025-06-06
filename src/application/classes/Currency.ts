@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/require-jsdoc */
+
 import { AddThousandSeparator, PadStart } from "@application/decorators/Currency";
 
 export class Currency {

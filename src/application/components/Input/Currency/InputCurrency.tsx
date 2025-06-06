@@ -1,13 +1,13 @@
 import { Currency } from "@application/classes/Currency";
 import {
-	forwardRef,
-	useEffect,
-	useImperativeHandle,
-	useRef,
-	useState,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
 } from "react";
 import { Keyboard, TextInput as RNTextInput, StyleSheet } from "react-native";
-import { TextInputProps } from "react-native-paper";
+import { Text, TextInputProps } from "react-native-paper";
 import TextCurrency from "./TextCurrency";
 
 export interface InputCurrencyTypeRef {
@@ -20,15 +20,14 @@ export function useRefInputCurrency(): React.RefObject<InputCurrencyTypeRef> {
 
 interface InputCurrencyProps {
 	value?: `${number}`;
+  label: string;
 }
 
 export default forwardRef<InputCurrencyTypeRef, InputCurrencyProps>(
-	({ value: value_received }, ref) => {
+	({ value: value_received, label }, ref) => {
 		const inputRef = useRef<RNTextInput>(null);
 
-		if (value_received?.includes(".")) {
-			value_received = `${Number(value_received) * 100}`;
-		}
+		value_received = `${Number(value_received) * 100}`;
 
 		const [value, setValue] = useState<string>(value_received ?? "");
 		const [position, setPosition] = useState({
@@ -53,6 +52,11 @@ export default forwardRef<InputCurrencyTypeRef, InputCurrencyProps>(
 
 		return (
 			<>
+        <Text
+          children={label}
+          style={styles.label}
+          variant="titleLarge"
+        />
 				<TextCurrency
 					value={value}
 					onPress={() => inputRef.current?.focus()}
@@ -97,6 +101,10 @@ const HideTextInput = forwardRef<RNTextInput, HideTextInputProps>(
 );
 
 const styles = StyleSheet.create({
+  label: {
+    textAlign: "center",
+    textAlignVertical: "center"
+  },
 	hideInput: {
 		position: "absolute",
 		opacity: 0,

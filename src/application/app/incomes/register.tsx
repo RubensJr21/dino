@@ -1,16 +1,16 @@
 import BaseView from "@app-components/BaseView";
 import { MdiNamesIcon } from "@app-components/ChooseIcon";
 import InputCurrency, {
-    useRefInputCurrency,
+  useRefInputCurrency,
 } from "@app-components/Input/Currency/InputCurrency";
 import InputDatePicker, {
-    useRefInputDatePicker,
+  useRefInputDatePicker,
 } from "@app-components/Input/InputDatePicker";
 import InputDescription, {
-    useRefInputDescription,
+  useRefInputDescription,
 } from "@app-components/Input/InputDescription";
 import InputRecurring, {
-    useRefInputRecurring,
+  useRefInputRecurring,
 } from "@app-components/Input/InputRecurring";
 import TitlePage from "@app-components/TitlePage";
 import { useLocalSearchParams } from "expo-router/build/hooks";
@@ -48,7 +48,7 @@ export default function IncomesRegister() {
 				<View style={styles.view_form}>
 					<InputDescription ref={inputDescriptionRef} />
 					<InputDatePicker ref={inputDatePickerRef} />
-					<InputCurrency ref={inputCurrencyRef} />
+					<InputCurrency label="Valor do Recebimento:" ref={inputCurrencyRef} />
 					<InputRecurring ref={inputRecurringRef} />
 
 					{

@@ -1,5 +1,7 @@
-export interface ICreditCard {
-  readonly id: number;
+/* eslint-disable jsdoc/require-jsdoc */
+import { IEntityWithDates } from "../shared/IEntityWithDates";
+
+export interface ICreditCard extends IEntityWithDates {
   nickname: string;
   last_four_digits: string;
   limit: number;
@@ -84,22 +86,10 @@ export class CreditCard implements ICreditCard {
   public get is_disabled(): CreditCard["_is_disabled"] {
     return this._is_disabled
   }
-  public enabled(): void {
-    // TODO: Será retornado um erro para que
-    // não seja necessário enviar os dados para o banco de dados
-    // sem uma mudança efetiva 
-    // if (credit_card.is_disabled === false){
-    //   throw new Error("Credit card is already enable!")
-    // }
+  public enable(): void {
     this._is_disabled = false;
   }
   public disable(): void {
-    // TODO: Será retornado um erro para que
-    // não seja necessário enviar os dados para o banco de dados
-    // sem uma mudança efetiva 
-    // if (credit_card.is_disabled === true){
-    //   throw new Error("Credit card is already disable!")
-    // }
     this._is_disabled = true;
   }
 

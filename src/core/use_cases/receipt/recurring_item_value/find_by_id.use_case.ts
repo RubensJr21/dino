@@ -1,3 +1,6 @@
-import Create_UseCase_RecurringItemValue_FindById from "@src/core/shared/factory_use_case_items/recurring_item_value/find_by_id";
-const RecurringReceipt_FindById = Create_UseCase_RecurringItemValue_FindById("Receipt")
-export default RecurringReceipt_FindById
+import UseCase_RecurringItemValue_FindById from "@src/core/shared/factory_use_case_items/recurring_item_value/find_by_id";
+import { TypeOfVariants } from "@src/core/shared/types/variants_items";
+
+export default class RecurringReceipt_FindById extends UseCase_RecurringItemValue_FindById {
+  protected variant: TypeOfVariants = "Receipt";
+}

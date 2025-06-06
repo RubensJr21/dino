@@ -3,12 +3,16 @@ import IUseCase from "@core/shared/IUseCase";
 import { IRepoBankAccount } from "@infrastructure/repositories/drizzle/bank_account.repository";
 
 export default class ListAllBankAccounts implements IUseCase<void, BankAccount[]> {
+  /**
+   * @param {IRepoBankAccount} repo_ba Interface do repositório de BankAccount
+   */
   constructor(
     private repo_ba: IRepoBankAccount
   ){}
+  /**
+   * @returns {Promise<BankAccount[]>} retorna uma promise com uma lista de objetos que representam a entidade BankAccount
+   */
   async execute(): Promise<BankAccount[]> {
-    const banks_account_models = await this.repo_ba.findAll()
-    const banks_account = banks_account_models.map(bk_ac => new BankAccount(bk_ac))
-    return banks_account;
+    return this.repo_ba.findAll();
   }
 }

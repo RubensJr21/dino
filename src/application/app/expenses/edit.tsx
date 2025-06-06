@@ -1,17 +1,17 @@
 import BaseView from "@app-components/BaseView";
 import { MdiNamesIcon } from "@app-components/ChooseIcon";
 import InputCurrency, {
-    useRefInputCurrency,
+  useRefInputCurrency,
 } from "@app-components/Input/Currency/InputCurrency";
 import InputDatePicker, {
-    useRefInputDatePicker,
+  useRefInputDatePicker,
 } from "@app-components/Input/InputDatePicker";
 import InputDescription, {
-    useRefInputDescription,
+  useRefInputDescription,
 } from "@app-components/Input/InputDescription";
 import InputRecurring, {
-    RECURRING_TYPE,
-    useRefInputRecurring,
+  RECURRING_TYPE,
+  useRefInputRecurring,
 } from "@app-components/Input/InputRecurring";
 import { TextBold } from "@app-components/TextBold";
 import TitlePage from "@app-components/TitlePage";
@@ -62,6 +62,7 @@ export default function ExpensesEdit() {
 						ref={inputDatePickerRef}
 					/>
 					<InputCurrency
+            label={"Valor"}
 						value={currency}
 						ref={inputCurrencyRef}
 					/>

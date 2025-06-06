@@ -3,12 +3,16 @@ import IUseCase from "@core/shared/IUseCase";
 import { IRepoCreditCard } from "@src/infrastructure/repositories/drizzle/credit_card.repository";
 
 export default class ListAllCreditCards implements IUseCase<void, CreditCard[]>{
+  /**
+   * @param {IRepoCreditCard} repo_cc Interface do repositório de CreditCard
+   */
   constructor(
     private repo_cc: IRepoCreditCard
   ){}
+  /**
+   * @returns {Promise<CreditCard[]>} retorna uma promise com uma lista de objetos que representam a entidade CreditCard
+   */
   async execute(): Promise<CreditCard[]> {
-    const credit_cards_models = await this.repo_cc.findAll()
-    const credit_cards = credit_cards_models.map(cc_ac => new CreditCard(cc_ac))
-    return credit_cards;
+    return this.repo_cc.findAll();
   }
 }

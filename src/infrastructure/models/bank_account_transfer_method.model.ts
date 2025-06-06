@@ -2,5 +2,5 @@ import { IBankAccountTransferMethod } from "@src/core/entities/bank_account_tran
 import { MBankAccount } from "./bank_account.model";
 
 export interface MBankAccountTransferMethod extends StrictOmit<IBankAccountTransferMethod, "bank_account"> {
-  bank_account_id: MBankAccount["id"]
+  fk_id_bank_account: MBankAccount["id"]
 }

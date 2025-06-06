@@ -1,11 +1,11 @@
 import BaseView from "@app-components/BaseView";
 import { MdiNamesIcon } from "@app-components/ChooseIcon";
-import InputCurrency, {
-	useRefInputCurrency,
-} from "@app-components/Input/Currency/InputCurrency";
 import InputCreditCardName, {
-	useRefInputCreditCardName,
-} from "@app-components/Input/InputCreditCardName";
+  useRefInputCreditCardName,
+} from "@app-components/credit-card/InputCreditCardName";
+import InputCurrency, {
+  useRefInputCurrency,
+} from "@app-components/Input/Currency/InputCurrency";
 import TitlePage from "@app-components/TitlePage";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Button } from "react-native-paper";
@@ -32,7 +32,10 @@ export default function CreditCardsRegister() {
 						placeholder="Digite um nome para o cartão"
 						inputMode="none"
 					/>
-					<InputCurrency ref={inputCurrencyRef} />
+					<InputCurrency
+            label="Limite do cartão:"
+            ref={inputCurrencyRef}
+          />
 
 					<RegisterButton onPress={handleButton} />
 				</View>

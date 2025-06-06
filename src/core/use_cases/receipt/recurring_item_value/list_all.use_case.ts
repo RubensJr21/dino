@@ -1,3 +1,6 @@
-import Create_UseCase_RecurringItemValue_ListAll from "@src/core/shared/factory_use_case_items/recurring_item_value/list_all";
-const RecurringReceipt_ListAll = Create_UseCase_RecurringItemValue_ListAll("Receipt")
-export default RecurringReceipt_ListAll
+import UseCase_RecurringItemValue_ListAll from "@src/core/shared/factory_use_case_items/recurring_item_value/list_all";
+import { TypeOfVariants } from "@src/core/shared/types/variants_items";
+
+export default class RecurringReceipt_ListAll extends UseCase_RecurringItemValue_ListAll {
+  protected variant: TypeOfVariants = "Receipt";
+}

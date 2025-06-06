@@ -1,12 +1,13 @@
+/* eslint-disable jsdoc/require-jsdoc */
 export interface ITransferMethodType {
-  readonly id?: number;
+  readonly id: number;
   name: string;
 }
 
 type ReturnProperties = ITransferMethodType
 
 export class TransferMethodType implements ITransferMethodType{
-  private readonly _id?: ITransferMethodType["id"]
+  private readonly _id: ITransferMethodType["id"]
   private _name: ITransferMethodType["name"]
   
   constructor({id,name}: ITransferMethodType){

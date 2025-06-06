@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/require-jsdoc */
+
 // TODO: Implementar para Incomes (Verificar modelo de dados)
 
 import { Income } from "@application/models/Income";
@@ -7,7 +9,7 @@ const DADOS_RECUPERADOS: Income[] = Array.from({ length: 50 }, (_, index) => {
 
 	// Função para gerar uma data aleatória no intervalo
 	const randomDate = () => {
-		const startDate = new Date(2024, 12, 31); // 30/11/2024
+		const startDate = new Date(2025, 1, 22); // 22/01/2025
 		const endDate = new Date(2025, 1, 28); // 28/02/2025
 		const randomTime =
 			startDate.getTime() +
@@ -19,14 +21,21 @@ const DADOS_RECUPERADOS: Income[] = Array.from({ length: 50 }, (_, index) => {
 	// Valores de 0.00 a 50.00
 	const randomCurrency = () => `${Number((Math.random() * 50).toFixed(2))}`;
 
+  const randomType = () => {
+    const prob = Math.random();
+    if(prob < .3) return "default";
+    if(prob < .6) return "installment";
+    return "recurring";
+  }
+
 	return {
 		id,
 		get description() {
-			return `Meu recebimento nº ${this.id}`;
+			return `Recebimento nº ${this.id}`;
 		},
 		datePicker: randomDate(),
 		currency: randomCurrency(),
-		recurring: Math.random() < 0.5, // true ou false aleatório
+    type: randomType()
 	} as Income;
 });
 
@@ -56,5 +65,4 @@ function groupByDate(
 
 export type IncomeGroupByDate = { date: string; expenses: Income[] }[];
 
-export const dataGroupByDate: IncomeGroupByDate =
-	groupByDate(DADOS_RECUPERADOS);
+export const dataGroupByDate: IncomeGroupByDate = groupByDate(DADOS_RECUPERADOS);

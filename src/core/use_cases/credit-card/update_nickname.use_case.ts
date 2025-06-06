@@ -1,6 +1,7 @@
 import { CreditCard } from "@core/entities/credit_card.entity";
 import IUseCase from "@core/shared/IUseCase";
 import { IRepoCreditCard } from "@infrastructure/repositories/drizzle/credit_card.repository";
+import { CreditCardNicknameIsAlreadyInUse, CreditCardUnknownError, isCreditCardNotFoundById, isCreditCardNotFoundByNickname } from "@src/core/shared/errors/credit_card";
 
 interface UpdateNicknameCreditCard_Input {
   id: number,
@@ -8,28 +9,40 @@ interface UpdateNicknameCreditCard_Input {
 }
 
 export default class UpdateNicknameCreditCard implements IUseCase<UpdateNicknameCreditCard_Input, CreditCard>{
+  /**
+   * @param {IRepoCreditCard} repo_cc Interface do repositório de CreditCard
+   */
   constructor(
     private repo_cc: IRepoCreditCard
   ){}
+  /**
+   * @param {UpdateNicknameCreditCard_Input} input objeto contém o id e o novo valor para o atributo 'nickname' de CreditCard
+   * @throws {CreditCardNicknameIsAlreadyInUse}
+   * @throws {CreditCardNotFoundById}
+   * @throws {CreditCardUnknownError}
+   * @returns {Promise<CreditCard>} retorna uma promise com um objeto que representa a entidade CreditCard
+   */
   async execute(input: UpdateNicknameCreditCard_Input): Promise<CreditCard> {
-    const nickname = await this.repo_cc.findByNickname(input.new_nickname)
-    if(nickname){
-      throw new Error("Nickname already used by another credit card!")
+    try {
+      const bank_account = this.repo_cc.findByNickname(input.new_nickname)
+      throw new CreditCardNicknameIsAlreadyInUse(input.new_nickname)
+    } catch (error) {
+      if(!isCreditCardNotFoundByNickname(error)){
+        throw error
+      }
     }
-
-    const credit_card_model = await this.repo_cc.findById(input.id)
-    if (!credit_card_model){
-      throw new Error("Invalid id credit card")
+    try {  
+      const credit_card = this.repo_cc.findById(input.id)
+  
+      credit_card.change_nickname(input.new_nickname)
+      const {id, created_at, updated_at, ...credit_card_without_id} = credit_card.properties
+  
+      return this.repo_cc.update(id, credit_card_without_id);
+    } catch (error) {
+      if(isCreditCardNotFoundById(error)){
+        throw error
+      }
+      throw new CreditCardUnknownError()
     }
-
-    const credit_card = new CreditCard(credit_card_model)
-    credit_card.change_nickname(input.new_nickname)
-    const {id, ...credit_card_without_id} = credit_card.properties
-
-    const credit_card_updated = await this.repo_cc.update(id, credit_card_without_id)
-    if(!credit_card_updated) {
-      throw new Error("An error occurred while updating the credit card.")
-    }
-    return credit_card;
   }
 }

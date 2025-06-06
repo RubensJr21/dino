@@ -1,3 +1,6 @@
-import Create_UseCase_ItemValue_UnmarkAsProcessed from "@src/core/shared/factory_use_case_items/item_value/unmark_as_processed";
-const Receipt_UnmarkAsProcessed = Create_UseCase_ItemValue_UnmarkAsProcessed("Receipt")
-export default Receipt_UnmarkAsProcessed
+import UseCase_ItemValue_UnmarkAsProcessed from "@src/core/shared/factory_use_case_items/item_value/unmark_as_processed";
+import { TypeOfVariants } from "@src/core/shared/types/variants_items";
+
+export default class Receipt_UnmarkAsProcessed extends UseCase_ItemValue_UnmarkAsProcessed {
+  protected variant: TypeOfVariants = "Receipt";
+}

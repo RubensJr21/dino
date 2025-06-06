@@ -1,53 +1,40 @@
-import { InstallmentItemValue } from "@core/entities/installment_item_value.entity";
+import { IInstallmentItemValue, InstallmentItemValue } from "@core/entities/installment_item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoBaseItemValue, IRepoInstallmentItemValue } from "@core/shared/RepositoryTypes";
-import { BaseItemValue } from "@src/core/entities/base_item_value.entity";
-import { Variants_Of_ItemValue } from "../../types/variants_items";
+import { IRepoInstallmentItemValue } from "@src/infrastructure/repositories/drizzle/installment_item_value.repository";
+import { TypeOfVariants, Variants_Of_ItemValue } from "../../types/variants_items";
 
-interface RegisterInstallmentInput {
-    // REVIEW: provavelmente ao invés de receber o objeto
-    // aqui eu vou receber os atributos de um BaseItemValue
-    base_item_value: BaseItemValue;
-    installments_number: number;
-}
+type RegisterInstallmentInput = StrictOmit<IInstallmentItemValue, "fk_id_base_item_value"|"was_processed"|"created_at"|"updated_at">
 
-export default function Create_UseCase_InstallmentItemValue_Register(variant: keyof typeof Variants_Of_ItemValue){
-    return class UseCase_InstallmentItemValue_Register implements IUseCase<RegisterInstallmentInput, InstallmentItemValue> {
-        constructor(
-            private repo_biv: IRepoBaseItemValue,
-            private repo_iiv: IRepoInstallmentItemValue
-        ){}
+export default abstract class UseCase_InstallmentItemValue_Register implements IUseCase<RegisterInstallmentInput, InstallmentItemValue> {
+  protected abstract variant: TypeOfVariants
+  /**
+   * Constructs an instance of the use case with the required installment item value repository
+   * @param {IRepoInstallmentItemValue} repo_iiv The repository for managing installment item value operations
+   */
+  constructor(
+    private repo_iiv: IRepoInstallmentItemValue,
+  ){}
+  /**
+   * Executes the registration of an installment item value
+   * @param {RegisterInstallmentInput} input The input data for creating an installment item value
+   * @returns {Promise<InstallmentItemValue>} The created installment item value
+   */
+  async execute(input: RegisterInstallmentInput): Promise<InstallmentItemValue> {
+    const {
+      tag,
+      transfer_method_type
+    } = input
     
-        async execute(input: RegisterInstallmentInput): Promise<InstallmentItemValue> {
-            // TODO: envolver com try/catch
-            input.base_item_value.tag.validate()
-            // TODO: envolver com try/catch
-            input.base_item_value.transfer_method_type.validate();
-
-            const iiv = new InstallmentItemValue({
-                installments_number: input.installments_number,
-                base_item_value: input.base_item_value
-            })
-            iiv.validate()
-            
-            const base_item_value = await this.repo_biv.create({
-                ...input.base_item_value,
-                type: Variants_Of_ItemValue[variant],
-                tag: input.base_item_value.tag.properties,
-                transfer_method_type: input.base_item_value.transfer_method_type.properties
-            })
-    
-            if(!base_item_value) throw new Error("Error creating base item value!")
-            
-            const installment_item_value = await this.repo_iiv.create({
-                installments_number: input.installments_number,
-                base_item_value
-            })
-            if (!installment_item_value) {
-                throw new Error("Error creating Installment !")
-            }
-            return installment_item_value;
-        }
-    
-    }
+    const installment_item_value = this.repo_iiv.create({
+      installments_number: input.installments_number,
+      description: input.description,
+      type: Variants_Of_ItemValue[this.variant],
+      scheduled_at: input.scheduled_at,
+      amount: input.amount,
+      was_processed: false,
+      fk_id_tag: tag.id,
+      fk_id_transfer_method_type: transfer_method_type.id,
+    })    
+    return installment_item_value;
+  }
 }

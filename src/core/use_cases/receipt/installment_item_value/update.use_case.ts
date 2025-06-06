@@ -1,3 +1,6 @@
-import Create_UseCase_InstallmentItemValue_Update from "@src/core/shared/factory_use_case_items/installment_item_value/register";
-const InstallmentReceipt_Update = Create_UseCase_InstallmentItemValue_Update("Receipt")
-export default InstallmentReceipt_Update
+import UseCase_InstallmentItemValue_Update from "@src/core/shared/factory_use_case_items/installment_item_value/register";
+import { TypeOfVariants } from "@src/core/shared/types/variants_items";
+
+export default class InstallmentReceipt_Update extends UseCase_InstallmentItemValue_Update {
+  protected variant: TypeOfVariants = "Receipt";
+}

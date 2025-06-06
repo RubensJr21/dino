@@ -1,4 +1,7 @@
-export interface IRecurrenceType {
+/* eslint-disable jsdoc/require-jsdoc */
+import IEntityBase from "../shared/IEntityBase";
+
+export interface IRecurrenceType extends IEntityBase{
   readonly id: number;
   type: string
 }
@@ -13,8 +16,8 @@ export class RecurrenceType implements IRecurrenceType {
     id,
     type
   }: IRecurrenceType){
-    this._id = id,
-    this._type = type
+    this._id = id;
+    this._type = type;
   }
 
   public get id(): RecurrenceType["_id"] {

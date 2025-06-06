@@ -74,6 +74,7 @@
 1. [Omit tipado](https://stackoverflow.com/a/79135663)
 2. [Enum - Reverse mappings](https://www.typescriptlang.org/docs/handbook/enums.html#reverse-mappings)
 3. [Enums at compile time](https://www.typescriptlang.org/docs/handbook/enums.html#enums-at-compile-time)
+4. [O que acontece quando um error é lançado dentro de uma função assíncrona?](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/async_function)
 
 > Resolve problema do Omit não estar tipado e o segundo parâmetro não ter Intellisense
 

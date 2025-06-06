@@ -1,3 +1,6 @@
-import Create_UseCase_ItemValue_ListAll from "@src/core/shared/factory_use_case_items/item_value/list_all";
-const Receipt_ListAll = Create_UseCase_ItemValue_ListAll("Receipt")
-export default Receipt_ListAll
+import UseCase_ItemValue_ListAll from "@src/core/shared/factory_use_case_items/item_value/list_all";
+import { TypeOfVariants } from "@src/core/shared/types/variants_items";
+
+export default class Receipt_ListAll extends UseCase_ItemValue_ListAll {
+  protected variant: TypeOfVariants = "Receipt";
+}

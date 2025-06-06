@@ -17,4 +17,16 @@
 	"todo-tree.tree.disableCompactFolders": false,
 	"typescript.tsdk": "node_modules\\typescript\\lib",
 	"explorer.sortOrder": "default",
+
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "eslint.validate": ["typescript", "typescriptreact"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  },
+  "eslint.run": "onType",
+  "eslint.debug": true,
+  "eslint.trace.server": "messages",
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }

@@ -1,9 +1,5 @@
-import {
-	createComponentInputText,
-	InputTextGenericRefProps,
-	InputTextGenericRefTypeRef,
-	useRefInputGenericRef,
-} from "./InputTextGenericRef";
+import { createComponentInputText, InputTextGenericRefProps, InputTextGenericRefTypeRef, useRefInputGenericRef } from "../Input/InputTextGenericRef";
+
 
 export interface InputCreditCardNameTypeRef
 	extends InputTextGenericRefTypeRef {}

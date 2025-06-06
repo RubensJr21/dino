@@ -4,5 +4,5 @@ export interface Income {
 	description: string;
 	datePicker: string;
 	currency: `${number}`;
-	recurring: boolean;
+	type: "default"|"installment"|"recurring";
 }

@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/require-jsdoc */
+/* eslint-disable @typescript-eslint/no-namespace */
 import { CSSPropertiesColor, PreferenceType } from "@src/types/color";
 
 export namespace Color_Parses {
@@ -201,7 +203,7 @@ export function getBackgroundColor(
 	weight?: number
 ): string {
 	const [r, g, b] = color_from_theme
-		.replace(/[rgb\(\) ]/g, "")
+		.replace(/[rgb() ]/g, "")
 		.split(",")
 		.map((value: string) => Number.parseInt(value));
 	return Color_Get.mixColors(

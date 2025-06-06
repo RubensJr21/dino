@@ -1,3 +1,6 @@
-import Create_UseCase_ItemValue_Register from "@src/core/shared/factory_use_case_items/item_value/register";
-const Payment_Register = Create_UseCase_ItemValue_Register("Payment")
-export default Payment_Register
+import UseCase_ItemValue_Register from "@src/core/shared/factory_use_case_items/item_value/register";
+import { TypeOfVariants } from "@src/core/shared/types/variants_items";
+
+export default class Payment_Register extends UseCase_ItemValue_Register {
+  protected variant: TypeOfVariants = "Payment";
+}

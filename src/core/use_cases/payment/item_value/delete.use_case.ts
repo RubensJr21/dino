@@ -1,3 +1,6 @@
-import Create_UseCase_ItemValue_Delete from "@src/core/shared/factory_use_case_items/item_value/delete"
-const Payment_Delete = Create_UseCase_ItemValue_Delete("Payment")
-export default Payment_Delete
+import UseCase_ItemValue_Delete from "@src/core/shared/factory_use_case_items/item_value/delete";
+import { TypeOfVariants } from "@src/core/shared/types/variants_items";
+
+export default class Payment_Delete extends UseCase_ItemValue_Delete {
+  protected variant: TypeOfVariants = "Payment";
+}

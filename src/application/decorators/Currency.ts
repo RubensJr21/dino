@@ -1,5 +1,7 @@
+/* eslint-disable jsdoc/require-jsdoc */
+
 export function AddThousandSeparator() {
-	return (target: any, key: string, descriptor: PropertyDescriptor) => {
+	return (target: unknown, key: string, descriptor: PropertyDescriptor) => {
 		const originalGet = descriptor.get;
 
 		descriptor.get = function () {
@@ -11,7 +13,7 @@ export function AddThousandSeparator() {
 }
 
 export function PadStart(maxLength: number) {
-	return (target: any, key: string, descriptor: PropertyDescriptor) => {
+	return (target: unknown, key: string, descriptor: PropertyDescriptor) => {
 		const originalGet = descriptor.get;
 
 		descriptor.get = function () {

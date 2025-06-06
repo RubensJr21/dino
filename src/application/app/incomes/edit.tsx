@@ -1,17 +1,16 @@
 import BaseView from "@app-components/BaseView";
 import { MdiNamesIcon } from "@app-components/ChooseIcon";
 import InputCurrency, {
-    useRefInputCurrency,
+  useRefInputCurrency,
 } from "@app-components/Input/Currency/InputCurrency";
 import InputDatePicker, {
-    useRefInputDatePicker,
+  useRefInputDatePicker,
 } from "@app-components/Input/InputDatePicker";
 import InputDescription, {
-    useRefInputDescription,
+  useRefInputDescription,
 } from "@app-components/Input/InputDescription";
-import InputRecurring, {
-    RECURRING_TYPE,
-    useRefInputRecurring,
+import {
+  useRefInputRecurring
 } from "@app-components/Input/InputRecurring";
 import { TextBold } from "@app-components/TextBold";
 import TitlePage from "@app-components/TitlePage";
@@ -25,7 +24,6 @@ export interface IncomesEditParams extends UnknownOutputParams {
 	description: string;
 	date: string;
 	currency: `${number}`;
-	recurring: RECURRING_TYPE;
 }
 
 export default function IncomesEdit() {
@@ -62,12 +60,9 @@ export default function IncomesEdit() {
 						ref={inputDatePickerRef}
 					/>
 					<InputCurrency
+            label="Valor"
 						value={currency}
 						ref={inputCurrencyRef}
-					/>
-					<InputRecurring
-						default_value={recurring}
-						ref={inputRecurringRef}
 					/>
 					<EditButton onPress={handleButton} />
 				</View>

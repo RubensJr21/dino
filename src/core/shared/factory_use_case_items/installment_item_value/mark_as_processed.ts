@@ -1,30 +1,52 @@
 import { InstallmentItemValue } from "@core/entities/installment_item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoBaseItemValue, IRepoInstallmentItemValue } from "@core/shared/RepositoryTypes";
-import { Variants_Of_ItemValue } from "../../types/variants_items";
+import { IRepoInstallmentItemValue } from "@src/infrastructure/repositories/drizzle/installment_item_value.repository";
+import { InstallmentItemValueUnknownError, isInstallmentItemValueNotFoundById } from "../../errors/installment_item_value";
+import { TypeOfVariants } from "../../types/variants_items";
 
 interface MarkInstallmentItemValueAsProcessed_Input {
-    id: number
+  id: number
 }
 
-export default function Create_UseCase_InstallmentItemValue_MarkAsProcessed(variant: keyof typeof Variants_Of_ItemValue){
-    return class UseCase_InstallmentItemValue_MarkAsProcessed implements IUseCase<MarkInstallmentItemValueAsProcessed_Input, InstallmentItemValue>{
-        constructor(
-            private repo_biv: IRepoBaseItemValue,
-            private repo_iv: IRepoInstallmentItemValue
-        ){}
-        async execute(input: MarkInstallmentItemValueAsProcessed_Input): Promise<InstallmentItemValue> {
-            const recurring_receipt = await this.repo_iv.findById(input.id)
-            if(recurring_receipt){
-                await this.repo_biv.update({
-                    id: recurring_receipt.base_item_value.id,
-                    was_processed: true
-                })
-                recurring_receipt.base_item_value.was_processed = true
-                return recurring_receipt
-            } else {
-                throw new Error(`Installment ${variant} not found!`);
-            }
-        }
+export default abstract class UseCase_InstallmentItemValue_MarkAsProcessed implements IUseCase<MarkInstallmentItemValueAsProcessed_Input, InstallmentItemValue>{
+  protected abstract variant: TypeOfVariants
+  /**
+   * @param {IRepoInstallmentItemValue} repo_iiv - The repository for managing installment item values
+   */
+  constructor(
+    private repo_iiv: IRepoInstallmentItemValue
+  ){}
+  /**
+   * Marks an installment item value as processed and updates its record in the repository
+   * @param {MarkInstallmentItemValueAsProcessed_Input} input - The input containing the ID of the installment item value to process
+   * @returns {Promise<InstallmentItemValue>} The updated installment item value
+   * @throws {InstallmentItemValueNotFoundError} If {@linkcode repo_iiv.findById} or {@linkcode repo_iiv.update} throws
+   * @throws {InstallmentItemValueUnknownError} If an unexpected error occurs during processing
+   */
+  async execute(input: MarkInstallmentItemValueAsProcessed_Input): Promise<InstallmentItemValue> {
+    try {
+      const installment_item_value_searched = this.repo_iiv.findById(input.id)
+      installment_item_value_searched.markAsProcessed()
+      const properties = installment_item_value_searched.properties
+      const {
+        id,
+        tag,
+        transfer_method_type,
+        created_at,
+        updated_at,
+        ...props
+      } = {
+        ...properties,
+        fk_id_tag: properties.tag.id,
+        fk_id_transfer_method_type: properties.transfer_method_type.id
+      }
+      
+      return this.repo_iiv.update(id, props)
+    } catch (error) {
+      if(isInstallmentItemValueNotFoundById(error)){
+        throw error
+      }
+      throw new InstallmentItemValueUnknownError()
     }
+  }
 }

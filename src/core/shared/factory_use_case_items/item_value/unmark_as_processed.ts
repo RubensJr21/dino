@@ -1,30 +1,53 @@
 import { ItemValue } from "@core/entities/item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoBaseItemValue, IRepoItemValue } from "@core/shared/RepositoryTypes";
-import { Variants_Of_ItemValue } from "../../types/variants_items";
+import { IRepoItemValue } from "@src/infrastructure/repositories/drizzle/item_value.repository";
+import { isItemValueNotFoundById, ItemValueUnknownError } from "../../errors/item_value";
+import { TypeOfVariants } from "../../types/variants_items";
 
 interface UnmarkItemValueAsProcessed_Input {
-    id: number
+  id: number
 }
 
-export default function Create_UseCase_ItemValue_UnmarkAsProcessed(variant: keyof typeof Variants_Of_ItemValue){
-    return class UseCase_ItemValue_UnmarkAsProcessed implements IUseCase<UnmarkItemValueAsProcessed_Input, ItemValue>{
-        constructor(
-            private repo_biv: IRepoBaseItemValue,
-            private repo_iv: IRepoItemValue
-        ){}
-        async execute(input: UnmarkItemValueAsProcessed_Input): Promise<ItemValue> {
-            const receipt = await this.repo_iv.findById(input.id)
-            if(receipt){
-                await this.repo_biv.update({
-                    id: receipt.base_item_value.id,
-                    was_processed: false
-                })
-                receipt.base_item_value.was_processed = false
-                return receipt
-            } else {
-                throw new Error(`${variant} not found!`);
-            }
-        }
+export default abstract class UseCase_ItemValue_UnmarkAsProcessed implements IUseCase<UnmarkItemValueAsProcessed_Input, ItemValue>{
+  protected abstract variant: TypeOfVariants;
+  /**
+   * Constructs an instance of the use case with the required item value repository
+   * @param {IRepoItemValue} repo_iv - The repository for item value operations
+   */
+  constructor(
+    private repo_iv: IRepoItemValue
+  ){}
+  /**
+   * Unmarks an item value as processed by updating its properties
+   * @param {UnmarkItemValueAsProcessed_Input} input - The input containing the item value ID
+   * @returns {Promise<ItemValue>} The updated item value
+   * @throws {ItemValueNotFoundError} If the item value is not found
+   * @throws {ItemValueUnknownError} If an unexpected error occurs during processing
+   */
+  async execute(input: UnmarkItemValueAsProcessed_Input): Promise<ItemValue> {
+    try {
+      const item_value = this.repo_iv.findById(input.id)
+      item_value.markAsProcessed()
+  
+      const {
+        id,
+        tag,
+        transfer_method_type,
+        created_at,
+        updated_at,
+        ...data
+      } = {
+        ...item_value.properties,
+        fk_id_tag: item_value.tag.id,
+        fk_id_transfer_method_type: item_value.transfer_method_type.id
+      }
+  
+      return this.repo_iv.update(id, data)
+    } catch (error) {
+      if(isItemValueNotFoundById(error)) {
+        throw error
+      }
+      throw new ItemValueUnknownError()
     }
+  }
 }

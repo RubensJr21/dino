@@ -11,10 +11,6 @@ export default function Manage() {
 		"/manage/credit-cards",
 		router
 	);
-	const navigateToManagePixKeys = carryingHandleNextPage(
-		"/manage/pix-keys",
-		router
-	);
 
 	const navigateToManageAccountsBank = carryingHandleNextPage(
 		"/manage/banks-account",
@@ -27,12 +23,6 @@ export default function Manage() {
 			title: "Cartões de Crédito",
 			onPress: navigateToManageCreditCard,
 		},
-		// {
-		// 	key: "pix-keys",
-		// 	icon: "qrcode",
-		// 	title: "Chaves PIX",
-		// 	onPress: navigateToManagePixKeys,
-		// },
 		{
 			key: "accounts-bank",
 			icon: "bank",

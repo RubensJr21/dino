@@ -1,5 +1,7 @@
-export interface ITag {
-	readonly id: number;
+/* eslint-disable jsdoc/require-jsdoc */
+import IEntityBase from "../shared/IEntityBase";
+
+export interface ITag extends IEntityBase {
 	description: string;
 }
 

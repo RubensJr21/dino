@@ -1,10 +1,11 @@
-export interface IBankAccount {
+/* eslint-disable jsdoc/require-jsdoc */
+import { IEntityWithDates } from "../shared/IEntityWithDates";
+
+export interface IBankAccount extends IEntityWithDates {
   readonly id: number;
   nickname: string;
   is_disabled: boolean;
   balance: number;
-  readonly created_at: Date;
-  readonly updated_at: Date;
 }
 
 type ReturnProperties = IBankAccount
@@ -47,22 +48,10 @@ export class BankAccount implements IBankAccount {
   public get is_disabled(): BankAccount["_is_disabled"] {
     return this._is_disabled;
   }
-  public enabled(): void {
-    // TODO: Será retornado um erro para que
-    // não seja necessário enviar os dados para o banco de dados
-    // sem uma mudança efetiva 
-    // if (bank_account.is_disabled === false){
-    //   throw new Error("Bank account is already enable!")
-    // }
+  public enable(): void {
     this._is_disabled = false;
   }
   public disable(): void {
-    // TODO: Será retornado um erro para que
-    // não seja necessário enviar os dados para o banco de dados
-    // sem uma mudança efetiva 
-    // if (bank_account.is_disabled === true){
-    //   throw new Error("Bank account is already disable!")
-    // }
     this._is_disabled = true;
   }
 

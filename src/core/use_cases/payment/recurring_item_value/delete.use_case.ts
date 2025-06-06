@@ -1,3 +1,6 @@
-import Create_UseCase_RecurringItemValue_Delete from "@src/core/shared/factory_use_case_items/recurring_item_value/delete"
-const RecurringPayment_Delete = Create_UseCase_RecurringItemValue_Delete("Payment")
-export default RecurringPayment_Delete
+import UseCase_RecurringItemValue_Delete from "@src/core/shared/factory_use_case_items/recurring_item_value/delete";
+import { TypeOfVariants } from "@src/core/shared/types/variants_items";
+
+export default class RecurringPayment_Delete extends UseCase_RecurringItemValue_Delete {
+  protected variant: TypeOfVariants = "Payment";
+}
