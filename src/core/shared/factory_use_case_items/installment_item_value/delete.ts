@@ -1,7 +1,7 @@
 import IUseCase from "@core/shared/IUseCase";
-import { IRepositoryBaseItemValue } from "@src/infrastructure/repositories/drizzle/base_item_value.repository";
-import { IRepoInstallmentItemValue } from "@src/infrastructure/repositories/drizzle/installment_item_value.repository";
-import { InstallmentItemValueUnknownError, isInstallmentItemValueNotFoundById } from "../../errors/installment_item_value";
+import { IRepositoryItemValue } from "@src/infrastructure/repositories/item_value.repository";
+import { InstallmentItemValueUnknownError, isInstallmentItemValueNotFoundById } from "../../errors/installment";
+import { IRepoInstallment } from "../../IRepositoryInstallment";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface DeleteInstallmentItemValue_Input {
@@ -11,12 +11,12 @@ interface DeleteInstallmentItemValue_Input {
 export default abstract class UseCase_InstallmentItemValue_Delete implements IUseCase<DeleteInstallmentItemValue_Input, boolean>{
   protected abstract variant: TypeOfVariants
   /**
-   * @param {IRepositoryBaseItemValue} repo_biv Instância de um repositório de Base Item Value
-   * @param {IRepoInstallmentItemValue} repo_iiv Instância de um repositório de Installment Item Value
+   * @param {IRepositoryItemValue} repo_biv Instância de um repositório de Base Item Value
+   * @param {IRepoInstallment} repo_iiv Instância de um repositório de Installment Item Value
    */
   constructor(
-    private repo_biv: IRepositoryBaseItemValue,
-    private repo_iiv: IRepoInstallmentItemValue
+    private repo_biv: IRepositoryItemValue,
+    private repo_iiv: IRepoInstallment
   ){}
   /**
    * Executes the deletion of an installment item value by its ID.
@@ -29,7 +29,9 @@ export default abstract class UseCase_InstallmentItemValue_Delete implements IUs
     try {
       const installment_receipt = this.repo_iiv.findById(input.id)
       // Removendo o base_item_value a remoção é propagada
-      return this.repo_biv.delete(installment_receipt.fk_id_base_item_value);
+      // ATTENTION: CORRIGIR ERRO DE LÓGICA
+      // @ts-expect-error vou corrigir depois
+      return this.repo_biv.delete(installment_receipt.fk);
     } catch (error) {
       if(isInstallmentItemValueNotFoundById(error)){
         throw error

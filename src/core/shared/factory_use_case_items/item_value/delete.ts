@@ -1,7 +1,7 @@
 import IUseCase from "@core/shared/IUseCase";
-import { IRepositoryBaseItemValue } from "@src/infrastructure/repositories/drizzle/base_item_value.repository";
-import { IRepoItemValue } from "@src/infrastructure/repositories/drizzle/item_value.repository";
-import { isItemValueNotFoundById, ItemValueUnknownError } from "../../errors/item_value";
+import { IRepositoryBaseItemValue } from "@src/infrastructure/repositories/item_value.repository";
+import { IRepoItemValue } from "@src/infrastructure/repositories/standard.repository";
+import { isItemValueNotFoundById, ItemValueUnknownError } from "../../errors/standard";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface DeleteItemValue_Input {

@@ -1,16 +1,30 @@
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import * as t from 'drizzle-orm/sqlite-core';
 import { sqliteTable } from "drizzle-orm/sqlite-core";
-import { base_item_value } from './base_item_value.schema';
+import { tag } from './tag.schema';
+import { transfer_method_type } from './transfer_method_type.schema';
 
+// Tabela de item_value
 export const item_value = sqliteTable("item_value", {
-  id: t.integer("id").primaryKey({autoIncrement: true}),
-  fk_id_base_item_value: t.integer("fk_id_base_item_value").references(() => base_item_value.id, {onDelete: "cascade"}).notNull()
-})
+  id: t.integer("id").primaryKey({ autoIncrement: true }),
+  description: t.text("description").notNull(),
+  type: t.text("type").notNull(),
+  scheduled_at: t.text("scheduled_at").notNull(),
+  amount: t.real("amount").notNull(),
+  was_processed: t.integer({mode: 'boolean'}).notNull(),
+  fk_id_transfer_method_type: t.integer("fk_id_transfer_method_type").references(() => transfer_method_type.id).notNull(),
+  fk_id_tag: t.integer("fk_id_tag").references(() => tag.id).notNull(),
+  created_at: t.text("created_at").default(sql`(CURRENT_DATE)`).notNull(),
+  updated_at: t.text("updated_at").default(sql`(CURRENT_DATE)`).$onUpdate(() => sql`(CURRENT_DATE)`).notNull()
+});
 
 export const item_value_relations = relations(item_value, ({one}) => ({
-  base_item_value: one(base_item_value, {
-    fields: [item_value.fk_id_base_item_value],
-    references: [base_item_value.id],
-  })
+  transfer_method_type: one(transfer_method_type, {
+    fields: [item_value.fk_id_transfer_method_type],
+    references: [transfer_method_type.id]
+  }),
+  tag: one(tag, {
+    fields: [item_value.fk_id_tag],
+    references: [tag.id]
+  }),
 }))

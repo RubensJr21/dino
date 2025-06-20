@@ -1,6 +1,6 @@
-import { InstallmentItemValue } from "@core/entities/installment_item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoInstallmentItemValue } from "@src/infrastructure/repositories/drizzle/installment_item_value.repository";
+import { InstallmentItemValue } from "@src/core/entities/installment.entity";
+import { IRepoInstallmentItemValue } from "@src/infrastructure/repositories/installment.repository";
 
 interface UpdateInstallmentReceipt_Input {
   id: number;

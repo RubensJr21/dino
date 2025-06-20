@@ -1,38 +1,52 @@
 {
-	"extends": "expo/tsconfig.base",
-	"compilerOptions": {
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
-		"allowJs": true,
-		"strict": true,
-		"baseUrl": "./src/",
-		"paths": {
-			"@root/*": ["../*"],
-			"@src/*": ["./*"],
-			
-			// camadas clean architecture
-			"@application/*": ["./application/*"],
-			"@core/*": ["./core/*"],
-			"@infrastructure/*": ["./infrastructure/*"],
-			"@schemas/*": ["./infrastructure/database/drizzle/schemas/*"],
-			
-			"@tests/*": ["./tests/*"],
-			
-
-			"@app-components/*": ["./application/components/*"],
-			"@app/*": ["./application/app/*"],
-			"@api/*": ["./application/api/*"],
-		}
-	},
-	"include": [
-		"**/*.d.ts",
-		"**/*.ts",
-		"**/*.tsx",
-		".expo/types/**/*.ts",
-		"expo-env.d.ts",
-	],
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowJs": true,
+    "strict": true,
+    "baseUrl": "./src/",
+    "paths": {
+      "@root/*": [
+        "../*"
+      ],
+      "@src/*": [
+        "./*"
+      ],
+      "@application/*": [
+        "./application/*"
+      ],
+      "@core/*": [
+        "./core/*"
+      ],
+      "@infrastructure/*": [
+        "./infrastructure/*"
+      ],
+      "@schemas/*": [
+        "./infrastructure/database/drizzle/schemas/*"
+      ],
+      "@tests/*": [
+        "./tests/*"
+      ],
+      "@app-components/*": [
+        "./application/components/*"
+      ],
+      "@app/*": [
+        "./application/app/*"
+      ],
+      "@api/*": [
+        "./application/api/*"
+      ]
+    }
+  },
+  "include": [
+    "**/*.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "App.jsx"
+  ],
   "exclude": [
     "node_modules",
-    "eslint.config.cjs",
+    "eslint.config.cjs"
   ]
 }

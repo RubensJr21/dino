@@ -1,7 +1,7 @@
-import { IBaseItemValue } from "@core/entities/base_item_value.entity";
-import { ItemValue } from "@core/entities/item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoItemValue } from "@src/infrastructure/repositories/drizzle/item_value.repository";
+import { IBaseItemValue } from "@src/core/entities/item_value.entity";
+import { ItemValue } from "@src/core/entities/standard.entity";
+import { IRepoItemValue } from "@src/infrastructure/repositories/standard.repository";
 import { TypeOfVariants, Variants_Of_ItemValue } from "../../types/variants_items";
 
 type RegisterInput = StrictOmit<IBaseItemValue, "fk_id_base_item_value"|"was_processed"|"created_at"|"updated_at">

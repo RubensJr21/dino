@@ -1,14 +1,14 @@
 import { Picker } from "@react-native-picker/picker";
 import {
-	forwardRef,
-	useImperativeHandle,
-	useRef,
-	useState,
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+  useState,
 } from "react";
 import { StyleSheet, View } from "react-native";
 import { SegmentedButtons, useTheme } from "react-native-paper";
 
-import { recurrings_type } from "@application/mocks/RecurringType";
+import { recurrings_type } from "@src/application/_mocks/RecurringType";
 
 enum recurring_values {
 	not_recurring = "Não recorrente",

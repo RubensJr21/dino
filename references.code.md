@@ -38,12 +38,14 @@
 1. [useImperativeHandle - Problema de elemento filho devolver elemento para o elemento Pai](https://youtu.be/lA8o3kUl1TA?t=1914)
 1. [Estilizar elemento Picker (@react-native-picker/picker)](https://pt.stackoverflow.com/a/440997)
 
-## (expo): Resolve problema dos ícones da barra de status "sumirem"
+## (expo)
 
-1. [Update status-bar while app is running](https://docs.expo.dev/guides/configuring-statusbar/#update-the-status-bar-while-app-is-running)
+1. [Update status-bar while app is running (Resolve problema dos ícones da barra de status "sumirem")](https://docs.expo.dev/guides/configuring-statusbar/#update-the-status-bar-while-app-is-running)
 1. [Expo SQLite](https://docs.expo.dev/versions/v52.0.0/sdk/sqlite/)
 1. [Use Custom Directory app](https://docs.expo.dev/router/reference/src-directory/#custom-directory)
 1. [Use Custom expo-router entrypoint](https://docs.expo.dev/router/installation/#custom-entry-point-to-initialize-and-load)
+1. [Develop>tools (expo-cli)](https://docs.expo.dev/develop/tools/#expo-cli)
+1. [expo-cli details](https://docs.expo.dev/more/expo-cli/)
 
 ## (react-native)
 
@@ -85,6 +87,9 @@
 1. [Datatypes In SQLite](https://www.sqlite.org/datatype3.html)
 1. [Como implementar o ON DELETE e ON UPDATE](https://www.sqlite.org/foreignkeys.html#fk_actions)
 1. [Definição da interface 'SQLiteExecuteAsyncResult'](https://docs.expo.dev/versions/v52.0.0/sdk/sqlite/#sqliteexecuteasyncresult)
+1. [Funções para o Datatype Date](https://sqlite.org/lang_datefunc.html)
+1. [How to create timestamp column with default value 'now'? - StackOverflow](https://stackoverflow.com/questions/200309/how-to-create-timestamp-column-with-default-value-now#answer-228070)
+1. [How to create a datetime column with default value in sqlite3? - StackOverflow](https://stackoverflow.com/questions/2614483/how-to-create-a-datetime-column-with-default-value-in-sqlite3)
 
 ## Links úteis
 
@@ -93,9 +98,18 @@
 1. [Clean Architecture: Simplified and In-Depth Guide - Article - 23/03/2025 11h55](https://medium.com/@DrunknCode/clean-architecture-simplified-and-in-depth-guide-026333c54454)
 1. [Run 'npm clean-install'](https://stackoverflow.com/a/64552347)
 1. [Factory Method - Refactoring Guru](https://refactoring.guru/pt-br/design-patterns/factory-method)
+1. [Migrate from expo-router to ReactNavigation](https://www.reddit.com/r/reactnative/comments/1gt0fyt/how_to_get_rid_of_expo_router/?tl=pt-br#t1_lz2b8rj-post-rtjson-content)
 
 ## Git
 
 1. [git stash documentation - "salvar" modificações e não rastreados para usar em outra branch](https://git-scm.com/docs/git-stash/pt_BR)
 1. [git push documentation](https://git-scm.com/docs/git-push)
 1. [Como excluir branches locais e remotos do Git - freeCodeCamp](https://www.freecodecamp.org/portuguese/news/como-excluir-branches-locais-e-remotos-do-git#vers-o-resumida)
+
+## React Navigation
+
+1. [Type checking with TypeScript](https://reactnavigation.org/docs/typescript/)
+1. [Melhorando a navegação do seu app com Stack, Tab e Drawer Navigator](https://www.youtube.com/watch?v=gH9Vvq6WbnA&t=1162s&ab_channel=Rocketseat)
+1. [https://www.youtube.com/watch?v=gH9Vvq6WbnA&t=1162s&ab_channel=Rocketseat](https://www.youtube.com/watch?v=gH9Vvq6WbnA&t=1162s&ab_channel=Rocketseat)
+1. [Navegação em guias](https://www.youtube.com/shorts/k5M5wBjaH5s)
+1. [Eu recebo o aviso "Non-serializable values were found in the navigation state"](https://reactnavigation.org/docs/troubleshooting/#i-get-the-warning-non-serializable-values-were-found-in-the-navigation-state)

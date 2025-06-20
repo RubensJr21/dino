@@ -1,7 +1,7 @@
 import IUseCase from "@core/shared/IUseCase";
-import { IRepositoryBaseItemValue } from "@src/infrastructure/repositories/drizzle/base_item_value.repository";
-import { IRepoRecurringItemValue } from "@src/infrastructure/repositories/drizzle/recurring_item_value.repository";
-import { isItemValueNotFoundById, ItemValueUnknownError } from "../../errors/item_value";
+import { IRepositoryItemValue } from "@src/infrastructure/repositories/item_value.repository";
+import { IRepoRecurringItemValue } from "@src/infrastructure/repositories/recurring.repository";
+import { isItemValueNotFoundById, ItemValueUnknownError } from "../../errors/standard";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface DeleteRecurringItemValue_Input {
@@ -12,11 +12,11 @@ export default abstract class UseCase_RecurringItemValue_Delete implements IUseC
   protected abstract variant: TypeOfVariants;
   /**
    * Constructs a new instance of the recurring item value delete use case.
-   * @param {IRepositoryBaseItemValue} repo_biv Repository for base item values
+   * @param {IRepositoryItemValue} repo_biv Repository for base item values
    * @param {IRepoRecurringItemValue} repo_riv Repository for recurring item values
    */
   constructor(
-    private repo_biv: IRepositoryBaseItemValue,
+    private repo_biv: IRepositoryItemValue,
     private repo_riv: IRepoRecurringItemValue
   ){}
   /**

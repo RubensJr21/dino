@@ -26,16 +26,8 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      [
-        "expo-router",
-        {
-          "root": "./src/application/app/"
-        }
-      ],
-      "expo-sqlite"
-    ],
-    "experiments": {
-      "typedRoutes": true
-    }
+      "expo-sqlite",
+      "expo-router"
+    ]
   }
 }

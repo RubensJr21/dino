@@ -1,23 +1,22 @@
 import { relations } from 'drizzle-orm';
 import * as t from 'drizzle-orm/sqlite-core';
 import { sqliteTable } from "drizzle-orm/sqlite-core";
-import { base_item_value } from './base_item_value.schema';
-import { recurrence_type } from './recurrence_type.schema';
+import { item_value } from './item_value.schema';
+import { recurring } from './recurring.schema';
 
 export const recurring_item_value = sqliteTable("recurring_item_value", {
   id: t.integer("id").primaryKey({autoIncrement: true}),
-  is_disabled: t.integer("is_disabled", { mode: "boolean" }).notNull(),
-  fk_id_recurrence_type: t.integer("fk_id_recurrence_type").references(() => recurrence_type.id).notNull(),
-  fk_id_base_item_value: t.integer("fk_id_base_item_value").references(() => base_item_value.id, {onDelete: "cascade"}).notNull()
+  fk_id_recurring: t.integer("fk_id_recurring").references(() => recurring.id).notNull(),
+  fk_id_item_value: t.integer("fk_id_item_value").references(() => item_value.id, {onDelete: "cascade"}).notNull()
 })
 
-export const recurring_item_value_relations = relations(recurring_item_value, ({one}) => ({
-  recurrence_type: one(recurrence_type, {
-    fields: [recurring_item_value.fk_id_recurrence_type],
-    references: [recurrence_type.id]
+export const recurring_item_value_relations = relations(recurring_item_value, ({one, many}) => ({
+  item_value: one(item_value, {
+    fields: [recurring_item_value.fk_id_item_value],
+    references: [item_value.id]
   }),
-  base_item_value: one(base_item_value, {
-    fields: [recurring_item_value.fk_id_base_item_value],
-    references: [base_item_value.id]
+  recurring: one(recurring, {
+    fields: [recurring_item_value.fk_id_recurring],
+    references: [recurring.id]
   })
 }))

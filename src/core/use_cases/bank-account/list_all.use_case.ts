@@ -1,6 +1,6 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoBankAccount } from "@infrastructure/repositories/drizzle/bank_account.repository";
+import { IRepoBankAccount } from "@src/infrastructure/repositories/bank_account.repository";
 
 export default class ListAllBankAccounts implements IUseCase<void, BankAccount[]> {
   /**

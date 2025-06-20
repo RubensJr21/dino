@@ -1,6 +1,6 @@
-import { ItemValue } from "@core/entities/item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoItemValue } from "@src/infrastructure/repositories/drizzle/item_value.repository";
+import { ItemValue } from "@src/core/entities/standard.entity";
+import { IRepoItemValue } from "@src/infrastructure/repositories/standard.repository";
 import { TypeOfVariants, Variants_Of_ItemValue } from "../../types/variants_items";
 
 export default abstract class ListAllReceipts implements IUseCase<void, ItemValue[]> {

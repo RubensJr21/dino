@@ -1,7 +1,7 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
 import IUseCase from "@core/shared/IUseCase";
 import { BankAccountUnknownError, isBankAccountNotFoundById } from "@src/core/shared/errors/bank_account";
-import { IRepoBankAccount } from "@src/infrastructure/repositories/drizzle/bank_account.repository";
+import { IRepoBankAccount } from "@src/infrastructure/repositories/bank_account.repository";
 
 interface EnableBankAccount_Input {
   id: number,

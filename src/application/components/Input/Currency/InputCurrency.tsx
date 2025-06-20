@@ -19,7 +19,7 @@ export function useRefInputCurrency(): React.RefObject<InputCurrencyTypeRef> {
 }
 
 interface InputCurrencyProps {
-	value?: `${number}`;
+	value?: number | string;
   label: string;
 }
 

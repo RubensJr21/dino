@@ -39,5 +39,5 @@ yarn-error.*
 Partes do sistema.txt
 
 # drizzle
-drizzle/
+drizzle/*
 *.sql

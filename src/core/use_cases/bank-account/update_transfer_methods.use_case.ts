@@ -2,8 +2,8 @@ import { BankAccount } from "@core/entities/bank_account.entity";
 import IUseCase from "@core/shared/IUseCase";
 import { IBankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
 import { BankAccountUnknownError, isBankAccountNotFoundById } from "@src/core/shared/errors/bank_account";
-import { IRepoBankAccount } from "@src/infrastructure/repositories/drizzle/bank_account.repository";
-import { IRepoBankAccountTransferMethod } from "@src/infrastructure/repositories/drizzle/bank_account_transfer_method.repository";
+import { IRepoBankAccount } from "@src/infrastructure/repositories/bank_account.repository";
+import { IRepoBankAccountTransferMethod } from "@src/infrastructure/repositories/bank_account_transfer_method.repository";
 
 interface BankAccount_UpdateTransferMethodsInput extends Pick<IBankAccountTransferMethod, "id"> {
   type_of_bank_transfers: {

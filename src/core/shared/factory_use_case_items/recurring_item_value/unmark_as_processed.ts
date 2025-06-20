@@ -1,32 +1,32 @@
-import { RecurringItemValue } from "@core/entities/recurring_item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoRecurringItemValue } from "@src/infrastructure/repositories/drizzle/recurring_item_value.repository";
-import { isItemValueNotFoundById, ItemValueUnknownError } from "../../errors/item_value";
+import { Recurring } from "@src/core/entities/recurring.entity";
+import { isStandardNotFoundById, StandardUnknownError } from "../../errors/standard";
+import { IRepoRecurring } from "../../IRepositoryRecurring";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface UnmarkRecurringItemValueAsProcessed_Input {
   id: number
 }
 
-export default abstract class Create_UseCase_RecurringItemValue_UnmarkAsProcessed implements IUseCase<UnmarkRecurringItemValueAsProcessed_Input, RecurringItemValue>{
+export default abstract class Create_UseCase_RecurringItemValue_UnmarkAsProcessed implements IUseCase<UnmarkRecurringItemValueAsProcessed_Input, Recurring>{
   protected abstract variant: TypeOfVariants
   /**
    * Constructor for the UnmarkRecurringItemValueAsProcessed use case
-   * @param {IRepoRecurringItemValue} repo_riv Repository for recurring item values used to perform unmark operations
+   * @param {IRepoRecurring} repo_rec Repository for recurring item values used to perform unmark operations
    */
   constructor(
-    private repo_riv: IRepoRecurringItemValue
+    private repo_rec: IRepoRecurring
   ){}
   /**
    * Unmarks a recurring item value as processed
    * @param {UnmarkRecurringItemValueAsProcessed_Input} input - The input containing the ID of the recurring item value to unmark
-   * @returns {Promise<RecurringItemValue>} The updated recurring item value
+   * @returns {Promise<Recurring>} The updated recurring item value
    * @throws {ItemValueNotFoundById} If the recurring item value is not found
    * @throws {ItemValueUnknownError} If an unexpected error occurs during the unmark process
    */
-  async execute(input: UnmarkRecurringItemValueAsProcessed_Input): Promise<RecurringItemValue> {
+  async execute(input: UnmarkRecurringItemValueAsProcessed_Input): Promise<Recurring> {
     try {
-      const recurring_item_value = this.repo_riv.findById(input.id)
+      const recurring_item_value = this.repo_rec.findById(input.id)
       recurring_item_value.markAsProcessed()
   
       const {
@@ -44,12 +44,12 @@ export default abstract class Create_UseCase_RecurringItemValue_UnmarkAsProcesse
         fk_id_recurrence_type: recurring_item_value.recurrence_type.id
       }
   
-      return this.repo_riv.update(id, data)
+      return this.repo_rec.update(id, data)
     } catch (error) {
-      if(isItemValueNotFoundById(error)) {
+      if(isStandardNotFoundById(error)) {
         throw error
       }
-      throw new ItemValueUnknownError()
+      throw new StandardUnknownError()
     }
   }
 }

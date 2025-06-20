@@ -1,7 +1,7 @@
 import IUseCase from "@core/shared/IUseCase";
 import { BankAccountTransferMethod, IBankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
 import { BankAccountUnknownError, isBankAccountNotFoundById } from "@src/core/shared/errors/bank_account";
-import { IRepoBankAccountTransferMethod } from "@src/infrastructure/repositories/drizzle/bank_account_transfer_method.repository";
+import { IRepoBankAccountTransferMethod } from "@src/infrastructure/repositories/bank_account_transfer_method.repository";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface BankAccount_ListAllTransfersMethodTypeInput extends Pick<IBankAccountTransferMethod, "id"> {}

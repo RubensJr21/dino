@@ -1,14 +1,13 @@
 import { ItemValue } from "@src/core/entities/item_value.entity";
 
-// https://typescript.tv/errors/#ts1196
 export class ItemValueNotFoundById extends Error {
   readonly name: string = "ItemValueNotFoundById";
   /**
-   * @param {ItemValue["id"]} item_value_id item_value_id que gerou erro ao ser buscada
+   * @param {ItemValue["id"]} base_item_value_id base_item_value_id que gerou erro ao ser buscada
    */
-  constructor(item_value_id: ItemValue["id"]){
-    super(`ItemValue id: '${item_value_id}' not founded!`, {
-      cause: `The item_value id '${item_value_id}' is invalid!`
+  constructor(base_item_value_id: ItemValue["id"]){
+    super(`ItemValue id: '${base_item_value_id}' not founded!`, {
+      cause: `The base_item_value id '${base_item_value_id}' is invalid!`
     })
   }
 }
@@ -24,31 +23,6 @@ export function isItemValueNotFoundById(error: unknown): error is ItemValueNotFo
 }
 
 // END ItemValueNotFoundById Declaration
-
-// https://typescript.tv/errors/#ts1196
-export class ItemValueNotFoundOnDeleting extends Error {
-  readonly name: string = "ItemValueNotFoundOnDeleting";
-  /**
-   * @param {ItemValue["id"]} item_value_id item_value_id que gerou erro ao ser buscada
-   */
-  constructor(item_value_id: ItemValue["id"]){
-    super(`ItemValue id: '${item_value_id}' not founded!`, {
-      cause: `The item_value id '${item_value_id}' is invalid!`
-    })
-  }
-}
-
-/**
- * Função que retorna se o objeto passado é um ItemValueNotFoundOnDeleting
- * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is ItemValueNotFoundOnDeleting} Retorna se o objeto é do tipo ItemValueNotFoundOnDeleting
- */
-// https://typescript.tv/errors/#ts1196
-export function isItemValueNotFoundOnDeleting(error: unknown): error is ItemValueNotFoundOnDeleting {
-  return error instanceof ItemValueNotFoundOnDeleting;
-}
-
-// END ItemValueNotFoundOnDeleting Declaration
 
 export class ItemValueUnknownError extends Error {
   readonly name: string = "ItemValueUnknownError";

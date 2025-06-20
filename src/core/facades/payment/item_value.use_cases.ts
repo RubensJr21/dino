@@ -5,8 +5,8 @@ import Payment_MarkAsProcessed from "@src/core/use_cases/payment/item_value/mark
 import Payment_Register from "@src/core/use_cases/payment/item_value/register.use_case";
 import Payment_UnmarkAsProcessed from "@src/core/use_cases/payment/item_value/unmark_as_processed.use_case";
 import Payment_Update from "@src/core/use_cases/payment/item_value/update.use_case";
-import { IRepositoryBaseItemValue } from "@src/infrastructure/repositories/drizzle/base_item_value.repository";
-import { IRepoItemValue } from "@src/infrastructure/repositories/drizzle/item_value.repository";
+import { IRepositoryItemValue } from "@src/infrastructure/repositories/item_value.repository";
+import { IRepoItemValue } from "@src/infrastructure/repositories/standard.repository";
 
 export default class PaymentUseCases {
   public readonly register: Payment_Register;
@@ -20,10 +20,10 @@ export default class PaymentUseCases {
   /**
    * Initializes use cases for payment operations
    * @param {IRepoItemValue} repo - Repository for item values
-   * @param {IRepositoryBaseItemValue} repo_biv - Base item value repository
+   * @param {IRepositoryItemValue} repo_biv - Item value repository
    * @description Constructs instances of use cases for registering, deleting, and finding payment items
    */
-  constructor(repo: IRepoItemValue, repo_biv: IRepositoryBaseItemValue) {
+  constructor(repo: IRepoItemValue, repo_biv: IRepositoryItemValue) {
     this.register = new Payment_Register(repo);
     this.delete = new Payment_Delete(repo_biv, repo);
     this.find_by_id = new Payment_FindById(repo);

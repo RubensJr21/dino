@@ -1,7 +1,7 @@
-import { InstallmentItemValue } from "@core/entities/installment_item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoInstallmentItemValue } from "@src/infrastructure/repositories/drizzle/installment_item_value.repository";
-import { InstallmentItemValueUnknownError, isInstallmentItemValueNotFoundById } from "../../errors/installment_item_value";
+import { InstallmentItemValue } from "@src/core/entities/installment.entity";
+import { IRepoInstallmentItemValue } from "@src/infrastructure/repositories/installment.repository";
+import { InstallmentItemValueUnknownError, isInstallmentItemValueNotFoundById } from "../../errors/installment";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface UnmarkInstallmentItemValueAsProcessed_Input {

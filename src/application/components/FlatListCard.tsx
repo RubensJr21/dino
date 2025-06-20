@@ -1,5 +1,5 @@
-import { getBackgroundColor } from "@application/lib/colors";
-import { CardData } from "@application/mocks/CardData";
+import { CardData } from "@src/application/_mocks/CardData";
+import { getBackgroundColor } from "@src/application/utils/colors";
 import { Card } from "react-native-paper";
 import ValueDisplayChart from "./ValueDisplayChart";
 

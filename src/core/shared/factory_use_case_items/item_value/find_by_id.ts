@@ -1,7 +1,7 @@
-import { ItemValue } from "@core/entities/item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoItemValue } from "@src/infrastructure/repositories/drizzle/item_value.repository";
-import { isItemValueNotFoundById, ItemValueUnknownError } from "../../errors/item_value";
+import { ItemValue } from "@src/core/entities/standard.entity";
+import { IRepoItemValue } from "@src/infrastructure/repositories/standard.repository";
+import { isItemValueNotFoundById, ItemValueUnknownError } from "../../errors/standard";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface FindItemValueById_Input {

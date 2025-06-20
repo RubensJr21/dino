@@ -5,8 +5,8 @@ import Receipt_MarkAsProcessed from "@src/core/use_cases/receipt/item_value/mark
 import Receipt_Register from "@src/core/use_cases/receipt/item_value/register.use_case";
 import Receipt_UnmarkAsProcessed from "@src/core/use_cases/receipt/item_value/unmark_as_processed.use_case";
 import Receipt_Update from "@src/core/use_cases/receipt/item_value/update.use_case";
-import { IRepositoryBaseItemValue } from "@src/infrastructure/repositories/drizzle/base_item_value.repository";
-import { IRepoItemValue } from "@src/infrastructure/repositories/drizzle/item_value.repository";
+import { IRepositoryItemValue } from "@src/infrastructure/repositories/item_value.repository";
+import { IRepoItemValue } from "@src/infrastructure/repositories/standard.repository";
 
 export default class ReceiptUseCases {
   public readonly register: Receipt_Register;
@@ -20,12 +20,12 @@ export default class ReceiptUseCases {
   /**
    * Initializes use cases for receipt operations
    * @param {IRepoItemValue} repo - Repository for item values
-   * @param {IRepositoryBaseItemValue} repo_biv - Base item value repository
+   * @param {IRepositoryItemValue} repo_iv - Item value repository
    * @description Constructs instances of use cases for registering, deleting, and finding receipt items
    */
-  constructor(repo: IRepoItemValue, repo_biv: IRepositoryBaseItemValue) {
+  constructor(repo: IRepoItemValue, repo_iv: IRepositoryItemValue) {
     this.register = new Receipt_Register(repo);
-    this.delete = new Receipt_Delete(repo_biv, repo);
+    this.delete = new Receipt_Delete(repo_iv, repo);
     this.find_by_id = new Receipt_FindById(repo);
     this.list_all = new Receipt_ListAll(repo);
     this.mark_as_processed = new Receipt_MarkAsProcessed(repo);

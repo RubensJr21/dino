@@ -5,7 +5,7 @@ import { Text } from "react-native-paper";
 
 import Legend from "./Legend";
 
-import { truncateDecimals } from "@application/lib/math";
+import { truncateDecimals } from "@src/application/utils/math";
 
 interface ValueDisplayChartProps {
     executedColor: NonNullable<CSSProperties['color']>,

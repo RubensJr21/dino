@@ -1,30 +1,30 @@
-import { RecurringItemValue } from "@core/entities/recurring_item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoRecurringItemValue } from "@src/infrastructure/repositories/drizzle/recurring_item_value.repository";
-import { isItemValueNotFoundById, ItemValueUnknownError } from "../../errors/item_value";
+import { Recurring } from "@src/core/entities/recurring.entity";
+import { isStandardNotFoundById, StandardUnknownError } from "../../errors/standard";
+import { IRepoRecurring } from "../../IRepositoryRecurring";
 import { TypeOfVariants } from "../../types/variants_items";
 
-interface MarkRecurringItemValueAsProcessed_Input {
+interface MarkRecurringAsProcessed_Input {
   id: number
 }
 
-export default abstract class UseCase_RecurringItemValue_MarkAsProcessed implements IUseCase<MarkRecurringItemValueAsProcessed_Input, RecurringItemValue>{
+export default abstract class UseCase_Recurring_MarkAsProcessed implements IUseCase<MarkRecurringAsProcessed_Input, Recurring>{
   protected abstract variant: TypeOfVariants
   /**
    * Constructs an instance of the use case with a repository for recurring item values.
-   * @param {IRepoRecurringItemValue} repo_riv The repository for managing recurring item values.
+   * @param {IRepoRecurring} repo_riv The repository for managing recurring item values.
    */
   constructor(
-    private repo_riv: IRepoRecurringItemValue
+    private repo_riv: IRepoRecurring
   ){}
   /**
    * Marks a recurring item value as processed by updating its status.
-   * @param {MarkRecurringItemValueAsProcessed_Input} input - The input containing the ID of the recurring item value to mark as processed.
-   * @returns {Promise<RecurringItemValue>} The updated recurring item value after marking it as processed.
+   * @param {MarkRecurringAsProcessed_Input} input - The input containing the ID of the recurring item value to mark as processed.
+   * @returns {Promise<Recurring>} The updated recurring item value after marking it as processed.
    * @throws {ItemValueNotFoundById} If the recurring item value with the given ID is not found.
-   * @throws {ItemValueUnknownError} If an unexpected error occurs during processing.
+   * @throws {StandardUnknownError} If an unexpected error occurs during processing.
    */
-  async execute(input: MarkRecurringItemValueAsProcessed_Input): Promise<RecurringItemValue> {
+  async execute(input: MarkRecurringAsProcessed_Input): Promise<Recurring> {
     
     try {
       const recurring_item_value_searched = this.repo_riv.findById(input.id)
@@ -47,10 +47,10 @@ export default abstract class UseCase_RecurringItemValue_MarkAsProcessed impleme
       
       return this.repo_riv.update(id, props)  
     } catch (error) {
-      if(isItemValueNotFoundById(error)){
+      if(isStandardNotFoundById(error)){
         throw error
       }
-      throw new ItemValueUnknownError()
+      throw new StandardUnknownError()
     }
   }
 }

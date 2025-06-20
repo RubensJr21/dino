@@ -1,5 +1,5 @@
-import { RawText } from "@app-components/RawText";
 import { Currency } from "@application/classes/Currency";
+import { RawText } from "@src/application/components/RawText";
 import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import { useTheme } from "react-native-paper";
 

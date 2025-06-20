@@ -1,25 +1,25 @@
-import { IRecurringItemValue, RecurringItemValue } from "@core/entities/recurring_item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoRecurringItemValue } from "@src/infrastructure/repositories/drizzle/recurring_item_value.repository";
+import { IRecurring, Recurring } from "@src/core/entities/recurring.entity";
+import { IRepoRecurring } from "../../IRepositoryRecurring";
 import { TypeOfVariants, Variants_Of_ItemValue } from "../../types/variants_items";
 
-type RegisterRecurringInput = StrictOmit<IRecurringItemValue, "fk_id_base_item_value"|"was_processed"|"created_at"|"updated_at">
+type RegisterRecurringInput = StrictOmit<IRecurring, "created_at"|"updated_at">
 
-export default abstract class UseCase_RecurringItemValue_Register implements IUseCase<RegisterRecurringInput, RecurringItemValue> {
+export default abstract class UseCase_RecurringItemValue_Register implements IUseCase<RegisterRecurringInput, Recurring> {
   protected abstract variant: TypeOfVariants
   /**
    * Constructs a new instance of the recurring item value registration use case.
-   * @param {IRepoRecurringItemValue} repo_riv - The repository for recurring item values used in the registration process.
+   * @param {IRepoRecurring} repo_riv - The repository for recurring item values used in the registration process.
    */
   constructor(
-    private repo_riv: IRepoRecurringItemValue
+    private repo_riv: IRepoRecurring
   ){}
   /**
    * Executes the registration of a recurring item value.
    * @param {RegisterRecurringInput} input - The input data for creating a recurring item value.
-   * @returns {Promise<RecurringItemValue>} A promise that resolves to the created recurring item value.
+   * @returns {Promise<Recurring>} A promise that resolves to the created recurring item value.
    */
-  async execute(input: RegisterRecurringInput): Promise<RecurringItemValue> {
+  async execute(input: RegisterRecurringInput): Promise<Recurring> {
     const {
       tag,
       transfer_method_type,

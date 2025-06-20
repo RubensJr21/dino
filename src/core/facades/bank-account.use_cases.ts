@@ -1,5 +1,5 @@
-import { IRepoBankAccount } from "@src/infrastructure/repositories/drizzle/bank_account.repository";
-import { IRepoBankAccountTransferMethod } from "@src/infrastructure/repositories/drizzle/bank_account_transfer_method.repository";
+import { IRepoBankAccount } from "@src/infrastructure/repositories/bank_account.repository";
+import { IRepoBankAccountTransferMethod } from "@src/infrastructure/repositories/bank_account_transfer_method.repository";
 import DisableBankAccount from "../use_cases/bank-account/disable.use_case";
 import EnableBankAccount from "../use_cases/bank-account/enable.use_case";
 import ListAllBankAccounts from "../use_cases/bank-account/list_all.use_case";

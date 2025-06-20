@@ -1,6 +1,6 @@
-import { IInstallmentItemValue, InstallmentItemValue } from "@core/entities/installment_item_value.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoInstallmentItemValue } from "@src/infrastructure/repositories/drizzle/installment_item_value.repository";
+import { IInstallmentItemValue, InstallmentItemValue } from "@src/core/entities/installment.entity";
+import { IRepoInstallmentItemValue } from "@src/infrastructure/repositories/installment.repository";
 import { TypeOfVariants, Variants_Of_ItemValue } from "../../types/variants_items";
 
 type RegisterInstallmentInput = StrictOmit<IInstallmentItemValue, "fk_id_base_item_value"|"was_processed"|"created_at"|"updated_at">

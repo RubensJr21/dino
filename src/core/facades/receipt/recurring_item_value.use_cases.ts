@@ -1,3 +1,4 @@
+import { IRepoRecurring } from "@src/core/shared/IRepositoryRecurring";
 import RecurringReceipt_Delete from "@src/core/use_cases/receipt/recurring_item_value/delete.use_case";
 import RecurringReceipt_FindById from "@src/core/use_cases/receipt/recurring_item_value/find_by_id.use_case";
 import RecurringReceipt_ListAll from "@src/core/use_cases/receipt/recurring_item_value/list_all.use_case";
@@ -5,8 +6,7 @@ import RecurringReceipt_MarkAsProcessed from "@src/core/use_cases/receipt/recurr
 import RecurringReceipt_Register from "@src/core/use_cases/receipt/recurring_item_value/register.use_case";
 import RecurringReceipt_UnmarkAsProcessed from "@src/core/use_cases/receipt/recurring_item_value/unmark_as_processed.use_case";
 import RecurringReceipt_Update from "@src/core/use_cases/receipt/recurring_item_value/update.use_case";
-import { IRepositoryBaseItemValue } from "@src/infrastructure/repositories/drizzle/base_item_value.repository";
-import { IRepoRecurringItemValue } from "@src/infrastructure/repositories/drizzle/recurring_item_value.repository";
+import { IRepositoryItemValue } from "@src/infrastructure/repositories/item_value.repository";
 
 export default class ReceiptRecurringUseCases {
   public readonly register: RecurringReceipt_Register;
@@ -19,11 +19,11 @@ export default class ReceiptRecurringUseCases {
 
   /**
    * Initializes use cases for recurring receipt operations
-   * @param {IRepoRecurringItemValue} repo - Repository for recurring item values
-   * @param {IRepositoryBaseItemValue} repo_biv - Base item value repository
+   * @param {IRepoRecurring} repo - Repository for recurring
+   * @param {IRepositoryItemValue} repo_biv - Item value repository
    * @description Constructs instances of use cases for registering, deleting, and finding recurring receipt items
    */
-  constructor(repo: IRepoRecurringItemValue, repo_biv: IRepositoryBaseItemValue) {
+  constructor(repo: IRepoRecurring, repo_biv: IRepositoryItemValue) {
     this.register = new RecurringReceipt_Register(repo);
     this.delete = new RecurringReceipt_Delete(repo_biv, repo);
     this.find_by_id = new RecurringReceipt_FindById(repo);

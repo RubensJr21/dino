@@ -1,8 +1,8 @@
-import { MBaseItemValue } from "@src/infrastructure/models/base_item_value.model";
-import { IBaseItemValue } from "../entities/base_item_value.entity";
+import { MItemValue } from "@src/core/models/item_value.model";
+import { IItemValue } from "../entities/item_value.entity";
 
-export type IRepoItemValueCreateProps<T extends MBaseItemValue> = StrictOmit<T, "id" | "fk_id_base_item_value" | "created_at" | "updated_at">;
-export type IRepoItemValueUpdateProps<T extends MBaseItemValue> = StrictOmit<T, "id" | "created_at" | "updated_at">;
+export type IRepoItemValueCreateProps<T extends MItemValue> = StrictOmit<T, "id" | "created_at" | "updated_at">;
+export type IRepoItemValueUpdateProps<T extends MItemValue> = StrictOmit<T, "id" | "created_at" | "updated_at">;
 
 /**
  * Represents a repository interface for managing item values with generic type support.
@@ -10,7 +10,7 @@ export type IRepoItemValueUpdateProps<T extends MBaseItemValue> = StrictOmit<T, 
  * @template U The base item value entity type
  * @description Provides CRUD operations for repository item values with type-safe methods
  */
-export interface IRepositoryItemValue<T extends MBaseItemValue, U extends IBaseItemValue> {
+export interface IRepositoryItemValue<T extends MItemValue, U extends IItemValue> {
   /**
    * Creates a new item value in the repository.
    * @param {IRepoItemValueCreateProps<T>} data The data for creating the item value

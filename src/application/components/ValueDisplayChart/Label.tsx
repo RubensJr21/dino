@@ -2,7 +2,7 @@ import { CSSProperties } from "react";
 import { StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 
-import { truncateDecimals } from "@application/lib/math";
+import { truncateDecimals } from "@src/application/utils/math";
 
 import Square from "./Square";
 
