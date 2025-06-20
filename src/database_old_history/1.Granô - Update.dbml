@@ -1,0 +1,171 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Project Granô {
+  database_type: 'MySQL'
+  Note: 'Projeto desenvolvido para o Trabalho de conclusão de curso.'
+}
+
+Table bank_account {
+  id integer [increment,pk]
+  nickname string
+  // branch_code = números que representam a agência
+  branch_code integer [note: "Pesquisar quantidade de digitos de uma agência bancária"]
+  account_number integer [note: "Pesquisar quantidade de digitos de uma conta bancária"]
+}
+
+Table bank_account_transfer_type {
+  id integer [increment,pk]
+  type string
+  fk_id_bank_account integer
+}
+Ref: bank_account_transfer_type.fk_id_bank_account > bank_account.id
+
+Table recurrence_type {
+  id integer [increment, pk]
+  type string [note: "Mensalmente, Anualmente"]
+}
+
+Table amount_received {
+  id integer [increment,pk]
+  received_from string
+  fk_id_value_item integer
+}
+Ref: amount_received.fk_id_value_item - value_item.id
+
+Table recurring_amount_received {
+  id integer [increment,pk]
+  fk_id_recurrence_type integer
+  fk_id_amount_received integer
+}
+
+Ref: recurring_amount_received.fk_id_recurrence_type > recurrence_type.id
+Ref: recurring_amount_received.fk_id_amount_received > amount_received.id
+
+Table installment_amount_received {
+  id integer [increment,pk]
+  fk_id_value_item integer
+  fk_id_amount_received integer
+}
+Ref: installment_amount_received.fk_id_amount_received > amount_received.id
+
+Table value_item {
+  id integer [increment,pk]
+  description string
+  // gasto está agendado para uma data futura específica
+  scheduled_at timestamp
+  amount decimal
+}
+
+/*
+Uma possibilidade é a seguinte:
+vou ter uma ligação indireta.
+
+No value_item eu vou ter um transfer_method, que faz referência ao transfer_method_type
+logo teremos:
+  value_item: {
+    id: 1,
+    description: "",
+    scheduled_at: 28/01/2025,
+    amount: 15.75,
+    fk_id_transfer_method: 1,
+    transfer_method_value: {
+      transfer_method: {
+        id: 1,
+        fk_id_transfer_method_type: 1,
+        transfer_method_type_value: "Cartão de crédito"
+      }
+    }
+  }
+
+  transfer_method: {
+    id: 1,
+    fk_id_transfer_method_type: 1,
+    transfer_method_type_value: "Cartão de crédito"
+  }
+
+  transfer_method_type: {
+    id: 1,
+    name: "Cartão de Crédito"
+  }
+
+  com essa informação eu poderia buscar em uma tabela pivot que liga cartão de crédito à value_tem
+
+Outra possibilidade que permite expansão é aquela onde os métodos de transferência vão ter uma ligação com a tabela
+value_item por meio de uma tabela pivot (tabela intermediária) que funcionará assim:
+
+Value_item terá um id
+Os métodos de transferência como: Cartão de crédito, transferência bancária e etc... também terão um id
+Cada método de transferência tem a sua tabela intermediária (pivot) que liga ao value_item
+Essas tabelas intermediárias terão os campos:
+  - fk_id_<nome_da_tabela_do_método_de_transfêrencia>
+  - fk_id_value_item
+  * OBS: Esses campos formarão a chave primária da tabela pivot
+  * OBS: Como resultado preciso avaliar o caso de futuramente querer inserir mais de um método de pagamento
+    em um recebimento ou pagamento
+  * Pensar como seria a consulta:
+    - Provavelmente seria algo do tipo:
+      SELECT * from <tabela_pivot_do_método_de_transferência> where fk_id_value_item = <id_do_value_item_procurado>
+    * OBS: Para esse tipo de busca têm-se duas opções:
+      - Buscar em todas as tabelas pivot, o que pode não ser muito bom, com select para cada uma delas
+      - Assim que encontrar a primeira ocorrência paro de procurar. Isso implicaria que eu poderia ter apenas
+        um método de transferência por value_item
+*/
+
+
+Table expense {
+  id integer [increment,pk]
+  paid_to string
+  fk_id_value_item integer
+  fk_id_payment_method integer
+}
+Ref: expense.fk_id_value_item - value_item.id
+Ref: expense.fk_id_payment_method - payment_method.id
+
+Table credit_card {
+  id integer [increment,pk]
+  nickname string
+  last_four_digits string
+  credit_limit decimal
+}
+
+/*
+Nesse caso pensei o seguinte:
+Ao invés de guardar o número de parcelas
+Eu poderia ter pagamento à prazo atrelado à um pagamento.
+*/
+
+// gasto à prazo
+Table installment_expense {
+  id integer [increment,pk]
+  // número de parcelas
+  number_of_installments integer
+  fk_id_expense integer
+  fk_id_credit_card integer
+}
+Ref: installment_expense.fk_id_expense - expense.id
+Ref: installment_expense.fk_id_credit_card > credit_card.id
+
+Table payment_method_type {
+  id integer [increment, pk]
+  name string [note: "Ex.: Cartão de Crédito, Pix, Boleto, Transferência Bancária"]
+}
+
+Table payment_method {
+  id number [increment,pk]
+  fk_payment_method_type integer
+}
+
+Ref: payment_method.fk_payment_method_type > payment_method_type.id
+
+Table recurring_expense {
+  id integer [increment,pk]
+  payment_start timestamp
+  is_disabled bool [default: false]
+  fk_id_recurrence_type integer
+  fk_id_expense integer
+  fk_id_credit_card integer
+}
+Ref: recurring_expense.fk_id_expense - expense.id
+Ref: recurring_expense.fk_id_credit_card > credit_card.id
+Ref: recurring_expense.fk_id_recurrence_type > recurrence_type.id

@@ -1,0 +1,155 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Project "Dinô - Update 3" {
+  database_type: 'MySQL'
+  Note: 'Projeto desenvolvido para o Trabalho de conclusão de curso.'
+}
+
+enum value_item_type {
+  "Entrada"
+  "Saída"
+}
+
+Table value_item {
+  id integer [increment,pk]
+  description string
+  type value_item_type
+  // Informação pode ser inserida na descrição
+  // received_from_OR_paid_to string
+  // gasto está agendado para uma data futura específica
+  scheduled_at date
+  amount decimal
+  fk_id_transfer_method integer
+  created_at date
+  updated_at date
+  // TODO: inserir opções de tags: Educação, saúde, lazer e etc...
+  // Talvez TODO: atributo informando se já foi executado
+}
+
+Ref: value_item.fk_id_transfer_method > transfer_method.id
+
+Table transfer_method {
+  id interger [increment, pk]
+  fk_id_transfer_method_type integer
+}
+
+Table transfer_method_type {
+  id integer [increment, pk]
+  name string [note: "Ex.: Cartão de Crédito, Pix, Boleto, Transferência Bancária"]
+}
+
+Ref: transfer_method.fk_id_transfer_method_type > transfer_method_type.id
+
+Table recurring_value_item {
+  id integer [increment, pk]
+  is_disabled bool [default: false]
+  fk_id_recurrence_type integer
+  fk_id_value_item integer
+}
+
+Ref: recurring_value_item.fk_id_recurrence_type > recurrence_type.id
+Ref: recurring_value_item.fk_id_value_item > value_item.id
+
+Table installment_value_item {
+  id integer [increment, pk]
+  number_of_installments integer
+  fk_id_value_item integer
+}
+
+Ref: installment_value_item.fk_id_value_item > value_item.id
+
+Table recurrence_type {
+  id integer [increment, pk]
+  type string [note: "Mensalmente, Anualmente"]
+}
+
+Table bank_account {
+  id integer [increment,pk]
+  nickname string
+  disabled bool [default: false]
+  created_at date
+  // Para saber qual o balance atual basta comparar com a data
+  // da atualização, aquele que tiver a data de criação mais
+  // próxima a data de atualização da conta bancária.
+  // Isso vale para cada tabela (Possível RNF) 
+  update_at date
+}
+
+// TODO: colocar como atributo da conta bancária
+Table balance {
+  id integer [increment,pk]
+  // Talvez seja necessário trocado
+  // Saldo de uma conta bancária
+  balance decimal
+  fk_id_bank_account integer
+  created_at date
+}
+Ref: balance.fk_id_bank_account > bank_account.id
+
+Table bank_account_transfer_method {
+  id integer [increment,pk]
+  type string [note: "Pix, Débito, Transferência Bancária"]
+  fk_id_bank_account integer
+  created_at date
+}
+Ref: bank_account_transfer_method.fk_id_bank_account > bank_account.id
+
+Table value_item_pivot_bank_account_transfer_method {
+  fk_id_value_item integer
+  fk_id_bank_account_transfer_method integer
+}
+
+Ref: value_item_pivot_bank_account_transfer_method.fk_id_value_item - value_item.id
+Ref: value_item_pivot_bank_account_transfer_method.fk_id_bank_account_transfer_method > bank_account_transfer_method.id
+
+Table credit_card {
+  id integer [increment,pk]
+  nickname string
+  last_four_digits string
+  disabled bool [default: false]
+  created_at date
+  // Para saber qual o closing_date, due_date e limit atual
+  // basta comparar com a data da atualização, aquele que tiver
+  // a data de criação mais próxima a data de atualização do
+  // cartão. Isso vale para cada tabela (Possível RNF) 
+  updated_at date
+}
+
+// TODO: Pensar como eu poderia criar uma tabela para deixar as faturas já computadas
+
+Table value_item_pivot_credit_card_method {
+  fk_id_value_item integer
+  fk_id_credit_card integer
+}
+
+Ref: value_item_pivot_credit_card_method.fk_id_value_item - value_item.id
+Ref: value_item_pivot_credit_card_method.fk_id_credit_card > credit_card.id
+
+// 
+Table closing_date {
+  id integer [increment,pk]
+  // data de fechamento da fatura de um cartão especifico
+  closing_date date
+  fk_id_credit_card integer
+  created_at date
+}
+Ref: closing_date.fk_id_credit_card > credit_card.id
+
+Table due_date {
+  id integer [increment,pk]
+  // data de vencimento da fatura de um cartão especifico
+  due_date date
+  fk_id_credit_card integer
+  created_at date
+}
+Ref: due_date.fk_id_credit_card > credit_card.id
+
+Table limit {
+  id integer [increment,pk]
+  limit decimal
+  fk_id_credit_card integer
+  created_at date
+}
+
+Ref: limit.fk_id_credit_card > credit_card.id
