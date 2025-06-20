@@ -1,7 +1,7 @@
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
 
-Project "Dinô - Update 4" {
+Project "Dinô - Update 5" {
   database_type: 'MySQL'
   Note: 'Projeto desenvolvido para o Trabalho de conclusão de curso.'
 }
@@ -15,7 +15,7 @@ Table tag {
 // TABELA PREENCHIDA PELO SISTEMA
 Table transfer_method_type {
   id integer [increment, pk]
-  name text [not null, note: "Ex.: Cartão de Crédito, Pix, Débito, Boleto, Transferência Bancária"]
+  name text [not null, note: "Ex.: Pix, Débito, Boleto, Transferência Bancária"]
 }
 
 enum item_value_type {
@@ -23,7 +23,7 @@ enum item_value_type {
   "Saída"
 }
 
-Table base_item_value {
+Table item_value {
   id integer [pk, increment]
   description text [not null]
   type item_value_type [not null]
@@ -34,16 +34,16 @@ Table base_item_value {
   amount decimal [not null]
   // Indica se a transferência já foi executada.
   // Se um recebimento foi recebido e se um pagamento foi pago
-  was_processed bool [default: false, not null]
+  was_processed bool [default: `false`, not null]
   fk_id_transfer_method_type integer [not null, ref: > transfer_method_type.id]
   fk_id_tag integer [not null, ref: > tag.id]
-  created_at date [default: `now()`, not null]
-  updated_at date [default: `now()`, not null]
+  created_at date [default: `(date('now','localtime'))`, not null]
+  updated_at date [default: `(date('now','localtime'))`, not null]
 }
 
-Table item_value {
+Table standard_item_value {
   id integer [pk, increment]
-  fk_id_base_item_value integer [not null, ref: - base_item_value.id]
+  fk_id_item_value integer [not null, ref: - item_value.id]
 }
 
 // TABELA PREENCHIDA PELO SISTEMA
@@ -52,27 +52,39 @@ Table recurrence_type {
   type text [not null, unique, note: "Mensalmente, Anualmente"]
 }
 
+Table recurring {
+  id integer [increment, pk]
+  is_disabled bool [default: `false`, not null]
+  current_amount decimal [not null]
+  fk_id_recurrence_type integer [not null, ref: > recurrence_type.id]
+}
+
 Table recurring_item_value {
   id integer [increment, pk]
-  is_disabled bool [default: false, not null]
-  fk_id_recurrence_type integer [not null, ref: > recurrence_type.id]
-  fk_id_base_item_value integer [not null, ref: - base_item_value.id]
+  fk_id_recurring_item_value integer [not null, ref: > recurring.id]
+  fk_id_item_value integer [not null, ref: - item_value.id]
+}
+
+Table installment {
+  id integer [increment, pk]
+  installments_number integer [not null]
+  total_amount decimal [not null]
 }
 
 Table installment_item_value {
-  id integer [increment, pk]
-  installments_number integer [not null]
-  fk_id_base_item_value integer [not null, ref: - base_item_value.id]
+  id integer [pk, increment]
+  fk_id_installment integer [not null, ref: > installment.id]
+  fk_id_item_value integer [not null, ref: - item_value.id]
 }
 
 Table bank_account {
   id integer [pk, increment]
   nickname text [not null]
-  is_disabled bool [default: false, not null]
+  is_disabled bool [default: `false`, not null]
   // Saldo de uma conta bancária
   balance decimal [not null]
-  created_at date [default: `now()`, not null]
-  update_at date [default: `now()`, not null]
+  created_at date [default: `(date('now','localtime'))`, not null]
+  update_at date [default: `(date('now','localtime'))`, not null]
 }
 
 // TABELA PREENCHIDA PELO SISTEMA
@@ -81,51 +93,12 @@ Table bank_account_transfer_method {
   type text [not null, note: "Pix, Débito, Transferência Bancária"]
   is_enable bool [not null]
   fk_id_bank_account integer [not null, ref: > bank_account.id]
-  created_at date [default: `now()`, not null]
-  updated_at date [default: `now()`, not null]
+  created_at date [default: `(date('now','localtime'))`, not null]
+  updated_at date [default: `(date('now','localtime'))`, not null]
 }
 
 Table item_value_pivot_bank_account_transfer_method {
   id integer [pk]
-  fk_id_base_item_value integer [not null, ref: - base_item_value.id]
+  fk_id_item_value integer [not null, ref: - item_value.id]
   fk_id_bank_account_transfer_method integer [not null, ref: > bank_account_transfer_method.id]
-}
-
-Table credit_card {
-  id integer [pk, increment]
-  nickname text [not null]
-  last_four_digits varchar(4) [not null]
-  limit decimal [not null]
-  // data de fechamento da fatura de um cartão especifico
-  closing_date date [not null]
-  // data de vencimento da fatura de um cartão especifico
-  due_date date [not null]
-  is_disabled bool [default: false, not null]
-  created_at date [default: `now()`, not null]
-  updated_at date [default: `now()`, not null]
-}
-
-Table item_value_pivot_credit_card_method {
-  id integer [pk]
-  fk_id_base_item_value integer [not null, ref: - base_item_value.id]
-  fk_id_credit_card integer [not null, ref: - credit_card.id]
-}
-
-// Funcionalidade para converter fatura em gasto
-//  Inserir valor total no item_value com os atributos
-// statement é extrato em inglês
-Table credit_card_statement {
-  id integer [pk, increment]
-  closing_date date [not null]
-  due_date date [not null]
-  created_at date [default: `now()`, not null]
-  updated_at date [default: `now()`, not null]
-  fk_id_credit_card integer [not null, ref: > credit_card.id]
-}
-
-// Talvez não seja necessário
-Table credit_card_statement_item {
-  id integer [pk, increment]
-  fk_id_base_item_value integer [not null, ref: > base_item_value.id]
-  fk_id_credit_card_statement integer [not null, ref: > credit_card_statement.id]
 }
