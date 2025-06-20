@@ -1,8 +1,8 @@
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
 
-Project "Dinô - Update 6" {
-  datatype: 'Sqlite'
+Project "Dinô - Update 7" {
+  datatype: 'SQLITE'
   Note: 'Projeto desenvolvido para o Trabalho de conclusão de curso.'
 }
 
@@ -12,10 +12,15 @@ Table tag {
   description text [not null, note: "Educação, Saúde, Lazer, Alimentação, Moradia, Transporte, Serviços, Compras, Impostos/Taxas e Outros"]
 }
 
-// TABELA PREENCHIDA PELO SISTEMA
-Table transfer_method_type {
+Table transfer_method {
   id integer [pk, increment]
-  name text [not null, note: "Ex.: Pix, Débito, Boleto, Transferência Bancária"]
+  nickname text [not null, note: '''
+  Para bank_account_transfer_method: "Pix - <bankaccount.nickname>".
+  Para credit_card: "<Apelido do cartão de crédito>"
+  ''']
+  is_disabled boolean [not null, note: "default = false"]
+  created_at date [not null, note: "default = date('now','localtime')"]
+  updated_at date [not null, note: "default = date('now','localtime')"]
 }
 
 Table item_value {
@@ -32,7 +37,7 @@ Table item_value {
   was_processed boolean [not null, note: '''default = false
   Indica se a transferência já foi executada
   Se um recebimento foi recebido e se um pagamento foi pago''']
-  fk_id_transfer_method_type integer [not null, ref: > transfer_method_type.id]
+  fk_id_transfer_method integer [not null, ref: > transfer_method.id]
   fk_id_tag integer [not null, ref: > tag.id]
   created_at date [not null, note: "default = date('now','localtime')"]
   updated_at date [not null, note: "default = date('now','localtime')"]
@@ -84,47 +89,35 @@ Table bank_account {
   id integer [pk, increment]
   nickname text [not null]
   is_disabled boolean [not null, note: "default = false"]
-  // Saldo de uma conta bancária
-  balance integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
+  balance integer [not null, note: "Saldo de uma conta bancária\nGuardado em centavos para garantir que o cálculo será feito corretamente"]
   created_at date [not null, note: "default = date('now','localtime')"]
   updated_at date [not null, note: "default = date('now','localtime')"]
 }
 
-// TABELA PREENCHIDA PELO SISTEMA
+// // TABELA PREENCHIDA PELO SISTEMA
+// // Para fazer uma melhor conexão dos tipos de métodos de transferência de contas bancárias
+// Table bank_account_transfer_method_type {
+//   id integer [pk, increment]
+//   type text [note: "['Pix', 'Débito', 'Transferência Bancária']"]
+// }
+
 Table bank_account_transfer_method {
   id integer [pk, increment]
-  type text [not null, note: "['Pix', 'Débito', 'Transferência Bancária']"]
-  is_enable boolean [not null]
+  method text [not null, note: "['Pix', 'Débito', 'Transferência Bancária']"]
   fk_id_bank_account integer [not null, ref: > bank_account.id]
-  created_at date [not null, note: "default = date('now','localtime')"]
-  updated_at date [not null, note: "default = date('now','localtime')"]
+  // // Para quando a tabela bank_account_transfer_method_type estiver ativada
+  // fk_id_method_type integer [not null, ref: > bank_account_transfer_method_type.id]
+  fk_id_transfer_method integer [not null, unique, ref: > transfer_method.id]
 }
 
-Table item_value_pivot_bank_account_transfer_method {
-  id integer [pk, increment]
-  fk_id_item_value integer [not null, ref: - item_value.id]
-  fk_id_bank_account_transfer_method integer [not null, ref: > bank_account_transfer_method.id]
-}
-
-Table credit_card {
-  id integer [pk, increment]
-  nickname text [not null]
-  last_four_digits varchar(4) [not null]
-  limit integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
-  // data de fechamento da fatura de um cartão especifico
-  closing_date date [not null]
-  // data de vencimento da fatura de um cartão especifico
-  due_date date [not null]
-  is_disabled bool [default: false, not null]
-  created_at date [default: `now()`, not null]
-  updated_at date [default: `now()`, not null]
-}
-
-Table item_value_pivot_credit_card_method {
-  id integer [pk]
-  fk_id_item_value integer [not null, ref: - item_value.id]
-  fk_id_credit_card integer [not null, ref: - credit_card.id]
-}
+// Table credit_card {
+//   id integer [pk, increment]
+//   limit integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
+//   last_four_digits varchar(4) [not null]
+//   closing_date date [not null, note: "data de fechamento da fatura de um cartão especifico"]
+//   due_date date [not null, note: "data de vencimento da fatura de um cartão especifico"]
+//   fk_id_transfer_method integer [not null, unique, ref: > transfer_method.id]
+// }
 
 // // Funcionalidade para converter fatura em gasto
 // //  Inserir valor total no item_value com os atributos
