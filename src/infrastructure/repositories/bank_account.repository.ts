@@ -2,8 +2,8 @@ import { BankAccount, IBankAccount } from "@src/core/entities/bank_account.entit
 import { MBankAccount } from "@src/core/models/bank_account.model";
 import { BankAccountNotFoundByNickname } from "@src/core/shared/errors/bank_account";
 import { IRepository, IRepositoryCreateProps, IRepositoryUpdateProps } from "@src/core/shared/IRepository";
-import { db } from "@src/infrastructure/database/drizzle/client";
-import { bank_account } from "@src/infrastructure/database/drizzle/schemas";
+import { db } from "@src/infrastructure/database/client";
+import { bank_account } from "@src/infrastructure/database/schemas";
 import { eq } from "drizzle-orm/sql";
 
 type MBankAccountWithoutAts = StrictOmit<IBankAccount, "created_at" | "updated_at">

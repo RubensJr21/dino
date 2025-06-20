@@ -5,8 +5,8 @@ import { TransferMethodType } from '@src/core/entities/transfer_method_type.enti
 import { MStandard } from '@src/core/models/standard.model'
 import { StandardItemValueNotFoundById } from '@src/core/shared/errors/standard'
 import { IRepoStandard, IRepoStandardCreateProps, IRepoStandardUpdateProps } from "@src/core/shared/IRepositoryStandard"
-import { db } from '@src/infrastructure/database/drizzle/client'
-import { item_value, standard } from '@src/infrastructure/database/drizzle/schemas'
+import { db } from '@src/infrastructure/database/client'
+import { item_value, standard } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 
 export interface IRepoItemValue extends IRepoStandard {

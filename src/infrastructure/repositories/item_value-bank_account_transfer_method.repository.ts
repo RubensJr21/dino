@@ -6,8 +6,8 @@ import { MItemValue_BankAccountTransferMethod } from "@src/core/models/item_valu
 import { MItemValue } from "@src/core/models/item_value.model";
 import { BankAccountTransferMethodNotFoundById } from "@src/core/shared/errors/bank_account_transfer_method";
 import { IRepositoryWithoutDates, IRepositoryWithoutDatesCreateProps, IRepositoryWithoutDatesUpdateProps } from "@src/core/shared/IRepositoryWithoutDates";
-import { db } from "@src/infrastructure/database/drizzle/client";
-import { item_value_pivot_bank_account_transfer_method } from "@src/infrastructure/database/drizzle/schemas";
+import { db } from "@src/infrastructure/database/client";
+import { item_value_pivot_bank_account_transfer_method } from "@src/infrastructure/database/schemas";
 import { eq } from "drizzle-orm/sql";
 
 export interface IRepoItemValue_BankAccountTransferMethod<T extends MItemValue, U extends IItemValue> extends IRepositoryWithoutDates<MItemValue_BankAccountTransferMethod<T>, ItemValue_BankAccountTransferMethod<U>>{

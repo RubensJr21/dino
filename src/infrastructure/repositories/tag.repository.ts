@@ -2,8 +2,8 @@ import { Tag } from '@src/core/entities/tag.entity'
 import { MTag } from '@src/core/models/tag.model'
 import { TagNotFoundByDescription, TagNotFoundById } from '@src/core/shared/errors/tag'
 import { IRepositoryWithoutDates, IRepositoryWithoutDatesCreateProps, IRepositoryWithoutDatesUpdateProps } from "@src/core/shared/IRepositoryWithoutDates"
-import { db } from '@src/infrastructure/database/drizzle/client'
-import { tag } from '@src/infrastructure/database/drizzle/schemas'
+import { db } from '@src/infrastructure/database/client'
+import { tag } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 
 export interface IRepoTag extends IRepositoryWithoutDates<MTag, Tag> {

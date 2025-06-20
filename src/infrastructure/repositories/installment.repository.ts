@@ -5,9 +5,9 @@ import { TransferMethodType } from '@src/core/entities/transfer_method_type.enti
 import { MInstallment } from '@src/core/models/installment.model'
 import { InstallmentItemValueNotFoundById } from '@src/core/shared/errors/installment'
 import { IRepoInstallment, IRepoInstallmentCreateProps, IRepoInstallmentUpdateProps } from '@src/core/shared/IRepositoryInstallment'
-import { db } from '@src/infrastructure/database/drizzle/client'
-import { installment, item_value } from '@src/infrastructure/database/drizzle/schemas'
+import { db } from '@src/infrastructure/database/client'
 import { installment_item_value } from '@src/infrastructure/database/drizzle/schemas/installment_item_value.schema'
+import { installment, item_value } from @src/infrastructure/database/schemas/installment_item_value.schema
 import { eq } from 'drizzle-orm/sql'
 
 export default class InstallmentDrizzleRepository implements IRepoInstallment {   

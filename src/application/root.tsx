@@ -15,7 +15,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import RootRoutes from "./root.routes";
 
 import migrations from "@root/drizzle/migrations";
-import { db, expoDb } from "@src/infrastructure/database/drizzle/client";
+import { db, expoDb } from "@src/infrastructure/database/client";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 

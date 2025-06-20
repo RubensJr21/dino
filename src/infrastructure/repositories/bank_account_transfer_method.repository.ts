@@ -4,8 +4,8 @@ import { MBankAccountTransferMethod } from "@src/core/models/bank_account_transf
 import { BankAccountNotFoundById, isBankAccountNotFoundById } from "@src/core/shared/errors/bank_account";
 import { BankAccountTransferMethodNotFoundById, BankAccountTransferMethodUnknownError } from "@src/core/shared/errors/bank_account_transfer_method";
 import { IRepository, IRepositoryCreateProps, IRepositoryUpdateProps } from "@src/core/shared/IRepository";
-import { db } from "@src/infrastructure/database/drizzle/client";
-import { bank_account_transfer_method } from "@src/infrastructure/database/drizzle/schemas";
+import { db } from "@src/infrastructure/database/client";
+import { bank_account_transfer_method } from "@src/infrastructure/database/schemas";
 import { eq } from "drizzle-orm/sql";
 
 type MBankAccountTransferMethodWithoutDate = StrictOmit<MBankAccountTransferMethod, "created_at" | "updated_at">

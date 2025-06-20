@@ -1,7 +1,7 @@
 import { MItemValue } from '@src/core/models/item_value.model'
 import { ItemValueNotFoundById } from '@src/core/shared/errors/item_value'
-import { db } from '@src/infrastructure/database/drizzle/client'
-import { item_value } from '@src/infrastructure/database/drizzle/schemas'
+import { db } from '@src/infrastructure/database/client'
+import { item_value } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 
 type IRepoItemValueCreateProps = StrictOmit<MItemValue, "id"|"created_at"|"updated_at">

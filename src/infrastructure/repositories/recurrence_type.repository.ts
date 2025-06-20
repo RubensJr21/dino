@@ -2,8 +2,8 @@ import { RecurrenceType } from '@src/core/entities/recurrence_type.entity'
 import { MRecurrenceType } from '@src/core/models/recurrence_type.model'
 import { RecurrenceTypeNotFoundById, RecurrenceTypeNotFoundByType } from '@src/core/shared/errors/recurrence_type'
 import { IRepositoryWithoutDates, IRepositoryWithoutDatesCreateProps } from "@src/core/shared/IRepositoryWithoutDates"
-import { db } from '@src/infrastructure/database/drizzle/client'
-import { recurrence_type } from '@src/infrastructure/database/drizzle/schemas'
+import { db } from '@src/infrastructure/database/client'
+import { recurrence_type } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 
 export interface IRepoRecurrenceType extends IRepositoryWithoutDates<MRecurrenceType, RecurrenceType> {

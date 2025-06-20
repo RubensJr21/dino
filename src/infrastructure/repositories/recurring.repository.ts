@@ -6,8 +6,8 @@ import { TransferMethodType } from '@src/core/entities/transfer_method_type.enti
 import { MRecurring } from '@src/core/models/recurring.model'
 import { RecurringNotFoundById } from '@src/core/shared/errors/recurring'
 import { IRepoRecurring, IRepoRecurringCreateProps, IRepoRecurringUpdateProps } from '@src/core/shared/IRepositoryRecurring'
-import { db } from '@src/infrastructure/database/drizzle/client'
-import { item_value, recurring, recurring_item_value } from '@src/infrastructure/database/drizzle/schemas'
+import { db } from '@src/infrastructure/database/client'
+import { item_value, recurring, recurring_item_value } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 
 export default class RecurringDrizzleRepository implements IRepoRecurring {

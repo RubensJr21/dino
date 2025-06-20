@@ -2,8 +2,8 @@ import { TransferMethodType } from '@src/core/entities/transfer_method_type.enti
 import { MTransferMethodType } from '@src/core/models/transfer_method_type.model'
 import { TransferMethodTypeNotFoundById, TransferMethodTypeNotFoundByName } from '@src/core/shared/errors/transfer_method_type'
 import { IRepositoryWithoutDates, IRepositoryWithoutDatesCreateProps, IRepositoryWithoutDatesUpdateProps } from "@src/core/shared/IRepositoryWithoutDates"
-import { db } from '@src/infrastructure/database/drizzle/client'
-import { transfer_method_type } from '@src/infrastructure/database/drizzle/schemas'
+import { db } from '@src/infrastructure/database/client'
+import { transfer_method_type } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 
 export interface IRepoTransferMethodType extends IRepositoryWithoutDates<MTransferMethodType, TransferMethodType> {
