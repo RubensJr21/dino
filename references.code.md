@@ -101,6 +101,8 @@
 1. [Run 'npm clean-install'](https://stackoverflow.com/a/64552347)
 1. [Factory Method - Refactoring Guru](https://refactoring.guru/pt-br/design-patterns/factory-method)
 1. [Migrate from expo-router to ReactNavigation](https://www.reddit.com/r/reactnative/comments/1gt0fyt/how_to_get_rid_of_expo_router/?tl=pt-br#t1_lz2b8rj-post-rtjson-content)
+1. [HTML Minifier](https://www.minifier.org/html-minifier)
+1. [Visualizador HTML](https://html.onlineviewer.net/)
 
 ## Git
 
