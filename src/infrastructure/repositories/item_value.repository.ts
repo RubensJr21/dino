@@ -1,3 +1,6 @@
+import { ItemValue } from '@src/core/entities/item_value.entity'
+import { Tag } from '@src/core/entities/tag.entity'
+import { TransferMethod } from '@src/core/entities/transfer_method.entity'
 import { MItemValue } from '@src/core/models/item_value.model'
 import { ItemValueNotFoundById } from '@src/core/shared/errors/item_value'
 import { db } from '@src/infrastructure/database/client'
@@ -7,13 +10,13 @@ import { eq } from 'drizzle-orm/sql'
 type IRepoItemValueCreateProps = StrictOmit<MItemValue, "id"|"created_at"|"updated_at">
 type IRepoItemValueUpdateProps = StrictOmit<MItemValue, "id"|"created_at"|"updated_at">
 
-export interface IRepositoryItemValue {
+export interface IRepoItemValue {
   /**
    * Creates a new base item value record in the database
    * @param {IRepoItemValueCreateProps} data - The data for creating a new base item value
    * @returns {MItemValue} The newly created base item value with its assigned ID
    */
-  create(data: IRepoItemValueCreateProps): MItemValue;
+  create(data: IRepoItemValueCreateProps): ItemValue;
 
   /**
    * Finds a base item value by its unique identifier
@@ -21,13 +24,13 @@ export interface IRepositoryItemValue {
    * @returns {MItemValue} The base item value with the specified ID
    * @throws {ItemValueNotFoundById} If no base item value is found with the given ID
    */
-  findById(id: MItemValue["id"]): MItemValue;
+  findById(id: MItemValue["id"]): ItemValue;
 
   /**
    * Retrieves all base item value records from the database
-   * @returns {MItemValue[]} An array of base item values
+   * @returns {ItemValue[]} An array of base item values
    */
-  findAll(): MItemValue[];
+  findAll(): ItemValue[];
 
   /**
    * Updates an existing base item value record in the database
@@ -35,7 +38,7 @@ export interface IRepositoryItemValue {
    * @param {IRepoItemValueCreateProps} data - The updated data for the base item value
    * @returns {MItemValue} The updated base item value with its current details
    */
-  update(id: MItemValue["id"], data: IRepoItemValueUpdateProps): MItemValue;
+  update(id: MItemValue["id"], data: IRepoItemValueUpdateProps): ItemValue;
 
   /**
    * Deletes a base item value record from the database by its unique identifier
@@ -45,80 +48,53 @@ export interface IRepositoryItemValue {
   delete(id: MItemValue["id"]): boolean;
 }
 
-type MItemValueWithoutAts = StrictOmit<MItemValue, "id"|"created_at" | "updated_at">
-
-type MItemValueWithoutDate = StrictOmit<MItemValueWithoutAts, "scheduled_at">
-
-interface MItemValueInput extends MItemValueWithoutDate {
-  scheduled_at: string;
-}
-interface MItemValueOutput extends MItemValueWithoutDate {
-  created_at: string;
-  updated_at: string;
-  scheduled_at: string;
-}
-
-export default class ItemValueDrizzleRepository implements IRepositoryItemValue {
+export default class ItemValueDrizzleRepository implements IRepoItemValue {  
   // eslint-disable-next-line jsdoc/require-jsdoc
-  private formatInput(input: MItemValueWithoutAts): MItemValueInput {
-    return {
-      ...input,
-      scheduled_at: input.scheduled_at.toISOString().split('T')[0]
-    }
-  }
-  
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  private formatOutput(output: MItemValueOutput): StrictOmit<MItemValue, "id"> {
-    return {
-      ...output,
-      created_at: new Date(output.created_at),
-      updated_at: new Date(output.updated_at),
-      scheduled_at: new Date(output.scheduled_at)
-    }
-  }
-
-  
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public create(data: IRepoItemValueCreateProps): MItemValue {
-    const forInsert = this.formatInput(data)
-		const item_value_searched = db.insert(item_value).values(forInsert).returning().get()
-    
-    return {
-      id: item_value_searched.id,
-      ...this.formatOutput(item_value_searched),
-    }
+  public create(data: IRepoItemValueCreateProps): ItemValue {
+		const { id } = db.insert(item_value).values(data).returning({id: item_value.id}).get()
+    return this.findById(id)
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public findById(id: MItemValue["id"]): MItemValue {
+  public findById(id: MItemValue["id"]): ItemValue {
 		const result = db.query.item_value.findFirst({
 			where: eq(item_value.id, id),
+      with: {
+        transfer_method: true,
+        tag: true
+      }
     }).sync()
 		if(!result) throw new ItemValueNotFoundById(id)
 
     const {id: _, ...biv} = {...result, item_value_id: result.id}
 
-    return {
-      id: result.id,
-      ...this.formatOutput(biv)
-    }
+    return new ItemValue({
+		id: result.id,
+		description: result.description,
+		cashflow_type: result.cashflow_type,
+		scheduled_at: result.scheduled_at,
+		amount: result.amount,
+		was_processed: result.was_processed,
+		transfer_method: new TransferMethod(result.transfer_method),
+		tag: new Tag(result.tag),
+    created_at: result.created_at,
+    updated_at: result.updated_at
+	})
   }
   
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public findAll(): MItemValue[] {
-    const results = db.query.item_value.findMany().sync()
-    return results.map(biv => {
-      return {
-        id: biv.id,
-        ...this.formatOutput(biv)
+  public findAll(): ItemValue[] {
+    const results = db.query.item_value.findMany({
+      columns: {
+        id: true
       }
-    })
+    }).sync()
+    return results.map(({ id } ) => this.findById(id))
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public update(id: MItemValue["id"], data: IRepoItemValueCreateProps): MItemValue {
-    const forUpdate = this.formatInput(data)
-    db.update(item_value).set(forUpdate).where(eq(item_value.id, id)).returning().get()
+  public update(id: MItemValue["id"], data: IRepoItemValueCreateProps): ItemValue {
+    db.update(item_value).set(data).where(eq(item_value.id, id)).returning().get()
     return this.findById(id)
   }
 

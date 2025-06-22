@@ -26,7 +26,7 @@ export default class EnableBankAccount implements IUseCase<EnableBankAccount_Inp
   
       bank_account.enable()
   
-      const {id, created_at, updated_at, ...bank_account_without_id} = bank_account.properties
+      const {id, ...bank_account_without_id} = bank_account.properties
       return this.repo_ba.update(id, bank_account_without_id)
     } catch(error) {
       if(isBankAccountNotFoundById(error)){

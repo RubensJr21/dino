@@ -37,9 +37,9 @@ function serializeTransferMethodsToEditPage(
 ): string {
   return JSON.stringify(
     Object.fromEntries(
-      transfer_methods.map(({type, is_enable}) => [
-        type,
-        is_enable,
+      transfer_methods.map(({method, transfer_method}) => [
+        method,
+        transfer_method.is_disabled,
       ])
     )
   );

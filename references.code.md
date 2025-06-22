@@ -70,6 +70,8 @@
 1. [Drizzle ORM - Composite Primary Key](https://orm.drizzle.team/docs/indexes-constraints#composite-primary-key)
 1. [Drizzle ORM Comprehensive Course](https://youtube.com/playlist?list=PLhnVDNT5zYN8PLdYddaU3jiZXeOyehhoU&si=ntG5gtrzOpWscmnS)
 1. [Banco de dados com Drizzle ORM no React Native + Expo](https://youtu.be/1inzzYvbgO8?si=myD7-AZLgHwOvn06)
+1. [Inserir datas no banco de dados com drizzle](https://orm.drizzle.team/docs/column-types/sqlite#integer)
+1. [Como fazer 'join' com o drizzle](https://orm.drizzle.team/docs/joins)
 
 ## Typescript
 

@@ -26,7 +26,7 @@ export default class UpdateBalanceBankAccount implements IUseCase<UpdateBalanceB
       const bank_account = this.repo_ba.findById(input.id)
       bank_account.change_balance(input.new_balance);
   
-      const {id, created_at, updated_at, ...bank_account_without_id} = bank_account.properties;
+      const {id,...bank_account_without_id} = bank_account.properties;
   
       return this.repo_ba.update(id, bank_account_without_id);
     } catch (error) {

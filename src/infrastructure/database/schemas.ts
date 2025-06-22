@@ -4,7 +4,7 @@
 // not-order-next-line
 export { tag } from "@src/infrastructure/database/schemas/tag.schema";
 // not-order-next-line
-export { transfer_method_type } from "@src/infrastructure/database/schemas/transfer_method_type.schema";
+export { transfer_method } from "@src/infrastructure/database/schemas/transfer_method.schema";
 // not-order-next-line
 export { item_value, item_value_relations } from "@src/infrastructure/database/schemas/item_value.schema";
 // not-order-next-line
@@ -24,7 +24,3 @@ export { bank_account } from "@src/infrastructure/database/schemas/bank_account.
 // not-order-next-line
 export { bank_account_transfer_method, bank_account_transfer_method_relations } from "@src/infrastructure/database/schemas/bank_account_transfer_method.schema";
 // // not-order-next-line
-export {
-  item_value_pivot_bank_account_transfer_method, item_value_pivot_bank_account_transfer_method_relations
-} from "@src/infrastructure/database/schemas/item_value-bank_account_transfer_method.schema";
-// not-order-next-line

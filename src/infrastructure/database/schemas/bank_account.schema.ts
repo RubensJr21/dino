@@ -7,6 +7,6 @@ export const bank_account = sqliteTable("bank_account", {
   nickname: t.text("nickname").notNull(),
   is_disabled: t.integer({mode: "boolean"}).notNull(),
   balance: t.real("balance").notNull(),
-  created_at: t.text("created_at").default(sql`(CURRENT_DATE)`).notNull(),
-  updated_at: t.text("updated_at").default(sql`(CURRENT_DATE)`).notNull().$onUpdate(() => sql`(CURRENT_DATE)`)
+  created_at: t.integer("created_at", { mode: "timestamp" }).default(sql`(date('now','localtime'))`).notNull(),
+  updated_at: t.integer("updated_at", { mode: "timestamp" }).default(sql`(date('now','localtime'))`).notNull().$onUpdate(() => sql`(date('now','localtime'))`)
 })

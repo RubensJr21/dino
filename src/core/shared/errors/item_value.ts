@@ -3,11 +3,11 @@ import { ItemValue } from "@src/core/entities/item_value.entity";
 export class ItemValueNotFoundById extends Error {
   readonly name: string = "ItemValueNotFoundById";
   /**
-   * @param {ItemValue["id"]} base_item_value_id base_item_value_id que gerou erro ao ser buscada
+   * @param {ItemValue["id"]} item_value_id item_value_id que gerou erro ao ser buscada
    */
-  constructor(base_item_value_id: ItemValue["id"]){
-    super(`ItemValue id: '${base_item_value_id}' not founded!`, {
-      cause: `The base_item_value id '${base_item_value_id}' is invalid!`
+  constructor(item_value_id: ItemValue["id"]){
+    super(`ItemValue id: '${item_value_id}' not founded!`, {
+      cause: `The item_value id '${item_value_id}' is invalid!`
     })
   }
 }

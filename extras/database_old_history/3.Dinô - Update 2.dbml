@@ -57,7 +57,6 @@ Table recurrence_type {
 Table bank_account {
   id integer [increment,pk]
   nickname string
-  // TODO: Traduzir depois
   saldo decimal
 }
 

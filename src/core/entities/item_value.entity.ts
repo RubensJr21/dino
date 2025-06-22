@@ -1,33 +1,32 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { IEntityWithDates } from "../shared/IEntityWithDates";
+import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
+import { Variants_Of_ItemValue } from "../shared/types/variants_items";
 import { Tag } from "./tag.entity";
-import { TransferMethodType } from "./transfer_method_type.entity";
+import { TransferMethod } from "./transfer_method.entity";
 
 export interface IItemValue extends IEntityWithDates {
   description: string;
-  type: string;
+  cashflow_type: Variants_Of_ItemValue;
   scheduled_at: Date;
   amount: number;
   was_processed: boolean;
-  transfer_method_type: TransferMethodType;
+  transfer_method: TransferMethod;
   tag: Tag;
-  readonly created_at: Date;
-  readonly updated_at: Date;
 }
 
-export interface ReturnProperties_ItemValue extends StrictOmit<IItemValue, "tag" | "transfer_method_type"> {
-  transfer_method_type: ItemValue["_transfer_method_type"]["properties"];
+export interface ReturnProperties_ItemValue extends StrictOmit<IItemValue, "tag" | "transfer_method"> {
+  transfer_method: ItemValue["_transfer_method"]["properties"];
   tag: ItemValue["_tag"]["properties"];
 }
 
 export class ItemValue implements IItemValue {
   private readonly _id: IItemValue["id"];
   private _description: IItemValue["description"];
-  private _type: IItemValue["type"];
+  private _cashflow_type: IItemValue["cashflow_type"];
   private _scheduled_at: IItemValue["scheduled_at"];
   private _amount: IItemValue["amount"];
   private _was_processed: IItemValue["was_processed"];
-  private _transfer_method_type: IItemValue["transfer_method_type"];
+  private _transfer_method: IItemValue["transfer_method"];
   private _tag: IItemValue["tag"];
   private readonly _created_at: IItemValue["created_at"]
   private readonly _updated_at: IItemValue["updated_at"]
@@ -35,22 +34,22 @@ export class ItemValue implements IItemValue {
   constructor({
 		id,
 		description,
-		type,
+		cashflow_type,
 		scheduled_at,
 		amount,
 		was_processed,
-		transfer_method_type,
+		transfer_method,
 		tag,
     created_at,
     updated_at
 	}: IItemValue){
     this._id = id;
 		this._description = description;
-		this._type = type;
+		this._cashflow_type = cashflow_type;
     this._scheduled_at = scheduled_at;
     this._amount = amount;
     this._was_processed = was_processed;
-    this._transfer_method_type = transfer_method_type;
+    this._transfer_method = transfer_method;
     this._tag = tag;
     this._created_at = created_at;
     this._updated_at = updated_at;
@@ -69,15 +68,12 @@ export class ItemValue implements IItemValue {
     return undefined;
   }
   
-  public get type(): ItemValue["_type"] {
-    return this._type
+  public get cashflow_type(): ItemValue["_cashflow_type"] {
+    return this._cashflow_type
   }
   
-  public change_type(new_value: string): undefined | Error {
-    if(!["Entrada", "Saída"].includes(new_value)){
-      return new Error("Os tipos aceitos são: Entrada e Saída");
-    }
-    this._type = new_value
+  public change_cashflow_type(new_value: ItemValue["_cashflow_type"]): undefined | Error {
+    this._cashflow_type = new_value
     return undefined;
   }
   
@@ -116,12 +112,12 @@ export class ItemValue implements IItemValue {
   }
 
   
-  public get transfer_method_type(): ItemValue["_transfer_method_type"] {
-    return this._transfer_method_type
+  public get transfer_method(): ItemValue["_transfer_method"] {
+    return this._transfer_method
   }
   
-  public change_transfer_method_type(new_value: ItemValue["_transfer_method_type"]): undefined | Error {
-    this._transfer_method_type = new_value
+  public change_transfer_method(new_value: ItemValue["_transfer_method"]): undefined | Error {
+    this._transfer_method = new_value
     return undefined;
   }
   
@@ -146,11 +142,11 @@ export class ItemValue implements IItemValue {
 		return {
 			id: this.id,
 			description: this.description,
-			type: this.type,
+			cashflow_type: this.cashflow_type,
 			scheduled_at: this.scheduled_at,
 			amount: this.amount,
 			was_processed: this.was_processed,
-			transfer_method_type: this.transfer_method_type.properties,
+			transfer_method: this.transfer_method.properties,
 			tag: this.tag.properties,
       created_at: this.created_at,
       updated_at: this.updated_at

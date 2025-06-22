@@ -1,19 +1,13 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
 import { BankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
+import { TransferMethod } from "@src/core/entities/transfer_method.entity";
 import { MBankAccountTransferMethod } from "@src/core/models/bank_account_transfer_method.model";
 import { BankAccountNotFoundById, isBankAccountNotFoundById } from "@src/core/shared/errors/bank_account";
 import { BankAccountTransferMethodNotFoundById, BankAccountTransferMethodUnknownError } from "@src/core/shared/errors/bank_account_transfer_method";
-import { IRepository, IRepositoryCreateProps, IRepositoryUpdateProps } from "@src/core/shared/IRepository";
+import { IRepository, IRepositoryCreateProps, IRepositoryUpdateProps } from "@src/core/shared/interfaces/IRepository";
 import { db } from "@src/infrastructure/database/client";
 import { bank_account_transfer_method } from "@src/infrastructure/database/schemas";
 import { eq } from "drizzle-orm/sql";
-
-type MBankAccountTransferMethodWithoutDate = StrictOmit<MBankAccountTransferMethod, "created_at" | "updated_at">
-
-interface MBankAccountTransferMethodOutput extends MBankAccountTransferMethodWithoutDate {
-  created_at: string;
-  updated_at: string;
-}
 
 export interface IRepoBankAccountTransferMethod extends IRepository<MBankAccountTransferMethod, BankAccountTransferMethod> {
   /**
@@ -59,19 +53,10 @@ export interface IRepoBankAccountTransferMethod extends IRepository<MBankAccount
   delete(id: BankAccountTransferMethod["id"]): boolean;
 }
 
-export default class BankAccountTransferMethodDrizzleRepository implements IRepoBankAccountTransferMethod {
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  private formatOutput(output: MBankAccountTransferMethodOutput): MBankAccountTransferMethod {
-    return {
-      ...output,
-      created_at: new Date(output.created_at),
-      updated_at: new Date(output.updated_at)
-    }
-  }
-  
+export default class BankAccountTransferMethodDrizzleRepository implements IRepoBankAccountTransferMethod {  
   // eslint-disable-next-line jsdoc/require-jsdoc
   public create(data: IRepositoryCreateProps<MBankAccountTransferMethod>): BankAccountTransferMethod {   
-    const result = db.insert(bank_account_transfer_method).values(data).returning().get()
+    const result = db.insert(bank_account_transfer_method).values(data).returning({ id: bank_account_transfer_method.id }).get()
     return this.findById(result.id);
   }
 
@@ -80,23 +65,25 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
     const result = db.query.bank_account_transfer_method.findFirst({
       where: eq(bank_account_transfer_method.id, id),
       with: {
-        bank_account: true
+        bank_account: true,
+        transfer_method: true
       }
     }).sync()
     if(!result) throw new BankAccountTransferMethodNotFoundById(id);
 
     const {
       bank_account,
+      transfer_method,
+      fk_id_bank_account,
+      fk_id_transfer_method,
       ...bank_account_transfer_method_searched
     } = result
 
     return new BankAccountTransferMethod({
-      ...this.formatOutput(bank_account_transfer_method_searched),
-      bank_account: new BankAccount({
-        ...bank_account,
-        created_at: new Date(bank_account.created_at),
-        updated_at: new Date(bank_account.updated_at),
-      })
+      id: bank_account_transfer_method_searched.id,
+      method: bank_account_transfer_method_searched.method,
+      bank_account: new BankAccount(bank_account),
+      transfer_method: new TransferMethod(transfer_method)
     })
   }
 
@@ -105,31 +92,13 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
     try{
       const bankId_transfers = db.query.bank_account_transfer_method.findMany({
         where: eq(bank_account_transfer_method.fk_id_bank_account, bank_account_id),
-        with: {
-          bank_account: true
-        }
       }).sync()
 
       if(bankId_transfers.length === 0){
         throw new BankAccountNotFoundById(bank_account_id);
       }
 
-      return bankId_transfers.map(value => {
-        const {
-          fk_id_bank_account,
-          ...value_formated
-        } = {
-          ...value,
-          bank_account: new BankAccount({
-            ...value.bank_account,
-            created_at: new Date(value.bank_account.created_at),
-            updated_at: new Date(value.bank_account.updated_at)
-          }),
-          created_at: new Date(value.created_at),
-          updated_at: new Date(value.updated_at)
-        }
-        return new BankAccountTransferMethod(value_formated)
-      })
+      return bankId_transfers.map(value => this.findById(value.id))
     } catch(error) {
       if(isBankAccountNotFoundById(error)){
         throw error;
@@ -140,27 +109,8 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
 
   // eslint-disable-next-line jsdoc/require-jsdoc
   public findAll(): BankAccountTransferMethod[] {
-    const results = db.query.bank_account_transfer_method.findMany({
-      with: {
-        bank_account: true
-      }
-    }).sync()
-    return results
-      .map(ba_tm => {
-        const {
-          bank_account,
-          ...bank_account_transfer_method_searched
-        } = ba_tm
-    
-        return new BankAccountTransferMethod({
-          ...this.formatOutput(bank_account_transfer_method_searched),
-          bank_account: new BankAccount({
-            ...bank_account,
-            created_at: new Date(bank_account.created_at),
-            updated_at: new Date(bank_account.updated_at),
-          })
-        })
-      })
+    const results = db.query.bank_account_transfer_method.findMany().sync()
+    return results.map(ba_tm => this.findById(ba_tm.id))
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc

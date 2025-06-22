@@ -43,7 +43,7 @@ Table item_value {
   updated_at date [not null, note: "default = date('now','localtime')"]
 }
 
-Table standard_item_value {
+Table standard {
   id integer [pk, increment]
   fk_id_item_value integer [not null, ref: - item_value.id]
   created_at date [not null, note: "default = date('now','localtime')"]
@@ -58,7 +58,8 @@ Table recurrence_type {
 
 Table recurring {
   id integer [pk, increment]
-  is_disabled boolean [not null, note: "default = false"]
+  start_date date [not null]
+  end_date date
   current_amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
   fk_id_recurrence_type integer [not null, ref: > recurrence_type.id]
   created_at date [not null, note: "default = date('now','localtime')"]
@@ -67,12 +68,13 @@ Table recurring {
 
 Table recurring_item_value {
   id integer [pk, increment]
-  fk_id_recurring_item_value integer [not null, ref: > recurring.id]
+  fk_id_recurring integer [not null, ref: > recurring.id]
   fk_id_item_value integer [not null, ref: - item_value.id]
 }
 
 Table installment {
   id integer [pk, increment]
+  start_date date [not null]
   installments_number integer [not null]
   total_amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
   created_at date [not null, note: "default = date('now','localtime')"]

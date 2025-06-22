@@ -6,8 +6,8 @@ import { item_value } from './item_value.schema';
 export const standard = sqliteTable("standard", {
   id: t.integer("id").primaryKey({autoIncrement: true}),
   fk_id_item_value: t.integer("fk_id_item_value").references(() => item_value.id, {onDelete: "cascade"}).notNull(),
-  created_at: t.text("created_at").default(sql`(CURRENT_DATE)`).notNull(),
-  updated_at: t.text("updated_at").default(sql`(CURRENT_DATE)`).notNull().$onUpdate(() => sql`(CURRENT_DATE)`)
+  created_at: t.integer("created_at", { mode: "timestamp" }).default(sql`(date('now','localtime'))`).notNull(),
+  updated_at: t.integer("updated_at", { mode: "timestamp" }).default(sql`(date('now','localtime'))`).notNull().$onUpdate(() => sql`(date('now','localtime'))`)
 })
 
 export const standard_relations = relations(standard, ({one}) => ({

@@ -1,18 +1,18 @@
 import { Tag } from '@src/core/entities/tag.entity'
 import { MTag } from '@src/core/models/tag.model'
 import { TagNotFoundByDescription, TagNotFoundById } from '@src/core/shared/errors/tag'
-import { IRepositoryWithoutDates, IRepositoryWithoutDatesCreateProps, IRepositoryWithoutDatesUpdateProps } from "@src/core/shared/IRepositoryWithoutDates"
+import { IRepository, IRepositoryCreateProps, IRepositoryUpdateProps } from "@src/core/shared/interfaces/IRepository"
 import { db } from '@src/infrastructure/database/client'
 import { tag } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 
-export interface IRepoTag extends IRepositoryWithoutDates<MTag, Tag> {
+export interface IRepoTag extends IRepository<MTag, Tag> {
   /**
    * Implementação do Método de criação da entidade Tag
-   * @param {IRepositoryWithoutDatesCreateProps<MTag>} data Atributos que são passados para a criação de uma nova Tag
+   * @param {IRepositoryCreateProps<MTag>} data Atributos que são passados para a criação de uma nova Tag
    * @returns {Tag} Retorna objeto que representa a entidade Tag que contém os dados informados para criação
    */
-  create(data: IRepositoryWithoutDatesCreateProps<MTag>): Tag;
+  create(data: IRepositoryCreateProps<MTag>): Tag;
 
   /**
    * Implementação do método retorna a Tag que tiver o id informado
@@ -39,11 +39,11 @@ export interface IRepoTag extends IRepositoryWithoutDates<MTag, Tag> {
   /**
    * Implementa método de update de Tag
    * @param {MTag["id"]} id id pela qual a Tag será buscada
-   * @param {IRepositoryWithoutDatesUpdateProps<MTag>} data valores que serão atualizado
+   * @param {IRepositoryUpdateProps<MTag>} data valores que serão atualizado
    * @throws {TagNotFoundById}
    * @returns {Tag} Retorna um objeto que representa a entidade Tag que contém a id informada
    */
-  update(id: MTag["id"], data: IRepositoryWithoutDatesUpdateProps<MTag>): Tag;
+  update(id: MTag["id"], data: IRepositoryUpdateProps<MTag>): Tag;
 
   /**
    * Implementa método que deleta a Tag
@@ -55,7 +55,7 @@ export interface IRepoTag extends IRepositoryWithoutDates<MTag, Tag> {
 
 export default class TagDrizzleRepository implements IRepoTag {
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public create(data: IRepositoryWithoutDatesCreateProps<MTag>): Tag {
+  public create(data: IRepositoryCreateProps<MTag>): Tag {
     const tags = db.insert(tag).values(data).returning().get()
     return new Tag(tags)
   }
@@ -88,7 +88,7 @@ export default class TagDrizzleRepository implements IRepoTag {
   }
    
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public update(id: MTag["id"], data: IRepositoryWithoutDatesUpdateProps<MTag>): Tag {
+  public update(id: MTag["id"], data: IRepositoryUpdateProps<MTag>): Tag {
     const result = db.update(tag).set(data).where(eq(tag.id, id)).returning().get()
     if(!result) throw new TagNotFoundById(id);
     return new Tag(result)

@@ -23,8 +23,6 @@ Table value_item {
   fk_id_transfer_method integer
   created_at date
   updated_at date
-  // TODO: inserir opções de tags: Educação, saúde, lazer e etc...
-  // Talvez TODO: atributo informando se já foi executado
 }
 
 Ref: value_item.fk_id_transfer_method > transfer_method.id
@@ -76,7 +74,6 @@ Table bank_account {
   update_at date
 }
 
-// TODO: colocar como atributo da conta bancária
 Table balance {
   id integer [increment,pk]
   // Talvez seja necessário trocado
@@ -115,8 +112,6 @@ Table credit_card {
   // cartão. Isso vale para cada tabela (Possível RNF) 
   updated_at date
 }
-
-// TODO: Pensar como eu poderia criar uma tabela para deixar as faturas já computadas
 
 Table value_item_pivot_credit_card_method {
   fk_id_value_item integer

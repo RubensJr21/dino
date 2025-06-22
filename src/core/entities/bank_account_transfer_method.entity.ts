@@ -1,73 +1,59 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { IEntityWithDates } from "../shared/IEntityWithDates";
+import IEntityBase from "../shared/interfaces/IEntityBase";
 import { BankAccount } from "./bank_account.entity";
+import { TransferMethod } from "./transfer_method.entity";
 
-export interface IBankAccountTransferMethod extends IEntityWithDates {
-  type: string;
-  is_enable: boolean,
+export interface IBankAccountTransferMethod extends IEntityBase {
+  method: string;
   readonly bank_account: BankAccount;
+  readonly transfer_method: TransferMethod;
 }
 
-interface ReturnProperties extends StrictOmit<IBankAccountTransferMethod, "bank_account"> {
-  bank_account: BankAccount["properties"]
+interface ReturnProperties extends StrictOmit<IBankAccountTransferMethod, "bank_account"|"transfer_method"> {
+  bank_account: BankAccount["properties"],
+  transfer_method: TransferMethod["properties"],
 }
 
 export class BankAccountTransferMethod implements IBankAccountTransferMethod {
   private readonly _id: IBankAccountTransferMethod["id"];
-  private _type: IBankAccountTransferMethod["type"];
-  private _is_enable: boolean;
+  private _type: IBankAccountTransferMethod["method"];
   private readonly _bank_account: IBankAccountTransferMethod["bank_account"];
-  private readonly _created_at: IBankAccountTransferMethod["created_at"];
-  private readonly _updated_at: IBankAccountTransferMethod["updated_at"];
+  private readonly _transfer_method: IBankAccountTransferMethod["transfer_method"];
   
   constructor({
     id,
-    type,
-    is_enable,
+    method,
+    transfer_method,
     bank_account,
-    created_at,
-    updated_at,
   }: IBankAccountTransferMethod){
     this._id = id;
-    this._type = type;
-    this._is_enable = is_enable;
+    this._type = method;
     this._bank_account = bank_account;
-    this._created_at = created_at;
-    this._updated_at = updated_at;
+    this._transfer_method = transfer_method;
   }
 
   public get id(): BankAccountTransferMethod["_id"]{
     return this._id;
   }
 
-  public get type(): BankAccountTransferMethod["_type"]{
+  public get method(): BankAccountTransferMethod["_type"]{
     return this._type;
-  }
-
-  public get is_enable(): BankAccountTransferMethod["_is_enable"]{
-    return this._is_enable;
   }
 
   public get bank_account(): BankAccountTransferMethod["_bank_account"]{
     return this._bank_account;
   }
 
-  public get created_at(): BankAccountTransferMethod["_created_at"]{
-    return this._created_at;
-  }
-
-  public get updated_at(): BankAccountTransferMethod["_updated_at"]{
-    return this._updated_at;
+  public get transfer_method(): BankAccountTransferMethod["_transfer_method"]{
+    return this._transfer_method;
   }
 
   public get properties(): ReturnProperties {
     return {
       id: this._id,
-      type: this._type,
-      is_enable: this._is_enable,
+      method: this._type,
       bank_account: this._bank_account["properties"],
-      created_at: this._created_at,
-      updated_at: this._updated_at,
+      transfer_method: this._transfer_method["properties"],
     } as const
   }
 }

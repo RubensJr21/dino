@@ -3,6 +3,7 @@ import IUseCase from "@core/shared/IUseCase";
 import { BankAccountNicknameIsAlreadyInUse, BankAccountUnknownError, isBankAccountNotFoundByNickname } from "@src/core/shared/errors/bank_account";
 import { IRepoBankAccount } from "@src/infrastructure/repositories/bank_account.repository";
 import { IRepoBankAccountTransferMethod } from "@src/infrastructure/repositories/bank_account_transfer_method.repository";
+import { IRepoTransferMethod } from "@src/infrastructure/repositories/transfer_method_type.repository";
 
 interface BankAccount_RegisterInput extends Pick<IBankAccount, "nickname"|"balance"> {
   type_of_bank_transfers: {
@@ -15,10 +16,12 @@ interface BankAccount_RegisterInput extends Pick<IBankAccount, "nickname"|"balan
 export default class RegisterBankAccount implements IUseCase<BankAccount_RegisterInput, BankAccount> {
   /**
    * @param {IRepoBankAccount} repo_ba Interface do repositório de BankAccount
+   * @param {IRepoTransferMethod} repo_tm Interface do repositório de TransferMethod
    * @param {IRepoBankAccountTransferMethod} repo_ba_tm Interface do repositório de BankAccountTransferMethod
    */
   constructor(
     private repo_ba: IRepoBankAccount,
+    private repo_tm: IRepoTransferMethod,
     private repo_ba_tm: IRepoBankAccountTransferMethod
   ){}
   /**
@@ -42,15 +45,19 @@ export default class RegisterBankAccount implements IUseCase<BankAccount_Registe
     try {
       const bank_account_created = this.repo_ba.create({
         ...input,
-        is_disabled: false
+        is_disabled: false,
       })
 
       // Quando um banco é adicionado é necessário popular a tabela de bank_account_transfer_method
       Object.entries(input.type_of_bank_transfers).forEach(([key, value]) => {
+        const transfer_method_created = this.repo_tm.create({
+          nickname: `${key} - ${bank_account_created.nickname}`,
+          is_disabled: value
+        })
         this.repo_ba_tm.create({
+          method: key,
           fk_id_bank_account: bank_account_created.id,
-          type: key,
-          is_enable: value
+          fk_id_transfer_method: transfer_method_created.id
         })
       })
 

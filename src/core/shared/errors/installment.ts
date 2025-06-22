@@ -1,8 +1,8 @@
 import { Installment } from "@src/core/entities/installment.entity";
 
 // https://typescript.tv/errors/#ts1196
-export class InstallmentItemValueNotFoundById extends Error {
-  readonly name: string = "InstallmentItemValueNotFoundById";
+export class InstallmentNotFoundById extends Error {
+  readonly name: string = "InstallmentNotFoundById";
   /**
    * @param {Installment["id"]} installment_item_value_id installment_item_value_id que gerou erro ao ser buscada
    */
@@ -14,17 +14,17 @@ export class InstallmentItemValueNotFoundById extends Error {
 }
 
 /**
- * Função que retorna se o objeto passado é um InstallmentItemValueNotFoundById
+ * Função que retorna se o objeto passado é um InstallmentNotFoundById
  * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is InstallmentItemValueNotFoundById} Retorna se o objeto é do tipo InstallmentItemValueNotFoundById
+ * @returns {error is InstallmentNotFoundById} Retorna se o objeto é do tipo InstallmentNotFoundById
  */
 // https://typescript.tv/errors/#ts1196
-export function isInstallmentItemValueNotFoundById(error: unknown): error is InstallmentItemValueNotFoundById {
-  return error instanceof InstallmentItemValueNotFoundById;
+export function isInstallmentNotFoundById(error: unknown): error is InstallmentNotFoundById {
+  return error instanceof InstallmentNotFoundById;
 }
 
-export class InstallmentItemValueUnknownError extends Error {
-  readonly name: string = "InstallmentItemValueUnknownError";
+export class InstallmentUnknownError extends Error {
+  readonly name: string = "InstallmentUnknownError";
   // eslint-disable-next-line jsdoc/require-jsdoc
   constructor(){
     super(`Installment not founded!`, {
@@ -34,12 +34,12 @@ export class InstallmentItemValueUnknownError extends Error {
 }
 
 /**
- * Função que retorna se o objeto passado é um InstallmentItemValueUnknownError
+ * Função que retorna se o objeto passado é um InstallmentUnknownError
  * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is InstallmentItemValueUnknownError} Retorna se o objeto é do tipo InstallmentItemValueUnknownError
+ * @returns {error is InstallmentUnknownError} Retorna se o objeto é do tipo InstallmentUnknownError
  */
 // https://typescript.tv/errors/#ts1196
-export function isInstallmentItemValueUnknownError(error: unknown): error is InstallmentItemValueUnknownError {
-  return error instanceof InstallmentItemValueUnknownError;
+export function isInstallmentUnknownError(error: unknown): error is InstallmentUnknownError {
+  return error instanceof InstallmentUnknownError;
 }
-// END InstallmentItemValueUnknownError Declaration
+// END InstallmentUnknownError Declaration

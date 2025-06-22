@@ -4,8 +4,10 @@ import { sqliteTable } from "drizzle-orm/sqlite-core";
 
 export const installment = sqliteTable("installment", {
   id: t.integer("id").primaryKey({autoIncrement: true}),
+  start_date: t.integer("start_date", { mode: "timestamp" }).notNull(),
   installments_number: t.integer("installments_number").notNull(),
-  total_amount: t.real("total_amount").notNull(),
-  created_at: t.text("created_at").default(sql`(CURRENT_DATE)`).notNull(),
-  updated_at: t.text("updated_at").default(sql`(CURRENT_DATE)`).$onUpdate(() => sql`(CURRENT_DATE)`).notNull()
+  // Guardado em centavos para garantir que o cálculo será feito corretamente
+  total_amount: t.integer("total_amount").notNull(),
+  created_at: t.integer("created_at", { mode: "timestamp" }).default(sql`(date('now','localtime'))`).notNull(),
+  updated_at: t.integer("updated_at", { mode: "timestamp" }).default(sql`(date('now','localtime'))`).$onUpdate(() => sql`(date('now','localtime'))`).notNull()
 })

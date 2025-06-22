@@ -34,15 +34,15 @@ export default class UpdateTransferMethodsBankAccount implements IUseCase<BankAc
 
       Object.entries(input.type_of_bank_transfers).forEach(([key, value]) => {
         const bk_tm = transfers_method_type.find(bk_tm => {
-          return bk_tm.type == key
+          return bk_tm.method == key
         })
         if(bk_tm){
           this.repo_ba_tm.update(
             bk_tm.id,
             {
+              method: key,
               fk_id_bank_account: bk_tm.bank_account.id,
-              is_enable: value,
-              type: key
+              fk_id_transfer_method: bk_tm.transfer_method.id,
             }
           )
         }

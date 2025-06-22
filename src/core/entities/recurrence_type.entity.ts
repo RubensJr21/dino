@@ -1,8 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import IEntityBase from "../shared/IEntityBase";
+import IEntityBase from "../shared/interfaces/IEntityBase";
 
-export interface IRecurrenceType extends IEntityBase{
-  readonly id: number;
+export interface IRecurrenceType extends IEntityBase {
   type: string
 }
 

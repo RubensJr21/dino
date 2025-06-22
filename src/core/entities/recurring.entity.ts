@@ -1,24 +1,25 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { IEntityWithDates } from "../shared/IEntityWithDates";
+import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
 import { ItemValue } from "./item_value.entity";
 import { RecurrenceType } from "./recurrence_type.entity";
 
 export interface IRecurring extends IEntityWithDates {
-  readonly id: number;
   is_disabled: boolean;
+  start_date: Date;
+  end_date?: Date;
   current_amount: number;
-  itens: ItemValue[];
   recurrence_type: RecurrenceType;
+  itens: ItemValue[];
 }
 
-interface ReturnProperties extends StrictOmit<IRecurring, "recurrence_type">{
-  is_disabled: boolean;
+interface ReturnProperties extends StrictOmit<IRecurring, "recurrence_type"> {
   recurrence_type: RecurrenceType["properties"]
 }
 
 export class Recurring implements IRecurring {
   private _id: IRecurring["id"];
-  private _is_disabled: IRecurring["is_disabled"];
+  private _start_date: IRecurring["start_date"];
+  private _end_date: IRecurring["end_date"];
   private _current_amount: IRecurring["current_amount"]
   private _recurrence_type: IRecurring["recurrence_type"];
   private _itens: ItemValue[];
@@ -27,15 +28,17 @@ export class Recurring implements IRecurring {
 
   constructor({
     id,
-    is_disabled,
+    start_date,
+    end_date,
     current_amount,
     recurrence_type,
     itens,
 		created_at,
     updated_at
-	}: IRecurring) {
+	}: StrictOmit<IRecurring, "is_disabled">) {
     this._id = id;
-    this._is_disabled = is_disabled;
+    this._start_date = start_date;
+    this._end_date = end_date;
     this._current_amount = current_amount;
     this._recurrence_type = recurrence_type;
     this._itens = itens;
@@ -47,14 +50,33 @@ export class Recurring implements IRecurring {
     return this._id;
   }
 
-  public get is_disabled(): Recurring["_is_disabled"] {
-    return this._is_disabled;
+  public get is_disabled(): IRecurring["is_disabled"] {
+    return this._end_date != undefined;
   }
-  public enabled(): void {
-    this._is_disabled = false;
+  public enable(): void {
+    if(this.end_date !== undefined){
+      // Não está HABILITADO
+      // start_date = new Date; end_date = undefined
+      this._start_date = new Date();
+      this._end_date = undefined;
+      return;
+    }
   }
   public disable(): void {
-    this._is_disabled = true;
+    if(this.end_date !== undefined){
+      // Está HABILITADO
+      // start_date = new Date; end_date = undefined
+      this._end_date = new Date();
+      return;
+    }
+  }
+
+  public get start_date(): Recurring["_start_date"] {
+    return this._start_date
+  }
+  
+  public get end_date(): Recurring["_end_date"] {
+    return this._end_date
   }
 
   public get current_amount(): Recurring["_current_amount"] {
@@ -84,6 +106,8 @@ export class Recurring implements IRecurring {
   get properties(): ReturnProperties {
 		return {
       id: this.id,
+      start_date: this._start_date,
+      end_date: this._end_date,
       current_amount: this.current_amount,
       itens: this.itens,
       is_disabled: this.is_disabled,

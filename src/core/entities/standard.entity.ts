@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { IEntityWithDates } from "../shared/IEntityWithDates";
+import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
 import { ItemValue } from "./item_value.entity";
 
 export interface IStandard extends IEntityWithDates {

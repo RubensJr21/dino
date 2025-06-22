@@ -1,8 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import { IEntityWithDates } from "../shared/IEntityWithDates";
+import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
 
 export interface IBankAccount extends IEntityWithDates {
-  readonly id: number;
   nickname: string;
   is_disabled: boolean;
   balance: number;

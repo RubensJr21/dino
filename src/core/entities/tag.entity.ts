@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/require-jsdoc */
-import IEntityBase from "../shared/IEntityBase";
+import IEntityBase from "../shared/interfaces/IEntityBase";
 
 export interface ITag extends IEntityBase {
 	description: string;
