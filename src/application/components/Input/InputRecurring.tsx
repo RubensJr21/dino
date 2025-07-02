@@ -1,111 +1,52 @@
-import { Picker } from "@react-native-picker/picker";
-import {
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
-import { StyleSheet, View } from "react-native";
-import { SegmentedButtons, useTheme } from "react-native-paper";
-
-import { recurrings_type } from "@src/application/_mocks/RecurringType";
-
-enum recurring_values {
-	not_recurring = "Não recorrente",
-	recurring = "É recorrente",
-}
-
-export type RECURRING_TYPE = keyof typeof recurring_values;
-
-const parameterButtons = Object.keys(recurring_values).map((key) => ({
-	value: key as RECURRING_TYPE,
-	label: recurring_values[key as keyof typeof recurring_values],
-}));
+import { Picker } from '@react-native-picker/picker';
+import { RecurrenceType } from "@src/core/entities/recurrence_type.entity";
+import { useRef, useState } from "react";
+import { useTheme } from 'react-native-paper';
 
 export interface InputRecurringTypeRef {
-	value: string;
-	type: string;
+  value: React.MutableRefObject<RecurrenceType["type"]>;
+  changeType: (text: RecurrenceType["type"]) => void;
 }
 
-export function useRefInputRecurring(): React.RefObject<InputRecurringTypeRef> {
-	return useRef<InputRecurringTypeRef>(null);
+// Puxar as informações de recorrência do banco de dados
+const recurrings_type = [
+  { label: "Semanalmente", value: "semanalmente" },
+  { label: "Mensalmente", value: "mensalmente" },
+  { label: "Anualmente", value: "anualmente" },
+];
+
+export function useRefInputRecurring(initialValue: RecurrenceType["type"]): InputRecurringTypeRef {
+  const ref = useRef<RecurrenceType["type"]>(initialValue);
+  const changeType = (text: RecurrenceType["type"]) => ref.current = text;
+  return {
+    value: ref,
+    changeType,
+  };
 }
 
 interface InputRecurringProps {
-	default_value?: RECURRING_TYPE;
+  refRecurring: InputRecurringTypeRef;
 }
+export default function InputRecurring({ refRecurring }: InputRecurringProps) {
+  const theme = useTheme();
+  const [selectedRecurrence, setSelectedRecurrence] = useState(refRecurring.value.current);
 
-export default forwardRef<InputRecurringTypeRef, InputRecurringProps>(
-	({ default_value: value_received }, ref) => {
-		const theme = useTheme();
-
-		const [segmentValue, setSegmentValue] = useState<RECURRING_TYPE>(
-			value_received ?? "not_recurring"
-		);
-
-		const [selectedType, setSelectedType] = useState<string>("java");
-
-		useImperativeHandle(ref, () => {
-			return {
-				value: segmentValue,
-				type: selectedType,
-			};
-		});
-
-		return (
-			<View style={styles.root_view}>
-				<SegmentedButtons
-					value={segmentValue}
-					onValueChange={(value) => {
-						setSegmentValue(value as RECURRING_TYPE);
-					}}
-					buttons={parameterButtons}
-					style={styles.segmented_buttons}
-				/>
-				{segmentValue == "recurring" ? (
-					<View
-						style={[
-							styles.picker_view,
-							{ backgroundColor: theme.colors.primary },
-						]}
-					>
-						<Picker
-							selectedValue={selectedType}
-							onValueChange={(itemValue, itemIndex) =>
-								setSelectedType(itemValue)
-							}
-							mode="dialog"
-							placeholder="Tipo da recorrência"
-							prompt=""
-						>
-							{recurrings_type.map((recurring_type, index, array) => {
-								return (
-									<Picker.Item
-										key={recurring_type.id}
-										label={recurring_type.type}
-										value={recurring_type.id}
-									/>
-								);
-							})}
-						</Picker>
-					</View>
-				) : null}
-			</View>
-		);
-	}
-);
-
-const styles = StyleSheet.create({
-	root_view: {
-		gap: 5, // Metade do valor do gap da página de create
-	},
-	text_label: {
-		fontSize: 16,
-		textAlign: "center",
-	},
-	picker_view: {
-		backgroundColor: "red",
-		borderRadius: 50,
-	},
-	segmented_buttons: {},
-});
+  return (
+    <Picker
+      style={{
+        color: theme.colors.onSurface,
+        backgroundColor: theme.colors.elevation.level4,
+      }}
+      dropdownIconColor={theme.colors.onSurface}
+      selectedValue={selectedRecurrence}
+      onValueChange={(itemValue, itemIndex) => {
+        refRecurring.changeType(itemValue)
+        setSelectedRecurrence(itemValue)
+      }
+      }>
+      {recurrings_type.map((item) => (
+        <Picker.Item key={item.value} label={item.label} value={item.value} />
+      ))}
+    </Picker>
+  );
+}

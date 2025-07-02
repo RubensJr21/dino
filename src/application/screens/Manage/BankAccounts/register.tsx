@@ -11,6 +11,8 @@ import { TransferMethods } from "@src/core/shared/types/transfer_methods";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { Button, Text } from "react-native-paper";
 
+export type RegisterParams = undefined
+
 function generateInitialValuesToggles(): Record<TransferMethods, boolean> {
   return Object.fromEntries(
     Object.entries(TransferMethods).map(([key, value]) => [value, true])
@@ -18,41 +20,24 @@ function generateInitialValuesToggles(): Record<TransferMethods, boolean> {
 }
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { AlertButton } from "react-native";
 import { BankAccountsStackParamList } from "./routes";
 
 type Props = NativeStackScreenProps<BankAccountsStackParamList, 'Register'>;
 
-function GetOutPage(onExit: AlertButton["onPress"], onContinue: AlertButton["onPress"]) {
-      Alert.alert("Deseja adicionar uma nova conta bancária?", undefined, [
-        {
-          text: "Não",
-          onPress: onExit,
-          style: "destructive",
-        },
-        {
-          text: "Sim",
-          // eslint-disable-next-line jsdoc/require-jsdoc
-          onPress: onContinue,
-          style: "cancel",
-        }
-      ]);
-    }
-
 export default function Register({ route, navigation }: Props) {
-  const inputBankNameRef = useRefInputBankName();
-  const inputCurrencyRef = useRefInputCurrency();
+  var inputBankNameRef = useRefInputBankName();
+  var inputCurrencyRef = useRefInputCurrency();
   const togglesRef = createTogglesRef();
   
 	const handleButton = async (): Promise<BankAccount | undefined> => {
-    const nickname = inputBankNameRef.current?.value;
-    const balance = inputCurrencyRef.current?.value;
+    const nickname = inputBankNameRef.bank_name.current;
+    const balance = inputCurrencyRef.currencyRef.current;
 
     if(nickname === undefined || nickname === "") {
       Alert.alert("Por favor, preencha o campo de nome da conta.");
       return;
     }
-    if(balance === undefined || balance === "") {
+    if(balance === undefined) {
       Alert.alert("Por favor, preencha o campo de valor inicial.");
       return;
     }
@@ -74,13 +59,6 @@ export default function Register({ route, navigation }: Props) {
 
       Alert.alert("Erro ao registrar conta bancária.");
       return;
-    } finally {
-      GetOutPage(
-        () => navigation.goBack(),
-        () => {
-          // TODO: Limpar campos e valores
-        }
-      )
     }
 	};
 
@@ -89,15 +67,10 @@ export default function Register({ route, navigation }: Props) {
 			<ScrollView>
 				<TitlePage>Registrar conta bancária</TitlePage>
 				<View style={styles.view_form}>
-          <InputBankName
-            label="Nickname para conta:"
-            placeholder="Digite o nome da conta"
-            inputMode="text"
-            ref={inputBankNameRef}
-          />
+          <InputBankName refBankName={inputBankNameRef} />
           <InputCurrency
-            ref={inputCurrencyRef}
             label="Valor inicial da conta:"
+            refCurrency={inputCurrencyRef}
           />
           
           <View style={styles.view_transfer_methods}>
@@ -114,15 +87,15 @@ export default function Register({ route, navigation }: Props) {
           </View>
           <RegisterButton
             onPress={async () => {
-              var bank_account!: BankAccount;
               const result = await handleButton();
               if(result !== undefined) {
-                bank_account = result;
                 Alert.alert("Conta bancária registrada com sucesso!");
-                return result;
+                // Atualiza a lista de contas bancárias com a nova conta criada
+                navigation.popTo("Home", {
+                  last_bank_account_modified: result.nickname
+                });
               } else {
                 Alert.alert("Erro ao registrar conta bancária.");
-                return;
               }
             }}
           />

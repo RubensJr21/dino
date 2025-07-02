@@ -1,82 +1,89 @@
-import { Currency } from "@application/classes/Currency";
 import {
   forwardRef,
   useEffect,
-  useImperativeHandle,
   useRef,
-  useState,
+  useState
 } from "react";
 import { Keyboard, TextInput as RNTextInput, StyleSheet } from "react-native";
 import { Text, TextInputProps } from "react-native-paper";
 import TextCurrency from "./TextCurrency";
 
 export interface InputCurrencyTypeRef {
-	value: string;
+	currencyRef: React.MutableRefObject<number>;
+  changeCurrency: (currency: number) => void;
 }
 
-export function useRefInputCurrency(): React.RefObject<InputCurrencyTypeRef> {
-	return useRef<InputCurrencyTypeRef>(null);
+export function useRefInputCurrency(initialValue: number = 0): InputCurrencyTypeRef {
+  const currencyRef = useRef<number>(initialValue);
+  const changeCurrency = (currency: number) => currencyRef.current = currency;
+  return {
+    currencyRef,
+    changeCurrency,
+  };
 }
 
-interface InputCurrencyProps {
-	value?: number | string;
+export interface InputCurrencyProps {
   label: string;
+	refCurrency: InputCurrencyTypeRef;
 }
 
-export default forwardRef<InputCurrencyTypeRef, InputCurrencyProps>(
-	({ value: value_received, label }, ref) => {
-		const inputRef = useRef<RNTextInput>(null);
+function parseStringToNumber(value: string): number {
+  if (!value) return 0;
+  const parsedValue = parseInt(value);
+  return isNaN(parsedValue) ? 0 : parsedValue;
+}
+type ObjectPosition = { start: number; end: number };
 
-		value_received = `${Number(value_received) * 100}`;
+function parseObjectPosition(text: string): ObjectPosition {
+  const length = text.length;
+  return {
+    start: length + 1,
+    end: length + 1,
+  };
+}
 
-		const [value, setValue] = useState<string>(value_received ?? "");
-		const [position, setPosition] = useState({
-			start: 0,
-			end: 0,
-		});
+export default function InputCurrency({ refCurrency, label }: InputCurrencyProps) {
+  const inputRef = useRef<RNTextInput>(null);
 
-		useImperativeHandle(ref, () => {
-			const c: Currency = new Currency(value);
-			return {
-				value: c.formattedValue,
-			};
-		});
+  const [value, setValue] = useState<number>(refCurrency.currencyRef.current);
+  const [position, setPosition] = useState<ObjectPosition>(parseObjectPosition(value.toString()));
 
-		useEffect(() => {
-			const hideListener = Keyboard.addListener("keyboardDidHide", () =>
-				inputRef.current?.blur()
-			);
+  useEffect(() => {
+    const hideListener = Keyboard.addListener("keyboardDidHide", () =>
+      inputRef.current?.blur()
+    );
 
-			return () => hideListener.remove();
-		}, []);
+    return () => hideListener.remove();
+  }, []);
 
-		return (
-			<>
-        <Text
-          children={label}
-          style={styles.label}
-          variant="titleLarge"
-        />
-				<TextCurrency
-					value={value}
-					onPress={() => inputRef.current?.focus()}
-				/>
-				<HideTextInput
-					ref={inputRef}
-					value={value}
-					onChangeText={(text) => {
-						setValue(text.replace(/\D/g, ""));
-						setPosition({ start: text.length, end: text.length });
-					}}
-					onFocus={() => {
-						setPosition({ start: value.length, end: value.length });
-					}}
-					position={position}
-				/>
-			</>
-		);
-	}
-);
+  return (
+    <>
+      <Text
+        children={label}
+        style={styles.label}
+        variant="titleLarge"
+      />
+      <TextCurrency
+        value={value}
+        onPress={() => inputRef.current?.focus()}
+      />
+      <HideTextInput
+        ref={inputRef}
+        value={value.toString()}
+        onChangeText={(text) => {
+          const value = parseStringToNumber(text.replace(/\D/g, ""))
+          refCurrency.changeCurrency(value);
+          setValue(value);
+          setPosition(parseObjectPosition(text));
+        }}
+        onFocus={() => {
+          setPosition(parseObjectPosition(value.toString()));
+        }}
+        position={position}
+      />
+    </>
+  );
+};
 
 interface HideTextInputProps extends TextInputProps {
 	position: { start: number; end: number };
@@ -87,7 +94,7 @@ const HideTextInput = forwardRef<RNTextInput, HideTextInputProps>(
 		return (
 			<RNTextInput
 				ref={ref}
-				value={value}
+				value={value?.toString() ?? ""}
 				onChangeText={onChangeText}
 				onFocus={onFocus}
 				style={[styles.hideInput, styles.show_color]}

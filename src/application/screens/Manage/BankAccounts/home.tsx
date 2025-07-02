@@ -1,11 +1,10 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import BaseView from "@src/application/components/BaseView";
-import { VSpace } from "@src/application/components/core";
 import { useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import {
-  Divider,
   Searchbar,
+  Text,
   useTheme
 } from "react-native-paper";
 import { EditParams } from "./edit";
@@ -14,14 +13,28 @@ import { BankAccount } from "@src/core/entities/bank_account.entity";
 
 import BankAccountApi from "@src/application/api/bank-account.api";
 import Fab from "@src/application/components/Fab";
+import { FlatListDivider } from "@src/application/components/FlatList/FlatListDivider";
 import { AccountBankListItem } from "@src/application/screens/Manage/BankAccounts/components/AccountBankListItem";
 import { BankAccountsStackParamList } from "./routes";
+
+export interface HomeParams {
+  last_bank_account_modified?: string;
+}
 
 type Props = NativeStackScreenProps<BankAccountsStackParamList, 'Home'>;
 
 export default function BankAccounts({route, navigation}: Props){
 	const theme = useTheme();
   
+  useEffect(() => {
+    if(route.params?.last_bank_account_modified) {
+      // Se a rota foi chamada com o parâmetro last_bank_account_modified, atualiza a lista de contas bancárias
+      BankAccountApi.list_all.execute().then((accounts) => {
+        setBank_accounts(accounts);
+      });
+    }
+  }, [route.params?.last_bank_account_modified]);
+
   const [bank_accounts, setBank_accounts] = useState<BankAccount[]>([]);
 
 	const [searchQuery, setSearchQuery] = useState("");
@@ -41,11 +54,11 @@ export default function BankAccounts({route, navigation}: Props){
 	}, [searchQuery]);
 
 	const navigateToAccountsBankCreate = () => {
-    navigation.navigate("Register")
+    navigation.navigate("Register");
   };
 
 	const navigateToAccountsBankEdit = (params: EditParams) => {
-    navigation.navigate("Edit", params)
+    navigation.navigate("Edit", params);
   }
 
 	return (
@@ -56,9 +69,8 @@ export default function BankAccounts({route, navigation}: Props){
 				value={searchQuery}
 				elevation={5}
 			/>
-			<VSpace size={5} />
 			<FlatList
-				style={{}}
+				style={styles.flatlist_style}
 				contentContainerStyle={{}}
 				numColumns={1}
 				horizontal={false}
@@ -73,21 +85,10 @@ export default function BankAccounts({route, navigation}: Props){
 						navigateToReportsPage={() => {}}
 					/>
 				)}
-				keyExtractor={(item) => `${item.id}`}
-				// Adiciona espaçamento de tamanho 5 na parte de cima do FlatList
-				// ListHeaderComponent={<VSpace size={5} />}
-				// Adiciona espaçamento de tamanho 5 na parte de baixo do FlatList
-				ListFooterComponent={<VSpace size={50} />}
-				ItemSeparatorComponent={() => {
-					const size = 7;
-					return (
-						<>
-							<VSpace size={size} />
-							<Divider />
-							<VSpace size={size} />
-						</>
-					);
-				}}
+				ListEmptyComponent={<Text style={{ textAlign: "center", marginTop: 20 }}>Nenhuma conta bancária encontrada.</Text>}
+        keyExtractor={(item) => `${item.id}`}
+				ListFooterComponent={<View style={{height: 50}} />}
+				ItemSeparatorComponent={() => <FlatListDivider />}
 			/>
 			<Fab
         icon="plus"
@@ -96,3 +97,10 @@ export default function BankAccounts({route, navigation}: Props){
 		</BaseView>
 	);
 }
+
+const styles = StyleSheet.create({
+  flatlist_style: {
+    marginTop: 10,
+    paddingBottom: 50
+  }
+});

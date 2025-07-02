@@ -12,8 +12,8 @@ export default function Home({ route, navigation }: Props) {
     <BaseView>
       <TitlePage variant="headlineMedium">Home</TitlePage>
       <View>
-        <Button onPress={() => navigation.navigate("Incomes")}>Recebimentos</Button>
-        <Button onPress={() => navigation.navigate("Expenses")}>Gastos</Button>
+        <Button onPress={() => navigation.navigate("Receipts")}>Recebimentos</Button>
+        <Button onPress={() => navigation.navigate("Payments")}>Gastos</Button>
       </View>
     </BaseView>
   );

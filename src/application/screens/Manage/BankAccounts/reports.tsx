@@ -1,11 +1,10 @@
 import { useCallback } from "react";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useTheme } from "react-native-paper";
 
 import BaseView from "@src/application/components/BaseView";
-import { VSpace } from "@src/application/components/core";
-import FlatListCard from "@src/application/components/FlatListCard";
+import FlatListCard from "@src/application/components/FlatList/FlatListCard";
 
 import { getRandomInt } from "@src/application/utils/math";
 
@@ -54,9 +53,9 @@ export default function AccountsBankReports({
 				)}
 				keyExtractor={(item) => item.id}
 				// Adiciona espaçamento de tamanho 5 na parte de cima do FlatList
-				ListHeaderComponent={<VSpace size={5} />}
+				ListHeaderComponent={<View style={{height: 5}} />}
 				// Adiciona espaçamento de tamanho 5 na parte de baixo do FlatList
-				ListFooterComponent={<VSpace size={5} />}
+				ListFooterComponent={<View style={{height: 5}} />}
 			/>
 		</BaseView>
 	);

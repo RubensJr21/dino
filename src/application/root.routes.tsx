@@ -3,18 +3,18 @@ import React from 'react';
 
 export type RootTabParamList = {
   Home: undefined;
-  Incomes: undefined;
-  Expenses: undefined;
+  Receipts: undefined;
+  Payments: undefined;
   Manage: undefined;
 }
 
 const Drawer = createDrawerNavigator<RootTabParamList>();
 
 import { MdiIcons } from './components/ChooseIcon';
-import Expenses from './screens/Expenses';
 import Home from './screens/Home';
-import Incomes from './screens/Incomes';
 import Manage from './screens/Manage';
+import Payments from './screens/Payments';
+import Receipts from './screens/Receipts';
 
 export default function DrawerRoutes() {
   return (
@@ -39,8 +39,8 @@ export default function DrawerRoutes() {
         }}
       />
       <Drawer.Screen
-        name="Incomes"
-        component={Incomes}
+        name="Receipts"
+        component={Receipts}
         options={{
           title: 'Recebimentos',
           drawerIcon: (props) => (
@@ -52,8 +52,8 @@ export default function DrawerRoutes() {
         }}
       />
       <Drawer.Screen
-        name="Expenses"
-        component={Expenses}
+        name="Payments"
+        component={Payments}
         options={{
           title: 'Pagamentos',
           drawerIcon: (props) => (

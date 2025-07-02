@@ -36,6 +36,7 @@
 1. [Adicionar função ao prototype da String](https://stackoverflow.com/a/39877446)
 1. [Acessor Decorators (usado no elemento TextInputCurrency)](https://www.typescriptlang.org/docs/handbook/decorators.html#accessor-decorators)
 1. [useImperativeHandle - Problema de elemento filho devolver elemento para o elemento Pai](https://youtu.be/lA8o3kUl1TA?t=1914)
+1. [react-native-picker](https://github.com/react-native-picker/picker?tab=readme-ov-file#usage)
 1. [Estilizar elemento Picker (@react-native-picker/picker)](https://pt.stackoverflow.com/a/440997)
 
 ## (expo)
@@ -46,6 +47,7 @@
 1. [Use Custom expo-router entrypoint](https://docs.expo.dev/router/installation/#custom-entry-point-to-initialize-and-load)
 1. [Develop>tools (expo-cli)](https://docs.expo.dev/develop/tools/#expo-cli)
 1. [expo-cli details](https://docs.expo.dev/more/expo-cli/)
+1. [@react-native-picker/picker](https://docs.expo.dev/versions/latest/sdk/picker/)
 
 ## (react-native)
 
@@ -53,6 +55,12 @@
 1. [Guide Configuration StatusBar](https://docs.expo.dev/guides/configuring-statusbar/)
 1. [Status Bar in _layout has no effect](https://github.com/expo/router/issues/754#issuecomment-2220037302)
 1. [Documentation StatusBar - StatusBarStyle](https://reactnative.dev/docs/statusbar#statusbarstyle)
+
+## (react)
+
+1. [Referenciando valores com refs - learn](https://react.dev/learn/referencing-values-with-refs)
+1. [useRef: Referenciando valores com refs - reference](https://react.dev/reference/react/useRef#referencing-a-value-with-a-ref)
+1. [](https://pt-br.legacy.reactjs.org/tutorial/tutorial.html#:~:text=Se%20as%20duas%20chaves%20combinarem%2C%20o%20componente,e%20recriado%20com%20um%20novo%20estado%20(state).)
 
 ## (Libs)
 
@@ -76,9 +84,9 @@
 ## Typescript
 
 1. [Omit tipado](https://stackoverflow.com/a/79135663)
-2. [Enum - Reverse mappings](https://www.typescriptlang.org/docs/handbook/enums.html#reverse-mappings)
-3. [Enums at compile time](https://www.typescriptlang.org/docs/handbook/enums.html#enums-at-compile-time)
-4. [O que acontece quando um error é lançado dentro de uma função assíncrona?](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/async_function)
+1. [Enum - Reverse mappings](https://www.typescriptlang.org/docs/handbook/enums.html#reverse-mappings)
+1. [Enums at compile time](https://www.typescriptlang.org/docs/handbook/enums.html#enums-at-compile-time)
+1. [O que acontece quando um error é lançado dentro de uma função assíncrona?](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/async_function)
 
 > Resolve problema do Omit não estar tipado e o segundo parâmetro não ter Intellisense
 
@@ -117,3 +125,6 @@
 1. [https://www.youtube.com/watch?v=gH9Vvq6WbnA&t=1162s&ab_channel=Rocketseat](https://www.youtube.com/watch?v=gH9Vvq6WbnA&t=1162s&ab_channel=Rocketseat)
 1. [Navegação em guias](https://www.youtube.com/shorts/k5M5wBjaH5s)
 1. [Eu recebo o aviso "Non-serializable values were found in the navigation state"](https://reactnavigation.org/docs/troubleshooting/#i-get-the-warning-non-serializable-values-were-found-in-the-navigation-state)
+1. [Navigation object reference](https://reactnavigation.org/docs/navigation-object/)
+1. [I get the warning "Non-serializable values were found in the navigation state"](https://reactnavigation.org/docs/troubleshooting/#i-get-the-warning-non-serializable-values-were-found-in-the-navigation-state)
+1. [Passing parameters to routes - Passing params to a previous screen](https://reactnavigation.org/docs/params/#passing-params-to-a-previous-screen)

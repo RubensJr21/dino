@@ -1,7 +1,7 @@
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
 
-Project "Dinô - Update 7" {
+Project "Dinô - Update 8" {
   datatype: 'SQLITE'
   Note: 'Projeto desenvolvido para o Trabalho de conclusão de curso.'
 }
@@ -18,9 +18,9 @@ Table transfer_method {
   Para bank_account_transfer_method: "Pix - <bankaccount.nickname>".
   Para credit_card: "<Apelido do cartão de crédito>"
   ''']
-  is_disabled boolean [not null, note: "default = false"]
-  created_at date [not null, note: "default = date('now','localtime')"]
-  updated_at date [not null, note: "default = date('now','localtime')"]
+  is_disabled boolean [not null, default: false ]
+  created_at date [not null, default: "(date('now','localtime'))"]
+  updated_at date [not null, default: "(date('now','localtime'))"]
 }
 
 Table item_value {
@@ -34,20 +34,19 @@ Table item_value {
   amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
   // Indica se a transferência já foi executada.
   // Se um recebimento foi recebido e se um pagamento foi pago
-  was_processed boolean [not null, note: '''default = false
-  Indica se a transferência já foi executada
+  was_processed boolean [not null, default: false, note: '''Indica se a transferência já foi executada
   Se um recebimento foi recebido e se um pagamento foi pago''']
   fk_id_transfer_method integer [not null, ref: > transfer_method.id]
   fk_id_tag integer [not null, ref: > tag.id]
-  created_at date [not null, note: "default = date('now','localtime')"]
-  updated_at date [not null, note: "default = date('now','localtime')"]
+  created_at date [not null, default: "(date('now','localtime'))"]
+  updated_at date [not null, default: "(date('now','localtime'))"]
 }
 
 Table standard {
   id integer [pk, increment]
   fk_id_item_value integer [not null, ref: - item_value.id]
-  created_at date [not null, note: "default = date('now','localtime')"]
-  updated_at date [not null, note: "default = date('now','localtime')"]
+  created_at date [not null, default: "(date('now','localtime'))"]
+  updated_at date [not null, default: "(date('now','localtime'))"]
 }
 
 // TABELA PREENCHIDA PELO SISTEMA
@@ -62,8 +61,8 @@ Table recurring {
   end_date date
   current_amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
   fk_id_recurrence_type integer [not null, ref: > recurrence_type.id]
-  created_at date [not null, note: "default = date('now','localtime')"]
-  updated_at date [not null, note: "default = date('now','localtime')"]
+  created_at date [not null, default: "(date('now','localtime'))"]
+  updated_at date [not null, default: "(date('now','localtime'))"]
 }
 
 Table recurring_item_value {
@@ -77,8 +76,8 @@ Table installment {
   start_date date [not null]
   installments_number integer [not null]
   total_amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
-  created_at date [not null, note: "default = date('now','localtime')"]
-  updated_at date [not null, note: "default = date('now','localtime')"]
+  created_at date [not null, default: "(date('now','localtime'))"]
+  updated_at date [not null, default: "(date('now','localtime'))"]
 }
 
 Table installment_item_value {
@@ -90,18 +89,11 @@ Table installment_item_value {
 Table bank_account {
   id integer [pk, increment]
   nickname text [not null]
-  is_disabled boolean [not null, note: "default = false"]
+  is_disabled boolean [not null, default: "false"]
   balance integer [not null, note: "Saldo de uma conta bancária\nGuardado em centavos para garantir que o cálculo será feito corretamente"]
-  created_at date [not null, note: "default = date('now','localtime')"]
-  updated_at date [not null, note: "default = date('now','localtime')"]
+  created_at date [not null, default: "(date('now','localtime'))"]
+  updated_at date [not null, default: "(date('now','localtime'))"]
 }
-
-// // TABELA PREENCHIDA PELO SISTEMA
-// // Para fazer uma melhor conexão dos tipos de métodos de transferência de contas bancárias
-// Table bank_account_transfer_method_type {
-//   id integer [pk, increment]
-//   type text [note: "['Pix', 'Débito', 'Transferência Bancária']"]
-// }
 
 Table bank_account_transfer_method {
   id integer [pk, increment]

@@ -14,8 +14,8 @@ import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { Button, Text } from "react-native-paper";
 
 export interface EditParams {
-	id: string;
-	nickname: string;
+  id: number;
+  nickname: string;
   transfer_methods: string;
 }
 
@@ -42,22 +42,22 @@ export default function Edit({route, navigation}: Props) {
     transfer_methods
   } = route.params
 
-	const inputBankNameRef = useRefInputBankName();
+	const inputBankNameRef = useRefInputBankName(nickname);
 
   const togglesRef = createTogglesRef();
   const initialValuesToggles = parseTransferMethods(transfer_methods);
 
 	const handleButton = async (): Promise<BankAccount | undefined> => {
-    const nickname = inputBankNameRef.current?.value;
+    const new_nickname = inputBankNameRef.bank_name.current;
 
-    if(nickname === undefined || nickname === "") {
+    if(new_nickname === undefined || new_nickname === "") {
       Alert.alert("Por favor, preencha o campo de nome da conta.");
       return;
     }
-    try {      
+    try {
       let bank_account = await BankAccountApi.update_nickname.execute({
-        id: Number(id),
-        new_nickname: nickname
+        id,
+        new_nickname
       })
 
       bank_account = await BankAccountApi.update_transfer_methods.execute({
@@ -71,12 +71,7 @@ export default function Edit({route, navigation}: Props) {
         Alert.alert("Esse nome de conta já está em uso.");
         return;
       }
-
-      Alert.alert("Erro ao registrar conta bancária.");
       console.error("Error:", error);
-      return;
-    } finally {
-      navigation.goBack()
     }
   };
 
@@ -88,11 +83,7 @@ export default function Edit({route, navigation}: Props) {
 				</TitlePage>
 				<View style={styles.view_form}>
 					<InputBankName
-						ref={inputBankNameRef}
-						value={nickname}
-						label="Nickname para conta:"
-						placeholder="Digite o nome da conta"
-						inputMode="text"
+            refBankName={inputBankNameRef}
 					/>
 
           <View style={styles.view_transfer_methods}>
@@ -109,15 +100,14 @@ export default function Edit({route, navigation}: Props) {
           </View>
 
 					<EditButton onPress={async () => {
-              var bank_account!: BankAccount;
               const result = await handleButton();
               if(result !== undefined) {
-                bank_account = result;
                 Alert.alert("Conta bancária atualizada com sucesso!");
-                return result;
+                navigation.popTo("Home", {
+                  last_bank_account_modified: result.nickname
+                });
               } else {
                 Alert.alert("Erro ao atualizar conta bancária.");
-                return;
               }
             }} />
 				</View>

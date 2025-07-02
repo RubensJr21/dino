@@ -1,46 +1,42 @@
 import {
-	forwardRef,
-	useImperativeHandle,
-	useRef,
-	useState,
+  useRef,
+  useState
 } from "react";
 import { View } from "react-native";
-import { TextInput } from "react-native-paper";
+import { TextInput } from 'react-native-paper';
 
 export interface InputDescriptionTypeRef {
-	value: string;
+  value: React.MutableRefObject<string>;
+  changeDescription: (text: string) => void;
 }
 
-export function useRefInputDescription(): React.RefObject<InputDescriptionTypeRef> {
-	return useRef<InputDescriptionTypeRef>(null);
+export function useRefInputDescription(initialValue: string = ""): InputDescriptionTypeRef {
+  const ref = useRef<string>(initialValue)
+  const changeDescription = (text: string) => ref.current = text;
+  return {
+    value: ref,
+    changeDescription,
+  };
 }
 
-interface InputDescriptionProps {
-	value?: string;
+export interface InputDescriptionProps {
+  placeholder: string;
+  refDescription: InputDescriptionTypeRef;
 }
 
-export default forwardRef<InputDescriptionTypeRef, InputDescriptionProps>(
-	({ value: value_received }, ref) => {
-		const [description, setDescription] = useState<string>(
-			value_received || ""
-		);
+export default function InputDescription({ placeholder, refDescription }: InputDescriptionProps) {
+  const [description, setDescription] = useState<string>(refDescription.value.current);
 
-		useImperativeHandle(ref, () => {
-			return {
-				value: description,
-			};
-		});
-
-		return (
-			<View>
-				<TextInput
-					mode="outlined"
-					label="Descrição:"
-					placeholder="De onde veio esse valor?"
-					value={description}
-					onChangeText={(text) => setDescription(text)}
-				/>
-			</View>
-		);
-	}
-);
+  return (
+    <View>
+      <TextInput
+        placeholder={placeholder}
+        value={description}
+        onChangeText={(text) => {
+          refDescription.changeDescription(text);
+          setDescription(text)
+        }}
+      />
+    </View>
+  );
+}

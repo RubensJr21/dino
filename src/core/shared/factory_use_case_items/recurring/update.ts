@@ -3,8 +3,6 @@ import { Recurring } from "@src/core/entities/recurring.entity";
 import { IRepoRecurring } from "../../interfaces/IRepositoryRecurring";
 import { TypeOfVariants } from "../../types/variants_items";
 
-// ATTENTION: Para Recurring o que pode ser atualizado é: start_date, end_date, current_amount
-
 interface UpdateRecurring_Input {
   id: number;
   data: StrictOmit<Recurring, "id">
@@ -33,11 +31,8 @@ export default abstract class UseCase_Recurring_Update implements IUseCase<Updat
       updated_at,
       itens,
       ...data
-    } = {
-      ...input.data.properties,
-      fk_id_recurrence_type: input.data.recurrence_type.id
-    }
+    } = input.data.properties
 
-    return this.repo_rec.update(input.id, data)
+    return this.repo_rec.update(id, data)
   }
 }

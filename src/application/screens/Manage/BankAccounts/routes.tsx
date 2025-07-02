@@ -1,11 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Edit, { EditParams } from "./edit";
-import Home from "./home";
-import Register from "./register";
+import Home, { HomeParams } from "./home";
+import Register, { RegisterParams } from "./register";
 
 export type BankAccountsStackParamList = {
-  Home: undefined;
-  Register: undefined;
+  Home: HomeParams;
+  Register: RegisterParams;
   Edit: EditParams;
 }
 

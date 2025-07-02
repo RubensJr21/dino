@@ -91,10 +91,10 @@ export function AccountBankListItem({
         onPress={async () => {
           const transfers_method_type = await BankAccountApi.list_all_transfers_methods_type.execute({id: bank_account.id})
           navigateToEditPage({
-            id: `${bank_account.id}`,
-            nickname: bank_account.nickname,
-            transfer_methods: serializeTransferMethodsToEditPage(transfers_method_type)
-          });
+              id: bank_account.id,
+              nickname: bank_account.nickname,
+              transfer_methods: serializeTransferMethodsToEditPage(transfers_method_type)
+            });
         }}
       />
       <ListItem

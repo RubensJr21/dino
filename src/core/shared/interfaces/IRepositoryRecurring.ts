@@ -3,7 +3,7 @@ import { ItemValue } from "../../entities/item_value.entity";
 import { Recurring } from "../../entities/recurring.entity";
 
 export type IRepoRecurringCreateProps = StrictOmit<MRecurring, "id" | "is_disabled" | "created_at" | "updated_at">;
-export type IRepoRecurringUpdateProps = StrictOmit<MRecurring, "id" | "itens" | "created_at" | "updated_at">
+export type IRepoRecurringUpdateProps = StrictOmit<MRecurring, "id" | "itens" | "fk_id_recurrence_type" | "created_at" | "updated_at">
 
 export interface IRepoRecurring {
   /**

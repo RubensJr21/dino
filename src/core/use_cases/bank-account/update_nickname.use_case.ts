@@ -33,6 +33,8 @@ export default class UpdateNicknameBankAccount implements IUseCase<UpdateNicknam
         throw error
       }
     }
+
+    console.warn("Não tem conta com esse nome.")
     
     try {
       const bank_account = this.repo_ba.findById(input.id)
@@ -45,6 +47,9 @@ export default class UpdateNicknameBankAccount implements IUseCase<UpdateNicknam
       if(isBankAccountNotFoundById(error)){
         throw error
       }
+
+      console.log(error)
+
       throw new BankAccountUnknownError()
     }
   }

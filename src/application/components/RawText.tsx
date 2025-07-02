@@ -2,7 +2,7 @@ import { StyleProp, StyleSheet, TextStyle } from "react-native";
 import { Text } from "react-native-paper";
 
 interface RawTextProps {
-	children: string | string[];
+	children: React.ReactNode;
 	style?: StyleProp<TextStyle>;
 }
 

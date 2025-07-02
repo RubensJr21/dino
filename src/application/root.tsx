@@ -22,10 +22,6 @@ import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 export default function Root() {
   const { success, error } = useMigrations(db, migrations);
   useDrizzleStudio(expoDb);
-  // TODO: Usar a Suspense API para mostrar:
-  // 		 error: exibir algum alerta
-  // 		 !success: está carregando ActivityIndicator
-  // 		 success: seguir com a aplicação
 
   const scheme: ColorSchemeName = useColorScheme();
   const isDark: boolean = scheme === "dark";
@@ -33,27 +29,27 @@ export default function Root() {
   return (
     <NavigationContainer>
       <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
-            <SafeAreaProvider>
-              <GestureHandlerRootView>
-                <PaperProvider
-                  theme={isDark ? MD3DarkTheme : MD3LightTheme}
-                  settings={{
-                    icon: ({ name, color, size, direction, testID }) => (
-                      <MdiIcons
-                        name={name as MdiNamesIcon}
-                        color={color}
-                        size={size}
-                        testID={testID}
-                      />
-                    ),
-                  }}
-                >
-                  <RootRoutes />
-                </PaperProvider>
-                <StatusBar barStyle={"default"} />
-              </GestureHandlerRootView>
-            </SafeAreaProvider>
-          </ThemeProvider>
+        <SafeAreaProvider>
+          <GestureHandlerRootView>
+            <PaperProvider
+              theme={isDark ? MD3DarkTheme : MD3LightTheme}
+              settings={{
+                icon: ({ name, color, size, direction, testID }) => (
+                  <MdiIcons
+                    name={name as MdiNamesIcon}
+                    color={color}
+                    size={size}
+                    testID={testID}
+                  />
+                ),
+              }}
+            >
+              <RootRoutes />
+            </PaperProvider>
+            <StatusBar barStyle={"default"} />
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
+      </ThemeProvider>
     </NavigationContainer>
   );
 }

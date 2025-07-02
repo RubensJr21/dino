@@ -1,4 +1,3 @@
-import { Currency } from "@application/classes/Currency";
 import { RawText } from "@src/application/components/RawText";
 import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import { useTheme } from "react-native-paper";
@@ -7,14 +6,15 @@ const BASE_SIZE = 1;
 const EM = 22;
 
 interface TextCurrencyProps {
-	value: string;
+	value: number;
 	onPress: () => void;
 }
 
 export default function TextCurrency({ value, onPress }: TextCurrencyProps) {
 	const theme = useTheme();
 
-	const currency: Currency = new Currency(value);
+  const unit = Math.trunc(value / 100);
+  const cents = (value % 100).toString().padStart(2, '0');;
 
 	return (
 		<TouchableWithoutFeedback onPress={onPress}>
@@ -25,8 +25,8 @@ export default function TextCurrency({ value, onPress }: TextCurrencyProps) {
 				]}
 			>
 				<RawText style={styles.rt_moneySign}>R$</RawText>
-				<RawText style={styles.rt_beforeComma}>{currency.units}</RawText>
-				<RawText style={styles.rt_afterComma}>{currency.cents}</RawText>
+				<RawText style={styles.rt_beforeComma}>{unit}</RawText>
+				<RawText style={styles.rt_afterComma}>{cents}</RawText>
 			</View>
 		</TouchableWithoutFeedback>
 	);

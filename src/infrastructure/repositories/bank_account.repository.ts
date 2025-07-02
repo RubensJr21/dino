@@ -1,8 +1,7 @@
 import { BankAccount } from "@src/core/entities/bank_account.entity";
 import { MBankAccount } from "@src/core/models/bank_account.model";
 import { BankAccountNotFoundByNickname } from "@src/core/shared/errors/bank_account";
-import { IRepositoryUpdateProps } from "@src/core/shared/interfaces/IRepository";
-import { IRepositoryWithDates, IRepositoryWithDatesCreateProps } from "@src/core/shared/interfaces/IRepositoryWithDates";
+import { IRepositoryWithDates, IRepositoryWithDatesCreateProps, IRepositoryWithDatesUpdateProps } from "@src/core/shared/interfaces/IRepositoryWithDates";
 import { db } from "@src/infrastructure/database/client";
 import { bank_account } from "@src/infrastructure/database/schemas";
 import { eq } from "drizzle-orm/sql";
@@ -39,7 +38,7 @@ export interface IRepoBankAccount extends IRepositoryWithDates<MBankAccount, Ban
    * @throws {BankAccountNotFoundById}
    * @returns {BankAccount} Retorna um objeto que representa a entidade BankAccount que contém a id informada
    */
-  update(id: MBankAccount["id"], data: IRepositoryUpdateProps<MBankAccount>): BankAccount
+  update(id: MBankAccount["id"], data: IRepositoryWithDatesUpdateProps<MBankAccount>): BankAccount
 
   /**
    * @param {MBankAccount["id"]} id id da BankAccount a ser excluída
@@ -79,8 +78,13 @@ export default class BankAccountDrizzleRepository implements IRepoBankAccount {
   }
 
   // eslint-disable-next-line jsdoc/require-jsdoc
-  public update(id: MBankAccount["id"], data: IRepositoryUpdateProps<MBankAccount>): BankAccount {
-    const results = db.update(bank_account).set(data).where(
+  public update(id: MBankAccount["id"], data: IRepositoryWithDatesUpdateProps<MBankAccount>): BankAccount {
+    const results = db.update(bank_account).set({
+      nickname: data.nickname,
+      balance: data.balance,
+      is_disabled: data.is_disabled,
+      updated_at: new Date(),
+    }).where(
       eq(bank_account.id, id)
     ).returning().get()
     if(!results) throw new Error();
