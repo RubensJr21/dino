@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import BaseView from "@src/application/components/BaseView";
-import ScreenMenu, { ItemsType } from "@src/application/screens/Manage/BankAccounts/components/ScreenMenu";
+import BasePageView from "@src/application/components/BasePage/BasePageView";
+import ListMenu, { ItemsType } from "@src/application/screens/Manage/BankAccounts/components/ListMenu";
 import { ManageStackParamList } from "./routes";
 
 type Props = NativeStackScreenProps<ManageStackParamList, 'Home'>;
@@ -29,8 +29,8 @@ export default function Home({ route, navigation }: Props) {
     },
   ];
   return (
-    <BaseView>
-      <ScreenMenu items={items} />
-    </BaseView>
+    <BasePageView>
+      <ListMenu items={items} />
+    </BasePageView>
   );
 }

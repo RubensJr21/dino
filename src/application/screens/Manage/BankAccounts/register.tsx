@@ -1,7 +1,4 @@
-import TitlePage from "@app-components/TitlePage";
 import BankAccountApi from "@src/application/api/bank-account.api";
-import BaseView from "@src/application/components/BaseView";
-import { MdiNamesIcon } from "@src/application/components/ChooseIcon";
 import InputCurrency, { useRefInputCurrency } from "@src/application/components/Input/Currency/InputCurrency";
 import InputBankName, { useRefInputBankName } from "@src/application/screens/Manage/BankAccounts/components/InputBankName";
 import { createTogglesRef, TransferMethodsToggles } from "@src/application/screens/Manage/BankAccounts/components/TransferMethodsToggle";
@@ -9,7 +6,7 @@ import { BankAccount } from "@src/core/entities/bank_account.entity";
 import { isBankAccountNicknameIsAlreadyInUse } from "@src/core/shared/errors/bank_account";
 import { TransferMethods } from "@src/core/shared/types/transfer_methods";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
 
 export type RegisterParams = undefined
 
@@ -20,6 +17,9 @@ function generateInitialValuesToggles(): Record<TransferMethods, boolean> {
 }
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import BasePageTitle from "@src/application/components/BasePage/BasePageTitle";
+import BasePageView from "@src/application/components/BasePage/BasePageView";
+import { SubmitButton } from "@src/application/components/SubmitButton";
 import { BankAccountsStackParamList } from "./routes";
 
 type Props = NativeStackScreenProps<BankAccountsStackParamList, 'Register'>;
@@ -63,9 +63,9 @@ export default function Register({ route, navigation }: Props) {
 	};
 
 	return (
-		<BaseView>
+		<BasePageView>
 			<ScrollView>
-				<TitlePage>Registrar conta bancária</TitlePage>
+				<BasePageTitle>Registrar conta bancária</BasePageTitle>
 				<View style={styles.view_form}>
           <InputBankName refBankName={inputBankNameRef} />
           <InputCurrency
@@ -85,8 +85,7 @@ export default function Register({ route, navigation }: Props) {
               initialValues={generateInitialValuesToggles()}
             />
           </View>
-          <RegisterButton
-            onPress={async () => {
+          <SubmitButton variant="Add" onPress={async () => {
               const result = await handleButton();
               if(result !== undefined) {
                 Alert.alert("Conta bancária registrada com sucesso!");
@@ -97,30 +96,12 @@ export default function Register({ route, navigation }: Props) {
               } else {
                 Alert.alert("Erro ao registrar conta bancária.");
               }
-            }}
-          />
+            }} />
 				</View>
 			</ScrollView>
-		</BaseView>
+		</BasePageView>
 	);
 }
-
-interface RegisterButtonProps {
-	onPress: () => void;
-}
-
-const RegisterButton = ({ onPress }: RegisterButtonProps) => {
-	return (
-		<Button
-			mode="contained"
-			icon={"plus-box" as MdiNamesIcon}
-			contentStyle={{ flexDirection: "row-reverse" }}
-			onPress={onPress}
-		>
-			Registrar conta bancária
-		</Button>
-	);
-};
 
 const styles = StyleSheet.create({
   title_transfer_methods: {

@@ -1,13 +1,13 @@
 import {
-	KeyboardAvoidingView,
-	Platform,
-	StyleSheet,
-	ViewProps,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  ViewProps,
 } from "react-native";
 
-interface BaseViewProps extends ViewProps {}
+interface BasePageViewProps extends ViewProps {}
 
-export default function BaseView({ style, children, ...props }: BaseViewProps) {
+export default function BasePageView({ style, children, ...props }: BasePageViewProps) {
 	return (
 		<KeyboardAvoidingView
 			style={StyleSheet.compose(styles.baseView, style)}

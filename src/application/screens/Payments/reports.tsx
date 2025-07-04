@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useTheme } from "react-native-paper";
 
-import BaseView from "@src/application/components/BaseView";
+import BasePageView from "@src/application/components/BasePage/BasePageView";
 import FlatListCard from "@src/application/components/FlatList/FlatListCard";
 
 import { getRandomInt } from "@src/application/utils/math";
@@ -21,7 +21,7 @@ export default function PaymentsReports() {
 		getSchemeCharts()
 	);
 	return (
-		<BaseView style={{ paddingHorizontal: 0 }}>
+		<BasePageView style={{ paddingHorizontal: 0 }}>
 			<FlatList
 				style={styles.flatlist_style}
 				contentContainerStyle={styles.flatlist_contentContainerStyle}
@@ -29,7 +29,7 @@ export default function PaymentsReports() {
 				numColumns={2}
 				horizontal={false}
 				data={DATA}
-				// Para evitar problema no Scroll do BaseView
+				// Para evitar problema no Scroll do BasePageView
 				nestedScrollEnabled={true}
 				renderItem={({ item }) => (
 					<FlatListCard
@@ -43,7 +43,7 @@ export default function PaymentsReports() {
 				// Adiciona espaçamento de tamanho 5 na parte de baixo do FlatList
 				ListFooterComponent={<View style={{height: 5}} />}
 			/>
-		</BaseView>
+		</BasePageView>
 	);
 }
 

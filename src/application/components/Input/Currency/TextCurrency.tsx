@@ -1,4 +1,4 @@
-import { RawText } from "@src/application/components/RawText";
+import { RawText } from "@src/application/components/Text/RawText";
 import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import { useTheme } from "react-native-paper";
 

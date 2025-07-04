@@ -1,12 +1,13 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import EditRecurring, { EditRecurringParams } from './edit';
+import { EditRecurringScreenParams, HomeRecurringScreenParams, RegisterRecurringScreenParams } from '@src/application/types/screens/RecurringScreenParams';
+import EditRecurring from './edit';
 import Home from './home';
 import RegisterRecurring from './register';
 
 export type PaymentsRecurringStackParamList = {
-  Home: undefined;
-  Register: undefined;
-  Edit: EditRecurringParams;
+  Home: HomeRecurringScreenParams;
+  Register: RegisterRecurringScreenParams;
+  Edit: EditRecurringScreenParams;
 }
 
 const Stack = createNativeStackNavigator<PaymentsRecurringStackParamList>();

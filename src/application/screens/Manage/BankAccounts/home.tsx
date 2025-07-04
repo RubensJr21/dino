@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import BaseView from "@src/application/components/BaseView";
+import BasePageView from "@src/application/components/BasePage/BasePageView";
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import {
@@ -12,7 +12,7 @@ import { EditParams } from "./edit";
 import { BankAccount } from "@src/core/entities/bank_account.entity";
 
 import BankAccountApi from "@src/application/api/bank-account.api";
-import Fab from "@src/application/components/Fab";
+import Fab from "@src/application/components/ActionsFab/Fab";
 import { FlatListDivider } from "@src/application/components/FlatList/FlatListDivider";
 import { AccountBankListItem } from "@src/application/screens/Manage/BankAccounts/components/AccountBankListItem";
 import { BankAccountsStackParamList } from "./routes";
@@ -40,7 +40,6 @@ export default function BankAccounts({route, navigation}: Props){
 	const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Simula uma chamada à API para buscar as contas bancárias
     BankAccountApi.list_all.execute().then((accounts) => {
       setBank_accounts(accounts);
     })
@@ -62,7 +61,7 @@ export default function BankAccounts({route, navigation}: Props){
   }
 
 	return (
-		<BaseView>
+		<BasePageView>
 			<Searchbar
 				placeholder="Digite nome do banco ou número da conta"
 				onChangeText={setSearchQuery}
@@ -75,7 +74,7 @@ export default function BankAccounts({route, navigation}: Props){
 				numColumns={1}
 				horizontal={false}
 				data={bank_accounts}
-				// Para evitar problema no Scroll do BaseView
+				// Para evitar problema no Scroll do BasePageView
 				nestedScrollEnabled={true}
 				renderItem={({ item }) => (
 					<AccountBankListItem
@@ -94,7 +93,7 @@ export default function BankAccounts({route, navigation}: Props){
         icon="plus"
         onPress={navigateToAccountsBankCreate}
 			/>
-		</BaseView>
+		</BasePageView>
 	);
 }
 

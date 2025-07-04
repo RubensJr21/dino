@@ -4,9 +4,8 @@ import { BankAccountTransferMethod } from "@src/core/entities/bank_account_trans
 import { isBankAccountNotFoundById } from "@src/core/shared/errors/bank_account";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { List, MD3Theme } from "react-native-paper";
+import { ListItemProps as ItemProps, List, MD3Theme } from "react-native-paper";
 import { MdiNamesIcon } from "../../../../components/ChooseIcon";
-import { ListItem } from "../../../../components/ListItem";
 import { EditParams } from "../edit";
 
 async function disableAccountBank(id: number){
@@ -141,5 +140,28 @@ export function AccountBankListItem({
         }}
       />
     </List.Accordion>
+  );
+}
+
+interface ListItemProps extends ItemProps {
+  title: string;
+  color: string;
+  icon: MdiNamesIcon;
+}
+
+function ListItem({ title, color, icon, onPress }: ListItemProps) {
+  return (
+    <List.Item
+      title={title}
+      left={(props) => (
+        <List.Icon
+          {...props}
+          icon={icon}
+          color={color}
+        />
+      )}
+      titleStyle={{ color }}
+      onPress={onPress}
+    />
   );
 }

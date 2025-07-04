@@ -1,23 +1,16 @@
+import { recurrence_types_available, RecurrencesAvailable } from '@core/start_configs';
 import { Picker } from '@react-native-picker/picker';
-import { RecurrenceType } from "@src/core/entities/recurrence_type.entity";
 import { useRef, useState } from "react";
 import { useTheme } from 'react-native-paper';
 
 export interface InputRecurringTypeRef {
-  value: React.MutableRefObject<RecurrenceType["type"]>;
-  changeType: (text: RecurrenceType["type"]) => void;
+  value: React.MutableRefObject<RecurrencesAvailable>;
+  changeType: (text: RecurrencesAvailable) => void;
 }
 
-// Puxar as informações de recorrência do banco de dados
-const recurrings_type = [
-  { label: "Semanalmente", value: "semanalmente" },
-  { label: "Mensalmente", value: "mensalmente" },
-  { label: "Anualmente", value: "anualmente" },
-];
-
-export function useRefInputRecurring(initialValue: RecurrenceType["type"]): InputRecurringTypeRef {
-  const ref = useRef<RecurrenceType["type"]>(initialValue);
-  const changeType = (text: RecurrenceType["type"]) => ref.current = text;
+export function useRefInputRecurring(initialValue: RecurrencesAvailable): InputRecurringTypeRef {
+  const ref = useRef<RecurrencesAvailable>(initialValue);
+  const changeType = (text: RecurrencesAvailable) => ref.current = text;
   return {
     value: ref,
     changeType,
@@ -29,7 +22,7 @@ interface InputRecurringProps {
 }
 export default function InputRecurring({ refRecurring }: InputRecurringProps) {
   const theme = useTheme();
-  const [selectedRecurrence, setSelectedRecurrence] = useState(refRecurring.value.current);
+  const [selectedRecurrence, setSelectedRecurrence] = useState<RecurrencesAvailable>(refRecurring.value.current);
 
   return (
     <Picker
@@ -44,8 +37,8 @@ export default function InputRecurring({ refRecurring }: InputRecurringProps) {
         setSelectedRecurrence(itemValue)
       }
       }>
-      {recurrings_type.map((item) => (
-        <Picker.Item key={item.value} label={item.label} value={item.value} />
+      {Object.entries(recurrence_types_available).map(([key, {displayText}]) => (
+        <Picker.Item key={key} label={displayText} value={key} />
       ))}
     </Picker>
   );

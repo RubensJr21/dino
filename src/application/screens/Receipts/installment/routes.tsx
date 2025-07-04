@@ -1,14 +1,15 @@
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { EditInstallmentScreenParams } from '@src/application/types/screens/InstallmentScreenParams';
 import { ReceiptsTabParamList } from '../routes';
-import EditInstallment, { EditInstallmentParams } from './edit';
+import EditInstallment from './edit';
 import Home from './home';
 import RegisterInstallment from './register';
 
 export type ReceiptsInstallmentStackParamList = {
   Home: undefined;
   Register: undefined;
-  Edit: EditInstallmentParams;
+  Edit: EditInstallmentScreenParams;
 }
 
 type Props = BottomTabScreenProps<ReceiptsTabParamList, 'ReceiptsInstallment'>

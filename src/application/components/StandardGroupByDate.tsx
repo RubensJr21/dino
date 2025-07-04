@@ -1,6 +1,5 @@
-import { Standard as Payment } from "@core/entities/standard.entity";
-import { RawText } from "@src/application/components/RawText";
-import { DateString } from "@src/application/functions/date2String";
+import { RawText } from "@src/application/components/Text/RawText";
+import { Standard } from "@src/core/entities/standard.entity";
 import { useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import {
@@ -8,7 +7,7 @@ import {
   List,
   MD3Theme
 } from "react-native-paper";
-import { EditStandardParams } from "../edit";
+import { EditStandardScreenParams } from "../types/screens/StandardScreenParams";
 
 function callAlert(fnSetData: () => void) {
   return () => {
@@ -28,30 +27,30 @@ function callAlert(fnSetData: () => void) {
   };
 }
 
-function filterById(list: Payment[], id: number) {
+function filterById(list: Standard[], id: number) {
   return list.filter((e) => e.id !== id);
 }
 
-interface PaymentGroupedByDateProps {
+export interface StandardGroupedByDateProps {
   title: string;
-  payments: Payment[];
+  standards: Standard[];
   theme: MD3Theme;
-  navigateToEditPage: (params: EditStandardParams) => void;
+  navigateToEditPage: (params: EditStandardScreenParams) => void;
 }
 
-export default function PaymentGroupedByDate({
+export default function StandardGroupedByDate({
   title,
-  payments,
+  standards,
   theme,
   navigateToEditPage,
-}: PaymentGroupedByDateProps) {
+}: StandardGroupedByDateProps) {
   const [expanded, setExpanded] = useState(true);
 
   const handlePress = () => {
     setExpanded(!expanded);
   };
 
-  const [data, setData] = useState<Payment[]>(payments);
+  const [data, setData] = useState<Standard[]>(standards);
 
   return (
     <List.Accordion
@@ -61,17 +60,17 @@ export default function PaymentGroupedByDate({
       onLongPress={handlePress}
     >
       <View style={styles.paymentGroupedByDate}>
-        {data.map((payment, index, array) => {
+        {data.map((standard, index, array) => {
           return (
             <View
               style={[
                 styles.renderItem_view,
                 { backgroundColor: theme.colors.background },
               ]}
-              key={`${payment.id}`}
+              key={`${standard.id}`}
             >
               <RawText style={[styles.renderItem_RawText]}>
-                {payment.item_value.description} - {payment.item_value.amount}
+                {standard.item_value.description} - {standard.item_value.amount.toString()}
               </RawText>
               <IconButton
                 style={styles.renderItem_IconButton}
@@ -80,10 +79,10 @@ export default function PaymentGroupedByDate({
                 size={27}
                 onPress={() =>
                   navigateToEditPage({
-                    id: payment.id,
-                    description: payment.item_value.description,
-                    date: new DateString(payment.item_value.scheduled_at),
-                    currency: Number(payment.item_value.amount)
+                    id: standard.id,
+                    description: standard.item_value.description,
+                    date: standard.item_value.scheduled_at,
+                    currency: standard.item_value.amount,
                   })
                 }
               />
@@ -93,7 +92,7 @@ export default function PaymentGroupedByDate({
                 iconColor={theme.colors.error}
                 size={27}
                 onPress={callAlert(() =>
-                  setData((ov) => filterById(ov, payment.id))
+                  setData((ov) => filterById(ov, standard.id))
                 )}
               />
             </View>

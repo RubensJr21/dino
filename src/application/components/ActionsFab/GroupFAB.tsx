@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { FAB, Portal } from "react-native-paper";
-import { MdiNamesIcon } from "./ChooseIcon";
+import { MdiNamesIcon } from "../ChooseIcon";
 
 interface GroupFabAction {
 	icon: MdiNamesIcon;

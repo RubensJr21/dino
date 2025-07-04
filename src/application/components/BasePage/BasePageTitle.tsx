@@ -1,12 +1,13 @@
 import { StyleSheet } from "react-native";
 import { Text, TextProps } from "react-native-paper";
 
-interface TitlePageProps extends TextProps<never> {}
-export default function TitlePage({
+interface BasePageTitleProps extends TextProps<never> {}
+
+export default function BasePageTitle({
 	style,
 	children,
 	...props
-}: TitlePageProps) {
+}: BasePageTitleProps) {
 	return (
 		<Text
 			style={StyleSheet.compose(styles.title, style)}

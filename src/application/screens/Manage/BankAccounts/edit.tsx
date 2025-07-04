@@ -1,8 +1,5 @@
-import TitlePage from "@app-components/TitlePage";
 import BankAccountApi from "@src/application/api/bank-account.api";
-import BaseView from "@src/application/components/BaseView";
-import { MdiNamesIcon } from "@src/application/components/ChooseIcon";
-import { TextBold } from "@src/application/components/TextBold";
+import { TextBold } from "@src/application/components/Text/TextBold";
 import InputBankName, {
   useRefInputBankName,
 } from "@src/application/screens/Manage/BankAccounts/components/InputBankName";
@@ -11,7 +8,7 @@ import { BankAccount } from "@src/core/entities/bank_account.entity";
 import { isBankAccountNicknameIsAlreadyInUse } from "@src/core/shared/errors/bank_account";
 import { TransferMethods } from "@src/core/shared/types/transfer_methods";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
 
 export interface EditParams {
   id: number;
@@ -31,6 +28,9 @@ function getValuesRef(togglesRef: Record<TransferMethods, React.RefObject<{ valu
 }
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import BasePageTitle from "@src/application/components/BasePage/BasePageTitle";
+import BasePageView from "@src/application/components/BasePage/BasePageView";
+import { SubmitButton } from "@src/application/components/SubmitButton";
 import { BankAccountsStackParamList } from "./routes";
 
 type Props = NativeStackScreenProps<BankAccountsStackParamList, 'Edit'>;
@@ -76,11 +76,11 @@ export default function Edit({route, navigation}: Props) {
   };
 
 	return (
-		<BaseView>
+		<BasePageView>
 			<ScrollView>
-				<TitlePage>
+				<BasePageTitle>
 					Edição da conta no <TextBold>{nickname}</TextBold>
-				</TitlePage>
+				</BasePageTitle>
 				<View style={styles.view_form}>
 					<InputBankName
             refBankName={inputBankNameRef}
@@ -99,7 +99,7 @@ export default function Edit({route, navigation}: Props) {
             />
           </View>
 
-					<EditButton onPress={async () => {
+          <SubmitButton variant="Edit" onPress={async () => {
               const result = await handleButton();
               if(result !== undefined) {
                 Alert.alert("Conta bancária atualizada com sucesso!");
@@ -112,26 +112,9 @@ export default function Edit({route, navigation}: Props) {
             }} />
 				</View>
 			</ScrollView>
-		</BaseView>
+		</BasePageView>
 	);
 }
-
-interface EditButtonProps {
-	onPress: () => void;
-}
-
-const EditButton = ({ onPress }: EditButtonProps) => {
-	return (
-		<Button
-			mode="contained"
-			icon={"pencil" as MdiNamesIcon}
-			contentStyle={{ flexDirection: "row-reverse" }}
-			onPress={onPress}
-		>
-			Editar conta
-		</Button>
-	);
-};
 
 const styles = StyleSheet.create({
   title_transfer_methods: {
