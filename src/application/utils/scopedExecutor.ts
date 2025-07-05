@@ -1,4 +1,12 @@
-export function using<T extends { close(): void }, R>(
+/**
+ *
+ * @param resource
+ * @param callback
+ */
+export function using<T extends { /**
+                                   *
+                                   */
+close(): void }, R>(
 	resource: T,
 	callback: (res: T) => R
 ): R {

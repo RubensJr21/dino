@@ -83,6 +83,7 @@ export default function StandardGroupedByDate({
                     description: standard.item_value.description,
                     date: standard.item_value.scheduled_at,
                     currency: standard.item_value.amount,
+                    tag: standard.item_value.tag.description
                   })
                 }
               />

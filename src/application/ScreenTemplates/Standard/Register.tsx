@@ -6,6 +6,7 @@ import InputDescription, { useRefInputDescription } from "@src/application/compo
 import { SubmitButton } from "@src/application/components/SubmitButton";
 import { EditStandardScreenParams as RegisterParams } from "@src/application/types/screens/StandardScreenParams";
 import { ScrollView, StyleSheet, View } from "react-native";
+import TagPicker, { useRefTagPicker } from "../../components/TagPicker";
 
 interface StandardRegisterScreenTemplateProps {
   variant: 'receipt' | 'payment'
@@ -20,6 +21,7 @@ export default function StandardRegisterScreenTemplate({ variant, submitAction }
   const refDescription = useRefInputDescription();
   const refDatePicker = useRefInputDatePicker();
   const refCurrency = useRefInputCurrency();
+  const refTagPicker = useRefTagPicker("others");
 
   return (
     <BasePageView>
@@ -29,20 +31,10 @@ export default function StandardRegisterScreenTemplate({ variant, submitAction }
           <InputDescription placeholder={placeholderDescription} {...{ refDescription }} />
           <InputDatePicker label={labelDate} {...{ refDatePicker }} />
           <InputCurrency label={labelCurrency} {...{ refCurrency }} />
-
-          {
-            // TODO: Preciso informar para onde está saindo aquele valor
-            /*
-              Esses valores podem ser carregados do banco de dados logo que o aplicativo iniciar e podem ser armazenados em um async storage
-              ou em um estado global, como Redux ou Context API.
-              
-              <TagPicker />
-              Vindo do banco de dados, as tags são:
-              [ Educação, Saúde, Lazer, Alimentação, Moradia, Transporte, Serviços, Compras, Impostos/Taxas e Outros ]
-            */
-          }
+          <TagPicker {...{ refTagPicker }} />
 
           {/*
+          // TODO: Preciso informar para onde está saindo aquele valor
             TransferMethodPicker
             1. Precisa selecionar de qual banco vai transferir
             1.1 O sistema vai buscar os métodos de transferência disponíveis daquela conta
@@ -57,7 +49,8 @@ export default function StandardRegisterScreenTemplate({ variant, submitAction }
               id: 0,
               description: refDescription.value.current,
               date: refDatePicker.dateRef.current,
-              currency: refCurrency.currencyRef.current
+              currency: refCurrency.currencyRef.current,
+              tag: refTagPicker.value.current
             })
           }} />
         </View>

@@ -38,6 +38,7 @@
 1. [useImperativeHandle - Problema de elemento filho devolver elemento para o elemento Pai](https://youtu.be/lA8o3kUl1TA?t=1914)
 1. [react-native-picker](https://github.com/react-native-picker/picker?tab=readme-ov-file#usage)
 1. [Estilizar elemento Picker (@react-native-picker/picker)](https://pt.stackoverflow.com/a/440997)
+1. [Tipografia dos textos do React Native Paper](https://callstack.github.io/react-native-paper/docs/components/Text/)
 
 ## (expo)
 
@@ -80,6 +81,7 @@
 1. [Banco de dados com Drizzle ORM no React Native + Expo](https://youtu.be/1inzzYvbgO8?si=myD7-AZLgHwOvn06)
 1. [Inserir datas no banco de dados com drizzle](https://orm.drizzle.team/docs/column-types/sqlite#integer)
 1. [Como fazer 'join' com o drizzle](https://orm.drizzle.team/docs/joins)
+1. [Utilizando tipagem do domínio no drizzle - (Customizing data type)](https://orm.drizzle.team/docs/column-types/sqlite#customizing-data-type)
 
 ## Typescript
 

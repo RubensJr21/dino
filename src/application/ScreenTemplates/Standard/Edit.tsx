@@ -4,52 +4,45 @@ import InputCurrency, { useRefInputCurrency } from "@src/application/components/
 import InputDatePicker, { useRefInputDatePicker } from "@src/application/components/Input/InputDatePicker";
 import InputDescription, { useRefInputDescription } from "@src/application/components/Input/InputDescription";
 import { SubmitButton } from "@src/application/components/SubmitButton";
-import { EditInstallmentScreenParams as RegisterParams } from "@src/application/types/screens/InstallmentScreenParams";
+import { EditStandardScreenParams } from "@src/application/types/screens/StandardScreenParams";
 import { ScrollView, StyleSheet, View } from "react-native";
+import TagPicker, { useRefTagPicker } from "../../components/TagPicker";
+import { TextBold } from "../../components/Text/TextBold";
 
-interface InstallmentRegisterScreenTemplateProps {
+interface StandardEditScreenTemplateProps {
   variant: 'receipt' | 'payment'
-  submitAction: (data: RegisterParams) => void
+  value: EditStandardScreenParams
+  submitAction: (params: EditStandardScreenParams) => void
 }
 
-export default function InstallmentRegisterScreenTemplate({ variant, submitAction }: InstallmentRegisterScreenTemplateProps) {
+export default function StandardEditScreenTemplate({ variant, value, submitAction }: StandardEditScreenTemplateProps) {
+  const { id, description, date, currency, tag } = value
+
   const type = variant === "receipt" ? "recebimento" : "pagamento"
 
   const placeholderDescription = `${variant === 'receipt' ? "De onde veio" : "Para onde vai"} esse valor?`;
   const labelDate = `Selecione a data do ${type}:`
   const labelCurrency = `Valor do ${type}:`
 
-  const refDescription = useRefInputDescription();
-  const refDatePicker = useRefInputDatePicker();
-  const refCurrency = useRefInputCurrency();
+  const refDescription = useRefInputDescription(description);
+  const refDatePicker = useRefInputDatePicker(date);
+  const refCurrency = useRefInputCurrency(currency);
+  const refTagPicker = useRefTagPicker(tag);
 
   return (
     <BasePageView>
       <ScrollView>
-        <BasePageTitle>Registrar {type}</BasePageTitle>
+        <BasePageTitle>
+          Edição de {type} - ({id}) <TextBold children={description} />
+        </BasePageTitle>
         <View style={styles.view_form}>
           <InputDescription placeholder={placeholderDescription} {...{ refDescription }} />
           <InputDatePicker label={labelDate} {...{ refDatePicker }} />
           <InputCurrency label={labelCurrency} {...{ refCurrency }} />
-
-          {
-            // TODO: Criar elemento de selecionar quantidade de parcelas
-            // <InputInstallmentsNumber />
-          }
-
-          {
-            // TODO: Preciso informar para onde está saindo aquele valor
-            /*
-              Esses valores podem ser carregados do banco de dados logo que o aplicativo iniciar e podem ser armazenados em um async storage
-              ou em um estado global, como Redux ou Context API.
-              
-              <TagPicker />
-              Vindo do banco de dados, as tags são:
-              [ Educação, Saúde, Lazer, Alimentação, Moradia, Transporte, Serviços, Compras, Impostos/Taxas e Outros ]
-            */
-          }
+          <TagPicker {...{ refTagPicker }} />
 
           {/*
+          // TODO: Preciso informar para onde está saindo aquele valor
             TransferMethodPicker
             1. Precisa selecionar de qual banco vai transferir
             1.1 O sistema vai buscar os métodos de transferência disponíveis daquela conta
@@ -59,13 +52,8 @@ export default function InstallmentRegisterScreenTemplate({ variant, submitActio
             <TransferMethodOfBankPicker />
           */}
 
-          <SubmitButton variant="Add" onPress={() => {
-            submitAction({
-              id: 0,
-              description: refDescription.value.current,
-              date: refDatePicker.dateRef.current,
-              currency: refCurrency.currencyRef.current,
-            })
+          <SubmitButton variant="Edit" onPress={() => {
+            submitAction(value)
           }} />
         </View>
       </ScrollView>

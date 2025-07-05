@@ -1,5 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import InstallmentEditScreenTemplate from "@src/application/components/ScreenTemplates/Installment/Edit";
+import InstallmentEditScreenTemplate from "@src/application/ScreenTemplates/Installment/Edit";
 import { EditInstallmentScreenParams } from "@src/application/types/screens/InstallmentScreenParams";
 import { ReceiptsInstallmentStackParamList } from "./routes";
 

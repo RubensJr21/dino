@@ -1,7 +1,7 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import ReceiptApi from "@src/application/api/receipt/standard.api";
-import StandardHomeScreenTemplate from "@src/application/components/ScreenTemplates/Standard/Home";
 import { GroupedStandardByDate, groupStandardByDate } from "@src/application/functions/groupStandardByDate";
+import StandardHomeScreenTemplate from "@src/application/ScreenTemplates/Standard/Home";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { ReceiptsStandardStackParamList } from "./routes";
@@ -39,6 +39,7 @@ export default function Receipts({ navigation }: Props) {
           description: receipt.description,
           date: receipt.date,
           currency: receipt.currency,
+          tag: receipt.tag
         });
       }}
       fabAction={() => {

@@ -1,27 +1,27 @@
-import { GroupedStandardByDate } from "@src/application/functions/groupStandardByDate"
+import { Installment } from "@src/core/entities/installment.entity"
 import { useEffect, useState } from "react"
 import { Alert } from "react-native"
-import Fab from "../../ActionsFab/Fab"
-import BasePageView from "../../BasePage/BasePageView"
-import DefaultFlatListStandard, { DefaultFlatListStandardProps } from "../../DefaultFlatList/DefaultFlatListStandard"
-import SearchBarDate from "../../SearchBar"
+import Fab from "../../components/ActionsFab/Fab"
+import BasePageView from "../../components/BasePage/BasePageView"
+import DefaultFlatListInstallment, { DefaultFlatListInstallmentProps } from "../../components/DefaultFlatList/DefaultFlatListInstallment"
+import SearchBarDate from "../../components/SearchBar"
 
-interface StandardHomeScreenTemplateProps {
-  data: GroupedStandardByDate[]
-  navigateToEditPage: DefaultFlatListStandardProps["navigateToEditPage"]
+interface InstallmentHomeScreenTemplateProps {
+  data: Installment[]
+  navigateToEditPage: DefaultFlatListInstallmentProps["navigateToEditPage"]
   fabAction: () => void
 }
 
-export default function StandardHomeScreenTemplate({ data, navigateToEditPage, fabAction }: StandardHomeScreenTemplateProps) {
+export default function InstallmentHomeScreenTemplate({ data, navigateToEditPage, fabAction }: InstallmentHomeScreenTemplateProps) {
   const [searchQuery, setSearchQuery] = useState("");
-
+  
   useEffect(() => {
     /* Quando searchQuery atualizar, será feito um filtro para buscar os elementos que correspondem a query de pesquisa
     O atributo a ser utilizado é a descrição ou valores.
     posteriormente será feita um filtro
-     */
+      */
   }, [searchQuery]);
-
+  
   return (
     <BasePageView>
       <SearchBarDate
@@ -34,9 +34,9 @@ export default function StandardHomeScreenTemplate({ data, navigateToEditPage, f
           );
         }}
       />
-      <DefaultFlatListStandard
-        {...{ data }}
-        {...{ navigateToEditPage }}
+      <DefaultFlatListInstallment
+        {...{data}}
+        {...{navigateToEditPage}}
       />
       <Fab
         icon="plus"

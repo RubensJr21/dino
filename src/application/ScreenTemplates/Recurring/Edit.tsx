@@ -6,8 +6,9 @@ import InputDescription, { useRefInputDescription } from "@src/application/compo
 import { SubmitButton } from "@src/application/components/SubmitButton";
 import { EditRecurringScreenParams } from "@src/application/types/screens/RecurringScreenParams";
 import { ScrollView, StyleSheet, View } from "react-native";
-import InputRecurring, { useRefInputRecurring } from "../../Input/InputRecurring";
-import { TextBold } from "../../Text/TextBold";
+import InputRecurring, { useRefInputRecurring } from "../../components/Input/InputRecurring";
+import TagPicker, { useRefTagPicker } from "../../components/TagPicker";
+import { TextBold } from "../../components/Text/TextBold";
 
 interface RecurringEditScreenTemplateProps {
   variant: 'receipt' | 'payment';
@@ -16,7 +17,7 @@ interface RecurringEditScreenTemplateProps {
 }
 
 export default function RecurringEditScreenTemplate({ variant, value, submitAction }: RecurringEditScreenTemplateProps) {
-  const { id, description, date, currency, recurring } = value
+  const { id, description, date, currency, recurring, tag } = value
 
   const type = variant === "receipt" ? "recebimento" : "pagamento"
 
@@ -28,6 +29,7 @@ export default function RecurringEditScreenTemplate({ variant, value, submitActi
   const refDatePicker = useRefInputDatePicker(date);
   const refCurrency = useRefInputCurrency(currency);
   const refRecurring = useRefInputRecurring(recurring);
+  const refTagPicker = useRefTagPicker(tag);
 
   return (
     <BasePageView>
@@ -39,20 +41,10 @@ export default function RecurringEditScreenTemplate({ variant, value, submitActi
           <InputDescription placeholder={placeholderDescription} {...{ refDescription }} />
           <InputDatePicker label={labelDate} {...{ refDatePicker }} />
           <InputCurrency label={labelCurrency} {...{ refCurrency }} />
-
-          {
-            // TODO: Preciso informar para onde está saindo aquele valor
-            /*
-              Esses valores podem ser carregados do banco de dados logo que o aplicativo iniciar e podem ser armazenados em um async storage
-              ou em um estado global, como Redux ou Context API.
-              
-              <TagPicker />
-              Vindo do banco de dados, as tags são:
-              [ Educação, Saúde, Lazer, Alimentação, Moradia, Transporte, Serviços, Compras, Impostos/Taxas e Outros ]
-            */
-          }
+          <TagPicker {...{ refTagPicker }} />
 
           {/*
+          // TODO: Preciso informar para onde está saindo aquele valor
             TransferMethodPicker
             1. Precisa selecionar de qual banco vai transferir
             1.1 O sistema vai buscar os métodos de transferência disponíveis daquela conta
@@ -64,13 +56,7 @@ export default function RecurringEditScreenTemplate({ variant, value, submitActi
           <InputRecurring {...{refRecurring}} />
 
           <SubmitButton variant="Edit" onPress={() => {
-            submitAction({
-              id,
-              description: refDescription.value.current,
-              date: refDatePicker.dateRef.current,
-              currency: refCurrency.currencyRef.current,
-              recurring: refRecurring.value.current,
-            })
+            submitAction(value)
           }} />
         </View>
       </ScrollView>

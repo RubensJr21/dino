@@ -1,12 +1,33 @@
+import { IBankAccount } from '@src/core/entities/bank_account.entity';
 import { sql } from 'drizzle-orm';
 import * as t from 'drizzle-orm/sqlite-core';
 import { sqliteTable } from "drizzle-orm/sqlite-core";
 
 export const bank_account = sqliteTable("bank_account", {
-  id: t.integer("id").primaryKey({autoIncrement: true}),
-  nickname: t.text("nickname").notNull(),
-  is_disabled: t.integer({mode: "boolean"}).notNull(),
-  balance: t.real("balance").notNull(),
-  created_at: t.integer("created_at", { mode: "timestamp" }).default(sql`(date('now','localtime'))`).notNull(),
-  updated_at: t.integer("updated_at", { mode: "timestamp" }).default(sql`(date('now','localtime'))`).notNull().$onUpdate(() => sql`(date('now','localtime'))`)
+  id: 
+    t.integer("id")
+     .primaryKey({autoIncrement: true}),
+  nickname: 
+    t.text("nickname")
+     .$type<IBankAccount["nickname"]>()
+     .notNull(),
+  is_disabled:
+    t.integer({mode: "boolean"})
+     .$type<IBankAccount["is_disabled"]>()
+     .notNull(),
+  balance: 
+    t.integer("balance")
+     .$type<IBankAccount["balance"]>()
+     .notNull(),
+  created_at: 
+    t.integer("created_at", { mode: "timestamp" })
+     .default(sql`(date('now','localtime'))`)
+     .$type<IBankAccount["created_at"]>()
+     .notNull(),
+  updated_at:
+    t.integer("updated_at", { mode: "timestamp" })
+     .default(sql`(date('now','localtime'))`)
+     .$onUpdate(() => sql`(date('now','localtime'))`)
+     .$type<IBankAccount["updated_at"]>()
+     .notNull()
 })

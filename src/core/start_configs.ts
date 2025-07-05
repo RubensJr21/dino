@@ -1,22 +1,28 @@
 /* eslint-disable jsdoc/require-jsdoc */
 
-// TODO: Na inicialização preciso:
+// REVIEW: Na inicialização preciso:
 /**
  * 1. Tentar registrar
  * 2. Pode dar um erro da clausula de unique
  */
-const tags = [
-  'Educação',
-  'Saúde',
-  'Lazer',
-  'Alimentação',
-  'Moradia',
-  'Transporte',
-  'Serviços',
-  'Compras',
-  'Impostos/Taxas',
-  'Outros'
-]
+type TagsAvailableType = {
+  [key: string]: string
+}
+
+export const tags_available = {
+  education: 'Educação',
+  health: 'Saúde',
+  entertainment: 'Lazer',
+  food: 'Alimentação',
+  housing: 'Moradia',
+  transportation: 'Transporte',
+  services: 'Serviços',
+  shopping: 'Compras',
+  taxes: 'Impostos/Taxas',
+  others: 'Outros'
+} as const satisfies TagsAvailableType
+
+export type TagsAvailable = (keyof typeof tags_available)
 
 // ATTENTION: Essas são os métodos de transferência disponíveis:
 const transfer_methods_available = [
@@ -35,13 +41,13 @@ type RecurrencesAvailableType = {
 
 export const recurrence_types_available = {
   monthly: {
-    displayText: "mensalmente",
+    displayText: "Mensalmente",
     calculation_method: (date: Date): boolean => (
       new Date().getMonth() !== date.getMonth()
     )
   },
   annually: {
-    displayText: "anualmente",
+    displayText: "Anualmente",
     calculation_method: (date: Date): boolean => (
       new Date().getFullYear() !== date.getFullYear()
     )

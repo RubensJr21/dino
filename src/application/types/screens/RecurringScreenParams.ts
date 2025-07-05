@@ -1,4 +1,4 @@
-import { RecurrencesAvailable } from "@src/core/start_configs";
+import { RecurrencesAvailable, TagsAvailable } from "@src/core/start_configs";
 
 export type HomeRecurringScreenParams = undefined;
 
@@ -9,5 +9,6 @@ export interface EditRecurringScreenParams {
   description: string;
   date: Date;
   currency: number;
+  tag: TagsAvailable;
   recurring: RecurrencesAvailable;
 }

@@ -1,5 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import RecurringRegisterScreenTemplate from "@src/application/components/ScreenTemplates/Recurring/Register";
+import RecurringRegisterScreenTemplate from "@src/application/ScreenTemplates/Recurring/Register";
 import { EditRecurringScreenParams as RegisterParams } from "@src/application/types/screens/RecurringScreenParams";
 import { PaymentsRecurringStackParamList } from "./routes";
 

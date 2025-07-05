@@ -49,9 +49,11 @@ export default function InputDatePicker({ label, refDatePicker }: InputDatePicke
 
   return (
     <>
-      <Text variant="bodyLarge" style={styles.label}>
-        {label}
-      </Text>
+      <Text 
+        children={label}
+        style={styles.label}
+        variant="titleMedium"
+      />
 
       <Button
         mode="contained"

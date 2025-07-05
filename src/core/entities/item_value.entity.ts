@@ -1,12 +1,12 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
-import { Variants_Of_ItemValue } from "../shared/types/variants_items";
+import { TypeOfVariants } from "../shared/types/variants_items";
 import { Tag } from "./tag.entity";
 import { TransferMethod } from "./transfer_method.entity";
 
 export interface IItemValue extends IEntityWithDates {
   description: string;
-  cashflow_type: Variants_Of_ItemValue;
+  cashflow_type: TypeOfVariants;
   scheduled_at: Date;
   amount: number;
   was_processed: boolean;

@@ -1,6 +1,6 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import PaymentInstallmentApi from "@src/application/api/payment/installment.api";
-import InstallmentHomeScreenTemplate from "@src/application/components/ScreenTemplates/Installment/Home";
+import InstallmentHomeScreenTemplate from "@src/application/ScreenTemplates/Installment/Home";
 import { Installment } from "@src/core/entities/installment.entity";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";

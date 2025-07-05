@@ -4,53 +4,45 @@ import InputCurrency, { useRefInputCurrency } from "@src/application/components/
 import InputDatePicker, { useRefInputDatePicker } from "@src/application/components/Input/InputDatePicker";
 import InputDescription, { useRefInputDescription } from "@src/application/components/Input/InputDescription";
 import { SubmitButton } from "@src/application/components/SubmitButton";
-import { EditStandardScreenParams } from "@src/application/types/screens/StandardScreenParams";
+import { EditInstallmentScreenParams as RegisterParams } from "@src/application/types/screens/InstallmentScreenParams";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { TextBold } from "../../Text/TextBold";
+import TagPicker, { useRefTagPicker } from "../../components/TagPicker";
 
-interface StandardEditScreenTemplateProps {
+interface InstallmentRegisterScreenTemplateProps {
   variant: 'receipt' | 'payment'
-  value: EditStandardScreenParams
-  submitAction: (params: EditStandardScreenParams) => void
+  submitAction: (data: RegisterParams) => void
 }
 
-export default function StandardEditScreenTemplate({ variant, value, submitAction }: StandardEditScreenTemplateProps) {
-  const { id, description, date, currency } = value
-
+export default function InstallmentRegisterScreenTemplate({ variant, submitAction }: InstallmentRegisterScreenTemplateProps) {
   const type = variant === "receipt" ? "recebimento" : "pagamento"
 
   const placeholderDescription = `${variant === 'receipt' ? "De onde veio" : "Para onde vai"} esse valor?`;
   const labelDate = `Selecione a data do ${type}:`
   const labelCurrency = `Valor do ${type}:`
 
-  const refDescription = useRefInputDescription(description);
-  const refDatePicker = useRefInputDatePicker(date);
-  const refCurrency = useRefInputCurrency(currency);
+  const refDescription = useRefInputDescription();
+  const refDatePicker = useRefInputDatePicker();
+  const refCurrency = useRefInputCurrency();
+  const refTagPicker = useRefTagPicker("others");
 
   return (
     <BasePageView>
       <ScrollView>
-        <BasePageTitle>
-          Edição de {type} - ({id}) <TextBold children={description} />
-        </BasePageTitle>
+        <BasePageTitle>Registrar {type}</BasePageTitle>
         <View style={styles.view_form}>
           <InputDescription placeholder={placeholderDescription} {...{ refDescription }} />
           <InputDatePicker label={labelDate} {...{ refDatePicker }} />
           <InputCurrency label={labelCurrency} {...{ refCurrency }} />
 
           {
-            // TODO: Preciso informar para onde está saindo aquele valor
-            /*
-              Esses valores podem ser carregados do banco de dados logo que o aplicativo iniciar e podem ser armazenados em um async storage
-              ou em um estado global, como Redux ou Context API.
-              
-              <TagPicker />
-              Vindo do banco de dados, as tags são:
-              [ Educação, Saúde, Lazer, Alimentação, Moradia, Transporte, Serviços, Compras, Impostos/Taxas e Outros ]
-            */
+            // TODO: Criar elemento de selecionar quantidade de parcelas
+            // <InputInstallmentsNumber />
           }
 
+          <TagPicker {...{ refTagPicker }} />
+
           {/*
+          // TODO: Preciso informar para onde está saindo aquele valor
             TransferMethodPicker
             1. Precisa selecionar de qual banco vai transferir
             1.1 O sistema vai buscar os métodos de transferência disponíveis daquela conta
@@ -60,8 +52,14 @@ export default function StandardEditScreenTemplate({ variant, value, submitActio
             <TransferMethodOfBankPicker />
           */}
 
-          <SubmitButton variant="Edit" onPress={() => {
-            submitAction(value)
+          <SubmitButton variant="Add" onPress={() => {
+            submitAction({
+              id: 0,
+              description: refDescription.value.current,
+              date: refDatePicker.dateRef.current,
+              currency: refCurrency.currencyRef.current,
+              tag: refTagPicker.value.current
+            })
           }} />
         </View>
       </ScrollView>

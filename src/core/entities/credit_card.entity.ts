@@ -8,8 +8,6 @@ export interface ICreditCard extends IEntityWithDates {
   closing_date: Date;
   due_date: Date;
   is_disabled: boolean;
-  readonly created_at: Date;
-  readonly updated_at: Date;
 }
 
 type ReturnProperties = ICreditCard

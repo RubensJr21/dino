@@ -5,9 +5,17 @@ import { installment } from './installment.schema';
 import { item_value } from './item_value.schema';
 
 export const installment_item_value = sqliteTable("installment_item_value", {
-  id: t.integer("id").primaryKey({ autoIncrement: true }),
-  fk_id_installment: t.integer("fk_id_installment").references(() => installment.id).notNull(),
-  fk_id_item_value: t.integer("fk_id_item_value").references(() => item_value.id, {onDelete: "cascade"}).notNull()
+  id: 
+    t.integer("id")
+     .primaryKey({ autoIncrement: true }),
+  fk_id_installment: 
+    t.integer("fk_id_installment")
+     .references(() => installment.id)
+     .notNull(),
+  fk_id_item_value: 
+    t.integer("fk_id_item_value")
+     .references(() => item_value.id, { onDelete: "cascade" })
+     .notNull()
 })
 
 export const installment_item_value_relations = relations(installment_item_value, ({one, many}) => ({

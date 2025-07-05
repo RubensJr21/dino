@@ -4,56 +4,39 @@ import InputCurrency, { useRefInputCurrency } from "@src/application/components/
 import InputDatePicker, { useRefInputDatePicker } from "@src/application/components/Input/InputDatePicker";
 import InputDescription, { useRefInputDescription } from "@src/application/components/Input/InputDescription";
 import { SubmitButton } from "@src/application/components/SubmitButton";
-import { EditInstallmentScreenParams } from "@src/application/types/screens/InstallmentScreenParams";
+import { EditRecurringScreenParams as RegisterParams } from "@src/application/types/screens/RecurringScreenParams";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { TextBold } from "../../Text/TextBold";
+import InputRecurring, { useRefInputRecurring } from "../../components/Input/InputRecurring";
+import TagPicker, { useRefTagPicker } from "../../components/TagPicker";
 
-interface InstallmentEditScreenTemplateProps {
-  variant: 'receipt' | 'payment';
-  value: EditInstallmentScreenParams;
-  submitAction: (data: EditInstallmentScreenParams) => void;
+interface RecurringRegisterScreenTemplateProps {
+  variant: 'receipt' | 'payment'
+  submitAction: (data: RegisterParams) => void
 }
 
-export default function InstallmentEditScreenTemplate({ variant, value, submitAction }: InstallmentEditScreenTemplateProps) {
-  const { id, description, date, currency } = value
-
+export default function RecurringRegisterScreenTemplate({ variant, submitAction }: RecurringRegisterScreenTemplateProps) {
   const type = variant === "receipt" ? "recebimento" : "pagamento"
 
   const placeholderDescription = `${variant === 'receipt' ? "De onde veio" : "Para onde vai"} esse valor?`;
   const labelDate = `Selecione a data do ${type}:`
   const labelCurrency = `Valor do ${type}:`
 
-  const refDescription = useRefInputDescription(description);
-  const refDatePicker = useRefInputDatePicker(date);
-  const refCurrency = useRefInputCurrency(currency);
+  const refDescription = useRefInputDescription();
+  const refDatePicker = useRefInputDatePicker();
+  const refCurrency = useRefInputCurrency();
+  const refRecurring = useRefInputRecurring("monthly");
+  const refTagPicker = useRefTagPicker("others");
 
   return (
     <BasePageView>
       <ScrollView>
-        <BasePageTitle>
-          Edição de {type} - ({id}) <TextBold children={description} />
-        </BasePageTitle>
+        <BasePageTitle>Registrar {type}</BasePageTitle>
         <View style={styles.view_form}>
           <InputDescription placeholder={placeholderDescription} {...{ refDescription }} />
           <InputDatePicker label={labelDate} {...{ refDatePicker }} />
           <InputCurrency label={labelCurrency} {...{ refCurrency }} />
 
-          {
-            // TODO: Criar elemento de selecionar quantidade de parcelas
-            // <InputInstallmentsNumber />
-          }
-
-          {
-            // TODO: Preciso informar para onde está saindo aquele valor
-            /*
-              Esses valores podem ser carregados do banco de dados logo que o aplicativo iniciar e podem ser armazenados em um async storage
-              ou em um estado global, como Redux ou Context API.
-              
-              <TagPicker />
-              Vindo do banco de dados, as tags são:
-              [ Educação, Saúde, Lazer, Alimentação, Moradia, Transporte, Serviços, Compras, Impostos/Taxas e Outros ]
-            */
-          }
+          <TagPicker {...{ refTagPicker }} />
 
           {/*
             TransferMethodPicker
@@ -64,13 +47,16 @@ export default function InstallmentEditScreenTemplate({ variant, value, submitAc
             <BankPicker />
             <TransferMethodOfBankPicker />
           */}
+          <InputRecurring {...{refRecurring}} />
 
-          <SubmitButton variant="Edit" onPress={() => {
+          <SubmitButton variant="Add" onPress={() => {
             submitAction({
-              id,
+              id: 0,
               description: refDescription.value.current,
               date: refDatePicker.dateRef.current,
               currency: refCurrency.currencyRef.current,
+              tag: refTagPicker.value.current,
+              recurring: refRecurring.value.current,
             })
           }} />
         </View>

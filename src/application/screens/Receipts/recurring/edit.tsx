@@ -1,5 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import RecurringEditScreenTemplate from "@src/application/components/ScreenTemplates/Recurring/Edit";
+import RecurringEditScreenTemplate from "@src/application/ScreenTemplates/Recurring/Edit";
 import { EditRecurringScreenParams } from "@src/application/types/screens/RecurringScreenParams";
 import { ReceiptsRecurringStackParamList } from "./routes";
 

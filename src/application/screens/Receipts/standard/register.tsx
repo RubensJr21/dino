@@ -1,5 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import StandardRegisterScreenTemplate from "@src/application/components/ScreenTemplates/Standard/Register";
+import StandardRegisterScreenTemplate from "@src/application/ScreenTemplates/Standard/Register";
 import { EditStandardScreenParams as RegisterParams } from "@src/application/types/screens/StandardScreenParams";
 import { ReceiptsStandardStackParamList } from "./routes";
 

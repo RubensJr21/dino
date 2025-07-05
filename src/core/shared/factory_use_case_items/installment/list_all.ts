@@ -1,7 +1,7 @@
 import IUseCase from "@core/shared/IUseCase";
 import { Installment } from "@src/core/entities/installment.entity";
 import { IRepoInstallment } from "../../interfaces/IRepositoryInstallment";
-import { TypeOfVariants, Variants_Of_ItemValue } from "../../types/variants_items";
+import { TypeOfVariants } from "../../types/variants_items";
 
 export default abstract class UseCase_Installment_ListAll implements IUseCase<void, Installment[]> {
   protected abstract variant: TypeOfVariants
@@ -15,6 +15,6 @@ export default abstract class UseCase_Installment_ListAll implements IUseCase<vo
    * @returns {Promise<Installment[]>} Promise de uma lista de Installment
    */
   async execute(): Promise<Installment[]> {
-    return this.repo_iiv.findAllByCashflowType(Variants_Of_ItemValue[this.variant])
+    return this.repo_iiv.findAllByCashflowType(this.variant)
   }
 }

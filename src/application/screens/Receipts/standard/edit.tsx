@@ -1,5 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import StandardEditScreenTemplate from "@src/application/components/ScreenTemplates/Standard/Edit";
+import StandardEditScreenTemplate from "@src/application/ScreenTemplates/Standard/Edit";
 import { EditStandardScreenParams } from "@src/application/types/screens/StandardScreenParams";
 import { ReceiptsStandardStackParamList } from "./routes";
 

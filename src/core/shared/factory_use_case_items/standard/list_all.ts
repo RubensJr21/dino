@@ -1,7 +1,7 @@
 import IUseCase from "@core/shared/IUseCase";
 import { Standard } from "@src/core/entities/standard.entity";
 import { IRepoStandard } from "../../interfaces/IRepositoryStandard";
-import { TypeOfVariants, Variants_Of_ItemValue } from "../../types/variants_items";
+import { TypeOfVariants } from "../../types/variants_items";
 
 export default abstract class UseCase_Standard_ListAll implements IUseCase<void, Standard[]> {
   protected abstract variant: TypeOfVariants;
@@ -17,6 +17,6 @@ export default abstract class UseCase_Standard_ListAll implements IUseCase<void,
    * @returns {Promise<Standard[]>} A promise that resolves to an array of filtered standards.
    */
   async execute(): Promise<Standard[]> { 
-    return this.repo_iv.findAllByCashflowType(Variants_Of_ItemValue[this.variant]);
+    return this.repo_iv.findAllByCashflowType(this.variant);
   }
 }

@@ -2,7 +2,7 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { useRefInputCurrency } from "@src/application/components/Input/Currency/InputCurrency";
 import { useRefInputDatePicker } from "@src/application/components/Input/InputDatePicker";
 import { useRefInputDescription } from "@src/application/components/Input/InputDescription";
-import StandardEditScreenTemplate from "@src/application/components/ScreenTemplates/Standard/Edit";
+import StandardEditScreenTemplate from "@src/application/ScreenTemplates/Standard/Edit";
 import { PaymentsStandardStackParamList } from "./routes";
 
 type EditStandardProps = BottomTabScreenProps<PaymentsStandardStackParamList, 'Edit'>;

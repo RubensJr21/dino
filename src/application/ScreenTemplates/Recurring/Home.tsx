@@ -1,10 +1,10 @@
 import { Recurring } from "@src/core/entities/recurring.entity"
 import { useEffect, useState } from "react"
 import { Alert } from "react-native"
-import Fab from "../../ActionsFab/Fab"
-import BasePageView from "../../BasePage/BasePageView"
-import DefaultFlatListRecurring, { DefaultFlatListRecurringProps } from "../../DefaultFlatList/DefaultFlatListRecurring"
-import SearchBarDate from "../../SearchBar"
+import Fab from "../../components/ActionsFab/Fab"
+import BasePageView from "../../components/BasePage/BasePageView"
+import DefaultFlatListRecurring, { DefaultFlatListRecurringProps } from "../../components/DefaultFlatList/DefaultFlatListRecurring"
+import SearchBarDate from "../../components/SearchBar"
 
 interface RecurringHomeScreenTemplateProps {
   data: Recurring[]
