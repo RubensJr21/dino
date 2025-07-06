@@ -1,6 +1,7 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import RecurringEditScreenTemplate from "@src/application/ScreenTemplates/Recurring/Edit";
+import RecurringEditScreenTemplate from "@src/application/templates/screens/Recurring/Edit";
 import { EditRecurringScreenParams } from "@src/application/types/screens/RecurringScreenParams";
+import { VARIANTS_OF_ITEM_VALUE } from "@src/core/shared/types/variants_items";
 import { ReceiptsRecurringStackParamList } from "./routes";
 
 type Props = BottomTabScreenProps<ReceiptsRecurringStackParamList, 'Edit'>;
@@ -13,7 +14,7 @@ export default function EditRecurring({ route, navigation }: Props) {
 
   return (
     <RecurringEditScreenTemplate
-      variant="receipt"
+      variant={VARIANTS_OF_ITEM_VALUE.Receipt}
       value={route.params}
       submitAction={handleButton}
     />

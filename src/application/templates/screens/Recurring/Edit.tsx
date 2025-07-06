@@ -1,10 +1,11 @@
 import { EditRecurringScreenParams } from "@src/application/types/screens/RecurringScreenParams";
 import { EditStandardScreenParams } from "@src/application/types/screens/StandardScreenParams";
-import InputRecurring, { useRefInputRecurring } from "../../components/Input/InputRecurring";
-import FormEditTemplate from "../Form/FormEditTemplate";
+import { TypeOfVariants } from "@src/core/shared/types/variants_items";
+import InputRecurring, { useRefInputRecurringPicker } from "../../../components/Input/InputRecurringPicker";
+import FormTemplate, { getVariantText } from "../../FormTemplate";
 
 interface RecurringEditScreenTemplateProps {
-  variant: 'receipt' | 'payment';
+  variant: TypeOfVariants;
   value: EditRecurringScreenParams;
   submitAction: (data: EditRecurringScreenParams) => void;
 }
@@ -15,7 +16,9 @@ export default function RecurringEditScreenTemplate({ variant, value, submitActi
     ...value_standard
   } = value
 
-  const refRecurring = useRefInputRecurring(recurring);
+  const labelRecurring = `Selecione o tipo de recorrência do ${getVariantText(variant)}` 
+
+  const refRecurring = useRefInputRecurringPicker(recurring);
 
   const handleAction = (standard: EditStandardScreenParams) => {
     const data_recurring = {
@@ -26,11 +29,11 @@ export default function RecurringEditScreenTemplate({ variant, value, submitActi
   }
 
   return (
-    <FormEditTemplate
+    <FormTemplate
       {...{ variant }}
       value={value_standard}
       submitAction={handleAction}
-      formExtension={<InputRecurring {...{ refRecurring }} />}
+      formExtension={<InputRecurring label={labelRecurring} {...{ refRecurring }} />}
     />
   );
 }

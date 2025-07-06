@@ -2,7 +2,8 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { useRefInputCurrency } from "@src/application/components/Input/Currency/InputCurrency";
 import { useRefInputDatePicker } from "@src/application/components/Input/InputDatePicker";
 import { useRefInputDescription } from "@src/application/components/Input/InputDescription";
-import StandardEditScreenTemplate from "@src/application/ScreenTemplates/Standard/Edit";
+import StandardEditScreenTemplate from "@src/application/templates/screens/Standard/Edit";
+import { VARIANTS_OF_ITEM_VALUE } from "@src/core/shared/types/variants_items";
 import { PaymentsStandardStackParamList } from "./routes";
 
 type EditStandardProps = BottomTabScreenProps<PaymentsStandardStackParamList, 'Edit'>;
@@ -23,7 +24,7 @@ export default function EditStandard({route, navigation}: EditStandardProps) {
 
   return (
     <StandardEditScreenTemplate
-      variant="payment"
+      variant={VARIANTS_OF_ITEM_VALUE.Payment}
       value={route.params}
       submitAction={handleButton}
     />

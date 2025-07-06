@@ -1,7 +1,7 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import ReceiptApi from "@src/application/api/receipt/standard.api";
 import { GroupedStandardByDate, groupStandardByDate } from "@src/application/functions/groupStandardByDate";
-import StandardHomeScreenTemplate from "@src/application/ScreenTemplates/Standard/Home";
+import StandardHomeScreenTemplate from "@src/application/templates/screens/Standard/Home";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { ReceiptsStandardStackParamList } from "./routes";

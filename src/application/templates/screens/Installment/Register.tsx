@@ -1,9 +1,10 @@
 import { EditInstallmentScreenParams as RegisterParams } from "@src/application/types/screens/InstallmentScreenParams";
 import { EditStandardScreenParams } from "@src/application/types/screens/StandardScreenParams";
-import FormRegisterTemplate from "../Form/FormRegisterTemplate";
+import { TypeOfVariants } from "@src/core/shared/types/variants_items";
+import FormTemplate from "../../FormTemplate";
 
 interface InstallmentRegisterScreenTemplateProps {
-  variant: 'receipt' | 'payment'
+  variant: TypeOfVariants
   submitAction: (data: RegisterParams) => void
 }
 
@@ -16,7 +17,7 @@ export default function InstallmentRegisterScreenTemplate({ variant, submitActio
   }
   
   return (
-    <FormRegisterTemplate
+    <FormTemplate
       {...{ variant }}
       submitAction={handleAction}
       formExtension={

@@ -1,6 +1,7 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import InstallmentEditScreenTemplate from "@src/application/ScreenTemplates/Installment/Edit";
+import InstallmentEditScreenTemplate from "@src/application/templates/screens/Installment/Edit";
 import { EditInstallmentScreenParams } from "@src/application/types/screens/InstallmentScreenParams";
+import { VARIANTS_OF_ITEM_VALUE } from "@src/core/shared/types/variants_items";
 import { ReceiptsInstallmentStackParamList } from "./routes";
 
 type Props = BottomTabScreenProps<ReceiptsInstallmentStackParamList, 'Edit'>;
@@ -13,7 +14,7 @@ export default function EditInstallment({route, navigation}: Props) {
 
   return (
     <InstallmentEditScreenTemplate
-      variant="receipt"
+      variant={VARIANTS_OF_ITEM_VALUE.Receipt}
       value={route.params}
       submitAction={handleButton}
     />

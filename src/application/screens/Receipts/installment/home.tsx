@@ -3,7 +3,7 @@ import { Alert } from "react-native";
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import ReceiptInstallmentApi from "@src/application/api/receipt/installment.api";
-import InstallmentHomeScreenTemplate from "@src/application/ScreenTemplates/Installment/Home";
+import InstallmentHomeScreenTemplate from "@src/application/templates/screens/Installment/Home";
 import { Installment } from "@src/core/entities/installment.entity";
 import { ReceiptsInstallmentStackParamList } from "./routes";
 

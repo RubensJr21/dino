@@ -1,6 +1,6 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import ReceiptRecurringApi from "@src/application/api/receipt/recurring.api";
-import RecurringHomeScreenTemplate from "@src/application/ScreenTemplates/Recurring/Home";
+import RecurringHomeScreenTemplate from "@src/application/templates/screens/Recurring/Home";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";

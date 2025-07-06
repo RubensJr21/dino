@@ -1,18 +1,18 @@
-import { GroupedStandardByDate } from "@src/application/functions/groupStandardByDate"
+import { Recurring } from "@src/core/entities/recurring.entity"
 import { useEffect, useState } from "react"
 import { Alert } from "react-native"
-import Fab from "../../components/ActionsFab/Fab"
-import BasePageView from "../../components/BasePage/BasePageView"
-import DefaultFlatListStandard, { DefaultFlatListStandardProps } from "../../components/DefaultFlatList/DefaultFlatListStandard"
-import SearchBarDate from "../../components/SearchBar"
+import Fab from "../../../components/ActionsFab/Fab"
+import BasePageView from "../../../components/BasePage/BasePageView"
+import DefaultFlatListRecurring, { DefaultFlatListRecurringProps } from "../../../components/DefaultFlatList/DefaultFlatListRecurring"
+import SearchBarDate from "../../../components/SearchBar"
 
-interface StandardHomeScreenTemplateProps {
-  data: GroupedStandardByDate[]
-  navigateToEditPage: DefaultFlatListStandardProps["navigateToEditPage"]
+interface RecurringHomeScreenTemplateProps {
+  data: Recurring[]
+  navigateToEditPage: DefaultFlatListRecurringProps["navigateToEditPage"]
   fabAction: () => void
 }
 
-export default function StandardHomeScreenTemplate({ data, navigateToEditPage, fabAction }: StandardHomeScreenTemplateProps) {
+export default function RecurringHomeScreenTemplate({ data, navigateToEditPage, fabAction }: RecurringHomeScreenTemplateProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -34,9 +34,9 @@ export default function StandardHomeScreenTemplate({ data, navigateToEditPage, f
           );
         }}
       />
-      <DefaultFlatListStandard
-        {...{ data }}
-        {...{ navigateToEditPage }}
+      <DefaultFlatListRecurring
+        {...{data}}
+        {...{navigateToEditPage}}
       />
       <Fab
         icon="plus"
