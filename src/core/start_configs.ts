@@ -4,6 +4,7 @@
 /**
  * 1. Tentar registrar
  * 2. Pode dar um erro da clausula de unique
+ * 3. Caso o erro aconteça quer dizer que a tag já está cadastrada
  */
 type TagsAvailableType = {
   [key: string]: string
@@ -25,7 +26,7 @@ export const tags_available = {
 export type TagsAvailable = (keyof typeof tags_available)
 
 // ATTENTION: Essas são os métodos de transferência disponíveis:
-const transfer_methods_available = [
+export const transfer_methods_available = [
   'Pix',
   'Débito',
   'Transferência Bancária'
