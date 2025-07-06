@@ -10,4 +10,5 @@ export interface EditInstallmentScreenParams {
   date: Date;
   tag: TagsAvailable;
   currency: number;
+  installments_number: number;
 }

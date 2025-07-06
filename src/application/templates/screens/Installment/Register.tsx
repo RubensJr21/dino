@@ -1,7 +1,8 @@
+import InputInstallmentsNumber, { useRefInputInstallmentsNumber } from "@src/application/components/Input/InputInstallmentsNumber";
 import { EditInstallmentScreenParams as RegisterParams } from "@src/application/types/screens/InstallmentScreenParams";
 import { EditStandardScreenParams } from "@src/application/types/screens/StandardScreenParams";
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
-import FormTemplate from "../../FormTemplate";
+import FormTemplate, { getVariantText } from "../../FormTemplate";
 
 interface InstallmentRegisterScreenTemplateProps {
   variant: TypeOfVariants
@@ -9,9 +10,14 @@ interface InstallmentRegisterScreenTemplateProps {
 }
 
 export default function InstallmentRegisterScreenTemplate({ variant, submitAction }: InstallmentRegisterScreenTemplateProps) {
+  const labelRecurring = `Informe a quantidade de parcelas do ${getVariantText(variant)}` 
+  
+  const refInstallmentNumber = useRefInputInstallmentsNumber();
+
   const handleAction = (standard: EditStandardScreenParams) => {
     const data_recurring = {
       ...standard,
+      installments_number: 2
     } satisfies RegisterParams
     submitAction(data_recurring)
   }
@@ -20,11 +26,7 @@ export default function InstallmentRegisterScreenTemplate({ variant, submitActio
     <FormTemplate
       {...{ variant }}
       submitAction={handleAction}
-      formExtension={
-        // TODO: Criar elemento de selecionar quantidade de parcelas. Elemento simples que permite digitar o número ou pressionar botão de mais e menos
-        // <InputInstallmentsNumber />
-        undefined
-      }
+      formExtension={<InputInstallmentsNumber label={labelRecurring} {...{ refInstallmentNumber }} />}
     />
   );
 }

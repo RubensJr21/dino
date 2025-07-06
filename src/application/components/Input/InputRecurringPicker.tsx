@@ -22,6 +22,7 @@ interface InputRecurringPickerProps {
   label: string;
   refRecurring: InputRecurringPickerTypeRef;
 }
+
 export default function InputRecurringPicker({ label, refRecurring }: InputRecurringPickerProps) {
   const theme = useTheme();
   const [selectedRecurrence, setSelectedRecurrence] = useState<RecurrencesAvailable>(refRecurring.value.current);
