@@ -6,7 +6,6 @@ export interface GroupedStandardByDate {
   standards: Standard[]
 }
 
-// eslint-disable-next-line jsdoc/require-jsdoc
 export function groupStandardByDate(
   receipts: Standard[]
 ): GroupedStandardByDate[] {

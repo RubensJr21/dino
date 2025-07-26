@@ -13,7 +13,9 @@ export default function Home({ navigation }: Props) {
 
   useEffect(() => {
     ReceiptRecurringApi.list_all.execute().then((receipts_recurring) => {
-      setReceipts(receipts_recurring);
+      if(receipts_recurring.success){
+        setReceipts(receipts_recurring.data);
+      }
     }).catch((error) => {
       console.error("Erro ao buscar recebimentos:", error);
       Alert.alert("Erro", "Não foi possível carregar os recebimentos.");

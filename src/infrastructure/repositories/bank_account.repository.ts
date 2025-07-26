@@ -1,102 +1,126 @@
-import { BankAccount } from "@src/core/entities/bank_account.entity";
 import { MBankAccount } from "@src/core/models/bank_account.model";
-import { BankAccountNotFoundByNickname } from "@src/core/shared/errors/bank_account";
-import { IRepositoryWithDates, IRepositoryWithDatesCreateProps, IRepositoryWithDatesUpdateProps } from "@src/core/shared/interfaces/IRepositoryWithDates";
-import { db } from "@src/infrastructure/database/client";
+import { CreateBankAccountParams, IRepoBankAccount, UpdateBankAccountParams } from "@src/core/shared/interfaces/IRepoBankAccount";
+import { bank_account_mapper } from "@src/core/shared/mappers/bank_account";
 import { bank_account } from "@src/infrastructure/database/schemas";
 import { eq } from "drizzle-orm/sql";
-
-export interface IRepoBankAccount extends IRepositoryWithDates<MBankAccount, BankAccount> {
-  /**
-   * @param {IRepositoryWithDatesCreateProps<MBankAccount>} data Atributos que são passados para a criação de uma nova BankAccount
-   * @returns {BankAccount} Retorna objeto que representa a entidade BankAccount que contém os dados informados para criação
-   */
-  create(data: IRepositoryWithDatesCreateProps<MBankAccount>): BankAccount
-  
-  /**
-   * @param {MBankAccount["id"]} id id pelo qual a bank account será buscada
-   * @throws {BankAccountNotFoundById}
-   * @returns {BankAccount} Retorna objeto que representa a entidade BankAccount que contém o id informado
-   */
-  findById(id: MBankAccount["id"]): BankAccount
-
-  /**
-   * @param {MBankAccount["nickname"]} nickname descrição pela qual a bank account será procurada
-   * @throws {BankAccountNotFoundByNickname}
-   * @returns {BankAccount} Retorna objeto que representa a entidade BankAccount que contém a nickname informada
-   */
-  findByNickname(nickname: MBankAccount["nickname"]): BankAccount
-
-  /**
-   * @returns {BankAccount[]} retorna uma lista de BankAccounts
-   */
-  findAll(): BankAccount[]
-
-  /**
-   * @param {MBankAccount["id"]} id id pela qual a BankAccount será buscada
-   * @param {IRepositoryWithDatesUpdateProps<MBankAccount>} data valores que serão atualizado
-   * @throws {BankAccountNotFoundById}
-   * @returns {BankAccount} Retorna um objeto que representa a entidade BankAccount que contém a id informada
-   */
-  update(id: MBankAccount["id"], data: IRepositoryWithDatesUpdateProps<MBankAccount>): BankAccount
-
-  /**
-   * @param {MBankAccount["id"]} id id da BankAccount a ser excluída
-   * @returns {boolean} retorna true se conseguiu excluir e false caso contrário
-   */
-  delete(id: MBankAccount["id"]): boolean
-}
-
+import { Transaction } from "../database/TransactionType";
 
 export default class BankAccountDrizzleRepository implements IRepoBankAccount {
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public create(data: IRepositoryWithDatesCreateProps<MBankAccount>): BankAccount {
-    const result = db.insert(bank_account).values(data).returning().get()
-    return new BankAccount(result)
+  constructor(private tx: Transaction){}
+  
+  public create(data: CreateBankAccountParams): ReturnType<IRepoBankAccount["create"]> {
+    const result = this.tx.insert(bank_account).values(data).returning().get()
+
+    const bank_account_created = this.tx.query.bank_account.findFirst({ with: { recurrence_type: true }, where: eq(bank_account.id, result.id) }).sync()
+
+    if(bank_account_created) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "bank_account",
+          message: "Um erro ocorreu ao inserir a conta bancária."
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: bank_account_mapper(result)
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findById(id: MBankAccount["id"]): BankAccount {
-    const result = db.query.bank_account.findFirst({
+  public findById(id: MBankAccount["id"]): ReturnType<IRepoBankAccount["findById"]> {
+    const result = this.tx.query.bank_account.findFirst({
       where: eq(bank_account.id, id)
     }).sync()
-    if(!result) throw new Error();
-    return new BankAccount(result)
+
+    if(!result) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "bank_account",
+          message: `Foi retornado o valor ${result} na busca.`
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: bank_account_mapper(result)
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findByNickname(nickname: MBankAccount["nickname"]): BankAccount {
-    const result = db.query.bank_account.findFirst({where: eq(bank_account.nickname, nickname)}).sync()
-    if(!result) throw new BankAccountNotFoundByNickname(nickname);
-    return new BankAccount(result)
+  public findByNickname(nickname: MBankAccount["nickname"]): ReturnType<IRepoBankAccount["findByNickname"]> {
+    const result = this.tx.query.bank_account.findFirst({where: eq(bank_account.nickname, nickname)}).sync()
+    if(!result) {
+      return {
+        success: false,
+        error: {
+          code: "nickname_not_found",
+          scope: "bank_account",
+          message: `A conta com o apelido ${nickname} não foi encontrada.`
+        }
+      }
+    }
+    return {
+      success: true,
+      data: bank_account_mapper(result)
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findAll(): BankAccount[] {
-    const results = db.query.bank_account.findMany().sync()
-    return results.map(ba => new BankAccount(ba))
+  public findAll(): ReturnType<IRepoBankAccount["findAll"]> {
+    const results = this.tx.query.bank_account.findMany().sync()
+    return {
+      success: true,
+      data: results.map(bank_account_mapper) 
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public update(id: MBankAccount["id"], data: IRepositoryWithDatesUpdateProps<MBankAccount>): BankAccount {
-    const results = db.update(bank_account).set({
-      nickname: data.nickname,
-      balance: data.balance,
-      is_disabled: data.is_disabled,
-      updated_at: new Date(),
-    }).where(
+  public update(id: MBankAccount["id"], data: UpdateBankAccountParams): ReturnType<IRepoBankAccount["update"]> {
+    const result = this.tx.update(bank_account).set(data).where(
       eq(bank_account.id, id)
-    ).returning().get()
-    if(!results) throw new Error();
-    return this.findById(id)
+    ).returning({ id: bank_account.id }).get()
 
+    const bank_account_updated = this.tx.query.bank_account.findFirst({ with: { recurrence_type: true }, where: eq(bank_account.id, result.id) }).sync()
+
+    if(!bank_account_updated) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "bank_account",
+          message: "Um erro ocorreu durante a atualização."
+        }
+      }
+    };
+
+    return {
+      success: true,
+      data: bank_account_mapper(bank_account_updated)
+    }
   }
   
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public delete(id: MBankAccount["id"]): boolean {
-    const results = db.delete(bank_account).where(
+  public delete(id: MBankAccount["id"]): ReturnType<IRepoBankAccount["delete"]> {
+    const result = this.tx.delete(bank_account).where(
       eq(bank_account.id, id)
     ).returning().get()
-    return !results ? false : true
+
+    if(!result) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "bank_account",
+          message: "Ocorreu um erro ao deletar a conta bancária."
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: true
+    }
   }
 }

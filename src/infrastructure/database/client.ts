@@ -5,4 +5,4 @@ import { openDatabaseSync } from "expo-sqlite";
 import * as schema from './schemas';
 
 export const expoDb = openDatabaseSync("clean_architecture.db");
-export const db = drizzle(expoDb, {schema: schema});
+export const db = drizzle(expoDb, { schema });

@@ -12,11 +12,6 @@ export class ItemValueNotFoundById extends Error {
   }
 }
 
-/**
- * Função que retorna se o objeto passado é um ItemValueNotFoundById
- * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is ItemValueNotFoundById} Retorna se o objeto é do tipo ItemValueNotFoundById
- */
 // https://typescript.tv/errors/#ts1196
 export function isItemValueNotFoundById(error: unknown): error is ItemValueNotFoundById {
   return error instanceof ItemValueNotFoundById;
@@ -26,19 +21,13 @@ export function isItemValueNotFoundById(error: unknown): error is ItemValueNotFo
 
 export class ItemValueUnknownError extends Error {
   readonly name: string = "ItemValueUnknownError";
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  constructor(){
+    constructor(){
     super(`ItemValue not founded!`, {
       cause: `Unknown`
     })
   }
 }
 
-/**
- * Função que retorna se o objeto passado é um ItemValueUnknownError
- * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is ItemValueUnknownError} Retorna se o objeto é do tipo ItemValueUnknownError
- */
 // https://typescript.tv/errors/#ts1196
 export function isItemValueUnknownError(error: unknown): error is ItemValueUnknownError {
   return error instanceof ItemValueUnknownError;

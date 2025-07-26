@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 
 // REVIEW: Na inicialização preciso:
 /**
@@ -26,11 +25,7 @@ export const tags_available = {
 export type TagsAvailable = (keyof typeof tags_available)
 
 // ATTENTION: Essas são os métodos de transferência disponíveis:
-export const transfer_methods_available = [
-  'Pix',
-  'Débito',
-  'Transferência Bancária'
-]
+// TODO: Usar migration para registrar TransferMethodsAvailable
 
 interface Recurrence {
   displayText: string;

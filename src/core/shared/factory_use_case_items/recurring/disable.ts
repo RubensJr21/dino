@@ -1,29 +1,34 @@
 import IUseCase from "@core/shared/IUseCase";
 import { Recurring } from "@src/core/entities/recurring.entity";
-import { IRepoRecurring } from "../../interfaces/IRepositoryRecurring";
+import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
+import { Result } from "../../types/Result";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface DisableRecurring_Input {
   id: number;
 }
 
-export default abstract class UseCase_Recurring_Disable implements IUseCase<DisableRecurring_Input, Recurring>{
+type Return = Result<Recurring>
+
+export default abstract class UseCase_Recurring_Disable implements IUseCase<DisableRecurring_Input, Return>{
   protected abstract variant: TypeOfVariants;
-  /**
-   * Constructs an instance of the recurring disable use case.
-   * @param {IRepoRecurring} repo_rec - The repository for recurring operations
-   */
+  
   constructor(
     private repo_rec: IRepoRecurring
   ){}
+  
+  async execute(input: DisableRecurring_Input): Promise<Return> {
+    const result = this.repo_rec.findById(input.id)
 
-  /**
-   * Executes the disable operation for a recurring.
-   * @param {DisableRecurring_Input} input - The input data for updating a recurring
-   * @returns {Promise<Recurring>} The disabled recurring or undefined if update fails
-   */
-  async execute(input: DisableRecurring_Input): Promise<Recurring> {
-    const recurring = this.repo_rec.findById(input.id)
+    if (!result.success) {
+      return {
+        success: false,
+        error: result.error.message
+      }
+    }
+
+    const recurring = result.data
+
     recurring.disable();
     
     const {
@@ -31,7 +36,6 @@ export default abstract class UseCase_Recurring_Disable implements IUseCase<Disa
       recurrence_type,
       created_at,
       updated_at,
-      itens,
       ...data
     } = {
       ...recurring.properties,

@@ -1,105 +1,117 @@
 import { Tag } from '@src/core/entities/tag.entity'
 import { MTag } from '@src/core/models/tag.model'
-import { TagNotFoundByDescription, TagNotFoundById } from '@src/core/shared/errors/tag'
-import { IRepository, IRepositoryCreateProps, IRepositoryUpdateProps } from "@src/core/shared/interfaces/IRepository"
-import { db } from '@src/infrastructure/database/client'
+import { CreateTagParams, IRepoTag, UpdateTagParams } from '@src/core/shared/interfaces/IRepoTag'
+import { tag_mapper } from '@src/core/shared/mappers/tag'
 import { tag } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
-
-export interface IRepoTag extends IRepository<MTag, Tag> {
-  /**
-   * Implementação do Método de criação da entidade Tag
-   * @param {IRepositoryCreateProps<MTag>} data Atributos que são passados para a criação de uma nova Tag
-   * @returns {Tag} Retorna objeto que representa a entidade Tag que contém os dados informados para criação
-   */
-  create(data: IRepositoryCreateProps<MTag>): Tag;
-
-  /**
-   * Implementação do método retorna a Tag que tiver o id informado
-   * @param {Tag["id"]} id id pelo qual a tag será buscada
-   * @throws {TagNotFoundById}
-   * @returns {Tag} Retorna objeto que representa a entidade Tag que contém o id informado
-   */
-  findById(id: Tag["id"]): Tag;
-
-  /**
-   * Esse método retorna a Tag que tiver a description informada
-   * @param {Tag["description"]} description descrição pela qual a tag será procurada
-   * @throws {TagNotFoundByDescription}
-   * @returns {Tag} Retorna objeto que representa a entidade Tag que contém a description informada
-   */
-  findByDescription(description: string): MTag;
-
-  /**
-   * Método para retornar todas as Tags
-   * @returns {Tag[]} retorna uma lista de Tags
-   */
-  findAll(): Tag[];
-
-  /**
-   * Implementa método de update de Tag
-   * @param {MTag["id"]} id id pela qual a Tag será buscada
-   * @param {IRepositoryUpdateProps<MTag>} data valores que serão atualizado
-   * @throws {TagNotFoundById}
-   * @returns {Tag} Retorna um objeto que representa a entidade Tag que contém a id informada
-   */
-  update(id: MTag["id"], data: IRepositoryUpdateProps<MTag>): Tag;
-
-  /**
-   * Implementa método que deleta a Tag
-   * @param {number} id Id da Tag a ser excluída
-   * @returns {boolean} retorna true se conseguiu excluir e false caso contrário
-   */
-  delete(id: number): boolean;
-}
+import { Transaction } from '../database/TransactionType'
 
 export default class TagDrizzleRepository implements IRepoTag {
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public create(data: IRepositoryCreateProps<MTag>): Tag {
-    const tags = db.insert(tag).values(data).returning().get()
-    return new Tag(tags)
+  constructor(private tx: Transaction) { }
+  
+  public create(data: CreateTagParams): ReturnType<IRepoTag["create"]> {
+    const tag_created = this.tx.insert(tag).values(data).returning().get()
+
+    return {
+      success: true,
+      data: tag_mapper(tag_created)
+    }
   }
    
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findById(id: Tag["id"]): Tag {
-    const tag_searched = db.query.tag.findFirst({
+  public findById(id: Tag["id"]): ReturnType<IRepoTag["findById"]> {
+    const tag_searched = this.tx.query.tag.findFirst({
       where: eq(tag.id, id)
     }).sync()
+
     if(!tag_searched){
-      throw new TagNotFoundById(id)
+      return {
+        success: false,
+        error: {
+          code: 'id_not_found',
+          scope: "tag",
+          message: `Foi retornado o valor ${tag_searched} na busca.`
+        }
+      }
     }
-    return new Tag(tag_searched);
+    return {
+      success: true,
+      data: tag_mapper(tag_searched)
+    };
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findByDescription(description: Tag["description"]): Tag {
-    const tag_searched = db.query.tag.findFirst({
+  public findByDescription(description: Tag["description"]): ReturnType<IRepoTag["findByDescription"]> {
+    const tag_searched = this.tx.query.tag.findFirst({
       where: eq(tag.description, description)
     }).sync()
-    if(!tag_searched){
-      throw new TagNotFoundByDescription(description);
+
+     if(!tag_searched){
+      return {
+        success: false,
+        error: {
+          code: 'description_not_found',
+          scope: "tag",
+          message: `Foi retornado o valor ${tag_searched} na busca.`
+        }
+      }
     }
-    return new Tag(tag_searched);
+    return {
+      success: true,
+      data: tag_mapper(tag_searched)
+    };
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findAll(): Tag[] {
-    return db.query.tag.findMany().sync().map(tag => new Tag(tag))
+  public findAll(): ReturnType<IRepoTag["findAll"]> {
+    const result = this.tx.query.tag.findMany().sync()
+
+    const tags = result.map(tag_mapper)
+
+    return {
+      success: true,
+      data: tags
+    }
   }
    
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public update(id: MTag["id"], data: IRepositoryUpdateProps<MTag>): Tag {
-    const result = db.update(tag).set(data).where(eq(tag.id, id)).returning().get()
-    if(!result) throw new TagNotFoundById(id);
-    return new Tag(result)
+  public update(id: MTag["id"], data: UpdateTagParams): ReturnType<IRepoTag["update"]> {
+    const result = this.tx.update(tag).set(data).where(eq(tag.id, id)).returning({id: tag.id}).get()
+
+    const tag_updated = this.tx.query.tag.findFirst({ where: eq(tag.id, result.id)}).sync()
+
+    if(!tag_updated) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "tag",
+          message: "Um erro aconteceu ao obter a tag atualizada."
+        }
+      }
+    };
+
+    return {
+      success: true,
+      data: tag_mapper(tag_updated)
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public delete(id: number): boolean {
-    const result = db.delete(tag).where(
+  public delete(id: number): ReturnType<IRepoTag["delete"]> {
+    const tag_deleted = this.tx.delete(tag).where(
       eq(tag.id, id)
     ).returning().get();
-    if(!result) return false;
-    return true;
+
+    if (!tag_deleted) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "tag",
+          message: "Ocorreu um erro ao deletar a tag."
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: true
+    }
   }
 }

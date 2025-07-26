@@ -23,7 +23,6 @@ const infos: Info[] = [
 ]
 
 
-// eslint-disable-next-line jsdoc/require-jsdoc
 export function generateCardsData(amount: number = 10, scheme: PreferenceType = 'light'): CardData[] {
   return Array.from({ length: amount }, (_, index): CardData => {
 

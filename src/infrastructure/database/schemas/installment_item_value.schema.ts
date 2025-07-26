@@ -10,7 +10,7 @@ export const installment_item_value = sqliteTable("installment_item_value", {
      .primaryKey({ autoIncrement: true }),
   fk_id_installment: 
     t.integer("fk_id_installment")
-     .references(() => installment.id)
+     .references(() => installment.id, { onDelete: "cascade" })
      .notNull(),
   fk_id_item_value: 
     t.integer("fk_id_item_value")

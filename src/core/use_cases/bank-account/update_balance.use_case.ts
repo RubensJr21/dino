@@ -1,39 +1,52 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { BankAccountUnknownError, isBankAccountNotFoundById } from "@src/core/shared/errors/bank_account";
-import { IRepoBankAccount } from "@src/infrastructure/repositories/bank_account.repository";
+import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
 
-interface UpdateBalanceBankAccount_Input {
+interface Input {
   id: number,
   new_balance: number
 }
 
-export default class UpdateBalanceBankAccount implements IUseCase<UpdateBalanceBankAccount_Input, BankAccount> {
-  /**
-   * @param {IRepoBankAccount} repo_ba Interface do repositório de BankAccount
-   */
-  constructor(
-    private repo_ba: IRepoBankAccount
-  ){}
-  /**
-   * @param {UpdateBalanceBankAccount_Input} input objeto contém o id e o novo valor para o atributo 'balance' de BankAccount
-   * @throws {BankAccountNotFoundById}
-   * @throws {BankAccountUnknownError}
-   * @returns {Promise<BankAccount>} retorna uma promise com um objeto que representa a entidade BankAccount
-   */
-  async execute(input: UpdateBalanceBankAccount_Input): Promise<BankAccount> {
-    try {
-      const bank_account = this.repo_ba.findById(input.id)
-      bank_account.change_balance(input.new_balance);
-  
-      const {id,...bank_account_without_id} = bank_account.properties;
-  
-      return this.repo_ba.update(id, bank_account_without_id);
-    } catch (error) {
-      if(isBankAccountNotFoundById(error)){
-        throw error
+type UseCaseInterface = IUseCase<Input, BankAccount>
+
+export default class UpdateBalanceBankAccount implements UseCaseInterface {
+  constructor(private repo_ba: IRepoBankAccount) { }
+  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+    const result_search = this.repo_ba.findById(input.id)
+
+    if (!result_search.success) {
+      const scope = `UpdateBalanceBankAccount(${this.repo_ba.findById.name}) > ${result_search.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_search.error,
+          scope
+        }
       }
-      throw new BankAccountUnknownError()
+    }
+
+    const data = result_search.data
+
+    data.change_balance(input.new_balance);
+
+    const { id, ...bank_account_without_id } = data.properties;
+
+    const result_update = this.repo_ba.update(id, bank_account_without_id);
+
+    if (!result_update.success) {
+      const scope = `UpdateBalanceBankAccount(${this.repo_ba.update.name}) > ${result_update.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_update.error,
+          scope
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: result_update.data
     }
   }
 }

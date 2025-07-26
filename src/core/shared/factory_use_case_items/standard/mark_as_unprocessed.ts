@@ -1,48 +1,73 @@
 import IUseCase from "@core/shared/IUseCase";
 import { Standard } from "@src/core/entities/standard.entity";
-import { IRepoItemValue } from "@src/infrastructure/repositories/item_value.repository";
-import { isStandardNotFoundById, StandardUnknownError } from "../../errors/standard";
-import { IRepoStandard } from "../../interfaces/IRepositoryStandard";
+import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
+import { IRepoStandard } from "../../interfaces/IRepoStandard";
 import { TypeOfVariants } from "../../types/variants_items";
 
-interface MarkStandardAsUnprocessed_Input {
+interface Input {
   id: number
 }
 
-export default abstract class UseCase_StandardItemValue_MarkAsUnprocessed implements IUseCase<MarkStandardAsUnprocessed_Input, Standard>{
+type UseCaseInterface = IUseCase<Input, Standard>
+
+export default abstract class MarkStandardAsUnProcessed implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
-  /**
-   * Constructs an instance of the use case with the required standard repository
-   * @param {IRepoStandard} repo_s - The repository for standard operations
-   * @param {IRepoItemValue} repo_iv - The repository for item value operations
-   */
   constructor(
     private repo_s: IRepoStandard,
     private repo_iv: IRepoItemValue
-  ){}
-  /**
-   * Marks an standard as unprocessed by updating its properties
-   * @param {MarkStandardAsUnprocessed_Input} input - The input containing the standard ID
-   * @returns {Promise<Standard>} The updated standard
-   * @throws {StandardNotFoundError} If the standard is not found
-   * @throws {StandardUnknownError} If an unexpected error occurs during processing
-   */
-  async execute(input: MarkStandardAsUnprocessed_Input): Promise<Standard> {
-    try {
-      const { item_value } = this.repo_s.findById(input.id)
-      item_value.markAsUnprocessed()
-      const { id, tag, transfer_method, ...iv } = item_value.properties
-      this.repo_iv.update(id, {
-        ...iv,
-        fk_id_tag: tag.id,
-        fk_id_transfer_method: transfer_method.id
-      })
-      return this.repo_s.findById(input.id);
-    } catch (error) {
-      if(isStandardNotFoundById(error)) {
-        throw error
+  ) { }
+  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+    const result_search = this.repo_s.findById(input.id)
+
+    if(!result_search.success){
+      const scope = `MarkStandardAsUnProcessed(${this.repo_s.findById.name}) > ${result_search.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_search.error,
+          scope
+        }
       }
-      throw new StandardUnknownError()
     }
+
+    const { item_value } = result_search.data
+
+    item_value.markAsUnprocessed()
+    const { id, tag, transfer_method, ...iv } = item_value.properties
+    
+    const result_updated = this.repo_iv.update(id, {
+      ...iv,
+      fk_id_tag: tag.id,
+      fk_id_transfer_method: transfer_method.id
+    })
+
+    if(!result_updated.success){
+      const scope = `MarkStandardAsUnProcessed(${this.repo_iv.update.name}) > ${result_updated.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_updated.error,
+          scope
+        }
+      }
+    }
+
+    const result_search_after_update = this.repo_s.findById(input.id);
+
+    if(!result_search_after_update.success){
+      const scope = `MarkStandardAsUnProcessed(${this.repo_iv.findById.name}) > ${result_search_after_update.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_search_after_update.error,
+          scope
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: result_search_after_update.data
+    };
   }
 }

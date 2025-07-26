@@ -1,101 +1,112 @@
-import { RecurrenceType } from '@src/core/entities/recurrence_type.entity'
 import { MRecurrenceType } from '@src/core/models/recurrence_type.model'
-import { RecurrenceTypeNotFoundById, RecurrenceTypeNotFoundByType } from '@src/core/shared/errors/recurrence_type'
-import { IRepository, IRepositoryCreateProps } from "@src/core/shared/interfaces/IRepository"
-import { db } from '@src/infrastructure/database/client'
+import { RecurrenceTypeNotFoundByType } from '@src/core/shared/errors/recurrence_type'
+import { CreateRecurrenceTypeParams, IRepoRecurrenceType, UpdateRecurrenceTypeParams } from '@src/core/shared/interfaces/IRepoRecurrenceType'
+import { recurrence_type_mapper } from '@src/core/shared/mappers/recurrence_type'
 import { recurrence_type } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
-
-export interface IRepoRecurrenceType extends IRepository<MRecurrenceType, RecurrenceType> {
-  /**
-   * Creates a new recurrence type in the database.
-   * @param {IRepositoryCreateProps<MRecurrenceType>} data The data for creating a new recurrence type
-   * @returns {RecurrenceType} The newly created RecurrenceType instance
-   */
-  create(data: IRepositoryCreateProps<MRecurrenceType>): RecurrenceType;
-
-  /**
-   * Finds a recurrence type by its unique identifier.
-   * @param {MRecurrenceType["id"]} id The unique identifier of the recurrence type to find
-   * @returns {RecurrenceType} The RecurrenceType matching the given id
-   * @throws {RecurrenceTypeNotFoundById} If no recurrence type is found with the specified id
-   */
-  findById(id: MRecurrenceType["id"]): RecurrenceType;
-
-  /**
-   * Finds a recurrence type by its type.
-   * @param {MRecurrenceType["type"]} type The type of the recurrence type to find
-   * @returns {RecurrenceType} The RecurrenceType matching the given type
-   * @throws {RecurrenceTypeNotFoundByType} If no recurrence type is found with the specified type
-   */
-  findByType(type: string): RecurrenceType;
-
-  /**
-   * Retrieves all recurrence types from the database.
-   * @returns {RecurrenceType[]} An array of all RecurrenceType instances
-   */
-  findAll(): RecurrenceType[];
-
-  /**
-   * Updates a recurrence type in the database.
-   * @param {MRecurrenceType["id"]} id The ID of the recurrence type to update
-   * @param {IRepositoryCreateProps<MRecurrenceType>} data The updated data for the recurrence type
-   * @returns {RecurrenceType} The updated RecurrenceType instance
-   * @throws {RecurrenceTypeNotFoundById} If no recurrence type is found with the specified ID
-   */
-  update(id: MRecurrenceType["id"], data: IRepositoryCreateProps<MRecurrenceType>): RecurrenceType;
-  
-  /**
-   * Deletes a recurrence type by its ID
-   * @param {MRecurrenceType["id"]} id The ID of the recurrence type to delete
-   * @returns {boolean} Indicates whether the deletion was successful
-   */
-  delete(id: MRecurrenceType["id"]): boolean;
-}
+import { Transaction } from '../database/TransactionType'
 
 export default class RecurrenceTypeDrizzleRepository implements IRepoRecurrenceType {
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public create(data: IRepositoryCreateProps<MRecurrenceType>): RecurrenceType {
-    const recurrence_type_created = db.insert(recurrence_type).values(data).returning().get()
-    return new RecurrenceType(recurrence_type_created)
-  }
+  constructor(private tx: Transaction) { }
   
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findById(id: MRecurrenceType["id"]): RecurrenceType {
-    const recurrence_type_searched = db.query.recurrence_type.findFirst({
+  public create(data: CreateRecurrenceTypeParams): ReturnType<IRepoRecurrenceType["create"]> {
+    const recurrence_type_created = this.tx.insert(recurrence_type).values(data).returning().get()
+
+    return {
+      success: true,
+      data: recurrence_type_mapper(recurrence_type_created)
+    }
+  }
+
+  public findById(id: MRecurrenceType["id"]): ReturnType<IRepoRecurrenceType["findById"]> {
+    const recurrence_type_searched = this.tx.query.recurrence_type.findFirst({
       where: eq(recurrence_type.id, id)
     }).sync()
-    if(!recurrence_type_searched) throw new RecurrenceTypeNotFoundById(id)
-    return new RecurrenceType(recurrence_type_searched)
+
+    if (!recurrence_type_searched) {
+      return {
+        success: false,
+        error: {
+          code: 'id_not_found',
+          scope: "recurrence_type",
+          message: `Foi retornado o valor ${recurrence_type_searched} na busca.`
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: recurrence_type_mapper(recurrence_type_searched)
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findByType(type: MRecurrenceType["type"]): RecurrenceType {
-    const recurrence_type_searched = db.query.recurrence_type.findFirst({
+  public findByType(type: MRecurrenceType["type"]): ReturnType<IRepoRecurrenceType["findByType"]> {
+    const recurrence_type_searched = this.tx.query.recurrence_type.findFirst({
       where: eq(recurrence_type.type, type)
     }).sync()
-    if(!recurrence_type_searched) throw new RecurrenceTypeNotFoundByType(type)
-    return new RecurrenceType(recurrence_type_searched)
+
+    if (!recurrence_type_searched) throw new RecurrenceTypeNotFoundByType(type)
+
+    return {
+      success: true,
+      data: recurrence_type_mapper(recurrence_type_searched)
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findAll(): RecurrenceType[] {
-    return db.query.recurrence_type.findMany().sync().map(rt => new RecurrenceType(rt))
+  public findAll(): ReturnType<IRepoRecurrenceType["findAll"]> {
+    const result = this.tx.query.recurrence_type.findMany().sync()
+
+    const recurrences_type = result.map(recurrence_type_mapper)
+
+    return {
+      success: true,
+      data: recurrences_type
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public update(id: MRecurrenceType["id"], data: IRepositoryCreateProps<MRecurrenceType>): RecurrenceType {
-    const result = db.update(recurrence_type).set(data).where(
+  public update(id: MRecurrenceType["id"], data: UpdateRecurrenceTypeParams): ReturnType<IRepoRecurrenceType["update"]> {
+    const result = this.tx.update(recurrence_type).set(data).where(
       eq(recurrence_type.id, id)
     ).returning().get()
-    return this.findById(result.id)
+
+    const recurrence_type_updated = this.tx.query.recurrence_type.findFirst({ where: eq(recurrence_type.id, result.id) }).sync()
+
+    if (!recurrence_type_updated) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "recurrence_type",
+          message: "Um erro aconteceu ao obter o tipo de recorrência atualizado."
+        }
+      }
+    };
+
+    return {
+      success: true,
+      data: recurrence_type_mapper(recurrence_type_updated)
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public delete(id: MRecurrenceType["id"]): boolean {
-    const results = db.delete(recurrence_type).where(
+  public delete(id: MRecurrenceType["id"]): ReturnType<IRepoRecurrenceType["delete"]> {
+    const recurrence_type_deleted = this.tx.delete(recurrence_type).where(
       eq(recurrence_type.id, id)
     ).returning().get();
-    return !results ? false : true;
+
+    if (!recurrence_type_deleted) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "recurrence_type",
+          message: "Ocorreu um erro ao deletar o tipo de recorrência."
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: true
+    }
   }
 }

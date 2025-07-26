@@ -8,6 +8,10 @@ export const recurring = sqliteTable("recurring", {
   id: 
     t.integer("id")
      .primaryKey({autoIncrement: true}),
+  is_disabled:
+    t.integer("is_disabled")
+     .$type<IRecurring["is_disabled"]>()
+     .notNull(),
   start_date: 
     t.integer("start_date", { mode: "timestamp" })
      .$type<IRecurring["start_date"]>()

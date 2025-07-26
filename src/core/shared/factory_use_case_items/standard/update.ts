@@ -1,48 +1,69 @@
 import IUseCase from "@core/shared/IUseCase";
 import { Standard } from "@src/core/entities/standard.entity";
-import { IRepoItemValue } from "@src/infrastructure/repositories/item_value.repository";
-import { IRepoStandard } from "../../interfaces/IRepositoryStandard";
+import { MItemValue } from "@src/core/models/item_value.model";
+import IEntityBase from "../../interfaces/IEntityBase";
+import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
+import { IRepoStandard } from "../../interfaces/IRepoStandard";
 import { TypeOfVariants } from "../../types/variants_items";
 
-interface UpdateStandard_Input {
-  id: number;
-  data: StrictOmit<Standard, "id">
+interface Input {
+  id: IEntityBase["id"];
+  data_item_value: StrictOmit<MItemValue, "id">
 }
 
-export default abstract class UseCase_Standard_Update implements IUseCase<UpdateStandard_Input, Standard>{
-  abstract variant: TypeOfVariants;
-  /**
-   * Constructs an instance of the Standard update use case
-   * @param {IRepoStandard} repo_s - The repository for standard operations
-   * @param {IRepoItemValue} repo_iv - The repository for item value operations
-   */
+type UseCaseInterface = IUseCase<Input, Standard>
+
+export default abstract class UpdateStandard implements UseCaseInterface {
+  protected abstract variant: TypeOfVariants;
   constructor(
     private repo_s: IRepoStandard,
     private repo_iv: IRepoItemValue
   ){}
-  /**
-   * Executes the update operation for an Standard
-   * @param {UpdateStandard_Input} input - The input data for updating an Standard
-   * @returns {Promise<Standard>} The updated Standard or undefined if update fails
-   */
-  async execute(input: UpdateStandard_Input): Promise<Standard> {
-    const {
-      item_value,
-      ...data
-    } = input.data
+  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+    const result_search = this.repo_s.findById(input.id);
 
-    const {
-      tag,
-      transfer_method,
-      ...iv
-    } = item_value.properties
-    return this.repo_s.update(input.id, {
-      ...data,
-      item_value: {
-        ...iv,
-        fk_id_tag: tag.id,
-        fk_id_transfer_method: transfer_method.id
+    if(!result_search.success){
+      const scope = `UpdateStandard(${this.repo_s.findById.name}) > ${result_search.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_search.error,
+          scope
+        }
       }
-    })
+    }
+
+    const item_value_data = result_search.data.item_value
+
+    const result_update = this.repo_iv.update(item_value_data.id, input.data_item_value)
+
+    if(!result_update.success){
+      const scope = `UpdateStandard(${this.repo_iv.create.name}) > ${result_update.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_update.error,
+          scope
+        }
+      }
+    }
+
+    const standard_updated = this.repo_s.findById(input.id)
+
+    if(!standard_updated.success){
+      const scope = `UpdateStandard(${this.repo_s.findById.name}) > ${standard_updated.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...standard_updated.error,
+          scope
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: standard_updated.data
+    }
   }
 }

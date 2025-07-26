@@ -1,127 +1,133 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
 import { BankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
-import { TransferMethod } from "@src/core/entities/transfer_method.entity";
 import { MBankAccountTransferMethod } from "@src/core/models/bank_account_transfer_method.model";
-import { BankAccountNotFoundById, isBankAccountNotFoundById } from "@src/core/shared/errors/bank_account";
-import { BankAccountTransferMethodNotFoundById, BankAccountTransferMethodUnknownError } from "@src/core/shared/errors/bank_account_transfer_method";
-import { IRepository, IRepositoryCreateProps, IRepositoryUpdateProps } from "@src/core/shared/interfaces/IRepository";
+import { CreateBankAccountTransferMethodTypeParams, IRepoBankAccountTransferMethod, UpdateBankAccountTransferMethodTypeParams } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
+import { bank_account_transfer_method_mapper } from "@src/core/shared/mappers/bank_account_transfer_method";
 import { db } from "@src/infrastructure/database/client";
 import { bank_account_transfer_method } from "@src/infrastructure/database/schemas";
 import { eq } from "drizzle-orm/sql";
+import { Transaction } from "../database/TransactionType";
 
-export interface IRepoBankAccountTransferMethod extends IRepository<MBankAccountTransferMethod, BankAccountTransferMethod> {
-  /**
-   * @param {IRepositoryCreateProps<MBankAccountTransferMethod>} data Atributos que são passados para a criação de uma nova Bank Account Transfer Method
-   * @returns {BankAccount} Retorna objeto que representa a entidade Bank Account Transfer Method que contém os dados informados para criação
-   */
-  create(data: IRepositoryCreateProps<MBankAccountTransferMethod>): BankAccountTransferMethod;
-  
-  /**
-   * @param {MBankAccountTransferMethod["id"]} id id pelo qual a bank account transfer method será buscada
-   * @throws {BankAccountTransferMethodNotFoundById}
-   * @returns {BankAccountTransferMethod} Retorna objeto que representa a entidade BankAccountTransferMethod que contém o id informado
-   */
-  findById(id: MBankAccountTransferMethod["id"]): BankAccountTransferMethod;
+export default class BankAccountTransferMethodDrizzleRepository implements IRepoBankAccountTransferMethod {
+  constructor(private tx: Transaction) { }
 
-  /**
-   * Finds a bank account transfer method by bank account ID and type
-   * @param {BankAccount["id"]} bank_account_id The ID of the bank account
-   * @throws {BankAccountTransferMethodNotFoundById} Throws an error if no matching transfer method is found
-   * @returns {BankAccountTransferMethod} The bank account transfer method matching the given bank account ID and type
-   */
-  findByBankAccountId(bank_account_id: BankAccount["id"]): BankAccountTransferMethod[];
-
-  /**
-   * Retrieves all bank account transfer methods with their associated bank accounts
-   * @returns {BankAccountTransferMethod[]} An array of bank account transfer method entities with populated bank account details
-   */
-  findAll(): BankAccountTransferMethod[];
-
-  /**
-   * Updates a bank account transfer method by its ID
-   * @param {BankAccountTransferMethod["id"]} id - The unique identifier of the bank account transfer method to update
-   * @param {IRepositoryUpdateProps<MBankAccountTransferMethod>} data - The data to update the bank account transfer method with
-   * @returns {BankAccountTransferMethod} The updated bank account transfer method
-   */
-  update(id: BankAccountTransferMethod["id"], data: IRepositoryUpdateProps<MBankAccountTransferMethod>): BankAccountTransferMethod;
-
-  /**
-   * Deletes a bank account transfer method by its ID
-   * @param {BankAccountTransferMethod["id"]} id - The unique identifier of the bank account transfer method to delete
-   * @returns {boolean} Indicates whether the deletion was successful
-   */
-  delete(id: BankAccountTransferMethod["id"]): boolean;
-}
-
-export default class BankAccountTransferMethodDrizzleRepository implements IRepoBankAccountTransferMethod {  
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public create(data: IRepositoryCreateProps<MBankAccountTransferMethod>): BankAccountTransferMethod {   
-    const result = db.insert(bank_account_transfer_method).values(data).returning({ id: bank_account_transfer_method.id }).get()
+  public create(data: CreateBankAccountTransferMethodTypeParams): ReturnType<IRepoBankAccountTransferMethod["create"]> {
+    const result = this.tx.insert(bank_account_transfer_method).values(data).returning({ id: bank_account_transfer_method.id }).get()
     return this.findById(result.id);
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findById(id: MBankAccountTransferMethod["id"]): BankAccountTransferMethod {
-    const result = db.query.bank_account_transfer_method.findFirst({
+  public findById(id: MBankAccountTransferMethod["id"]): ReturnType<IRepoBankAccountTransferMethod["findById"]> {
+    const result = this.tx.query.bank_account_transfer_method.findFirst({
       where: eq(bank_account_transfer_method.id, id),
       with: {
         bank_account: true,
         transfer_method: true
       }
     }).sync()
-    if(!result) throw new BankAccountTransferMethodNotFoundById(id);
 
-    const {
-      bank_account,
-      transfer_method,
-      fk_id_bank_account,
-      fk_id_transfer_method,
-      ...bank_account_transfer_method_searched
-    } = result
-
-    return new BankAccountTransferMethod({
-      id: bank_account_transfer_method_searched.id,
-      method: bank_account_transfer_method_searched.method,
-      bank_account: new BankAccount(bank_account),
-      transfer_method: new TransferMethod(transfer_method)
-    })
-  }
-
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findByBankAccountId(bank_account_id: BankAccount["id"]): BankAccountTransferMethod[] {
-    try{
-      const bankId_transfers = db.query.bank_account_transfer_method.findMany({
-        where: eq(bank_account_transfer_method.fk_id_bank_account, bank_account_id),
-      }).sync()
-
-      if(bankId_transfers.length === 0){
-        throw new BankAccountNotFoundById(bank_account_id);
+    if (!result) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "bank_account_transfer_method",
+          message: `Foi retornado o valor ${result} na busca.`
+        }
       }
+    };
 
-      return bankId_transfers.map(value => this.findById(value.id))
-    } catch(error) {
-      if(isBankAccountNotFoundById(error)){
-        throw error;
-      }
-      throw new BankAccountTransferMethodUnknownError()
+    return {
+      success: true,
+      data: bank_account_transfer_method_mapper(result)
     }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findAll(): BankAccountTransferMethod[] {
-    const results = db.query.bank_account_transfer_method.findMany().sync()
-    return results.map(ba_tm => this.findById(ba_tm.id))
+  public findByBankAccountId(bank_account_id: BankAccount["id"]): ReturnType<IRepoBankAccountTransferMethod["findByBankAccountId"]> {
+    const bankId_transfers = this.tx.query.bank_account_transfer_method.findMany({
+      where: eq(bank_account_transfer_method.fk_id_bank_account, bank_account_id),
+      with: {
+        bank_account: true,
+        transfer_method: true
+      }
+    }).sync()
+
+    if (bankId_transfers.length === 0) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "bank_account_transfer_method",
+          message: "Nenhum método de transferência foi encontrado para a conta bancária informada."
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: bankId_transfers.map(bank_account_transfer_method_mapper)
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public update(id: BankAccountTransferMethod["id"], data: IRepositoryUpdateProps<MBankAccountTransferMethod>): BankAccountTransferMethod {    
-    db.update(bank_account_transfer_method).set(data).where(eq(bank_account_transfer_method.id, id)).returning().get()
-    return this.findById(id)
+  public findAll(): ReturnType<IRepoBankAccountTransferMethod["findAll"]> {
+    const results = this.tx.query.bank_account_transfer_method.findMany({ with: { bank_account: true, transfer_method: true } }).sync()
+    return {
+      success: true,
+      data: results.map((bank_account_transfer_method_mapper))
+    }
   }
-  
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public delete(id: BankAccountTransferMethod["id"]): boolean {
-    const result = db.delete(bank_account_transfer_method).where(eq(bank_account_transfer_method.id, id)).returning().get()
-    return !result ? false : true;
+
+  public findAllOfBankAccount(bank_account_id: BankAccount["id"]): ReturnType<IRepoBankAccountTransferMethod["findAllOfBankAccount"]> {
+    const results = this.tx.query.bank_account_transfer_method.findMany({
+      with: {
+        bank_account: true,
+        transfer_method: true
+      },
+      where: eq(bank_account_transfer_method.fk_id_bank_account, bank_account_id) }).sync()
+    return {
+      success: true,
+      data: results.map((bank_account_transfer_method_mapper))
+    }
+  }
+
+  public update(id: BankAccountTransferMethod["id"], data: UpdateBankAccountTransferMethodTypeParams): ReturnType<IRepoBankAccountTransferMethod["update"]> {
+    const result = db.update(bank_account_transfer_method).set(data).where(eq(bank_account_transfer_method.id, id)).returning().get()
+
+    const bank_account_transfer_method_updated = this.tx.query.bank_account_transfer_method.findFirst({ with: { bank_account: true, transfer_method: true }, where: eq(bank_account_transfer_method.id, result.id) }).sync()
+
+    if (!bank_account_transfer_method_updated) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "bank_account_transfer_method",
+          message: "Um erro ocorreu durante a atualização."
+        }
+      }
+    };
+
+    return {
+      success: true,
+      data: bank_account_transfer_method_mapper(bank_account_transfer_method_updated)
+    }
+  }
+
+  public delete(id: BankAccountTransferMethod["id"]): ReturnType<IRepoBankAccountTransferMethod["delete"]> {
+    const result = this.tx.delete(bank_account_transfer_method).where(eq(bank_account_transfer_method.id, id)).returning().get()
+
+    if(!result) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "bank_account_transfer_method",
+          message: "Ocorreu um erro ao deletar o método de transferência."
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: true
+    }
   }
 }

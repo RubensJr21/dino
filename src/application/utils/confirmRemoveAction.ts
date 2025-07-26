@@ -1,6 +1,5 @@
 import { Alert } from "react-native";
 
-// eslint-disable-next-line jsdoc/require-jsdoc
 export function confirmRemoveAction(action: () => void) {
 	return () => {
 		// title: string, message?: string, buttons?: AlertButton[], options?: AlertOptions
@@ -12,8 +11,7 @@ export function confirmRemoveAction(action: () => void) {
 			},
 			{
 				text: "Não",
-				// eslint-disable-next-line jsdoc/require-jsdoc
-				onPress: () => {},
+								onPress: () => {},
 				style: "cancel",
 			},
 		]);

@@ -1,71 +1,103 @@
 import { BankAccount, IBankAccount } from "@core/entities/bank_account.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { BankAccountNicknameIsAlreadyInUse, BankAccountUnknownError, isBankAccountNotFoundByNickname } from "@src/core/shared/errors/bank_account";
-import { IRepoBankAccount } from "@src/infrastructure/repositories/bank_account.repository";
-import { IRepoBankAccountTransferMethod } from "@src/infrastructure/repositories/bank_account_transfer_method.repository";
-import { IRepoTransferMethod } from "@src/infrastructure/repositories/transfer_method_type.repository";
+import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
+import { IRepoBankAccountTransferMethod } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
+import { IRepoTransferMethod } from "@src/core/shared/interfaces/IRepoTransferMethodType";
+import { TypeOfTransferMethods } from "@src/core/shared/types/transfer_methods";
 
-interface BankAccount_RegisterInput extends Pick<IBankAccount, "nickname"|"balance"> {
-  type_of_bank_transfers: {
-    "Pix": boolean,
-    "Débito": boolean,
-    "Transferência Bancária": boolean
-  }
+interface Input extends Pick<IBankAccount, "nickname" | "balance"> {
+  type_of_bank_transfers: Record<TypeOfTransferMethods, boolean>
 }
 
-export default class RegisterBankAccount implements IUseCase<BankAccount_RegisterInput, BankAccount> {
-  /**
-   * @param {IRepoBankAccount} repo_ba Interface do repositório de BankAccount
-   * @param {IRepoTransferMethod} repo_tm Interface do repositório de TransferMethod
-   * @param {IRepoBankAccountTransferMethod} repo_ba_tm Interface do repositório de BankAccountTransferMethod
-   */
+type UseCaseInterface = IUseCase<Input, BankAccount>
+
+export default class RegisterBankAccount implements UseCaseInterface {
   constructor(
     private repo_ba: IRepoBankAccount,
     private repo_tm: IRepoTransferMethod,
     private repo_ba_tm: IRepoBankAccountTransferMethod
-  ){}
-  /**
-   * @param {BankAccount_RegisterInput} input objeto contém o valores que serão usado para criar um novo BankAccount
-   * @throws {BankAccountNicknameIsAlreadyInUse}
-   * @throws {BankAccountNotFoundByNickname}
-   * @throws {BankAccountUnknownError}
-   * @returns {Promise<BankAccount>} retorna uma promise com um objeto que representa a entidade BankAccount
-   */
-  async execute(input: BankAccount_RegisterInput): Promise<BankAccount> {
-    try {
-      const bank_account = this.repo_ba.findByNickname(input.nickname)
-      throw new BankAccountNicknameIsAlreadyInUse(input.nickname)
-    } catch (error) {
-      if(!isBankAccountNotFoundByNickname(error)){
-        throw error
+  ) { }
+  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+    const result_search_nickname = this.repo_ba.findByNickname(input.nickname)
+
+    if(result_search_nickname.success){
+      return {
+        success: false,
+        error: {
+          code: "nickname_already_used",
+          scope: `RegisterBankAccount(${this.repo_ba.findByNickname.name})`,
+          message: `O nickname '${input.nickname}' já está sendo utilizado!`
+        }
       }
-      console.warn(error)
     }
-    
-    try {
-      const bank_account_created = this.repo_ba.create({
-        ...input,
-        is_disabled: false,
+
+    const result_create = this.repo_ba.create({
+      ...input,
+      is_disabled: false,
+    })
+
+    if(!result_create.success){
+      const scope = `RegisterBankAccount(${this.repo_ba.findByNickname.name}) > ${result_create.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_create.error,
+          scope
+        }
+      }
+    }
+
+    const bank_account_created = result_create.data
+
+    const result_transfer_methods_all = this.repo_tm.findAll()
+
+    if(!result_transfer_methods_all.success){
+      return {
+        success: false,
+        // REVIEW: Mudar o 'scope'
+        error: result_transfer_methods_all.error
+      }
+    }
+
+    // Quando um banco é adicionado é necessário popular a tabela de bank_account_transfer_method
+    const transfer_methods_data = result_transfer_methods_all.data.map(item => item.method)
+    for (const key of transfer_methods_data) {
+      // isso será feito na migration da
+      const transfer_method_searched = this.repo_tm.findByMethod(key)
+      if(!transfer_method_searched.success){
+        const scope = `RegisterBankAccount(${this.repo_tm.findByMethod.name}) > ${transfer_method_searched.error.scope}`
+        return {
+          success: false,
+          error: {
+            ...transfer_method_searched.error,
+            scope
+          }
+        }
+      }
+
+      const transfer_method_data = transfer_method_searched.data
+      
+      const ba_tm_created = this.repo_ba_tm.create({
+        fk_id_bank_account: bank_account_created.id,
+        fk_id_transfer_method: transfer_method_data.id,
+        is_disabled: input.type_of_bank_transfers[key]
       })
 
-      // Quando um banco é adicionado é necessário popular a tabela de bank_account_transfer_method
-      Object.entries(input.type_of_bank_transfers).forEach(([key, value]) => {
-        const transfer_method_created = this.repo_tm.create({
-          nickname: `${key} - ${bank_account_created.nickname}`,
-          is_disabled: value
-        })
-        this.repo_ba_tm.create({
-          method: key,
-          fk_id_bank_account: bank_account_created.id,
-          fk_id_transfer_method: transfer_method_created.id
-        })
-      })
+      if(!ba_tm_created.success){
+        const scope = `RegisterBankAccount(${this.repo_ba_tm.create.name}) > ${ba_tm_created.error.scope}`
+        return {
+          success: false,
+          error: {
+            ...ba_tm_created.error,
+            scope
+          }
+        }
+      }
+    }
 
-      return new BankAccount(bank_account_created);
-    } catch (error) {
-      console.log("Algum erro aconteceu!")
-      console.error(error)
-      throw new BankAccountUnknownError()
+    return {
+      success: true,
+      data: bank_account_created
     }
   }
 }

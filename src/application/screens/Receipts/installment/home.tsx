@@ -14,7 +14,9 @@ export default function Home({ navigation }: Props) {
 
   useEffect(() => {
     ReceiptInstallmentApi.list_all.execute().then((receiptsInstallment) => {
-      setReceipts(receiptsInstallment);
+      if(receiptsInstallment.success){
+        setReceipts(receiptsInstallment.data);
+      }
     }).catch((error) => {
       console.error("Erro ao buscar recebimentos:", error);
       Alert.alert("Erro", "Não foi possível carregar os recebimentos.");

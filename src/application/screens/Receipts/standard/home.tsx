@@ -1,5 +1,7 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import ReceiptApi from "@src/application/api/receipt/standard.api";
+// ATTENTION: Preciso trocar a importação do PaymentApi para ReceiptApi
+// import ReceiptApi from "@src/application/api/receipt/standard.api";
+import ReceiptApi from "@src/application/api/drizzle/payment/standard";
 import { GroupedStandardByDate, groupStandardByDate } from "@src/application/functions/groupStandardByDate";
 import StandardHomeScreenTemplate from "@src/application/templates/screens/Standard/Home";
 import { useEffect, useState } from "react";
@@ -12,11 +14,12 @@ export default function Receipts({ navigation }: Props) {
   const [receipts, setReceipts] = useState<GroupedStandardByDate[]>([]);
 
   useEffect(() => {
-    ReceiptApi.list_all.execute().then((receipts) => {
+    ReceiptApi.list_all().then((receipts) => {
+      if(receipts === undefined) {
+        Alert.alert("Erro", "Não foi possível carregar os recebimentos.");
+        return;
+      }
       setReceipts(groupStandardByDate(receipts));
-    }).catch((error) => {
-      console.error("Erro ao buscar recebimentos:", error);
-      Alert.alert("Erro", "Não foi possível carregar os recebimentos.");
     });
   }, []);
 

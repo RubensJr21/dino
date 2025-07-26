@@ -1,47 +1,16 @@
 import BankAccountApi from "@src/application/api/bank-account.api";
 import { BankAccount } from "@src/core/entities/bank_account.entity";
-import { BankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
-import { isBankAccountNotFoundById } from "@src/core/shared/errors/bank_account";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { ListItemProps as ItemProps, List, MD3Theme } from "react-native-paper";
 import { MdiNamesIcon } from "../../../../components/ChooseIcon";
 import { EditParams } from "../edit";
 
-async function disableAccountBank(id: number){
-  try {
-    return await BankAccountApi.disable.execute({id})
-  } catch (error) {
-    if(isBankAccountNotFoundById(error)) {
-      Alert.alert("Conta bancária não encontrada.")
-    }
-    Alert.alert("Erro ao desabilitar conta bancária.");
-    throw error;
-  }
+async function disableAccountBank(id: number) {
+  return BankAccountApi.disable({ id });
 }
-async function enableAccountBank(id: number){
-  try {
-    return await BankAccountApi.enable.execute({id})
-  } catch (error) {
-    if(isBankAccountNotFoundById(error)) {
-      Alert.alert("Conta bancária não encontrada.")
-    }
-    Alert.alert("Erro ao habilitar conta bancária.");
-    throw error;
-  }
-}
-
-function serializeTransferMethodsToEditPage(
-  transfer_methods: BankAccountTransferMethod[]
-): string {
-  return JSON.stringify(
-    Object.fromEntries(
-      transfer_methods.map(({method, transfer_method}) => [
-        method,
-        transfer_method.is_disabled,
-      ])
-    )
-  );
+async function enableAccountBank(id: number) {
+  return BankAccountApi.enable({ id });
 }
 
 interface AccountBankListItemProps {
@@ -88,12 +57,15 @@ export function AccountBankListItem({
         color={theme.colors.onPrimaryContainer}
         icon="pencil"
         onPress={async () => {
-          const transfers_method_type = await BankAccountApi.list_all_transfers_methods_type.execute({id: bank_account.id})
+          const transfers_method_type = await BankAccountApi.list_all_transfers_methods_type({ id: bank_account.id })
+          if (!transfers_method_type) {
+            Alert.alert("Erro ao buscar métodos de transferência.");
+            return;
+          }
           navigateToEditPage({
-              id: bank_account.id,
-              nickname: bank_account.nickname,
-              transfer_methods: serializeTransferMethodsToEditPage(transfers_method_type)
-            });
+            id: bank_account.id,
+            nickname: bank_account.nickname
+          });
         }}
       />
       <ListItem
@@ -101,29 +73,26 @@ export function AccountBankListItem({
         color={theme.colors.inverseSurface}
         icon={`bank${bank_disable ? "-" : "-off-"}outline`}
         onPress={async () => {
-          if(!bank_disable){
-            disableAccountBank(bank_account.id)
-              .then((bank_account) => {
-                setBank_disable(bank_account.is_disabled);
-              })
-              .catch((error) => {
-                console.error("Erro ao desabilitar conta bancária:", error);
-                Alert.alert(
-                  "Erro ao desabilitar conta bancária.",
-                  "Ocorreu um erro ao tentar desabilitar a conta bancária."
-                );
-              });
+          if (!bank_disable) {
+            const result = await disableAccountBank(bank_account.id);
+            if (!result) {
+              Alert.alert(
+                "Erro ao desabilitar conta bancária.",
+                "Ocorreu um erro ao tentar desabilitar a conta bancária."
+              );
+              return;
+            }
+            setBank_disable(result.is_disabled);
           } else {
-            enableAccountBank(bank_account.id)
-              .then((bank_account) => {
-                setBank_disable(bank_account.is_disabled);
-              })
-              .catch((error) => {
-                Alert.alert(
-                  "Erro ao habilitar conta bancária!",
-                  "Ocorreu um erro ao tentar habilitar a conta bancária."
-                );
-              });
+            const result = await enableAccountBank(bank_account.id);
+            if (!result) {
+              Alert.alert(
+                "Erro ao habilitar conta bancária!",
+                "Ocorreu um erro ao tentar habilitar a conta bancária."
+              );
+              return;
+            }
+            setBank_disable(result.is_disabled);
           }
         }}
       />

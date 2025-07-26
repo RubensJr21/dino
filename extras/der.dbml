@@ -14,13 +14,7 @@ Table tag {
 
 Table transfer_method {
   id integer [pk, increment]
-  nickname text [not null, note: '''
-  Para bank_account_transfer_method: "Pix - <bankaccount.nickname>".
-  Para credit_card: "<Apelido do cartão de crédito>"
-  ''']
-  is_disabled boolean [not null, default: false ]
-  created_at date [not null, default: "(date('now','localtime'))"]
-  updated_at date [not null, default: "(date('now','localtime'))"]
+  method text [not null, note: "['Pix', 'Débito', 'Transferência Bancária']"]
 }
 
 Table item_value {
@@ -57,6 +51,7 @@ Table recurrence_type {
 
 Table recurring {
   id integer [pk, increment]
+  is_disabled boolean [not null]
   start_date date [not null]
   end_date date
   current_amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
@@ -97,11 +92,13 @@ Table bank_account {
 
 Table bank_account_transfer_method {
   id integer [pk, increment]
-  method text [not null, note: "['Pix', 'Débito', 'Transferência Bancária']"]
+  is_disabled boolean [not null, default: false ]
   fk_id_bank_account integer [not null, ref: > bank_account.id]
   // // Para quando a tabela bank_account_transfer_method_type estiver ativada
   // fk_id_method_type integer [not null, ref: > bank_account_transfer_method_type.id]
   fk_id_transfer_method integer [not null, unique, ref: > transfer_method.id]
+  created_at date [not null, default: "(date('now','localtime'))"]
+  updated_at date [not null, default: "(date('now','localtime'))"]
 }
 
 // Table credit_card {

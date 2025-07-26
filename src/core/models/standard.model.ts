@@ -1,6 +1,6 @@
 import { IStandard } from "@src/core/entities/standard.entity";
-import { MItemValue } from "./item_value.model";
+import { IItemValue } from "../entities/item_value.entity";
 
 export interface MStandard extends StrictOmit<IStandard, "item_value"> {
-  item_value: MItemValue
+  fk_id_item_value: IItemValue["id"]
 }

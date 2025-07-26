@@ -1,29 +1,34 @@
 import IUseCase from "@core/shared/IUseCase";
 import { Recurring } from "@src/core/entities/recurring.entity";
-import { IRepoRecurring } from "../../interfaces/IRepositoryRecurring";
+import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
+import { Result } from "../../types/Result";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface EnableRecurring_Input {
   id: number;
 }
 
-export default abstract class UseCase_Recurring_Enable implements IUseCase<EnableRecurring_Input, Recurring>{
+type Return = Result<Recurring>
+
+export default abstract class UseCase_Recurring_Enable implements IUseCase<EnableRecurring_Input, Return>{
   protected abstract variant: TypeOfVariants;
-  /**
-   * Constructs an instance of the recurring enable use case.
-   * @param {IRepoRecurring} repo_rec - The repository for recurring operations
-   */
+  
   constructor(
     private repo_rec: IRepoRecurring
   ){}
+  
+  async execute(input: EnableRecurring_Input): Promise<Return> {
+    const result = this.repo_rec.findById(input.id)
 
-  /**
-   * Executes the enable operation for a recurring.
-   * @param {EnableRecurring_Input} input - The input data for updating a recurring
-   * @returns {Promise<Recurring>} The enabled recurring or undefined if update fails
-   */
-  async execute(input: EnableRecurring_Input): Promise<Recurring> {
-    const recurring = this.repo_rec.findById(input.id)
+    if (!result.success) {
+      return {
+        success: false,
+        error: result.error.message
+      }
+    }
+
+    const recurring = result.data
+
     recurring.enable();
     
     const {
@@ -31,7 +36,6 @@ export default abstract class UseCase_Recurring_Enable implements IUseCase<Enabl
       recurrence_type,
       created_at,
       updated_at,
-      itens,
       ...data
     } = {
       ...recurring.properties,

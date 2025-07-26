@@ -1,5 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import PaymentApi from "@src/application/api/payment/standard.api";
+import PaymentApi from "@src/application/api/drizzle/payment/standard";
 import { GroupedStandardByDate, groupStandardByDate } from "@src/application/functions/groupStandardByDate";
 import StandardHomeScreenTemplate from "@src/application/templates/screens/Standard/Home";
 import { useEffect, useState } from "react";
@@ -12,11 +12,12 @@ export default function Payments({ navigation }: Props) {
   const [payments, setPayments] = useState<GroupedStandardByDate[]>([]);
 
   useEffect(() => {
-    PaymentApi.list_all.execute().then((payments) => {
+    PaymentApi.list_all().then((payments) => {
+      if(payments === undefined) {
+        Alert.alert("Erro", "Não foi possível carregar os pagamentos.");
+        return;
+      }
       setPayments(groupStandardByDate(payments));
-    }).catch((error) => {
-      console.error("Erro ao buscar pagamentos:", error);
-      Alert.alert("Erro", "Não foi possível carregar os pagamentos.");
     });
   }, []);
 

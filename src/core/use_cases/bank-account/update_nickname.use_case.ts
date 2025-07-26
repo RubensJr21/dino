@@ -1,56 +1,67 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
 import IUseCase from "@core/shared/IUseCase";
-import { BankAccountNicknameIsAlreadyInUse, BankAccountUnknownError, isBankAccountNotFoundById, isBankAccountNotFoundByNickname } from "@src/core/shared/errors/bank_account";
-import { IRepoBankAccount } from "@src/infrastructure/repositories/bank_account.repository";
+import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
 
-interface UpdateNicknameBankAccount_Input {
+interface Input {
   id: number,
   new_nickname: string
 }
 
-export default class UpdateNicknameBankAccount implements IUseCase<UpdateNicknameBankAccount_Input, BankAccount> {
-  /**
-   * @param {IRepoBankAccount} repo_ba Interface do repositório de BankAccount
-   */
-  constructor(
-    private repo_ba: IRepoBankAccount
-  ){}
-  /**
-   * @param {UpdateNicknameBankAccount_Input} input objeto contém o id e o novo valor para o atributo 'nickname' de BankAccount
-   * @throws {BankAccountNicknameIsAlreadyInUse}
-   * @throws {BankAccountNotFoundById}
-   * @throws {BankAccountUnknownError}
-   * @returns {Promise<BankAccount>} retorna uma promise com um objeto que representa a entidade BankAccount
-   */
-  async execute(input: UpdateNicknameBankAccount_Input): Promise<BankAccount> {
-    try {
-      const bank_account = this.repo_ba.findByNickname(input.new_nickname)
-      if(bank_account.id != input.id){
-        throw new BankAccountNicknameIsAlreadyInUse(input.new_nickname)
-      }
-    } catch (error) {
-      if(!isBankAccountNotFoundByNickname(error)){
-        throw error
+type UseCaseInterface = IUseCase<Input, BankAccount>
+
+export default class UpdateNicknameBankAccount implements UseCaseInterface {
+  constructor(private repo_ba: IRepoBankAccount) { }
+  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+    const result_searched_nickname = this.repo_ba.findByNickname(input.new_nickname)
+
+    if(result_searched_nickname.success){
+      const bank_account_data = result_searched_nickname.data
+      if(bank_account_data.id !== input.id){
+        return {
+          success: false,
+          error: {
+            code: "nickname_already_used",
+            scope: `UpdateNicknameBankAccount(${this.repo_ba.findByNickname.name})`,
+            message: `O nickname '${input.new_nickname}' já está sendo utilizado!`
+          }
+        }
       }
     }
 
-    console.warn("Não tem conta com esse nome.")
-    
-    try {
-      const bank_account = this.repo_ba.findById(input.id)
-  
-      bank_account.change_nickname(input.new_nickname)
-      const {id, ...bank_account_without_id} = bank_account.properties
-      
-      return this.repo_ba.update(id, bank_account_without_id)
-    } catch (error) {
-      if(isBankAccountNotFoundById(error)){
-        throw error
+    const result_search = this.repo_ba.findById(input.id)
+
+    if(!result_search.success){
+      const scope = `UpdateNicknameBankAccount(${this.repo_ba.findById.name}) > ${result_search.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_search.error,
+          scope
+        }
       }
+    }
 
-      console.log(error)
+    const bank_account_data = result_search.data
 
-      throw new BankAccountUnknownError()
+    bank_account_data.change_nickname(input.new_nickname)
+    const { id, ...bank_account_without_id } = bank_account_data.properties
+
+    const result_update = this.repo_ba.update(id, bank_account_without_id);
+
+    if (!result_update.success) {
+      const scope = `UpdateNicknameBankAccount(${this.repo_ba.update.name}) > ${result_update.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_update.error,
+          scope
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: result_update.data
     }
   }
 }

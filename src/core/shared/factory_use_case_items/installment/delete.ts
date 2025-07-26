@@ -1,39 +1,43 @@
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoItemValue } from "@src/infrastructure/repositories/item_value.repository";
-import { InstallmentUnknownError, isInstallmentNotFoundById } from "../../errors/installment";
-import { IRepoInstallment } from "../../interfaces/IRepositoryInstallment";
+import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
+import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
+import { Result } from "../../types/Result";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface DeleteInstallment_Input {
   id: number
 }
 
-export default abstract class UseCase_Installment_Delete implements IUseCase<DeleteInstallment_Input, boolean>{
+type Return = Result<boolean>
+
+export default abstract class UseCase_Installment_Delete implements IUseCase<DeleteInstallment_Input, Return> {
   protected abstract variant: TypeOfVariants
-  /**
-   * @param {IRepoItemValue} repo_biv Instância de um repositório de Base Item Value
-   * @param {IRepoInstallment} repo_iiv Instância de um repositório de Installment Item Value
-   */
   constructor(
     private repo_biv: IRepoItemValue,
     private repo_iiv: IRepoInstallment
-  ){}
-  /**
-   * Executes the deletion of an installment by its ID.
-   * @param {DeleteInstallment_Input} input - The input containing the ID of the installment to delete
-   * @returns {Promise<boolean>} A promise that resolves to true if the deletion is successful
-   * @throws {InstallmentNotFoundById} If the installment is not found
-   * @throws {InstallmentUnknownError} If an unexpected error occurs during deletion
-   */
-  async execute(input: DeleteInstallment_Input): Promise<boolean> {
-    try {
-      const installment = this.repo_iiv.findById(input.id)
-      return this.repo_biv.delete(installment.itens[0].id);
-    } catch (error) {
-      if(isInstallmentNotFoundById(error)){
-        throw error
+  ) { }
+  async execute(input: DeleteInstallment_Input): Promise<Return> {
+    const result = this.repo_iiv.delete(input.id)
+    if (!result.success) {
+      return {
+        success: false,
+        error: result.error
       }
-      throw new InstallmentUnknownError()
+    }
+    const some_not_remove = !result.data.map(item_value_id => {
+      return this.repo_biv.delete(item_value_id)
+    }).some(deleted => deleted)
+
+    if (some_not_remove) {
+      return {
+        success: false,
+        error: "Algum item_value não foi removido."
+      }
+    }
+
+    return {
+      success: true,
+      data: some_not_remove
     }
   }
 }

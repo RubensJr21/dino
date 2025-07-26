@@ -1,63 +1,57 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
 import IUseCase from "@core/shared/IUseCase";
 import { IBankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
-import { BankAccountUnknownError, isBankAccountNotFoundById } from "@src/core/shared/errors/bank_account";
-import { IRepoBankAccount } from "@src/infrastructure/repositories/bank_account.repository";
-import { IRepoBankAccountTransferMethod } from "@src/infrastructure/repositories/bank_account_transfer_method.repository";
+import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
+import { IRepoBankAccountTransferMethod } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
+import { TypeOfTransferMethods } from "@src/core/shared/types/transfer_methods";
 
-interface BankAccount_UpdateTransferMethodsInput extends Pick<IBankAccountTransferMethod, "id"> {
-  type_of_bank_transfers: {
-    "Pix": boolean,
-    "Débito": boolean,
-    "Transferência Bancária": boolean
-  }
+interface Input extends Pick<IBankAccountTransferMethod, "id"> {
+  type_of_bank_transfers: Record<TypeOfTransferMethods, boolean>
 }
 
-export default class UpdateTransferMethodsBankAccount implements IUseCase<BankAccount_UpdateTransferMethodsInput, BankAccount> {
-  /**
-   * @param {IRepoBankAccount} repo_ba Interface do repositório de BankAccount
-   * @param {IRepoBankAccountTransferMethod} repo_ba_tm Interface do repositório de BankAccountTransferMethod
-   */
+type UseCaseInterface = IUseCase<Input, BankAccount>
+
+export default class UpdateTransferMethodsBankAccount implements UseCaseInterface {
   constructor(
     private repo_ba: IRepoBankAccount,
     private repo_ba_tm: IRepoBankAccountTransferMethod
-  ){}
-  /**
-   * @param {BankAccount_UpdateTransferMethodsInput} input objeto contém o valores que serão usado para criar um novo BankAccount
-   * @throws {BankAccountNotFoundById}
-   * @throws {BankAccountUnknownError}
-   * @returns {Promise<BankAccount>} retorna uma promise com um objeto que representa a entidade BankAccount
-   */
-  async execute(input: BankAccount_UpdateTransferMethodsInput): Promise<BankAccount> {
-    try {
-      const transfers_method_type = this.repo_ba_tm.findByBankAccountId(input.id)
+  ) { }
+  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+    const result_transfer_methods_all = this.repo_ba_tm.findAllOfBankAccount(input.id)
 
-      Object.entries(input.type_of_bank_transfers).forEach(([key, value]) => {
-        const bk_tm = transfers_method_type.find(bk_tm => {
-          return bk_tm.method == key
-        })
-        if(bk_tm){
-          this.repo_ba_tm.update(
-            bk_tm.id,
-            {
-              method: key,
-              fk_id_bank_account: bk_tm.bank_account.id,
-              fk_id_transfer_method: bk_tm.transfer_method.id,
-            }
-          )
-        }
-      })
-
-      const bank_account = this.repo_ba.findById(input.id)
-
-      return bank_account
-    } catch (error) {
-      if(isBankAccountNotFoundById(error)){
-        throw error;
+    if(!result_transfer_methods_all.success){
+      return {
+        success: false,
+        // REVIEW: Mudar o 'scope'
+        error: result_transfer_methods_all.error
       }
-      console.log("Algum erro aconteceu!")
-      console.error(error)
-      throw new BankAccountUnknownError()
     }
+
+    const transfer_methods_data = result_transfer_methods_all.data
+
+    for (const { id, bank_account, transfer_method } of transfer_methods_data) {
+      const bk_tm_updated = this.repo_ba_tm.update(
+          id,
+          {
+            fk_id_bank_account: bank_account.id,
+            fk_id_transfer_method: transfer_method.id,
+            is_disabled: input.type_of_bank_transfers[transfer_method.method]
+          }
+        )
+        if(!bk_tm_updated.success){
+          const scope = `UpdateTransferMethodsBankAccount(${this.repo_ba_tm.update.name}) > ${bk_tm_updated.error.scope}`
+          return {
+            success: false,
+            error: {
+              ...bk_tm_updated.error,
+              scope
+            }
+          }
+        }
+    }
+
+    const bank_account = this.repo_ba.findById(input.id)
+
+    return bank_account
   }
 }

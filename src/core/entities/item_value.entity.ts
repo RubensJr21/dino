@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
 import { TypeOfVariants } from "../shared/types/variants_items";
 import { Tag } from "./tag.entity";

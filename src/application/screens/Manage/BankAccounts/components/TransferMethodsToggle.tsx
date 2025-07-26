@@ -1,17 +1,17 @@
-import { TransferMethods } from "@src/core/shared/types/transfer_methods";
+import { TransferMethodsAvailable, TypeOfTransferMethods } from "@src/core/shared/types/transfer_methods";
 import Toggle, { ToggleRef, useRefToggle } from "../../../../components/Toggle";
 
 export function createTogglesRef() {
-  const obj = {} as Record<TransferMethods, React.RefObject<ToggleRef>>;
-  for (const method of Object.values(TransferMethods)) {
+  const obj = {} as Record<TypeOfTransferMethods, React.RefObject<ToggleRef>>;
+  for (const method of Object.keys(TransferMethodsAvailable).map(key => key as TypeOfTransferMethods)) {
     obj[method] = useRefToggle();
   }
   return obj;
 }
 
 interface TransferMethodsTogglesProps {
-  data: Record<TransferMethods, React.RefObject<ToggleRef>>
-  initialValues?: Partial<Record<TransferMethods, boolean>>
+  data: Record<TypeOfTransferMethods, React.RefObject<ToggleRef>>
+  initialValues?: Partial<Record<TypeOfTransferMethods, boolean>>
 }
 
 export const TransferMethodsToggles = ({data, initialValues}: TransferMethodsTogglesProps) =>
@@ -23,7 +23,7 @@ export const TransferMethodsToggles = ({data, initialValues}: TransferMethodsTog
           <Toggle
             key={key}
             label={key}
-            value={initialValues?.[key as TransferMethods] ?? true}
+            value={initialValues?.[key as TypeOfTransferMethods] ?? true}
             ref={value}
           />
         )

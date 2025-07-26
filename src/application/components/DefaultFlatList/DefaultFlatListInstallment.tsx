@@ -28,9 +28,10 @@ export default function DefaultFlatListInstallment({ data, navigateToEditPage }:
               borderColor: theme.colors.outline,
               marginVertical: 5
             }}>
-            {item.itens.map((item_value) => (
+            {/* ATTENTION: Precisarei obter os itens values que são daquele installment */}
+            {/* {item.itens.map((item_value) => (
               <Text>{item_value.id} - {item_value.description} - {item_value.amount}</Text>
-            ))}
+            ))} */}
           </View>
         </>
       )}

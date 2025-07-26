@@ -1,37 +1,53 @@
 import IUseCase from "@core/shared/IUseCase";
-import { IStandard, Standard } from "@src/core/entities/standard.entity";
-import { IRepoStandard } from "../../interfaces/IRepositoryStandard";
+import { Standard } from "@src/core/entities/standard.entity";
+import { CreateItemValueParams, IRepoItemValue } from "../../interfaces/IRepoItemValue";
+import { IRepoStandard } from "../../interfaces/IRepoStandard";
 import { TypeOfVariants } from "../../types/variants_items";
 
-type RegisterStandard_Input = StrictOmit<IStandard, "id"|"created_at"|"updated_at">
+type Input = CreateItemValueParams
 
-export default abstract class UseCase_ItemValue_Register implements IUseCase<RegisterStandard_Input, Standard> {
+type UseCaseInterface = IUseCase<Input, Standard>
+
+export default abstract class RegisterStandard implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
-  /**
-   * Constructs a new UseCase_ItemValue_Register instance
-   * @param {IRepoStandard} repo_s Repository for standard operations
-   */
   constructor(
-    private repo_s: IRepoStandard
+    private repo_s: IRepoStandard,
+    private repo_iv: IRepoItemValue
   ){}
-  /**
-   * Executes the registration of an standard
-   * @param {RegisterStandard_Input} input - The input data for creating an standard
-   * @returns {Promise<Standard>} The created standard
-   */
-  async execute(input: RegisterStandard_Input): Promise<Standard> {
-    const {
-      tag,
-      transfer_method,
-      ...item_value
-    } = {
-      ...input.item_value.properties,
-      fk_id_tag: input.item_value.tag.id,
-      fk_id_transfer_method: input.item_value.transfer_method.id,
+  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+    const item_value_created = this.repo_iv.create(input)
+
+    if(!item_value_created.success){
+      const scope = `RegisterStandard(${this.repo_s.create.name}) > ${item_value_created.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...item_value_created.error,
+          scope
+        }
+      }
     }
 
-    return this.repo_s.create({
-      item_value
+    const item_value_created_data = item_value_created.data
+
+    const result_create = this.repo_s.create({
+      fk_id_item_value: item_value_created_data.id
     })
+
+    if(!result_create.success){
+      const scope = `RegisterStandard(${this.repo_s.create.name}) > ${result_create.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_create.error,
+          scope
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: result_create.data
+    }
   }
 }

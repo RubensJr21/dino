@@ -1,0 +1,16 @@
+import { MStandard } from "@src/core/models/standard.model";
+import { ItemValue } from "../../entities/item_value.entity";
+import { Standard } from "../../entities/standard.entity";
+import { Result } from "../types/Result";
+
+export type CreateStandardParams = StrictOmit<MStandard, "id" | "created_at" | "updated_at">;
+export type UpdateStandardParams = CreateStandardParams
+
+export interface IRepoStandard {
+  create(data: CreateStandardParams): Result<Standard>;
+  findById(id: MStandard["id"]): Result<Standard>;
+  findAll(): Result<Standard[]>;
+  findAllByCashflowType(cashflow_type: ItemValue["cashflow_type"]): Result<Standard[]>;
+  update(id: MStandard["id"], data: UpdateStandardParams): Result<Standard>;
+  delete(id: MStandard["id"]): Result<boolean>;
+}

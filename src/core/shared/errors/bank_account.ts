@@ -12,11 +12,6 @@ export class BankAccountNotFoundById extends Error {
   }
 }
 
-/**
- * Função que retorna se o objeto passado é um BankAccountNotFoundById
- * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is BankAccountNotFoundById} Retorna se o objeto é do tipo BankAccountNotFoundById
- */
 // https://typescript.tv/errors/#ts1196
 export function isBankAccountNotFoundById(error: unknown): error is BankAccountNotFoundById {
   return error instanceof BankAccountNotFoundById;
@@ -26,9 +21,6 @@ export function isBankAccountNotFoundById(error: unknown): error is BankAccountN
 
 export class BankAccountNotFoundByNickname extends Error {
   readonly name: string = "BankAccountNotFoundByNickname";
-  /**
-   * @param {BankAccount["nickname"]} bank_account_nickname bank_account_nickname que gerou erro ao ser buscada
-   */
   constructor(bank_account_nickname: BankAccount["nickname"]){
     super(`BankAccount nickname: '${bank_account_nickname}' not founded!`, {
       cause: `The nickname bank_account '${bank_account_nickname}' is invalid!`
@@ -36,11 +28,6 @@ export class BankAccountNotFoundByNickname extends Error {
   }
 }
 
-/**
- * Função que retorna se o objeto passado é um BankAccountNotFoundByNickname
- * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is BankAccountNotFoundByNickname} Retorna se o objeto é do tipo BankAccountNotFoundByNickname
- */
 // https://typescript.tv/errors/#ts1196
 export function isBankAccountNotFoundByNickname(error: unknown): error is BankAccountNotFoundByNickname {
   return error instanceof BankAccountNotFoundByNickname;
@@ -50,19 +37,11 @@ export function isBankAccountNotFoundByNickname(error: unknown): error is BankAc
 
 export class BankAccountNicknameIsAlreadyInUse extends Error {
   readonly name: string = "BankAccountNicknameIsAlreadyInUse";
-  /**
-   * @param {BankAccount["nickname"]} bank_account_nickname bank_account_nickname que gerou erro ao ser buscada
-   */
  constructor(bank_account_nickname: BankAccount["nickname"]){
    super(`The BankAccount nickname: ''${bank_account_nickname}'' already in use!`)
   }
 }
 
-/**
- * Função que retorna se o objeto passado é um BankAccountNicknameIsAlreadyInUse
- * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is BankAccountNicknameIsAlreadyInUse} Retorna se o objeto é do tipo BankAccountNicknameIsAlreadyInUse
- */
 // https://typescript.tv/errors/#ts1196
 export function isBankAccountNicknameIsAlreadyInUse(error: unknown): error is BankAccountNicknameIsAlreadyInUse {
   return error instanceof BankAccountNicknameIsAlreadyInUse;
@@ -72,19 +51,13 @@ export function isBankAccountNicknameIsAlreadyInUse(error: unknown): error is Ba
 
 export class BankAccountUnknownError extends Error {
   readonly name: string = "BankAccountUnknownError";
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  constructor(){
+    constructor(){
     super(`BankAccount not founded!`, {
       cause: `Unknown`
     })
   }
 }
 
-/**
- * Função que retorna se o objeto passado é um BankAccountUnknownError
- * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is BankAccountUnknownError} Retorna se o objeto é do tipo BankAccountUnknownError
- */
 // https://typescript.tv/errors/#ts1196
 export function isBankAccountUnknownError(error: unknown): error is BankAccountUnknownError {
   return error instanceof BankAccountUnknownError;

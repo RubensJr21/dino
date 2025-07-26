@@ -23,78 +23,82 @@ export interface HomeParams {
 
 type Props = NativeStackScreenProps<BankAccountsStackParamList, 'Home'>;
 
-export default function BankAccounts({route, navigation}: Props){
-	const theme = useTheme();
-  
+export default function BankAccounts({ route, navigation }: Props) {
+  const theme = useTheme();
+
   useEffect(() => {
-    if(route.params?.last_bank_account_modified) {
+    if (route.params?.last_bank_account_modified) {
       // Se a rota foi chamada com o parâmetro last_bank_account_modified, atualiza a lista de contas bancárias
-      BankAccountApi.list_all.execute().then((accounts) => {
-        setBank_accounts(accounts);
+      BankAccountApi.list_all().then((accounts) => {
+        if (accounts) {
+          setBank_accounts(accounts);
+        }
       });
     }
   }, [route.params?.last_bank_account_modified]);
 
   const [bank_accounts, setBank_accounts] = useState<BankAccount[]>([]);
 
-	const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    BankAccountApi.list_all.execute().then((accounts) => {
-      setBank_accounts(accounts);
+    BankAccountApi.list_all().then((accounts) => {
+      if (accounts) {
+        setBank_accounts(accounts);
+      }
     })
   }, []);
 
-	useEffect(() => {
-		/* Quando searchQuery atualizar, será feito um filtro para buscar os elementos que correspondem a query de pesquisa
-		O atributo a ser utilizado é a descrição ou valores.
-		posteriormente será feita um filtro
-		 */
-	}, [searchQuery]);
+  useEffect(() => {
+    /* Quando searchQuery atualizar, será feito um filtro para buscar os elementos que correspondem a query de pesquisa
+    O atributo a ser utilizado é a descrição ou valores.
+    posteriormente será feita um filtro
+     */
+  }, [searchQuery]);
 
-	const navigateToAccountsBankCreate = () => {
+  const navigateToAccountsBankCreate = () => {
     navigation.navigate("Register");
   };
 
-	const navigateToAccountsBankEdit = (params: EditParams) => {
+  const navigateToAccountsBankEdit = (params: EditParams) => {
     navigation.navigate("Edit", params);
   }
 
-	return (
-		<BasePageView>
-			<Searchbar
-				placeholder="Digite nome do banco ou número da conta"
-				onChangeText={setSearchQuery}
-				value={searchQuery}
-				elevation={5}
-			/>
-			<FlatList
-				style={styles.flatlist_style}
-				contentContainerStyle={{}}
-				numColumns={1}
-				horizontal={false}
-				data={bank_accounts}
-				// Para evitar problema no Scroll do BasePageView
-				nestedScrollEnabled={true}
-				renderItem={({ item }) => (
-					<AccountBankListItem
-						theme={theme}
-						bank_account={item}
-						navigateToEditPage={navigateToAccountsBankEdit}
-						navigateToReportsPage={() => {}}
-					/>
-				)}
-				ListEmptyComponent={<Text style={{ textAlign: "center", marginTop: 20 }}>Nenhuma conta bancária encontrada.</Text>}
+  return (
+    <BasePageView>
+      <Searchbar
+        placeholder="Digite nome do banco ou número da conta"
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+        elevation={5}
+      />
+      <FlatList
+        style={styles.flatlist_style}
+        contentContainerStyle={{}}
+        numColumns={1}
+        horizontal={false}
+        data={bank_accounts}
+        // Para evitar problema no Scroll do BasePageView
+        nestedScrollEnabled={true}
+        renderItem={({ item }) => (
+          <AccountBankListItem
+            theme={theme}
+            bank_account={item}
+            navigateToEditPage={navigateToAccountsBankEdit}
+            navigateToReportsPage={() => { }}
+          />
+        )}
+        ListEmptyComponent={<Text style={{ textAlign: "center", marginTop: 20 }}>Nenhuma conta bancária encontrada.</Text>}
         keyExtractor={(item) => `${item.id}`}
-				ListFooterComponent={<View style={{height: 50}} />}
-				ItemSeparatorComponent={() => <FlatListDivider />}
-			/>
-			<Fab
+        ListFooterComponent={<View style={{ height: 50 }} />}
+        ItemSeparatorComponent={() => <FlatListDivider />}
+      />
+      <Fab
         icon="plus"
         onPress={navigateToAccountsBankCreate}
-			/>
-		</BasePageView>
-	);
+      />
+    </BasePageView>
+  );
 }
 
 const styles = StyleSheet.create({

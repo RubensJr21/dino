@@ -10,7 +10,7 @@ export const recurring_item_value = sqliteTable("recurring_item_value", {
      .primaryKey({autoIncrement: true}),
   fk_id_recurring: 
     t.integer("fk_id_recurring")
-     .references(() => recurring.id)
+     .references(() => recurring.id, { onDelete: "cascade" })
      .notNull(),
   fk_id_item_value: 
     t.integer("fk_id_item_value")

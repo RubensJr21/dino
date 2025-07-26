@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
 import { ItemValue } from "./item_value.entity";
 

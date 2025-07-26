@@ -1,106 +1,128 @@
-import { ItemValue } from '@src/core/entities/item_value.entity'
-import { Tag } from '@src/core/entities/tag.entity'
-import { TransferMethod } from '@src/core/entities/transfer_method.entity'
 import { MItemValue } from '@src/core/models/item_value.model'
-import { ItemValueNotFoundById } from '@src/core/shared/errors/item_value'
-import { db } from '@src/infrastructure/database/client'
+import { CreateItemValueParams, IRepoItemValue, UpdateItemValueParams } from '@src/core/shared/interfaces/IRepoItemValue'
+import { item_value_mapper } from '@src/core/shared/mappers/item_value'
 import { item_value } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
+import { Transaction } from '../database/TransactionType'
 
-type IRepoItemValueCreateProps = StrictOmit<MItemValue, "id"|"created_at"|"updated_at">
-type IRepoItemValueUpdateProps = StrictOmit<MItemValue, "id"|"created_at"|"updated_at">
+export default class ItemValueDrizzleRepository implements IRepoItemValue {
+  constructor(private tx: Transaction) { }
+  
+  public create(data: CreateItemValueParams): ReturnType<IRepoItemValue["create"]> {
+    const { id } = this.tx.insert(item_value).values(data).returning({ id: item_value.id }).get()
 
-export interface IRepoItemValue {
-  /**
-   * Creates a new base item value record in the database
-   * @param {IRepoItemValueCreateProps} data - The data for creating a new base item value
-   * @returns {MItemValue} The newly created base item value with its assigned ID
-   */
-  create(data: IRepoItemValueCreateProps): ItemValue;
+    const item_value_created = this.tx.query.item_value.findFirst({
+      with: {
+        tag: true,
+        transfer_method: true
+      },
+      where: eq(item_value.id, id)
+    }).sync()
 
-  /**
-   * Finds a base item value by its unique identifier
-   * @param {MItemValue["id"]} id - The unique identifier of the base item value to retrieve
-   * @returns {MItemValue} The base item value with the specified ID
-   * @throws {ItemValueNotFoundById} If no base item value is found with the given ID
-   */
-  findById(id: MItemValue["id"]): ItemValue;
+    if (!item_value_created) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "item_value",
+          message: "Um erro ocorreu durante a criação"
+        }
+      }
+    }
 
-  /**
-   * Retrieves all base item value records from the database
-   * @returns {ItemValue[]} An array of base item values
-   */
-  findAll(): ItemValue[];
-
-  /**
-   * Updates an existing base item value record in the database
-   * @param {MItemValue["id"]} id - The unique identifier of the base item value to update
-   * @param {IRepoItemValueCreateProps} data - The updated data for the base item value
-   * @returns {MItemValue} The updated base item value with its current details
-   */
-  update(id: MItemValue["id"], data: IRepoItemValueUpdateProps): ItemValue;
-
-  /**
-   * Deletes a base item value record from the database by its unique identifier
-   * @param {MItemValue["id"]} id - The unique identifier of the base item value to delete
-   * @returns {boolean} Indicates whether the deletion was successful
-   */
-  delete(id: MItemValue["id"]): boolean;
-}
-
-export default class ItemValueDrizzleRepository implements IRepoItemValue {  
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public create(data: IRepoItemValueCreateProps): ItemValue {
-		const { id } = db.insert(item_value).values(data).returning({id: item_value.id}).get()
-    return this.findById(id)
+    return {
+      success: true,
+      data: item_value_mapper(item_value_created)
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findById(id: MItemValue["id"]): ItemValue {
-		const result = db.query.item_value.findFirst({
-			where: eq(item_value.id, id),
+  public findById(id: MItemValue["id"]): ReturnType<IRepoItemValue["findById"]> {
+    const result = this.tx.query.item_value.findFirst({
+      where: eq(item_value.id, id),
       with: {
         transfer_method: true,
         tag: true
       }
     }).sync()
-		if(!result) throw new ItemValueNotFoundById(id)
 
-    const {id: _, ...biv} = {...result, item_value_id: result.id}
+    if (!result) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "item_value",
+          message: `Foi retornado o valor ${result} na busca.`
+        }
+      }
+    }
 
-    return new ItemValue({
-		id: result.id,
-		description: result.description,
-		cashflow_type: result.cashflow_type,
-		scheduled_at: result.scheduled_at,
-		amount: result.amount,
-		was_processed: result.was_processed,
-		transfer_method: new TransferMethod(result.transfer_method),
-		tag: new Tag(result.tag),
-    created_at: result.created_at,
-    updated_at: result.updated_at
-	})
+    return {
+      success: true,
+      data: item_value_mapper(result)
+    }
   }
-  
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public findAll(): ItemValue[] {
-    const results = db.query.item_value.findMany({
-      columns: {
-        id: true
+
+  public findAll(): ReturnType<IRepoItemValue["findAll"]> {
+    const results = this.tx.query.item_value.findMany({
+      with: {
+        tag: true,
+        transfer_method: true
       }
     }).sync()
-    return results.map(({ id } ) => this.findById(id))
+
+    const items_value = results.map(item_value_mapper)
+
+    return {
+      success: true,
+      data: items_value
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public update(id: MItemValue["id"], data: IRepoItemValueCreateProps): ItemValue {
-    db.update(item_value).set(data).where(eq(item_value.id, id)).returning().get()
-    return this.findById(id)
+  public update(id: MItemValue["id"], data: UpdateItemValueParams): ReturnType<IRepoItemValue["update"]> {
+    const result = this.tx.update(item_value).set(data).where(eq(item_value.id, id)).returning({ id: item_value.id }).get()
+
+    const item_value_updated = this.tx.query.item_value.findFirst({
+      with: {
+        tag: true,
+        transfer_method: true
+      },
+      where: eq(item_value.id, result.id)
+    }).sync()
+
+    if (!item_value_updated) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "item_value",
+          message: "Um erro aconteceu ao obter o item valor atualizado."
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: item_value_mapper(item_value_updated)
+    }
   }
 
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  public delete(id: MItemValue["id"]): boolean {
-    const results = db.delete(item_value).where(eq(item_value.id, id)).returning().get();
-    return !results ? false : true;
+  public delete(id: MItemValue["id"]): ReturnType<IRepoItemValue["delete"]> {
+    const item_value_deleted = this.tx.delete(item_value).where(eq(item_value.id, id)).returning().get();
+    
+    if (!item_value_deleted) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "item_value",
+          message: "Ocorreu um erro ao deletar o item valor."
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: true
+    }
   }
 }

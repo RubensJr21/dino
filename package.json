@@ -26,7 +26,7 @@
     "@react-navigation/drawer": "^7.0.19",
     "@react-navigation/native": "^7.1.6",
     "babel-plugin-inline-import": "^3.0.0",
-    "drizzle-orm": "^0.41.0",
+    "drizzle-orm": "^0.44.3",
     "expo": "~52.0.40",
     "expo-blur": "~14.0.3",
     "expo-constants": "~17.0.8",

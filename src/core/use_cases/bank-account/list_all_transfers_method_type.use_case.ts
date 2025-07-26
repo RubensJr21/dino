@@ -1,35 +1,34 @@
 import IUseCase from "@core/shared/IUseCase";
-import { BankAccountTransferMethod, IBankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
-import { BankAccountUnknownError, isBankAccountNotFoundById } from "@src/core/shared/errors/bank_account";
-import { IRepoBankAccountTransferMethod } from "@src/infrastructure/repositories/bank_account_transfer_method.repository";
+import { BankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
+import IEntityBase from "@src/core/shared/interfaces/IEntityBase";
+import { IRepoBankAccountTransferMethod } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface BankAccount_ListAllTransfersMethodTypeInput extends Pick<IBankAccountTransferMethod, "id"> {}
+interface Input {
+  id: IEntityBase["id"]
+}
 
-export default class ListAllTransfersMethodTypeBankAccount implements IUseCase<BankAccount_ListAllTransfersMethodTypeInput, BankAccountTransferMethod[]> {
-  /**
-   * @param {IRepoBankAccountTransferMethod} repo_ba_tm Interface do repositório de BankAccountTransferMethod
-   */
+type UseCaseInterface = IUseCase<Input, BankAccountTransferMethod[]>
+
+export default class ListAllTransfersMethodTypeBankAccount implements UseCaseInterface {
   constructor(
     private repo_ba_tm: IRepoBankAccountTransferMethod
-  ){}
-  /**
-   * @param {BankAccount_ListAllTransfersMethodTypeInput} input objeto contém o id da conta bancária usada para filtrar os métodos de transferência pertencentes a conta bancária
-   * @throws {BankAccountNotFoundById}
-   * @throws {BankAccountUnknownError}
-   * @returns {Promise<BankAccountTransferMethod[]>} retorna uma promise com uma lista de objetos que representam a entidade BankAccountTransferMethod
-   */
-  async execute(input: BankAccount_ListAllTransfersMethodTypeInput): Promise<BankAccountTransferMethod[]> {
-    try {
-      const transfers_method_type = this.repo_ba_tm.findByBankAccountId(input.id)
-      return transfers_method_type
-    } catch (error) {
-      if(isBankAccountNotFoundById(error)){
-        throw error;
+  ) { }
+  async execute({ id }: Input): ReturnType<UseCaseInterface["execute"]> {
+    const result = this.repo_ba_tm.findAllOfBankAccount(id)
+
+    if(!result.success){
+      return {
+        success: false,
+        error: {
+          ...result.error,
+          scope: `ListAllTransfersMethodTypeBankAccount > ${result.error.scope}`
+        }
       }
-      console.log("Algum erro aconteceu!")
-      console.error(error)
-      throw new BankAccountUnknownError()
+    }
+
+    return {
+      success: true,
+      data: result.data
     }
   }
 }

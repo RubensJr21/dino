@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import IEntityBase from "../shared/interfaces/IEntityBase";
 
 export interface IRecurrenceType extends IEntityBase {

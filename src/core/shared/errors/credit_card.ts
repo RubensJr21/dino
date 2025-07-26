@@ -12,11 +12,6 @@ export class CreditCardNotFoundById extends Error {
   }
 }
 
-/**
- * Função que retorna se o objeto passado é um CreditCardNotFoundById
- * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is CreditCardNotFoundById} Retorna se o objeto é do tipo CreditCardNotFoundById
- */
 // https://typescript.tv/errors/#ts1196
 export function isCreditCardNotFoundById(error: unknown): error is CreditCardNotFoundById {
   return error instanceof CreditCardNotFoundById;
@@ -36,11 +31,6 @@ export class CreditCardNotFoundByNickname extends Error {
   }
 }
 
-/**
- * Função que retorna se o objeto passado é um CreditCardNotFoundByNickname
- * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is CreditCardNotFoundByNickname} Retorna se o objeto é do tipo CreditCardNotFoundByNickname
- */
 // https://typescript.tv/errors/#ts1196
 export function isCreditCardNotFoundByNickname(error: unknown): error is CreditCardNotFoundByNickname {
   return error instanceof CreditCardNotFoundByNickname;
@@ -58,11 +48,6 @@ export class CreditCardNicknameIsAlreadyInUse extends Error {
   }
 }
 
-/**
- * Função que retorna se o objeto passado é um CreditCardNicknameIsAlreadyInUse
- * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is CreditCardNicknameIsAlreadyInUse} Retorna se o objeto é do tipo CreditCardNicknameIsAlreadyInUse
- */
 // https://typescript.tv/errors/#ts1196
 export function isCreditCardNicknameIsAlreadyInUse(error: unknown): error is CreditCardNicknameIsAlreadyInUse {
   return error instanceof CreditCardNicknameIsAlreadyInUse;
@@ -72,19 +57,13 @@ export function isCreditCardNicknameIsAlreadyInUse(error: unknown): error is Cre
 
 export class CreditCardUnknownError extends Error {
   readonly name: string = "CreditCardUnknownError";
-  // eslint-disable-next-line jsdoc/require-jsdoc
-  constructor(){
+    constructor(){
     super(`CreditCard not founded!`, {
       cause: `Unknown`
     })
   }
 }
 
-/**
- * Função que retorna se o objeto passado é um CreditCardUnknownError
- * @param {unknown} error Objeto de Erro a ser verificado
- * @returns {error is CreditCardUnknownError} Retorna se o objeto é do tipo CreditCardUnknownError
- */
 // https://typescript.tv/errors/#ts1196
 export function isCreditCardUnknownError(error: unknown): error is CreditCardUnknownError {
   return error instanceof CreditCardUnknownError;

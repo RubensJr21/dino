@@ -1,22 +1,29 @@
 import IUseCase from "@core/shared/IUseCase";
 import { Standard } from "@src/core/entities/standard.entity";
-import { IRepoStandard } from "../../interfaces/IRepositoryStandard";
+import { IRepoStandard } from "../../interfaces/IRepoStandard";
 import { TypeOfVariants } from "../../types/variants_items";
 
-export default abstract class UseCase_Standard_ListAll implements IUseCase<void, Standard[]> {
+type UseCaseInterface = IUseCase<void, Standard[]>
+
+export default abstract class ListAllStandards implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
-  /**
-   * Constructs a new instance of the list all standard use case.
-   * @param {IRepoStandard} repo_iv - The repository for standards used to retrieve data.
-   */
+  
   constructor(
-    private repo_iv: IRepoStandard,
+    private repo_s: IRepoStandard,
   ){}
-  /**
-   * Executes the use case to retrieve and filter standards based on the specified variant.
-   * @returns {Promise<Standard[]>} A promise that resolves to an array of filtered standards.
-   */
-  async execute(): Promise<Standard[]> { 
-    return this.repo_iv.findAllByCashflowType(this.variant);
+  async execute(): ReturnType<UseCaseInterface["execute"]> {
+    const result_search = this.repo_s.findAllByCashflowType(this.variant);
+    
+    if(!result_search.success){
+      const scope = `ListAllStandards(${this.repo_s.findById.name}) > ${result_search.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_search.error,
+          scope
+        }
+      }
+    }
+    return this.repo_s.findAllByCashflowType(this.variant);
   }
 }

@@ -4,16 +4,16 @@ import InputBankName, { useRefInputBankName } from "@src/application/screens/Man
 import { createTogglesRef, TransferMethodsToggles } from "@src/application/screens/Manage/BankAccounts/components/TransferMethodsToggle";
 import { BankAccount } from "@src/core/entities/bank_account.entity";
 import { isBankAccountNicknameIsAlreadyInUse } from "@src/core/shared/errors/bank_account";
-import { TransferMethods } from "@src/core/shared/types/transfer_methods";
+import { TransferMethodsAvailable, TypeOfTransferMethods } from "@src/core/shared/types/transfer_methods";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 
 export type RegisterParams = undefined
 
-function generateInitialValuesToggles(): Record<TransferMethods, boolean> {
+function generateInitialValuesToggles(): Record<TypeOfTransferMethods, boolean> {
   return Object.fromEntries(
-    Object.entries(TransferMethods).map(([key, value]) => [value, true])
-  ) as Record<TransferMethods, boolean>;
+    Object.entries(TransferMethodsAvailable).map(([key, value]) => [value, true])
+  ) as Record<TypeOfTransferMethods, boolean>;
 }
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -42,13 +42,13 @@ export default function Register({ route, navigation }: Props) {
       return;
     }
     try {
-      return await BankAccountApi.register.execute({
+      return await BankAccountApi.register({
         nickname,
         balance: Number(balance),
         type_of_bank_transfers: {
-          "Pix": togglesRef["Pix"].current?.value ?? true,
-          "Débito": togglesRef["Débito"].current?.value ?? true,
-          "Transferência Bancária": togglesRef["Transferência Bancária"].current?.value ?? true
+          PIX: togglesRef.PIX.current?.value ?? true,
+          DEBIT: togglesRef.DEBIT.current?.value ?? true,
+          BANK_TRANSFER: togglesRef.BANK_TRANSFER.current?.value ?? true
         }
       })
     } catch (error) {

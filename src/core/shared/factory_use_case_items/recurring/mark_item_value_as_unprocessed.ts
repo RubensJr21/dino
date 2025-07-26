@@ -1,9 +1,8 @@
 import IUseCase from "@core/shared/IUseCase";
 import { ItemValue } from "@src/core/entities/item_value.entity";
 import { Recurring } from "@src/core/entities/recurring.entity";
-import { ItemValueNotFoundById } from "../../errors/item_value";
-import { isStandardNotFoundById, StandardUnknownError } from "../../errors/standard";
-import { IRepoRecurring } from "../../interfaces/IRepositoryRecurring";
+import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
+import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface MarkRecurringItemValueAsUnprocessed_Input {
@@ -11,48 +10,32 @@ interface MarkRecurringItemValueAsUnprocessed_Input {
   item_value_id: ItemValue["id"];
 }
 
-export default abstract class Create_UseCase_RecurringItemValue_MarkAsUnprocessed implements IUseCase<MarkRecurringItemValueAsUnprocessed_Input, Recurring>{
+export default abstract class Create_UseCase_RecurringItemValue_MarkAsUnprocessed implements IUseCase<MarkRecurringItemValueAsUnprocessed_Input, boolean>{
   protected abstract variant: TypeOfVariants
-  /**
-   * Constructor for the MarkRecurringItemValueAsUnprocessed use case
-   * @param {IRepoRecurring} repo_rec Repository for recurrings used to perform unmark operations
-   */
-  constructor(
-    private repo_rec: IRepoRecurring
-  ){}
-  /**
-   * Marks a recurring item value as unprocessed
-   * @param {MarkRecurringItemValueAsUnprocessed_Input} input - The input containing the ID of the recurring to unmark
-   * @returns {Promise<Recurring>} The updated recurring
-   * @throws {StandardNotFoundById} If the recurring is not found
-   * @throws {StandardUnknownError} If an unexpected error occurs during the unmark process
-   */
-  async execute(input: MarkRecurringItemValueAsUnprocessed_Input): Promise<Recurring> {
-    try {
-      const recurring_item_value = this.repo_rec.findById(input.id)
-      const item_value = recurring_item_value.itens.find((iv) => iv.id === input.item_value_id)
-      if(!item_value){
-        throw new ItemValueNotFoundById(input.item_value_id)
-      }
-      item_value.markAsProcessed()
   
+  constructor(
+    private repo_rec: IRepoRecurring,
+    private repo_iv: IRepoItemValue
+  ){}
+  
+  async execute(input: MarkRecurringItemValueAsUnprocessed_Input): Promise<boolean> {
+    const item_value_searched = this.repo_rec.findItemValue(input.id, input.item_value_id);
+    if (item_value_searched.success) {
+      const item_value = item_value_searched.data
+      item_value.markAsUnprocessed()
       const {
         id,
-        recurrence_type,
-        created_at,
-        updated_at,
+        tag,
+        transfer_method,
         ...data
       } = {
-        ...recurring_item_value.properties,
-        fk_id_recurrence_type: recurring_item_value.recurrence_type.id
+        ...item_value.properties,
+        fk_id_tag: item_value.tag.id,
+        fk_id_transfer_method: item_value.transfer_method.id
       }
-  
-      return this.repo_rec.update(id, data)
-    } catch (error) {
-      if(isStandardNotFoundById(error)) {
-        throw error
-      }
-      throw new StandardUnknownError()
+      this.repo_iv.update(id, data);
+      return true;
     }
+    return false;
   }
 }

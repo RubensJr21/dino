@@ -5,27 +5,27 @@ import { sqliteTable } from "drizzle-orm/sqlite-core";
 import { item_value } from './item_value.schema';
 
 export const standard = sqliteTable("standard", {
-  id: 
+  id:
     t.integer("id")
-     .primaryKey({autoIncrement: true}),
-  fk_id_item_value: 
+      .primaryKey({ autoIncrement: true }),
+  fk_id_item_value:
     t.integer("fk_id_item_value")
-     .references(() => item_value.id, {onDelete: "cascade"})
-     .notNull(),
-  created_at: 
+      .references(() => item_value.id, { onDelete: "cascade" })
+      .notNull(),
+  created_at:
     t.integer("created_at", { mode: "timestamp" })
-     .default(sql`(date('now','localtime'))`)
-     .$type<IStandard["created_at"]>()
-     .notNull(),
-  updated_at: 
+      .default(sql`(date('now','localtime'))`)
+      .$type<IStandard["created_at"]>()
+      .notNull(),
+  updated_at:
     t.integer("updated_at", { mode: "timestamp" })
-     .default(sql`(date('now','localtime'))`)
-     .$onUpdate(() => sql`(date('now','localtime'))`)
-     .$type<IStandard["updated_at"]>()
-     .notNull()
+      .default(sql`(date('now','localtime'))`)
+      .$onUpdate(() => sql`(date('now','localtime'))`)
+      .$type<IStandard["updated_at"]>()
+      .notNull()
 })
 
-export const standard_relations = relations(standard, ({one}) => ({
+export const standard_relations = relations(standard, ({ one, many }) => ({
   item_value: one(item_value, {
     fields: [standard.fk_id_item_value],
     references: [item_value.id],

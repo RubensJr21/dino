@@ -13,7 +13,9 @@ export default function HomeInstallment({ navigation }: PaymentsProps) {
 
   useEffect(() => {
     PaymentInstallmentApi.list_all.execute().then((paymentsInstallment) => {
-      setPaymentsInstallment(paymentsInstallment);
+      if(paymentsInstallment.success){
+        setPaymentsInstallment(paymentsInstallment.data);
+      }
     }).catch((error) => {
       console.error("Erro ao buscar recebimentos:", error);
       Alert.alert("Erro", "Não foi possível carregar os recebimentos.");

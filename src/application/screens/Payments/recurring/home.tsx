@@ -13,7 +13,9 @@ export default function HomeRecurring({ navigation }: PaymentsProps) {
 
   useEffect(() => {
     PaymentRecurringApi.list_all.execute().then((payments_recurring) => {
-      setPayments(payments_recurring);
+      if(payments_recurring.success){
+        setPayments(payments_recurring.data);
+      }
     }).catch((error) => {
       console.error("Erro ao buscar recebimentos:", error);
       Alert.alert("Erro", "Não foi possível carregar os recebimentos.");

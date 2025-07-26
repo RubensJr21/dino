@@ -1,6 +1,4 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
-import { ItemValue } from "./item_value.entity";
 import { RecurrenceType } from "./recurrence_type.entity";
 
 export interface IRecurring extends IEntityWithDates {
@@ -9,7 +7,6 @@ export interface IRecurring extends IEntityWithDates {
   end_date?: Date;
   current_amount: number;
   recurrence_type: RecurrenceType;
-  itens: ItemValue[];
 }
 
 interface ReturnProperties extends StrictOmit<IRecurring, "recurrence_type"> {
@@ -22,7 +19,6 @@ export class Recurring implements IRecurring {
   private _end_date: IRecurring["end_date"];
   private _current_amount: IRecurring["current_amount"]
   private _recurrence_type: IRecurring["recurrence_type"];
-  private _itens: ItemValue[];
   private readonly _created_at: IRecurring["created_at"]
   private readonly _updated_at: IRecurring["updated_at"]
 
@@ -32,7 +28,6 @@ export class Recurring implements IRecurring {
     end_date,
     current_amount,
     recurrence_type,
-    itens,
 		created_at,
     updated_at
 	}: StrictOmit<IRecurring, "is_disabled">) {
@@ -41,7 +36,6 @@ export class Recurring implements IRecurring {
     this._end_date = end_date;
     this._current_amount = current_amount;
     this._recurrence_type = recurrence_type;
-    this._itens = itens;
     this._created_at = created_at;
     this._updated_at = updated_at;
 	}
@@ -83,10 +77,6 @@ export class Recurring implements IRecurring {
     return this._current_amount;
   }
 
-  public get itens(): ItemValue[] {
-    return this._itens;
-  }
-
   public get recurrence_type(): Recurring["_recurrence_type"] {
     return this._recurrence_type
   }
@@ -109,7 +99,6 @@ export class Recurring implements IRecurring {
       start_date: this._start_date,
       end_date: this._end_date,
       current_amount: this.current_amount,
-      itens: this.itens,
       is_disabled: this.is_disabled,
       recurrence_type: this.recurrence_type.properties,
       created_at: this.created_at,

@@ -40,7 +40,6 @@ module.exports = defineConfig([{
 
   plugins: {
     "@typescript-eslint": typescriptEslint,
-    jsdoc,
     promise,
     "checked-exceptions": checkedExceptions,
   },
@@ -48,51 +47,16 @@ module.exports = defineConfig([{
   extends: compat.extends(
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:jsdoc/recommended",
     "plugin:promise/recommended",
   ),
 
   settings: {
-    jsdoc: {
-      mode: "typescript",
-    },
+    
   },
 
   rules: {
     "@typescript-eslint/no-unused-vars": "off",
-    "jsdoc/no-undefined-types": "off",
-    "jsdoc/require-jsdoc": [
-      "warn",
-      {
-        contexts: [
-          "FunctionDeclaration",
-          "FunctionExpression",
-          "ArrowFunctionExpression",
-          "MethodDefinition",                 // <— aqui!
-          "ClassDeclaration > MethodDefinition",
-          "ExportNamedDeclaration > ClassDeclaration > MethodDefinition",
-          "TSMethodSignature"
-        ]
-      }
-    ],
-    "jsdoc/require-throws": [
-      "error",
-      {
-        contexts: [
-          "FunctionDeclaration",
-          "FunctionExpression",
-          "ArrowFunctionExpression",
-          "MethodDefinition",                 // <— aqui!
-          "ClassDeclaration > MethodDefinition",
-          "ExportNamedDeclaration > ClassDeclaration > MethodDefinition",
-          "TSMethodSignature"
-        ]
-      }
-    ],
     "checked-exceptions/undocumented-errors": ["warn"],
     "checked-exceptions/uncaught-errors": "error",
-    "@typescript-eslint/only-throw-error": "error",
-    "promise/catch-or-return": "error",
-    "@typescript-eslint/no-floating-promises": "error",
   },
 }, globalIgnores(["**/node_modules/", "**/dist/", "**/build/"])]);

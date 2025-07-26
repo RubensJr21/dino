@@ -29,9 +29,10 @@ export default function DefaultFlatListRecurring({ data, navigateToEditPage }: D
               borderColor: theme.colors.outline,
               marginVertical: 5
             }}>
-            {item.itens.map((item_value) => (
+            {/* ATTENTION: Precisarei obter os itens values que são daquele recurring */}
+            {/* {item.itens.map((item_value) => (
               <Text>{item_value.id} - {item_value.description} - {item_value.amount}</Text>
-            ))}
+            ))} */}
           </View>
         </>
       )}

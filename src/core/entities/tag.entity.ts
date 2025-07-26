@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import IEntityBase from "../shared/interfaces/IEntityBase";
 import { TagsAvailable } from "../start_configs";
 
