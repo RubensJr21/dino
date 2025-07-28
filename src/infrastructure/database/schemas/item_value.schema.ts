@@ -1,4 +1,4 @@
-import { IItemValue } from '@src/core/entities/item_value.entity';
+import { MItemValue } from '@src/core/models/item_value.model';
 import { relations, sql } from 'drizzle-orm';
 import * as t from 'drizzle-orm/sqlite-core';
 import { sqliteTable } from "drizzle-orm/sqlite-core";
@@ -12,43 +12,45 @@ export const item_value = sqliteTable("item_value", {
      .primaryKey({ autoIncrement: true }),
   description: 
     t.text("description")
-     .$type<IItemValue["description"]>()
+     .$type<MItemValue["description"]>()
      .notNull(),
   cashflow_type: 
     t.integer("cashflow_type")
-     .$type<IItemValue["cashflow_type"]>()
+     .$type<MItemValue["cashflow_type"]>()
      .notNull(),
   scheduled_at: 
     t.integer("scheduled_at", { mode: "timestamp" })
-     .$type<IItemValue["scheduled_at"]>()
+     .$type<MItemValue["scheduled_at"]>()
      .notNull(),
   // Guardado em centavos para garantir que o cálculo será feito corretamente
   amount: 
     t.integer("amount")
-     .$type<IItemValue["amount"]>()
+     .$type<MItemValue["amount"]>()
      .notNull(),
   was_processed: 
     t.integer({ mode: 'boolean' })
-     .$type<IItemValue["was_processed"]>()
+     .$type<MItemValue["was_processed"]>()
      .notNull(),
   fk_id_transfer_method: 
     t.integer("fk_id_transfer_method")
+     .$type<MItemValue["fk_id_transfer_method"]>()
      .references(() => transfer_method.id)
      .notNull(),
   fk_id_tag: 
-    t.integer("fk_id_tag")
+     t.integer("fk_id_tag")
+     .$type<MItemValue["fk_id_tag"]>()
      .references(() => tag.id)
      .notNull(),
   created_at: 
     t.integer("created_at", { mode: "timestamp" })
      .default(sql`(date('now','localtime'))`)
-     .$type<IItemValue["created_at"]>()
+     .$type<MItemValue["created_at"]>()
      .notNull(),
   updated_at: 
     t.integer("updated_at", { mode: "timestamp" })
      .default(sql`(date('now','localtime'))`)
      .$onUpdate(() => sql`(date('now','localtime'))`)
-     .$type<IItemValue["updated_at"]>()
+     .$type<MItemValue["updated_at"]>()
      .notNull()
 });
 

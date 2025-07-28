@@ -16,7 +16,7 @@ export { recurring, recurring_relations } from "@src/infrastructure/database/sch
 // not-order-next-line
 export { recurring_item_value, recurring_item_value_relations } from "@src/infrastructure/database/schemas/recurring_item_value.schema";
 // not-order-next-line
-export { installment } from "@src/infrastructure/database/schemas/installment.schema";
+export { installment, installment_relations } from "@src/infrastructure/database/schemas/installment.schema";
 // not-order-next-line
 export { installment_item_value, installment_item_value_relations } from "@src/infrastructure/database/schemas/installment_item_value.schema";
 // not-order-next-line

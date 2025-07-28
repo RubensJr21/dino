@@ -160,6 +160,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
   }
 
   public delete(id: MStandard["id"]): ReturnType<IRepoStandard["delete"]> {
+    // Usando o onDelete com modo cascade basta apagar o pai e todos os outros serão apagados
     const standard_deleted = this.tx.delete(standard).where(eq(standard.id, id)).get()
 
     if (!standard_deleted) {

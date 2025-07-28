@@ -6,6 +6,7 @@ export type ErrorCode =
   | "type_already_used"
   | "description_not_found"
   | "description_already_used"
+  | "installment_number_less_than_2"
   ;
 
 export interface DomainError<

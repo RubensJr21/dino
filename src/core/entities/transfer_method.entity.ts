@@ -1,4 +1,4 @@
-import IEntityBase from "../shared/interfaces/IEntityBase";
+import IEntityBase from "../shared/interfaces/bases/IEntityBase";
 import { TypeOfTransferMethods } from "../shared/types/transfer_methods";
 
 export interface ITransferMethod extends IEntityBase {

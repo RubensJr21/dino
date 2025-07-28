@@ -18,7 +18,7 @@ export default abstract class RegisterStandard implements UseCaseInterface {
     const item_value_created = this.repo_iv.create(input)
 
     if(!item_value_created.success){
-      const scope = `RegisterStandard(${this.repo_s.create.name}) > ${item_value_created.error.scope}`
+      const scope = `RegisterStandard(${this.repo_iv.create.name}) > ${item_value_created.error.scope}`
       return {
         success: false,
         error: {
@@ -44,6 +44,8 @@ export default abstract class RegisterStandard implements UseCaseInterface {
         }
       }
     }
+
+    // ALERT: Fazer o Link do standard com item_value
 
     return {
       success: true,

@@ -1,33 +1,36 @@
 import IUseCase from "@core/shared/IUseCase";
-import { Recurring } from "@src/core/entities/recurring.entity";
+import { IRecurring, Recurring } from "@src/core/entities/recurring.entity";
 import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
-import { Result } from "../../types/Result";
 import { TypeOfVariants } from "../../types/variants_items";
 
-interface EnableRecurring_Input {
-  id: number;
+interface Input {
+  id: IRecurring["id"]
 }
 
-type Return = Result<Recurring>
+type UseCaseInterface = IUseCase<Input, Recurring>
 
-export default abstract class UseCase_Recurring_Enable implements IUseCase<EnableRecurring_Input, Return>{
+export default abstract class EnableRecurring implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
   
   constructor(
-    private repo_rec: IRepoRecurring
+    private repo_r: IRepoRecurring
   ){}
   
-  async execute(input: EnableRecurring_Input): Promise<Return> {
-    const result = this.repo_rec.findById(input.id)
+  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+    const result_search = this.repo_r.findById(input.id)
 
-    if (!result.success) {
+    if (!result_search.success) {
+      const scope = `EnableRecurring(${this.repo_r.findById.name}) > ${result_search.error.scope}`
       return {
         success: false,
-        error: result.error.message
+        error: {
+          ...result_search.error,
+          scope
+        }
       }
     }
 
-    const recurring = result.data
+    const recurring = result_search.data
 
     recurring.enable();
     
@@ -42,6 +45,22 @@ export default abstract class UseCase_Recurring_Enable implements IUseCase<Enabl
       fk_id_recurrence_type: recurring.recurrence_type.id
     }
 
-    return this.repo_rec.update(input.id, data)
+    const result_updated = this.repo_r.update(input.id, data)
+
+    if(!result_updated.success) {
+      const scope = `EnableRecurring(${this.repo_r.update.name}) > ${result_updated.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_updated.error,
+          scope
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: result_updated.data
+    }
   }
 }

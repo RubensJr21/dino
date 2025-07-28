@@ -52,10 +52,13 @@ export default class RegisterBankAccount implements UseCaseInterface {
     const result_transfer_methods_all = this.repo_tm.findAll()
 
     if(!result_transfer_methods_all.success){
+       const scope = `RegisterBankAccount(${this.repo_tm.findAll.name}) > ${result_transfer_methods_all.error.scope}`
       return {
         success: false,
-        // REVIEW: Mudar o 'scope'
-        error: result_transfer_methods_all.error
+        error: {
+          ...result_transfer_methods_all.error,
+          scope
+        }
       }
     }
 

@@ -1,6 +1,6 @@
 import { TransferMethod } from '@src/core/entities/transfer_method.entity'
 import { MTransferMethod } from '@src/core/models/transfer_method.model'
-import { CreateRepositoryParams, IRepository, UpdateRepositoryParams } from '@src/core/shared/interfaces/IRepository'
+import { CreateRepositoryParams, IRepository, UpdateRepositoryParams } from '@src/core/shared/interfaces/bases/IRepository'
 import { Result } from '../types/Result'
 
 export type CreateTransferMethodTypeParams = CreateRepositoryParams<MTransferMethod>

@@ -8,25 +8,38 @@ import { installment_item_value } from '@src/infrastructure/database/schemas/ins
 import { item_value } from '@src/infrastructure/database/schemas/item_value.schema'
 import { eq } from 'drizzle-orm/sql'
 import { Transaction } from '../database/TransactionType'
+import { tag, transfer_method } from '../database/schemas'
 
 export default class InstallmentDrizzleRepository implements IRepoInstallment {
   constructor(private tx: Transaction) { }
-  
+
   public create({
+    description,
+    fk_id_transfer_method,
+    fk_id_tag,
     start_date,
-      installments_number,
-      total_amount
+    installments_number,
+    total_amount
   }: CreateInstallmentParams): ReturnType<IRepoInstallment["create"]> {
     // Registra Installment
     const result = this.tx.insert(installment).values({
+      description,
+      fk_id_transfer_method,
+      fk_id_tag,
       start_date,
       installments_number,
       total_amount,
     }).returning({ id: installment.id }).get()
 
-    const installment_created = this.tx.query.installment.findFirst({ with: { recurrence_type: true }, where: eq(installment.id, result.id) }).sync()
+    const installment_created = this.tx.query.installment.findFirst({
+      with: {
+        tag: true,
+        transfer_method: true
+      },
+      where: eq(installment.id, result.id)
+    }).sync()
 
-    if(!installment_created) {
+    if (!installment_created) {
       return {
         success: false,
         error: {
@@ -36,7 +49,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
         }
       }
     }
-    
+
     return {
       success: true,
       data: installment_mapper(installment_created)
@@ -47,7 +60,8 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
     const installment_result = this.tx.query.installment.findFirst({
       where: eq(installment.id, id),
       with: {
-        recurrence_type: true
+        transfer_method: true,
+        tag: true
       }
     }).sync()
 
@@ -71,7 +85,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
   }
 
   public findItemValue(installment_id: MInstallment["id"], item_value_id: MItemValue["id"]): ReturnType<IRepoInstallment["findItemValue"]> {
-    // TODO: Implementar busca
+    // ALERT: Implementar busca
     return {
       success: true,
       data: {} as ItemValue
@@ -81,7 +95,8 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
   public findAll(): ReturnType<IRepoInstallment["findAll"]> {
     const result = this.tx.query.installment.findMany({
       with: {
-        recurrence_type: true
+        transfer_method: true,
+        tag: true
       }
     }).sync()
 
@@ -95,19 +110,28 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
 
   public findAllByCashflowType(cashflow_type: ItemValue["cashflow_type"]): ReturnType<IRepoInstallment["findAllByCashflowType"]> {
     const result = this.tx.select({
-        id: installment.id,
-        start_date: installment.start_date,
-        installments_number: installment.installments_number,
-        total_amount: installment.total_amount,
-        created_at: installment.created_at,
-        updated_at: installment.updated_at,
-      })
+      id: installment.id,
+      description: installment.description,
+      start_date: installment.start_date,
+      installments_number: installment.installments_number,
+      total_amount: installment.total_amount,
+      created_at: installment.created_at,
+      updated_at: installment.updated_at,
+      transfer_method: {
+        id: transfer_method.id,
+        method: transfer_method.method
+      },
+      tag: {
+        id: tag.id,
+        description: tag.description,
+      }
+    })
       .from(installment_item_value)
       .innerJoin(installment, eq(installment.id, installment_item_value.fk_id_installment))
       .innerJoin(item_value, eq(item_value.id, installment_item_value.fk_id_item_value))
       .where(eq(item_value.cashflow_type, cashflow_type))
-      .all()    
-    
+      .all()
+
     const installments = result.map(installment_mapper)
 
     return {
@@ -116,15 +140,28 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
     }
   }
 
+  public findAllItemValue(id: MInstallment["id"]): ReturnType<IRepoInstallment["findAllItemValue"]> {
+    return {
+      success: true,
+      data: []
+    }
+  }
+
   public update(id: MInstallment["id"], data: UpdateInstallmentParams): ReturnType<IRepoInstallment["update"]> {
     const result = this.tx.update(installment).set(data)
-    .where(eq(installment_item_value.id, id))
-    .returning({ id: installment_item_value.id })
-    .get()
+      .where(eq(installment_item_value.id, id))
+      .returning({ id: installment_item_value.id })
+      .get()
 
-    const installment_updated = this.tx.query.installment.findFirst({ with: { recurrence_type: true }, where: eq(installment.id, result.id) }).sync()
-    
-     if(!installment_updated) {
+    const installment_updated = this.tx.query.installment.findFirst({
+      with: {
+        transfer_method: true,
+        tag: true
+      },
+      where: eq(installment.id, result.id)
+    }).sync()
+
+    if (!installment_updated) {
       return {
         success: false,
         error: {
@@ -142,6 +179,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
   }
 
   public delete(id: MInstallment["id"]): ReturnType<IRepoInstallment["delete"]> {
+    // Usando o onDelete com modo cascade basta apagar o pai e todos os outros serão apagados
     const installment_deleted = this.tx.delete(installment).where(eq(installment.id, id)).returning().get()
 
     if (!installment_deleted) {

@@ -1,4 +1,4 @@
-import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
+import { IEntityWithDates } from "../shared/interfaces/bases/IEntityWithDates";
 import { TypeOfVariants } from "../shared/types/variants_items";
 import { Tag } from "./tag.entity";
 import { TransferMethod } from "./transfer_method.entity";
@@ -14,8 +14,8 @@ export interface IItemValue extends IEntityWithDates {
 }
 
 export interface ReturnProperties_ItemValue extends StrictOmit<IItemValue, "tag" | "transfer_method"> {
-  transfer_method: ItemValue["_transfer_method"]["properties"];
-  tag: ItemValue["_tag"]["properties"];
+  transfer_method: IItemValue["transfer_method"]["properties"];
+  tag: IItemValue["tag"]["properties"];
 }
 
 export class ItemValue implements IItemValue {

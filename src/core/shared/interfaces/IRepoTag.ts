@@ -1,6 +1,6 @@
 import { Tag } from '@src/core/entities/tag.entity'
 import { MTag } from '@src/core/models/tag.model'
-import { CreateRepositoryParams, IRepository, UpdateRepositoryParams } from "@src/core/shared/interfaces/IRepository"
+import { CreateRepositoryParams, IRepository, UpdateRepositoryParams } from "@src/core/shared/interfaces/bases/IRepository"
 import { Result } from '../types/Result'
 
 export type CreateTagParams = CreateRepositoryParams<MTag>

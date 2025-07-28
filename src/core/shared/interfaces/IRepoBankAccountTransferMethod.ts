@@ -2,7 +2,7 @@ import { BankAccount } from "@core/entities/bank_account.entity";
 import { BankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
 import { MBankAccountTransferMethod } from "@src/core/models/bank_account_transfer_method.model";
 import { Result } from "../types/Result";
-import { CreateRepositoryWithDatesParams, IRepositoryWithDates, UpdateRepositoryWithDatesParams } from "./IRepositoryWithDates";
+import { CreateRepositoryWithDatesParams, IRepositoryWithDates, UpdateRepositoryWithDatesParams } from "./bases/IRepositoryWithDates";
 
 export type CreateBankAccountTransferMethodTypeParams = CreateRepositoryWithDatesParams<MBankAccountTransferMethod>
 export type UpdateBankAccountTransferMethodTypeParams = UpdateRepositoryWithDatesParams<MBankAccountTransferMethod>

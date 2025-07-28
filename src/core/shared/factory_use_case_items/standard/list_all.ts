@@ -24,6 +24,10 @@ export default abstract class ListAllStandards implements UseCaseInterface {
         }
       }
     }
-    return this.repo_s.findAllByCashflowType(this.variant);
+
+    return {
+      success: true,
+      data: result_search.data
+    }
   }
 }

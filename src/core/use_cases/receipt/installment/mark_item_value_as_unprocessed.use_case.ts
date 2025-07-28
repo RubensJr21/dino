@@ -1,6 +1,6 @@
-import UseCase_InstallmentItemValue_MarkAsUnprocessed from "@src/core/shared/factory_use_case_items/installment/mark_item_value_as_unprocessed";
+import MarkInstallmentItemValueAsUnprocessed from "@src/core/shared/factory_use_case_items/installment/mark_item_value_as_unprocessed";
 import { TypeOfVariants, VARIANTS_OF_ITEM_VALUE } from "@src/core/shared/types/variants_items";
 
-export default class InstallmentReceiptItemValue_MarkAsUnprocessed extends UseCase_InstallmentItemValue_MarkAsUnprocessed {
+export default class MarkInstallmentReceiptItemValueAsUnprocessed extends MarkInstallmentItemValueAsUnprocessed {
   protected variant: TypeOfVariants = VARIANTS_OF_ITEM_VALUE.Receipt;
 }

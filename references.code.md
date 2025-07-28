@@ -39,6 +39,7 @@
 1. [react-native-picker](https://github.com/react-native-picker/picker?tab=readme-ov-file#usage)
 1. [Estilizar elemento Picker (@react-native-picker/picker)](https://pt.stackoverflow.com/a/440997)
 1. [Tipografia dos textos do React Native Paper](https://callstack.github.io/react-native-paper/docs/components/Text/)
+1. [Transformar arrays em objetos](https://www.geeksforgeeks.org/javascript/convert-an-array-to-an-object-in-javascript/#3-using-javascript-objectfromentries-method)
 
 ## (expo)
 

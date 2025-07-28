@@ -1,19 +1,32 @@
 import IUseCase from "@core/shared/IUseCase";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
-import { Result } from "../../types/Result";
 import { TypeOfVariants } from "../../types/variants_items";
 
-type Return = Result<Recurring[]>
+type UseCaseInterface = IUseCase<void, Recurring[]>
 
-export default abstract class UseCase_Recurring_ListAll implements IUseCase<void, Return> {
+export default abstract class ListAllRecurring implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
   
-  constructor(
-    private repo_riv: IRepoRecurring
-  ){}
+  constructor( private repo_r: IRepoRecurring ){}
   
-  async execute(): Promise<Return> {
-    return this.repo_riv.findAllByCashflowType(this.variant);
+  async execute(): ReturnType<UseCaseInterface["execute"]> {
+    const result_search = this.repo_r.findAllByCashflowType(this.variant);
+    
+    if(!result_search.success){
+      const scope = `ListAllInstallments(${this.repo_r.findAllByCashflowType.name}) > ${result_search.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_search.error,
+          scope
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: result_search.data
+    }
   }
 }

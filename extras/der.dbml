@@ -68,6 +68,9 @@ Table recurring_item_value {
 
 Table installment {
   id integer [pk, increment]
+  description text [not null]
+  fk_id_transfer_method integer [not null, ref: > transfer_method.id]
+  fk_id_tag integer [not null, ref: > tag.id]
   start_date date [not null]
   installments_number integer [not null]
   total_amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]

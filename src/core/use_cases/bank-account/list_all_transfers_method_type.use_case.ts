@@ -1,6 +1,6 @@
 import IUseCase from "@core/shared/IUseCase";
 import { BankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
-import IEntityBase from "@src/core/shared/interfaces/IEntityBase";
+import IEntityBase from "@src/core/shared/interfaces/bases/IEntityBase";
 import { IRepoBankAccountTransferMethod } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
 
 interface Input {

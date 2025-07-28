@@ -1,5 +1,4 @@
 import { MRecurrenceType } from '@src/core/models/recurrence_type.model'
-import { RecurrenceTypeNotFoundByType } from '@src/core/shared/errors/recurrence_type'
 import { CreateRecurrenceTypeParams, IRepoRecurrenceType, UpdateRecurrenceTypeParams } from '@src/core/shared/interfaces/IRepoRecurrenceType'
 import { recurrence_type_mapper } from '@src/core/shared/mappers/recurrence_type'
 import { recurrence_type } from '@src/infrastructure/database/schemas'
@@ -45,7 +44,16 @@ export default class RecurrenceTypeDrizzleRepository implements IRepoRecurrenceT
       where: eq(recurrence_type.type, type)
     }).sync()
 
-    if (!recurrence_type_searched) throw new RecurrenceTypeNotFoundByType(type)
+    if (!recurrence_type_searched) {
+      return {
+        success: false,
+        error: {
+          code: "type_not_found",
+          scope: "recurrence_type",
+          message: `Foi retornado o valor ${recurrence_type_searched} na busca.`
+        }
+      }
+    }
 
     return {
       success: true,

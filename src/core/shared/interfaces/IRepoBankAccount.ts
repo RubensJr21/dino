@@ -1,6 +1,6 @@
 import { BankAccount } from "@src/core/entities/bank_account.entity";
 import { MBankAccount } from "@src/core/models/bank_account.model";
-import { CreateRepositoryWithDatesParams, IRepositoryWithDates, UpdateRepositoryWithDatesParams } from "@src/core/shared/interfaces/IRepositoryWithDates";
+import { CreateRepositoryWithDatesParams, IRepositoryWithDates, UpdateRepositoryWithDatesParams } from "@src/core/shared/interfaces/bases/IRepositoryWithDates";
 import { Result } from "../types/Result";
 
 export type CreateBankAccountParams = CreateRepositoryWithDatesParams<MBankAccount>

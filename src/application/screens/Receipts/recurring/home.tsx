@@ -1,5 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import ReceiptRecurringApi from "@src/application/api/receipt/recurring.api";
+import RecurringReceiptApi from "@src/application/api/drizzle.end-point/receipt.api/recurring";
 import RecurringHomeScreenTemplate from "@src/application/templates/screens/Recurring/Home";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { useEffect, useState } from "react";
@@ -12,14 +12,13 @@ export default function Home({ navigation }: Props) {
   const [receipts, setReceipts] = useState<Recurring[]>([]);
 
   useEffect(() => {
-    ReceiptRecurringApi.list_all.execute().then((receipts_recurring) => {
-      if(receipts_recurring.success){
-        setReceipts(receipts_recurring.data);
+    RecurringReceiptApi.list_all().then((receipts_recurring) => {
+      if(!receipts_recurring){
+        Alert.alert("Erro", "Não foi possível carregar os recebimentos.");
+        return;
       }
-    }).catch((error) => {
-      console.error("Erro ao buscar recebimentos:", error);
-      Alert.alert("Erro", "Não foi possível carregar os recebimentos.");
-    });
+      setReceipts(receipts_recurring);
+    })
   }, []);
 
   return (

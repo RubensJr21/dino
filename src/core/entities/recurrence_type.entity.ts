@@ -1,4 +1,4 @@
-import IEntityBase from "../shared/interfaces/IEntityBase";
+import IEntityBase from "../shared/interfaces/bases/IEntityBase";
 
 export interface IRecurrenceType extends IEntityBase {
   type: string

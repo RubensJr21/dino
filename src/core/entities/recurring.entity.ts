@@ -1,4 +1,4 @@
-import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
+import { IEntityWithDates } from "../shared/interfaces/bases/IEntityWithDates";
 import { RecurrenceType } from "./recurrence_type.entity";
 
 export interface IRecurring extends IEntityWithDates {

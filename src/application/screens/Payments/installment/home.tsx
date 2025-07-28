@@ -1,5 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import PaymentInstallmentApi from "@src/application/api/payment/installment.api";
+import InstallmentPaymentApi from "@src/application/api/drizzle.end-point/payment.api/installment";
 import InstallmentHomeScreenTemplate from "@src/application/templates/screens/Installment/Home";
 import { Installment } from "@src/core/entities/installment.entity";
 import { useEffect, useState } from "react";
@@ -12,13 +12,12 @@ export default function HomeInstallment({ navigation }: PaymentsProps) {
   const [ payments, setPaymentsInstallment ] = useState<Installment[]>([]);
 
   useEffect(() => {
-    PaymentInstallmentApi.list_all.execute().then((paymentsInstallment) => {
-      if(paymentsInstallment.success){
-        setPaymentsInstallment(paymentsInstallment.data);
+    InstallmentPaymentApi.list_all().then((paymentsInstallment) => {
+      if(!paymentsInstallment){
+        Alert.alert("Erro", "Não foi possível carregar os recebimentos.");
+        return;
       }
-    }).catch((error) => {
-      console.error("Erro ao buscar recebimentos:", error);
-      Alert.alert("Erro", "Não foi possível carregar os recebimentos.");
+      setPaymentsInstallment(paymentsInstallment);
     });
   }, []);
 

@@ -3,7 +3,6 @@ import InputCurrency, { useRefInputCurrency } from "@src/application/components/
 import InputBankName, { useRefInputBankName } from "@src/application/screens/Manage/BankAccounts/components/InputBankName";
 import { createTogglesRef, TransferMethodsToggles } from "@src/application/screens/Manage/BankAccounts/components/TransferMethodsToggle";
 import { BankAccount } from "@src/core/entities/bank_account.entity";
-import { isBankAccountNicknameIsAlreadyInUse } from "@src/core/shared/errors/bank_account";
 import { TransferMethodsAvailable, TypeOfTransferMethods } from "@src/core/shared/types/transfer_methods";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
@@ -28,51 +27,44 @@ export default function Register({ route, navigation }: Props) {
   var inputBankNameRef = useRefInputBankName();
   var inputCurrencyRef = useRefInputCurrency();
   const togglesRef = createTogglesRef();
-  
-	const handleButton = async (): Promise<BankAccount | undefined> => {
+
+  const handleButton = async (): Promise<BankAccount | undefined> => {
     const nickname = inputBankNameRef.bank_name.current;
     const balance = inputCurrencyRef.currencyRef.current;
 
-    if(nickname === undefined || nickname === "") {
+    if (nickname === undefined || nickname === "") {
       Alert.alert("Por favor, preencha o campo de nome da conta.");
       return;
     }
-    if(balance === undefined) {
+    if (balance === undefined) {
       Alert.alert("Por favor, preencha o campo de valor inicial.");
       return;
     }
-    try {
-      return await BankAccountApi.register({
-        nickname,
-        balance: Number(balance),
-        type_of_bank_transfers: {
-          PIX: togglesRef.PIX.current?.value ?? true,
-          DEBIT: togglesRef.DEBIT.current?.value ?? true,
-          BANK_TRANSFER: togglesRef.BANK_TRANSFER.current?.value ?? true
-        }
-      })
-    } catch (error) {
-      if(isBankAccountNicknameIsAlreadyInUse(error)) {
-        Alert.alert("Esse nome de conta já está em uso.");
-        return;
+    const bank_account = await BankAccountApi.register({
+      nickname,
+      balance: Number(balance),
+      type_of_bank_transfers: {
+        PIX: togglesRef.PIX.current?.value ?? true,
+        DEBIT: togglesRef.DEBIT.current?.value ?? true,
+        BANK_TRANSFER: togglesRef.BANK_TRANSFER.current?.value ?? true
       }
-
+    })
+    if (!bank_account) {
       Alert.alert("Erro ao registrar conta bancária.");
-      return;
     }
-	};
+  };
 
-	return (
-		<BasePageView>
-			<ScrollView>
-				<BasePageTitle>Registrar conta bancária</BasePageTitle>
-				<View style={styles.view_form}>
+  return (
+    <BasePageView>
+      <ScrollView>
+        <BasePageTitle>Registrar conta bancária</BasePageTitle>
+        <View style={styles.view_form}>
           <InputBankName refBankName={inputBankNameRef} />
           <InputCurrency
             label="Valor inicial da conta:"
             refCurrency={inputCurrencyRef}
           />
-          
+
           <View style={styles.view_transfer_methods}>
             <Text
               style={styles.title_transfer_methods}
@@ -86,21 +78,21 @@ export default function Register({ route, navigation }: Props) {
             />
           </View>
           <SubmitButton variant="Add" onPress={async () => {
-              const result = await handleButton();
-              if(result !== undefined) {
-                Alert.alert("Conta bancária registrada com sucesso!");
-                // Atualiza a lista de contas bancárias com a nova conta criada
-                navigation.popTo("Home", {
-                  last_bank_account_modified: result.nickname
-                });
-              } else {
-                Alert.alert("Erro ao registrar conta bancária.");
-              }
-            }} />
-				</View>
-			</ScrollView>
-		</BasePageView>
-	);
+            const result = await handleButton();
+            if (result !== undefined) {
+              Alert.alert("Conta bancária registrada com sucesso!");
+              // Atualiza a lista de contas bancárias com a nova conta criada
+              navigation.popTo("Home", {
+                last_bank_account_modified: result.nickname
+              });
+            } else {
+              Alert.alert("Erro ao registrar conta bancária.");
+            }
+          }} />
+        </View>
+      </ScrollView>
+    </BasePageView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -113,9 +105,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between"
   },
-	view_form: {
-		flex: 1,
-		justifyContent: "flex-start",
-		gap: 10,
-	},
+  view_form: {
+    flex: 1,
+    justifyContent: "flex-start",
+    gap: 10,
+  },
 });

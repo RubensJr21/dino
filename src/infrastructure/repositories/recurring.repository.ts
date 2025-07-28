@@ -73,7 +73,7 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
   }
 
   public findItemValue(recurring_id: MRecurring["id"], item_value_id: MItemValue["id"]): ReturnType<IRepoRecurring["findItemValue"]> {
-    // TODO: Implementar busca
+    // ALERT: Implementar busca
     return {
       success: true,
       data: {} as ItemValue

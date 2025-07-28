@@ -1,44 +1,38 @@
 import IUseCase from "@core/shared/IUseCase";
-import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
+import { IRecurring } from "@src/core/entities/recurring.entity";
 import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
-import { Result } from "../../types/Result";
 import { TypeOfVariants } from "../../types/variants_items";
 
-interface DeleteRecurring_Input {
-  id: number
+interface Input {
+  id: IRecurring["id"]
 }
 
-type Return = Result<boolean>
+type UseCaseInterface = IUseCase<Input, boolean>
 
-export default abstract class UseCase_Recurring_Delete implements IUseCase<DeleteRecurring_Input, Return>{
+export default abstract class DeleteRecurring implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
+
   constructor(
-    private repo_biv: IRepoItemValue,
-    private repo_riv: IRepoRecurring
+    private repo_r: IRepoRecurring
   ){}
-  async execute(input: DeleteRecurring_Input): Promise<Return> {
-    const result = this.repo_riv.delete(input.id)
-    if (!result.success) {
+
+  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+    const result_deleted = this.repo_r.delete(input.id)
+
+    if (!result_deleted.success) {
+      const scope = `DeleteRecurring(${this.repo_r.delete.name}) > ${result_deleted.error.scope}`
       return {
         success: false,
-        error: result.error
-      }
-    }
-
-    const some_not_remove = !result.data.map(item_value_id => {
-      return this.repo_biv.delete(item_value_id)
-    }).some(deleted => deleted)
-
-    if (some_not_remove) {
-      return {
-        success: false,
-        error: "Algum item_value não foi removido."
+        error: {
+          ...result_deleted.error,
+          scope
+        }
       }
     }
 
     return {
       success: true,
-      data: some_not_remove
+      data: result_deleted.data
     }
   }
 }

@@ -24,7 +24,7 @@ export const tags_available = {
 
 export type TagsAvailable = (keyof typeof tags_available)
 
-// ATTENTION: Essas são os métodos de transferência disponíveis:
+// REVIEW: Essas são os métodos de transferência disponíveis:
 // TODO: Usar migration para registrar TransferMethodsAvailable
 
 interface Recurrence {

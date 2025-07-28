@@ -1,4 +1,4 @@
-import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
+import { IEntityWithDates } from "../shared/interfaces/bases/IEntityWithDates";
 
 export interface IBankAccount extends IEntityWithDates {
   nickname: string;

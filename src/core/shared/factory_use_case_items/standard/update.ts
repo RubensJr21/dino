@@ -1,7 +1,7 @@
 import IUseCase from "@core/shared/IUseCase";
 import { Standard } from "@src/core/entities/standard.entity";
 import { MItemValue } from "@src/core/models/item_value.model";
-import IEntityBase from "../../interfaces/IEntityBase";
+import IEntityBase from "../../interfaces/bases/IEntityBase";
 import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
 import { IRepoStandard } from "../../interfaces/IRepoStandard";
 import { TypeOfVariants } from "../../types/variants_items";

@@ -1,4 +1,4 @@
-import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
+import { IEntityWithDates } from "../shared/interfaces/bases/IEntityWithDates";
 import { BankAccount } from "./bank_account.entity";
 import { TransferMethod } from "./transfer_method.entity";
 

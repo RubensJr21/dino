@@ -20,10 +20,13 @@ export default class UpdateTransferMethodsBankAccount implements UseCaseInterfac
     const result_transfer_methods_all = this.repo_ba_tm.findAllOfBankAccount(input.id)
 
     if(!result_transfer_methods_all.success){
+      const scope = `UpdateTransferMethodsBankAccount(${this.repo_ba_tm.findAllOfBankAccount.name}) > ${result_transfer_methods_all.error.scope}`
       return {
         success: false,
-        // REVIEW: Mudar o 'scope'
-        error: result_transfer_methods_all.error
+        error: {
+          ...result_transfer_methods_all.error,
+          scope
+        }
       }
     }
 

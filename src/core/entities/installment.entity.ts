@@ -1,15 +1,26 @@
-import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
+import { IEntityWithDates } from "../shared/interfaces/bases/IEntityWithDates";
+import { Tag } from "./tag.entity";
+import { TransferMethod } from "./transfer_method.entity";
 
 export interface IInstallment extends IEntityWithDates {
+  description: string;
+  transfer_method: TransferMethod;
+  tag: Tag;
   start_date: Date;
 	installments_number: number;
   total_amount: number;
 }
 
-type ReturnProperties = IInstallment
+export interface ReturnProperties extends StrictOmit<IInstallment, "tag" | "transfer_method"> {
+  transfer_method: IInstallment["transfer_method"]["properties"];
+  tag: IInstallment["tag"]["properties"];
+}
 
 export class Installment implements IInstallment {
   private _id: IInstallment["id"];
+  private _description: IInstallment["description"];
+  private _transfer_method: IInstallment["transfer_method"];
+  private _tag: IInstallment["tag"];
   private _start_date: IInstallment["start_date"];
   private _total_amount: IInstallment["total_amount"];
 	private _installments_number: IInstallment["installments_number"];
@@ -18,6 +29,9 @@ export class Installment implements IInstallment {
 
 	constructor({
     id,
+    description,
+    transfer_method,
+    tag,
     start_date,
 		installments_number,
     total_amount,
@@ -25,6 +39,9 @@ export class Installment implements IInstallment {
     updated_at
 	}: IInstallment) {
 		this._id = id;
+    this._description = description;
+    this._transfer_method = transfer_method;
+    this._tag = tag;
     this._start_date = start_date;
 		this._installments_number = installments_number;
 		this._total_amount = total_amount;
@@ -34,6 +51,18 @@ export class Installment implements IInstallment {
 
   public get id(): Installment["_id"]{
     return this._id;
+  }
+
+  public get description(): IInstallment["description"] {
+    return this._description;
+  }
+
+  public get transfer_method(): IInstallment["transfer_method"] {
+    return this._transfer_method;
+  }
+
+  public get tag(): IInstallment["tag"] {
+    return this._tag;
   }
 
   public get start_date(): Installment["_start_date"] {
@@ -72,6 +101,9 @@ export class Installment implements IInstallment {
 	get properties(): ReturnProperties {
 		return {
       id: this.id,
+      description: this._description,
+      transfer_method: this.transfer_method.properties,
+			tag: this.tag.properties,
       start_date: this.start_date,
 			installments_number: this.installments_number,
       total_amount: this.total_amount,

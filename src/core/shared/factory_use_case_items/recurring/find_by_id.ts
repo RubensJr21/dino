@@ -1,21 +1,36 @@
 import IUseCase from "@core/shared/IUseCase";
+import { IRecurring, Recurring } from "@src/core/entities/recurring.entity";
 import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
 import { TypeOfVariants } from "../../types/variants_items";
 
-interface FindRecurringById_Input {
-  id: number
+interface Input {
+  id: IRecurring["id"]
 }
 
-type Return = ReturnType<IRepoRecurring["findById"]>
+type UseCaseInterface = IUseCase<Input, Recurring>
 
-export default abstract class FindRecurringById implements IUseCase<FindRecurringById_Input, Return> {
+export default abstract class FindRecurringById implements UseCaseInterface {
   protected abstract variant: TypeOfVariants
   
-  constructor(
-    private repo_riv: IRepoRecurring
-  ){}
+  constructor( private repo_r: IRepoRecurring ){}
   
-  async execute(input: FindRecurringById_Input): Promise<Return> {
-    return this.repo_riv.findById(input.id)
+  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+    const result_search = this.repo_r.findById(input.id)
+
+    if(!result_search.success){
+      const scope = `FindRecurringById(${this.repo_r.findById.name}) > ${result_search.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_search.error,
+          scope
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: result_search.data
+    }
   }
 }

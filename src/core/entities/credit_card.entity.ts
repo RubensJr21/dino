@@ -1,4 +1,4 @@
-import { IEntityWithDates } from "../shared/interfaces/IEntityWithDates";
+import { IEntityWithDates } from "../shared/interfaces/bases/IEntityWithDates";
 
 export interface ICreditCard extends IEntityWithDates {
   nickname: string;

@@ -1,5 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import PaymentRecurringApi from "@src/application/api/payment/recurring.api";
+import RecurringPaymentApi from "@src/application/api/payment/recurring.api";
 import RecurringHomeScreenTemplate from "@src/application/templates/screens/Recurring/Home";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { useEffect, useState } from "react";
@@ -12,14 +12,13 @@ export default function HomeRecurring({ navigation }: PaymentsProps) {
   const [payments, setPayments] = useState<Recurring[]>([]);
 
   useEffect(() => {
-    PaymentRecurringApi.list_all.execute().then((payments_recurring) => {
-      if(payments_recurring.success){
-        setPayments(payments_recurring.data);
+    RecurringPaymentApi.list_all().then((payments_recurring) => {
+      if(!payments_recurring){
+        Alert.alert("Erro", "Não foi possível carregar os recebimentos.");
+        return;
       }
-    }).catch((error) => {
-      console.error("Erro ao buscar recebimentos:", error);
-      Alert.alert("Erro", "Não foi possível carregar os recebimentos.");
-    });
+      setPayments(payments_recurring);
+    })
   }, []);
 
   return (

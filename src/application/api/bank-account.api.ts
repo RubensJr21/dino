@@ -1,4 +1,4 @@
-import BankAccountDrizzleApi from "./drizzle/bank-account.api";
+import BankAccountDrizzleApi from "./drizzle.end-point/bank-account.api";
 
 const BankAccountApi = BankAccountDrizzleApi
 

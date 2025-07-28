@@ -55,7 +55,7 @@ export default abstract class MarkStandardAsProcessed implements UseCaseInterfac
     const result_search_after_update = this.repo_s.findById(input.id);
 
     if(!result_search_after_update.success){
-      const scope = `MarkStandardAsProcessed(${this.repo_iv.findById.name}) > ${result_search_after_update.error.scope}`
+      const scope = `MarkStandardAsProcessed(${this.repo_s.findById.name}) > ${result_search_after_update.error.scope}`
       return {
         success: false,
         error: {

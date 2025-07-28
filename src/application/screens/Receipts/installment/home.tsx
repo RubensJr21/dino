@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
-import { Alert } from "react-native";
-
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import ReceiptInstallmentApi from "@src/application/api/receipt/installment.api";
+import InstallmentReceiptApi from "@src/application/api/drizzle.end-point/receipt.api/installment";
 import InstallmentHomeScreenTemplate from "@src/application/templates/screens/Installment/Home";
 import { Installment } from "@src/core/entities/installment.entity";
+import { useEffect, useState } from "react";
+import { Alert } from "react-native";
 import { ReceiptsInstallmentStackParamList } from "./routes";
 
 type Props = BottomTabScreenProps<ReceiptsInstallmentStackParamList, 'Home'>;
@@ -13,14 +12,13 @@ export default function Home({ navigation }: Props) {
   const [receipts, setReceipts] = useState<Installment[]>([]);
 
   useEffect(() => {
-    ReceiptInstallmentApi.list_all.execute().then((receiptsInstallment) => {
-      if(receiptsInstallment.success){
-        setReceipts(receiptsInstallment.data);
+    InstallmentReceiptApi.list_all().then((receiptsInstallment) => {
+      if(!receiptsInstallment){
+        Alert.alert("Erro", "Não foi possível carregar os recebimentos.");
+        return;
       }
-    }).catch((error) => {
-      console.error("Erro ao buscar recebimentos:", error);
-      Alert.alert("Erro", "Não foi possível carregar os recebimentos.");
-    });
+      setReceipts(receiptsInstallment);
+    })
   }, []);
 
   return (

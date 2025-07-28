@@ -1,31 +1,136 @@
 import IUseCase from "@core/shared/IUseCase";
-import { IInstallment, Installment } from "@src/core/entities/installment.entity";
+import { Installment } from "@src/core/entities/installment.entity";
+import { MInstallment } from "@src/core/models/installment.model";
 import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
-import { Result } from "../../types/Result";
+import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
 import { TypeOfVariants } from "../../types/variants_items";
 
-type RegisterInstallmentInput = StrictOmit<IInstallment, "id"|"created_at"|"updated_at">
+type Input = StrictOmit<MInstallment, "id" | "created_at" | "updated_at">
 
-type Return = Result<Installment>
+type UseCaseInterface = IUseCase<Input, Installment>
 
-export default abstract class UseCase_Installment_Register implements IUseCase<RegisterInstallmentInput, Return> {
+export default abstract class RegisterInstallment implements UseCaseInterface {
   protected abstract variant: TypeOfVariants
-  
+
   constructor(
     private repo_i: IRepoInstallment,
-  ){}
-  
-  async execute(input: RegisterInstallmentInput): Promise<Return> {
+    private repo_iv: IRepoItemValue
+  ) { }
+
+  protected calculate_installment_dates(start_date: Input["start_date"], installments_number: Input["installments_number"]): Array<Date> {
+    // Garante que o número de datas será igual ao número de parcelas
+    const array = Array.from<Date>({ length: installments_number })
+
+    array[0] = start_date;
+
+    const startDay = start_date.getDate();
+    const startMonth = start_date.getMonth();
+    const startYear = start_date.getFullYear();
+
+    for (let i = 1; i < installments_number; i++) {
+      // calcula ano e mês “absolutos” do parcelamento
+      const year = startYear + Math.floor((startMonth + i) / 12);
+      const month = (startMonth + i) % 12;
+      
+      // último dia do mês alvo: new Date(ano, mês+1, 0)
+      // Em JS, usar dia 0 do mês M+1 retorna o último dia do mês M.
+      const lastDayOfTargetMonth = new Date(year, month + 1, 0).getDate();
+
+      // escolhe o dia: ou o mesmo dia do startDate, ou o último dia do mês
+      const day = Math.min(startDay, lastDayOfTargetMonth);
+
+      array[i] = new Date(year, month, day)
+    }
+    return array
+  }
+
+  protected calculate_installments(total_amount: Input["total_amount"], installments_number: Input["installments_number"]): Array<number> {
+    // Garante que o número de valores será igual ao número de parcelas
+    const array = Array.from<number>({ length: installments_number })
+
+    const installment_value = Math.trunc(total_amount / installments_number);
+    const residual_installment_value = total_amount % installments_number;
+
+    array[0] = installment_value + residual_installment_value
+
+    for (let i = 1; i < installments_number; i++) {
+      array[i] = installment_value
+    }
+    return array
+  }
+
+  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const {
+      description,
+      fk_id_tag,
+      fk_id_transfer_method,
       start_date,
       installments_number,
       total_amount,
     } = input
-    
-    return this.repo_i.create({
+
+    if (installments_number <= 2) {
+      return {
+        success: false,
+        error: {
+          code: "installment_number_less_than_2",
+          scope: "RegisterInstallment",
+          message: "O valor da quantidade das parcelas precisa ser de no mínimo 2."
+        }
+      }
+    }
+
+    const list_dates = this.calculate_installment_dates(start_date, installments_number);
+    const list_installments = this.calculate_installments(total_amount, installments_number);
+
+    for (let i = 0; i < installments_number; i++) {
+      const result_item_value_create = this.repo_iv.create({
+        description: `${description} - installment ${i + 1}`,
+        cashflow_type: this.variant,
+        amount: list_installments[i],
+        scheduled_at: list_dates[i],
+        was_processed: false,
+        fk_id_tag,
+        fk_id_transfer_method
+      })
+
+      if (!result_item_value_create.success) {
+        const scope = `RegisterInstallment(${this.repo_iv.create.name}) > ${result_item_value_create.error.scope}`
+        return {
+          success: false,
+          error: {
+            ...result_item_value_create.error,
+            scope
+          }
+        }
+      }
+
+      // ALERT: Fazer o Link do installment com item_value
+    }
+
+    const result_create = this.repo_i.create({
+      description,
+      fk_id_tag,
+      fk_id_transfer_method,
       start_date,
       installments_number,
       total_amount,
     })
+
+    if (!result_create.success) {
+      const scope = `RegisterInstallment(${this.repo_iv.create.name}) > ${result_create.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_create.error,
+          scope
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: result_create.data
+    }
   }
 }
