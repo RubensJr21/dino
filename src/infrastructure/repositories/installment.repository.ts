@@ -3,10 +3,11 @@ import { MInstallment } from '@src/core/models/installment.model'
 import { MItemValue } from '@src/core/models/item_value.model'
 import { CreateInstallmentParams, IRepoInstallment, UpdateInstallmentParams } from '@src/core/shared/interfaces/IRepoInstallment'
 import { installment_mapper } from '@src/core/shared/mappers/installment'
+import { item_value_mapper } from '@src/core/shared/mappers/item_value'
 import { installment } from '@src/infrastructure/database/schemas/installment.schema'
 import { installment_item_value } from '@src/infrastructure/database/schemas/installment_item_value.schema'
 import { item_value } from '@src/infrastructure/database/schemas/item_value.schema'
-import { eq } from 'drizzle-orm/sql'
+import { and, eq } from 'drizzle-orm/sql'
 import { Transaction } from '../database/TransactionType'
 import { tag, transfer_method } from '../database/schemas'
 
@@ -56,6 +57,35 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
     }
   }
 
+  public registerInstallments(id: MInstallment["id"], item_value_id_list: Array<ItemValue["id"]>): ReturnType<IRepoInstallment["registerInstallments"]> {
+    for (const item_value_id of item_value_id_list) {
+      const result = this.tx.insert(installment_item_value).values({
+        fk_id_installment: id,
+        fk_id_item_value: item_value_id,
+      }).returning({ id: installment_item_value.id }).get()
+
+      const installment_item_value_created = this.tx.query.installment_item_value.findFirst({
+        where: eq(installment.id, result.id)
+      }).sync()
+
+      if (!installment_item_value_created) {
+        return {
+          success: false,
+          error: {
+            code: "id_not_found",
+            scope: "installment > installment_item_value",
+            message: "O item pode não ter sido cadastrado ainda."
+          }
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: true
+    }
+  }
+
   public findById(id: MInstallment["id"]): ReturnType<IRepoInstallment["findById"]> {
     const installment_result = this.tx.query.installment.findFirst({
       where: eq(installment.id, id),
@@ -85,10 +115,35 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
   }
 
   public findItemValue(installment_id: MInstallment["id"], item_value_id: MItemValue["id"]): ReturnType<IRepoInstallment["findItemValue"]> {
-    // ALERT: Implementar busca
+    const result = this.tx.query.installment_item_value.findFirst({
+      with: {
+        item_value: {
+          with: {
+            tag: true,
+            transfer_method: true
+          }
+        }
+      },
+      where: and(
+        eq(installment_item_value.fk_id_installment, installment_id),
+        eq(installment_item_value.fk_id_item_value, item_value_id),
+      )
+    }).sync()
+
+    if (!result) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "installment > installment_item_value",
+          message: `Foi retornado o valor ${result} na busca.`
+        }
+      }
+    }
+
     return {
       success: true,
-      data: {} as ItemValue
+      data: item_value_mapper(result.item_value)
     }
   }
 

@@ -36,13 +36,17 @@ export default abstract class EnableRecurring implements UseCaseInterface {
     
     const {
       id,
+      tag,
+      transfer_method,
       recurrence_type,
       created_at,
       updated_at,
       ...data
     } = {
       ...recurring.properties,
-      fk_id_recurrence_type: recurring.recurrence_type.id
+      fk_id_tag: recurring.tag.id,
+      fk_id_transfer_method: recurring.transfer_method.id,
+      fk_id_recurrence_type: recurring.recurrence_type.id,
     }
 
     const result_updated = this.repo_r.update(input.id, data)

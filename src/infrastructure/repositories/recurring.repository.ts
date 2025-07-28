@@ -2,19 +2,22 @@ import { ItemValue } from '@src/core/entities/item_value.entity'
 import { MItemValue } from '@src/core/models/item_value.model'
 import { MRecurring } from '@src/core/models/recurring.model'
 import { CreateRecurringParams, IRepoRecurring, UpdateRecurringParams } from '@src/core/shared/interfaces/IRepoRecurring'
+import { item_value_mapper } from '@src/core/shared/mappers/item_value'
 import { recurring_mapper } from '@src/core/shared/mappers/recurring'
-import { item_value, recurrence_type, recurring, recurring_item_value } from '@src/infrastructure/database/schemas'
-import { eq } from 'drizzle-orm/sql'
+import { item_value, recurrence_type, recurring, recurring_item_value, tag, transfer_method } from '@src/infrastructure/database/schemas'
+import { and, eq } from 'drizzle-orm/sql'
 import { Transaction } from '../database/TransactionType'
 
 export default class RecurringDrizzleRepository implements IRepoRecurring {
   constructor(private tx: Transaction) { }
-  
+
   public create({
     is_disabled,
     start_date,
     end_date,
     current_amount,
+    fk_id_tag,
+    fk_id_transfer_method,
     fk_id_recurrence_type,
   }: CreateRecurringParams): ReturnType<IRepoRecurring["create"]> {
     // Registra Recurring
@@ -23,10 +26,19 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
       start_date,
       end_date,
       current_amount,
+      fk_id_tag,
+      fk_id_transfer_method,
       fk_id_recurrence_type,
     }).returning({ id: recurring.id }).get()
 
-    const recurring_created = this.tx.query.recurring.findFirst({ with: { recurrence_type: true }, where: eq(recurring.id, id) }).sync()
+    const recurring_created = this.tx.query.recurring.findFirst({
+      with: {
+        tag: true,
+        transfer_method: true,
+        recurrence_type: true
+      },
+      where: eq(recurring.id, id)
+    }).sync()
 
     if (!recurring_created) {
       return {
@@ -45,10 +57,38 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
     }
   }
 
+  public registerNextRecurring(id: MRecurring["id"], item_value_id: ItemValue["id"]): ReturnType<IRepoRecurring["registerNextRecurring"]> {
+    const result = this.tx.insert(recurring_item_value).values({
+      fk_id_recurring: id,
+      fk_id_item_value: item_value_id,
+    }).returning({ id: recurring_item_value.id }).get()
+
+    const recurring_item_value_created = this.tx.query.recurring_item_value.findFirst({
+      where: eq(recurring.id, result.id)
+    }).sync()
+
+    if (!recurring_item_value_created) {
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "recurring > recurring_item_value",
+          message: "O item pode não ter sido cadastrado ainda."
+        }
+      }
+    }
+    return {
+      success: true,
+      data: true
+    }
+  }
+
   public findById(id: MRecurring["id"]): ReturnType<IRepoRecurring["findById"]> {
     const result = this.tx.query.recurring.findFirst({
       where: eq(recurring.id, id),
       with: {
+        tag: true,
+        transfer_method: true,
         recurrence_type: true
       }
     }).sync()
@@ -73,18 +113,45 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
   }
 
   public findItemValue(recurring_id: MRecurring["id"], item_value_id: MItemValue["id"]): ReturnType<IRepoRecurring["findItemValue"]> {
-    // ALERT: Implementar busca
+    const result = this.tx.query.recurring_item_value.findFirst({
+      with: {
+        item_value: {
+          with: {
+            tag: true,
+            transfer_method: true
+          }
+        }
+      },
+      where: and(
+        eq(recurring_item_value.fk_id_recurring, recurring_id),
+        eq(recurring_item_value.fk_id_item_value, item_value_id),
+      )
+    }).sync()
+
+    if(!result){
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "recurring > recurring_item_value",
+          message: `Foi retornado o valor ${result} na busca.`
+        }
+      }
+    }
+
     return {
       success: true,
-      data: {} as ItemValue
+      data: item_value_mapper(result.item_value)
     }
   }
 
   public findAll(): ReturnType<IRepoRecurring["findAll"]> {
     const result = this.tx.query.recurring.findMany({
       with: {
+        tag: true,
+        transfer_method: true,
         recurrence_type: true
-      }
+      },
     }).sync()
 
     const recurrings = result.map(recurring_mapper)
@@ -95,13 +162,21 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
     }
   }
 
-  public findAllByCashflowType(cashflow_type: ItemValue["cashflow_type"]): ReturnType<IRepoRecurring["findAllByCashflowType"]> {    
+  public findAllByCashflowType(cashflow_type: ItemValue["cashflow_type"]): ReturnType<IRepoRecurring["findAllByCashflowType"]> {
     const result = this.tx.select({
       id: recurring.id,
       is_disabled: recurring.is_disabled,
       start_date: recurring.start_date,
       end_date: recurring.end_date,
       current_amount: recurring.current_amount,
+      tag: {
+        id: tag.id,
+        description: tag.description
+      },
+      transfer_method: {
+        id: transfer_method.id,
+        method: transfer_method.method
+      },
       recurrence_type: {
         id: recurrence_type.id,
         type: recurrence_type.type
@@ -129,7 +204,14 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
       .returning({ id: recurring_item_value.id })
       .get()
 
-    const recurring_updated = this.tx.query.recurring.findFirst({ with: { recurrence_type: true }, where: eq(recurring.id, result.id) }).sync()
+    const recurring_updated = this.tx.query.recurring.findFirst({
+      with: {
+        tag: true,
+        transfer_method: true,
+        recurrence_type: true
+      },
+      where: eq(recurring.id, result.id)
+    }).sync()
 
     if (!recurring_updated) {
       return {

@@ -1,23 +1,31 @@
 import { IEntityWithDates } from "../shared/interfaces/bases/IEntityWithDates";
 import { RecurrenceType } from "./recurrence_type.entity";
+import { Tag } from "./tag.entity";
+import { TransferMethod } from "./transfer_method.entity";
 
 export interface IRecurring extends IEntityWithDates {
   is_disabled: boolean;
   start_date: Date;
   end_date?: Date;
   current_amount: number;
+  tag: Tag;
+  transfer_method: TransferMethod;
   recurrence_type: RecurrenceType;
 }
 
-interface ReturnProperties extends StrictOmit<IRecurring, "recurrence_type"> {
-  recurrence_type: RecurrenceType["properties"]
+interface ReturnProperties extends StrictOmit<IRecurring, "tag"| "transfer_method" | "recurrence_type"> {
+  tag: Tag["properties"];
+  transfer_method: TransferMethod["properties"];
+  recurrence_type: RecurrenceType["properties"];
 }
 
 export class Recurring implements IRecurring {
   private _id: IRecurring["id"];
   private _start_date: IRecurring["start_date"];
   private _end_date: IRecurring["end_date"];
-  private _current_amount: IRecurring["current_amount"]
+  private _current_amount: IRecurring["current_amount"];
+  private _tag: IRecurring["tag"];
+  private _transfer_method: IRecurring["transfer_method"];
   private _recurrence_type: IRecurring["recurrence_type"];
   private readonly _created_at: IRecurring["created_at"]
   private readonly _updated_at: IRecurring["updated_at"]
@@ -27,6 +35,8 @@ export class Recurring implements IRecurring {
     start_date,
     end_date,
     current_amount,
+    tag,
+    transfer_method,
     recurrence_type,
 		created_at,
     updated_at
@@ -35,6 +45,8 @@ export class Recurring implements IRecurring {
     this._start_date = start_date;
     this._end_date = end_date;
     this._current_amount = current_amount;
+    this._tag = tag;
+    this._transfer_method = transfer_method;
     this._recurrence_type = recurrence_type;
     this._created_at = created_at;
     this._updated_at = updated_at;
@@ -77,6 +89,14 @@ export class Recurring implements IRecurring {
     return this._current_amount;
   }
 
+  public get tag(): Recurring["_tag"] {
+    return this._tag;
+  }
+
+  public get transfer_method(): Recurring["_transfer_method"] {
+    return this._transfer_method;
+  }
+
   public get recurrence_type(): Recurring["_recurrence_type"] {
     return this._recurrence_type
   }
@@ -100,6 +120,8 @@ export class Recurring implements IRecurring {
       end_date: this._end_date,
       current_amount: this.current_amount,
       is_disabled: this.is_disabled,
+      tag: this._tag,
+      transfer_method: this._transfer_method,
       recurrence_type: this.recurrence_type.properties,
       created_at: this.created_at,
       updated_at: this.updated_at

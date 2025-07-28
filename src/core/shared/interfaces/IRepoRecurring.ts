@@ -9,6 +9,7 @@ export type UpdateRecurringParams = StrictOmit<MRecurring, "id" | "fk_id_recurre
 
 export interface IRepoRecurring {
   create(data: CreateRecurringParams): Result<Recurring>;
+  registerNextRecurring(id: MRecurring["id"], item_value_id: MItemValue["id"]): Result<boolean>;
   findById(id: MRecurring["id"]): Result<Recurring>;
   findItemValue(recurring_id: MRecurring["id"], item_value_id: MItemValue["id"]): Result<ItemValue>;
   findAll(): Result<Recurring[]>;

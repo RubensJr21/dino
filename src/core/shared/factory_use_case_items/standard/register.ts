@@ -45,8 +45,6 @@ export default abstract class RegisterStandard implements UseCaseInterface {
       }
     }
 
-    // ALERT: Fazer o Link do standard com item_value
-
     return {
       success: true,
       data: result_create.data

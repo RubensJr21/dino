@@ -1,5 +1,6 @@
 import IUseCase from "@core/shared/IUseCase";
 import { Installment } from "@src/core/entities/installment.entity";
+import { ItemValue } from "@src/core/entities/item_value.entity";
 import { MInstallment } from "@src/core/models/installment.model";
 import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
 import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
@@ -31,7 +32,7 @@ export default abstract class RegisterInstallment implements UseCaseInterface {
       // calcula ano e mês “absolutos” do parcelamento
       const year = startYear + Math.floor((startMonth + i) / 12);
       const month = (startMonth + i) % 12;
-      
+
       // último dia do mês alvo: new Date(ano, mês+1, 0)
       // Em JS, usar dia 0 do mês M+1 retorna o último dia do mês M.
       const lastDayOfTargetMonth = new Date(year, month + 1, 0).getDate();
@@ -80,8 +81,30 @@ export default abstract class RegisterInstallment implements UseCaseInterface {
       }
     }
 
+    const result_create = this.repo_i.create({
+      description,
+      fk_id_tag,
+      fk_id_transfer_method,
+      start_date,
+      installments_number,
+      total_amount,
+    })
+
+    if (!result_create.success) {
+      const scope = `RegisterInstallment(${this.repo_iv.create.name}) > ${result_create.error.scope}`
+      return {
+        success: false,
+        error: {
+          ...result_create.error,
+          scope
+        }
+      }
+    }
+
     const list_dates = this.calculate_installment_dates(start_date, installments_number);
     const list_installments = this.calculate_installments(total_amount, installments_number);
+
+    const item_value_id_list = Array.from({length: installments_number}) satisfies Array<ItemValue["id"]>
 
     for (let i = 0; i < installments_number; i++) {
       const result_item_value_create = this.repo_iv.create({
@@ -105,24 +128,21 @@ export default abstract class RegisterInstallment implements UseCaseInterface {
         }
       }
 
-      // ALERT: Fazer o Link do installment com item_value
+      const item_value = result_item_value_create.data
+
+      item_value_id_list.push(item_value.id)
     }
 
-    const result_create = this.repo_i.create({
-      description,
-      fk_id_tag,
-      fk_id_transfer_method,
-      start_date,
-      installments_number,
-      total_amount,
-    })
+    const installment = result_create.data
 
-    if (!result_create.success) {
-      const scope = `RegisterInstallment(${this.repo_iv.create.name}) > ${result_create.error.scope}`
+    const installment_item_value_linked = this.repo_i.registerInstallments(installment.id, item_value_id_list);
+
+    if(!installment_item_value_linked.success){
+      const scope = `RegisterInstallment(${this.repo_i.registerInstallments.name}) > ${installment_item_value_linked.error.scope}`
       return {
         success: false,
         error: {
-          ...result_create.error,
+          ...installment_item_value_linked.error,
           scope
         }
       }
@@ -130,7 +150,7 @@ export default abstract class RegisterInstallment implements UseCaseInterface {
 
     return {
       success: true,
-      data: result_create.data
+      data: installment
     }
   }
 }

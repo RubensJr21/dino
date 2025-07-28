@@ -35,7 +35,9 @@ export default abstract class UpdateCurrentRecurringAmount implements UseCaseInt
       is_disabled: data.is_disabled,
       current_amount: input.current_amount,
       start_date: data.start_date,
-      end_date: data.end_date
+      end_date: data.end_date,
+      fk_id_tag: data.tag.id,
+      fk_id_transfer_method: data.transfer_method.id
     })
 
     if(!result_update.success){
