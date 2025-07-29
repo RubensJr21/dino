@@ -1,4 +1,3 @@
-import { Installment } from "@src/core/entities/installment.entity"
 import { useEffect, useState } from "react"
 import { Alert } from "react-native"
 import Fab from "../../../components/ActionsFab/Fab"
@@ -6,8 +5,9 @@ import BasePageView from "../../../components/BasePage/BasePageView"
 import DefaultFlatListInstallment, { DefaultFlatListInstallmentProps } from "../../../components/DefaultFlatList/DefaultFlatListInstallment"
 import SearchBarDate from "../../../components/SearchBar"
 
-interface InstallmentHomeScreenTemplateProps {
-  data: Installment[]
+
+export interface InstallmentHomeScreenTemplateProps {
+  data: DefaultFlatListInstallmentProps["data"];
   navigateToEditPage: DefaultFlatListInstallmentProps["navigateToEditPage"]
   fabAction: () => void
 }

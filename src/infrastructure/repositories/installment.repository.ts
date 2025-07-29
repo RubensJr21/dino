@@ -196,9 +196,23 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
   }
 
   public findAllItemValue(id: MInstallment["id"]): ReturnType<IRepoInstallment["findAllItemValue"]> {
+    const result = this.tx.query.installment_item_value.findMany({
+      with: {
+        item_value: {
+          with: {
+            tag: true,
+            transfer_method: true
+          }
+        }
+      },
+      where: and(
+        eq(installment_item_value.fk_id_installment, id),
+      )
+    }).sync()
+
     return {
       success: true,
-      data: []
+      data: result.map(installment => item_value_mapper(installment.item_value))
     }
   }
 
