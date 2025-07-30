@@ -1,0 +1,1 @@
+// ALERT: Implementar tela de detalhamento dos itens recorrentes
