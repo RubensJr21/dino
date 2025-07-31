@@ -128,7 +128,7 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
       )
     }).sync()
 
-    if(!result){
+    if (!result) {
       return {
         success: false,
         error: {
@@ -159,6 +159,27 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
     return {
       success: true,
       data: recurrings
+    }
+  }
+
+  findAllItemValue(recurring_id: MRecurring['id']): ReturnType<IRepoRecurring["findAllItemValue"]> {
+    const result = this.tx.query.recurring_item_value.findMany({
+      with: {
+        item_value: {
+          with: {
+            tag: true,
+            transfer_method: true
+          }
+        }
+      },
+      where: and(
+        eq(recurring_item_value.fk_id_recurring, recurring_id),
+      )
+    }).sync()
+
+    return {
+      success: true,
+      data: result.map(recurring => item_value_mapper(recurring.item_value))
     }
   }
 

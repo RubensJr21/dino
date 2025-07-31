@@ -13,6 +13,7 @@ export interface IRepoRecurring {
   findById(id: MRecurring["id"]): Result<Recurring>;
   findItemValue(recurring_id: MRecurring["id"], item_value_id: MItemValue["id"]): Result<ItemValue>;
   findAll(): Result<Recurring[]>;
+  findAllItemValue(recurring_id: MRecurring["id"]): Result<ItemValue[]>;
   findAllByCashflowType(cashflow_type: ItemValue["cashflow_type"]): Result<Recurring[]>;
   update(id: MRecurring["id"], data: UpdateRecurringParams): Result<Recurring>;
   delete(id: MRecurring["id"]): Result<boolean>
