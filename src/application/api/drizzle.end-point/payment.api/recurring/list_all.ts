@@ -3,7 +3,7 @@ import ListAllRecurringsPayment from "@src/core/use_cases/payment/recurring/list
 import { db } from "@src/infrastructure/database/client";
 import RecurringDrizzleRepository from "@src/infrastructure/repositories/recurring.repository";
 
-async function delete_recurring(): Promise<Recurring[] | undefined>{
+async function list_all(): Promise<Recurring[] | undefined>{
   let list_payments_recurring: Recurring[] | undefined = undefined
 
   await db.transaction(async tx => {
@@ -23,4 +23,4 @@ async function delete_recurring(): Promise<Recurring[] | undefined>{
   return list_payments_recurring
 }
 
-export default delete_recurring;
+export default list_all;
