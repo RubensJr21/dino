@@ -16,10 +16,10 @@ export default abstract class ListAllItemValueInstallments implements UseCaseInt
   constructor(private repo_i: IRepoInstallment) { }
 
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result_search = this.repo_i.findAllItemValue(input.installment_id);
+    const result_search = this.repo_i.find_all_item_value(input.installment_id);
     
     if(!result_search.success){
-      const scope = `ListAllItemValueInstallments(${this.repo_i.findAllItemValue.name}) > ${result_search.error.scope}`
+      const scope = `ListAllItemValueInstallments(${this.repo_i.find_all_item_value.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {

@@ -14,7 +14,7 @@ export default class ListAllTransfersMethodTypeBankAccount implements UseCaseInt
     private repo_ba_tm: IRepoBankAccountTransferMethod
   ) { }
   async execute({ id }: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result = this.repo_ba_tm.findAllOfBankAccount(id)
+    const result = this.repo_ba_tm.find_all_of_bank_account(id)
 
     if(!result.success){
       return {

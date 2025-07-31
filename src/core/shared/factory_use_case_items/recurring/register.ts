@@ -14,7 +14,9 @@ export default abstract class RegisterRecurring implements UseCaseInterface {
   constructor(private repo_r: IRepoRecurring, private repo_iv: IRepoItemValue) { }
 
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+    console.log("Vou tentar criar")
     const result_created = this.repo_r.create(input)
+    console.log("criado...")
 
     if(!result_created.success) {
       const scope = `RegisterRecurring(${this.repo_r.create.name}) > ${result_created.error.scope}`

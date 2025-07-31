@@ -27,6 +27,9 @@ export default function HomeRecurring({ navigation }: PaymentsProps) {
       navigateToEditPage={(payment) => {
         navigation.navigate("Edit", payment);
       }}
+      navigateToDetailsPage={(payment) => {
+        navigation.navigate("Details", payment);
+      }}
       fabAction={() => {
         navigation.navigate("Register");
       }}

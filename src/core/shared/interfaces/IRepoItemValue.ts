@@ -7,8 +7,8 @@ export type UpdateItemValueParams = StrictOmit<MItemValue, "id"|"created_at"|"up
 
 export interface IRepoItemValue {
   create(data: CreateItemValueParams): Result<ItemValue>;
-  findById(id: MItemValue["id"]): Result<ItemValue>;
-  findAll(): Result<ItemValue[]>;
+  find_by_id(id: MItemValue["id"]): Result<ItemValue>;
+  find_all(): Result<ItemValue[]>;
   update(id: MItemValue["id"], data: UpdateItemValueParams): Result<ItemValue>;
   delete(id: MItemValue["id"]): Result<boolean>;
 }

@@ -8,9 +8,9 @@ export type UpdateRecurrenceTypeParams = UpdateRepositoryParams<MRecurrenceType>
 
 export interface IRepoRecurrenceType extends IRepository<MRecurrenceType, RecurrenceType> {
   create(data: CreateRecurrenceTypeParams): Result<RecurrenceType>;
-  findById(id: MRecurrenceType["id"]): Result<RecurrenceType>;
-  findByType(type: string): Result<RecurrenceType>;
-  findAll(): Result<RecurrenceType[]>;
+  find_by_id(id: MRecurrenceType["id"]): Result<RecurrenceType>;
+  find_by_type(type: string): Result<RecurrenceType>;
+  find_all(): Result<RecurrenceType[]>;
   update(id: MRecurrenceType["id"], data: UpdateRecurrenceTypeParams): Result<RecurrenceType>;
   delete(id: MRecurrenceType["id"]): Result<boolean>;
 }

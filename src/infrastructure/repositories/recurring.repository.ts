@@ -20,41 +20,59 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
     fk_id_transfer_method,
     fk_id_recurrence_type,
   }: CreateRecurringParams): ReturnType<IRepoRecurring["create"]> {
-    // Registra Recurring
-    const { id } = this.tx.insert(recurring).values({
-      is_disabled,
-      start_date,
-      end_date,
-      current_amount,
-      fk_id_tag,
-      fk_id_transfer_method,
-      fk_id_recurrence_type,
-    }).returning({ id: recurring.id }).get()
-
-    const recurring_created = this.tx.query.recurring.findFirst({
-      with: {
-        tag: true,
-        transfer_method: true,
-        recurrence_type: true
-      },
-      where: eq(recurring.id, id)
-    }).sync()
-
-    if (!recurring_created) {
+    console.log("Dentro do Repositório do Drizzle")
+    
+    try {
+      // Registra Recurring
+      const { id } = this.tx.insert(recurring).values({
+        is_disabled,
+        start_date,
+        end_date,
+        current_amount,
+        fk_id_tag,
+        fk_id_transfer_method,
+        fk_id_recurrence_type,
+      }).returning({ id: recurring.id }).get()
+      console.log("Depois do insert")
+      console.log(id)
+  
+      const recurring_created = this.tx.query.recurring.findFirst({
+        with: {
+          tag: true,
+          transfer_method: true,
+          recurrence_type: true
+        },
+        where: eq(recurring.id, id)
+      }).sync()
+  
+      if (!recurring_created) {
+        return {
+          success: false,
+          error: {
+            code: 'id_not_found',
+            scope: "recurring",
+            message: "Um erro ocorreu durante a criação"
+          }
+        }
+      }
+  
+      return {
+        success: true,
+        data: recurring_mapper(recurring_created)
+      }
+    } catch (e) {
+      const error = e as Error
+      console.error(error)
       return {
         success: false,
         error: {
-          code: 'id_not_found',
-          scope: "recurring",
-          message: "Um erro ocorreu durante a criação"
+          code: "id_not_found",
+          scope: "RecurringDrizzleRepository(#create)",
+          message: `O Erro Crítico ${error.message}`
         }
       }
     }
-
-    return {
-      success: true,
-      data: recurring_mapper(recurring_created)
-    }
+    
   }
 
   public registerNextRecurring(id: MRecurring["id"], item_value_id: ItemValue["id"]): ReturnType<IRepoRecurring["registerNextRecurring"]> {
@@ -83,7 +101,7 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
     }
   }
 
-  public findById(id: MRecurring["id"]): ReturnType<IRepoRecurring["findById"]> {
+  public find_by_id(id: MRecurring["id"]): ReturnType<IRepoRecurring["find_by_id"]> {
     const result = this.tx.query.recurring.findFirst({
       where: eq(recurring.id, id),
       with: {
@@ -145,7 +163,7 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
     }
   }
 
-  public findAll(): ReturnType<IRepoRecurring["findAll"]> {
+  public find_all(): ReturnType<IRepoRecurring["find_all"]> {
     const result = this.tx.query.recurring.findMany({
       with: {
         tag: true,
@@ -162,60 +180,89 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
     }
   }
 
-  findAllItemValue(recurring_id: MRecurring['id']): ReturnType<IRepoRecurring["findAllItemValue"]> {
-    const result = this.tx.query.recurring_item_value.findMany({
-      with: {
-        item_value: {
-          with: {
-            tag: true,
-            transfer_method: true
+  find_all_item_value(recurring_id: MRecurring['id']): ReturnType<IRepoRecurring["find_all_item_value"]> {
+    try {
+      const result = this.tx.query.recurring_item_value.findMany({
+        with: {
+          item_value: {
+            with: {
+              tag: true,
+              transfer_method: true
+            }
           }
+        },
+        where: and(
+          eq(recurring_item_value.fk_id_recurring, recurring_id),
+        )
+      }).sync()
+  
+      return {
+        success: true,
+        data: result.map(recurring => item_value_mapper(recurring.item_value))
+      }
+    } catch (e) {
+      const error = e as Error
+      console.error(error)
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "RecurringDrizzleRepository(#create)",
+          message: `O Erro Crítico ${error.message}`
         }
-      },
-      where: and(
-        eq(recurring_item_value.fk_id_recurring, recurring_id),
-      )
-    }).sync()
-
-    return {
-      success: true,
-      data: result.map(recurring => item_value_mapper(recurring.item_value))
+      }
     }
   }
 
-  public findAllByCashflowType(cashflow_type: ItemValue["cashflow_type"]): ReturnType<IRepoRecurring["findAllByCashflowType"]> {
-    const result = this.tx.select({
-      id: recurring.id,
-      is_disabled: recurring.is_disabled,
-      start_date: recurring.start_date,
-      end_date: recurring.end_date,
-      current_amount: recurring.current_amount,
-      tag: {
-        id: tag.id,
-        description: tag.description
-      },
-      transfer_method: {
-        id: transfer_method.id,
-        method: transfer_method.method
-      },
-      recurrence_type: {
-        id: recurrence_type.id,
-        type: recurrence_type.type
-      },
-      created_at: recurring.created_at,
-      updated_at: recurring.updated_at,
-    })
-      .from(recurring_item_value)
-      .innerJoin(recurring, eq(recurring.id, recurring_item_value.fk_id_recurring))
-      .innerJoin(item_value, eq(item_value.id, recurring_item_value.fk_id_item_value))
-      .where(eq(item_value.cashflow_type, cashflow_type))
-      .all()
-
-    const recurrings = result.map(recurring_mapper)
-
-    return {
-      success: true,
-      data: recurrings
+  public find_all_by_cashflow_type(cashflow_type: ItemValue["cashflow_type"]): ReturnType<IRepoRecurring["find_all_by_cashflow_type"]> {
+    try {
+      const result = this.tx.select({
+        id: recurring.id,
+        is_disabled: recurring.is_disabled,
+        start_date: recurring.start_date,
+        end_date: recurring.end_date,
+        current_amount: recurring.current_amount,
+        tag: {
+          id: tag.id,
+          description: tag.description
+        },
+        transfer_method: {
+          id: transfer_method.id,
+          method: transfer_method.method
+        },
+        recurrence_type: {
+          id: recurrence_type.id,
+          type: recurrence_type.type
+        },
+        created_at: recurring.created_at,
+        updated_at: recurring.updated_at,
+      })
+        .from(recurring_item_value)
+        .innerJoin(recurring, eq(recurring.id, recurring_item_value.fk_id_recurring))
+        .innerJoin(recurrence_type, eq(recurrence_type.id, recurring.fk_id_recurrence_type))
+        .innerJoin(item_value, eq(item_value.id, recurring_item_value.fk_id_item_value))
+        .innerJoin(tag, eq(tag.id, item_value.fk_id_tag))
+        .innerJoin(transfer_method, eq(transfer_method.id, item_value.fk_id_transfer_method))
+        .where(eq(item_value.cashflow_type, cashflow_type))
+        .all()
+  
+      const recurrings = result.map(recurring_mapper)
+  
+      return {
+        success: true,
+        data: recurrings
+      }
+    } catch (e) {
+      const error = e as Error
+      console.error(error)
+      return {
+        success: false,
+        error: {
+          code: "id_not_found",
+          scope: "RecurringDrizzleRepository(#create)",
+          message: `O Erro Crítico ${error.message}`
+        }
+      }
     }
   }
 

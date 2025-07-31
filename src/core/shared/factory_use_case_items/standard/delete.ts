@@ -17,9 +17,9 @@ export default abstract class DeleteStandard implements UseCaseInterface {
   ) { }
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     // Removendo o item_value a remoção é propagada
-    const result_search = this.repo_s.findById(input.id)
+    const result_search = this.repo_s.find_by_id(input.id)
     if(!result_search.success){
-      const scope = `DeleteStandard(${this.repo_s.findById.name}) > ${result_search.error.scope}`
+      const scope = `DeleteStandard(${this.repo_s.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {

@@ -17,10 +17,10 @@ export default abstract class MarkStandardAsProcessed implements UseCaseInterfac
     private repo_iv: IRepoItemValue
   ) { }
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result_search = this.repo_s.findById(input.id)
+    const result_search = this.repo_s.find_by_id(input.id)
 
     if(!result_search.success){
-      const scope = `MarkStandardAsProcessed(${this.repo_s.findById.name}) > ${result_search.error.scope}`
+      const scope = `MarkStandardAsProcessed(${this.repo_s.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
@@ -52,10 +52,10 @@ export default abstract class MarkStandardAsProcessed implements UseCaseInterfac
       }
     }
 
-    const result_search_after_update = this.repo_s.findById(input.id);
+    const result_search_after_update = this.repo_s.find_by_id(input.id);
 
     if(!result_search_after_update.success){
-      const scope = `MarkStandardAsProcessed(${this.repo_s.findById.name}) > ${result_search_after_update.error.scope}`
+      const scope = `MarkStandardAsProcessed(${this.repo_s.find_by_id.name}) > ${result_search_after_update.error.scope}`
       return {
         success: false,
         error: {

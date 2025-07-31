@@ -1,0 +1,1 @@
+export type ErrorFromMethodsOfInterface<T, InterfaceName extends string> = `error_on_${Extract<keyof T, string>}_in_${InterfaceName}`

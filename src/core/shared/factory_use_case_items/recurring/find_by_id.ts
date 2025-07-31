@@ -15,10 +15,10 @@ export default abstract class FindRecurringById implements UseCaseInterface {
   constructor( private repo_r: IRepoRecurring ){}
   
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result_search = this.repo_r.findById(input.id)
+    const result_search = this.repo_r.find_by_id(input.id)
 
     if(!result_search.success){
-      const scope = `FindRecurringById(${this.repo_r.findById.name}) > ${result_search.error.scope}`
+      const scope = `FindRecurringById(${this.repo_r.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {

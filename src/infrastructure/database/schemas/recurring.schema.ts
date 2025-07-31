@@ -42,13 +42,13 @@ export const recurring = sqliteTable("recurring", {
       .notNull(),
   created_at:
     t.integer("created_at", { mode: "timestamp" })
-      .default(sql`(date('now','localtime'))`)
+      .default(sql`(strftime('%s','now'))`)
       .$type<IRecurring["created_at"]>()
       .notNull(),
   updated_at:
     t.integer("updated_at", { mode: "timestamp" })
-      .default(sql`(date('now','localtime'))`)
-      .$onUpdate(() => sql`(date('now','localtime'))`)
+      .default(sql`(strftime('%s','now'))`)
+      .$onUpdate(() => sql`(strftime('%s','now'))`)
       .$type<IRecurring["updated_at"]>()
       .notNull()
 })

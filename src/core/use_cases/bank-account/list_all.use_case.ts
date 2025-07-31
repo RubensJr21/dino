@@ -7,7 +7,7 @@ type UseCaseInterface = IUseCase<void, BankAccount[]>
 export default class ListAllBankAccounts implements UseCaseInterface {
   constructor(private repo_ba: IRepoBankAccount) { }
   async execute(): ReturnType<UseCaseInterface["execute"]> {
-    const result = this.repo_ba.findAll();
+    const result = this.repo_ba.find_all();
     if (!result.success) {
       return {
         success: false,

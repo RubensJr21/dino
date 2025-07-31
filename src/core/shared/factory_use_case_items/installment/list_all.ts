@@ -11,10 +11,10 @@ export default abstract class ListAllInstallments implements UseCaseInterface {
   constructor(private repo_i: IRepoInstallment) { }
 
   async execute(): ReturnType<UseCaseInterface["execute"]> {
-    const result_search = this.repo_i.findAllByCashflowType(this.variant);
+    const result_search = this.repo_i.find_all_by_cashflow_type(this.variant);
     
     if(!result_search.success){
-      const scope = `ListAllInstallments(${this.repo_i.findAllByCashflowType.name}) > ${result_search.error.scope}`
+      const scope = `ListAllInstallments(${this.repo_i.find_all_by_cashflow_type.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {

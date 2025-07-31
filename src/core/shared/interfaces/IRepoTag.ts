@@ -8,9 +8,9 @@ export type UpdateTagParams = UpdateRepositoryParams<MTag>
 
 export interface IRepoTag extends IRepository<MTag, Tag> {
   create(data: CreateTagParams): Result<Tag>;
-  findById(id: Tag["id"]): Result<Tag>;
-  findByDescription(description: string): Result<Tag>;
-  findAll(): Result<Tag[]>;
+  find_by_id(id: Tag["id"]): Result<Tag>;
+  find_by_description(description: string): Result<Tag>;
+  find_all(): Result<Tag[]>;
   update(id: MTag["id"], data: UpdateTagParams): Result<Tag>;
   delete(id: number): Result<boolean>;
 }

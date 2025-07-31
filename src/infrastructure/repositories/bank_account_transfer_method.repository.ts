@@ -12,11 +12,13 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
   constructor(private tx: Transaction) { }
 
   public create(data: CreateBankAccountTransferMethodTypeParams): ReturnType<IRepoBankAccountTransferMethod["create"]> {
-    const result = this.tx.insert(bank_account_transfer_method).values(data).returning({ id: bank_account_transfer_method.id }).get()
-    return this.findById(result.id);
+    const result = this.tx.insert(bank_account_transfer_method).values(data).returning({
+      id: bank_account_transfer_method.id
+    }).get()
+    return this.find_by_id(result.id);
   }
 
-  public findById(id: MBankAccountTransferMethod["id"]): ReturnType<IRepoBankAccountTransferMethod["findById"]> {
+  public find_by_id(id: MBankAccountTransferMethod["id"]): ReturnType<IRepoBankAccountTransferMethod["find_by_id"]> {
     const result = this.tx.query.bank_account_transfer_method.findFirst({
       where: eq(bank_account_transfer_method.id, id),
       with: {
@@ -42,7 +44,7 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
     }
   }
 
-  public findByBankAccountId(bank_account_id: BankAccount["id"]): ReturnType<IRepoBankAccountTransferMethod["findByBankAccountId"]> {
+  public find_by_bank_account_id(bank_account_id: BankAccount["id"]): ReturnType<IRepoBankAccountTransferMethod["find_by_bank_account_id"]> {
     const bankId_transfers = this.tx.query.bank_account_transfer_method.findMany({
       where: eq(bank_account_transfer_method.fk_id_bank_account, bank_account_id),
       with: {
@@ -68,7 +70,7 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
     }
   }
 
-  public findAll(): ReturnType<IRepoBankAccountTransferMethod["findAll"]> {
+  public find_all(): ReturnType<IRepoBankAccountTransferMethod["find_all"]> {
     const results = this.tx.query.bank_account_transfer_method.findMany({ with: { bank_account: true, transfer_method: true } }).sync()
     return {
       success: true,
@@ -76,7 +78,7 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
     }
   }
 
-  public findAllOfBankAccount(bank_account_id: BankAccount["id"]): ReturnType<IRepoBankAccountTransferMethod["findAllOfBankAccount"]> {
+  public find_all_of_bank_account(bank_account_id: BankAccount["id"]): ReturnType<IRepoBankAccountTransferMethod["find_all_of_bank_account"]> {
     const results = this.tx.query.bank_account_transfer_method.findMany({
       with: {
         bank_account: true,

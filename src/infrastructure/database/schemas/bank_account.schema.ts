@@ -21,13 +21,13 @@ export const bank_account = sqliteTable("bank_account", {
      .notNull(),
   created_at: 
     t.integer("created_at", { mode: "timestamp" })
-     .default(sql`(date('now','localtime'))`)
+     .default(sql`(strftime('%s','now'))`)
      .$type<IBankAccount["created_at"]>()
      .notNull(),
   updated_at:
     t.integer("updated_at", { mode: "timestamp" })
-     .default(sql`(date('now','localtime'))`)
-     .$onUpdate(() => sql`(date('now','localtime'))`)
+     .default(sql`(strftime('%s','now'))`)
+     .$onUpdate(() => sql`(strftime('%s','now'))`)
      .$type<IBankAccount["updated_at"]>()
      .notNull()
 })

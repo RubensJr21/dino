@@ -6,8 +6,8 @@ export type UpdateRepositoryWithDatesParams<T extends IEntityWithDates> = Strict
 
 export interface IRepositoryWithDates<T extends IEntityWithDates, U extends IEntityWithDates> {
   create(data: CreateRepositoryWithDatesParams<T>): Result<U>;
-  findById(id: T["id"]): Result<U>;
-  findAll(): Result<U[]>;
+  find_by_id(id: T["id"]): Result<U>;
+  find_all(): Result<U[]>;
   update(id: T["id"], data: UpdateRepositoryWithDatesParams<T>): Result<U>;
   delete(id: T["id"]): Result<boolean>;
 }

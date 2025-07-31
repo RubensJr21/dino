@@ -16,10 +16,10 @@ export default abstract class ListAllRecurringItems implements UseCaseInterface 
   constructor( private repo_r: IRepoRecurring ){}
   
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result_search = this.repo_r.findAllItemValue(input.recurring_id);
+    const result_search = this.repo_r.find_all_item_value(input.recurring_id);
     
     if(!result_search.success){
-      const scope = `ListAllRecurringItems(${this.repo_r.findAllItemValue.name}) > ${result_search.error.scope}`
+      const scope = `ListAllRecurringItems(${this.repo_r.find_all_item_value.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {

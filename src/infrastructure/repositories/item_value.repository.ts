@@ -36,7 +36,7 @@ export default class ItemValueDrizzleRepository implements IRepoItemValue {
     }
   }
 
-  public findById(id: MItemValue["id"]): ReturnType<IRepoItemValue["findById"]> {
+  public find_by_id(id: MItemValue["id"]): ReturnType<IRepoItemValue["find_by_id"]> {
     const result = this.tx.query.item_value.findFirst({
       where: eq(item_value.id, id),
       with: {
@@ -62,7 +62,7 @@ export default class ItemValueDrizzleRepository implements IRepoItemValue {
     }
   }
 
-  public findAll(): ReturnType<IRepoItemValue["findAll"]> {
+  public find_all(): ReturnType<IRepoItemValue["find_all"]> {
     const results = this.tx.query.item_value.findMany({
       with: {
         tag: true,

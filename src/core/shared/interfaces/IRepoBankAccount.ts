@@ -8,9 +8,9 @@ export type UpdateBankAccountParams = UpdateRepositoryWithDatesParams<MBankAccou
 
 export interface IRepoBankAccount extends IRepositoryWithDates<MBankAccount, BankAccount> {
   create(data: CreateBankAccountParams): Result<BankAccount>
-  findById(id: MBankAccount["id"]): Result<BankAccount>
-  findByNickname(nickname: MBankAccount["nickname"]): Result<BankAccount>
-  findAll(): Result<BankAccount[]>
+  find_by_id(id: MBankAccount["id"]): Result<BankAccount>
+  find_by_nickname(nickname: MBankAccount["nickname"]): Result<BankAccount>
+  find_all(): Result<BankAccount[]>
   update(id: MBankAccount["id"], data: UpdateBankAccountParams): Result<BankAccount>
   delete(id: MBankAccount["id"]): Result<boolean>
 }

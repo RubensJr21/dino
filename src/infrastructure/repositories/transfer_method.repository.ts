@@ -17,7 +17,7 @@ export default class TransferMethodDrizzleRepository implements IRepoTransferMet
     }
   }
 
-  public findById(id: MTransferMethod["id"]): ReturnType<IRepoTransferMethod["findById"]> {
+  public find_by_id(id: MTransferMethod["id"]): ReturnType<IRepoTransferMethod["find_by_id"]> {
     const transfer_method_searched = this.tx.query.transfer_method.findFirst({
       where: eq(transfer_method.id, id)
     }).sync()
@@ -38,7 +38,7 @@ export default class TransferMethodDrizzleRepository implements IRepoTransferMet
     };
   }
 
-  public findByMethod(method: MTransferMethod["method"]): ReturnType<IRepoTransferMethod["findByMethod"]> {
+  public find_by_method(method: MTransferMethod["method"]): ReturnType<IRepoTransferMethod["find_by_method"]> {
     const transfer_method_searched = this.tx.query.transfer_method.findFirst({
       where: eq(transfer_method.method, method)
     }).sync()
@@ -59,7 +59,7 @@ export default class TransferMethodDrizzleRepository implements IRepoTransferMet
     };
   }
 
-  public findAll(): ReturnType<IRepoTransferMethod["findAll"]> {
+  public find_all(): ReturnType<IRepoTransferMethod["find_all"]> {
     const result = this.tx.query.transfer_method.findMany().sync()
 
     const transfer_methods = result.map(transfer_method_mapper)

@@ -17,7 +17,7 @@ export default class RecurrenceTypeDrizzleRepository implements IRepoRecurrenceT
     }
   }
 
-  public findById(id: MRecurrenceType["id"]): ReturnType<IRepoRecurrenceType["findById"]> {
+  public find_by_id(id: MRecurrenceType["id"]): ReturnType<IRepoRecurrenceType["find_by_id"]> {
     const recurrence_type_searched = this.tx.query.recurrence_type.findFirst({
       where: eq(recurrence_type.id, id)
     }).sync()
@@ -39,7 +39,7 @@ export default class RecurrenceTypeDrizzleRepository implements IRepoRecurrenceT
     }
   }
 
-  public findByType(type: MRecurrenceType["type"]): ReturnType<IRepoRecurrenceType["findByType"]> {
+  public find_by_type(type: MRecurrenceType["type"]): ReturnType<IRepoRecurrenceType["find_by_type"]> {
     const recurrence_type_searched = this.tx.query.recurrence_type.findFirst({
       where: eq(recurrence_type.type, type)
     }).sync()
@@ -61,7 +61,7 @@ export default class RecurrenceTypeDrizzleRepository implements IRepoRecurrenceT
     }
   }
 
-  public findAll(): ReturnType<IRepoRecurrenceType["findAll"]> {
+  public find_all(): ReturnType<IRepoRecurrenceType["find_all"]> {
     const result = this.tx.query.recurrence_type.findMany().sync()
 
     const recurrences_type = result.map(recurrence_type_mapper)

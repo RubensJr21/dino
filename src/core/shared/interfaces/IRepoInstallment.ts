@@ -10,11 +10,11 @@ export type UpdateInstallmentParams = Pick<MInstallment, "description">;
 export interface IRepoInstallment {
   create(data: CreateInstallmentParams): Result<Installment>;
   registerInstallments(id: MInstallment["id"], item_value_id_list: Array<ItemValue["id"]>): Result<boolean>;
-  findById(id: MInstallment["id"]): Result<Installment>; 
+  find_by_id(id: MInstallment["id"]): Result<Installment>; 
   findItemValue(installment_id: MInstallment["id"], item_value_id: MItemValue["id"]): Result<ItemValue>;
-  findAll(): Result<Installment[]>;
-  findAllItemValue(id: MInstallment["id"]): Result<ItemValue[]>;
-  findAllByCashflowType(cashflow_type: ItemValue["cashflow_type"]): Result<Installment[]>;
+  find_all(): Result<Installment[]>;
+  find_all_item_value(id: MInstallment["id"]): Result<ItemValue[]>;
+  find_all_by_cashflow_type(cashflow_type: ItemValue["cashflow_type"]): Result<Installment[]>;
   update(id: MInstallment["id"], data: UpdateInstallmentParams): Result<Installment>;
   delete(id: MInstallment["id"]): Result<boolean>
 }

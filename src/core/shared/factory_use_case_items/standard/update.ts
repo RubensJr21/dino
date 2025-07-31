@@ -20,10 +20,10 @@ export default abstract class UpdateStandard implements UseCaseInterface {
     private repo_iv: IRepoItemValue
   ){}
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result_search = this.repo_s.findById(input.id);
+    const result_search = this.repo_s.find_by_id(input.id);
 
     if(!result_search.success){
-      const scope = `UpdateStandard(${this.repo_s.findById.name}) > ${result_search.error.scope}`
+      const scope = `UpdateStandard(${this.repo_s.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
@@ -48,10 +48,10 @@ export default abstract class UpdateStandard implements UseCaseInterface {
       }
     }
 
-    const standard_updated = this.repo_s.findById(input.id)
+    const standard_updated = this.repo_s.find_by_id(input.id)
 
     if(!standard_updated.success){
-      const scope = `UpdateStandard(${this.repo_s.findById.name}) > ${standard_updated.error.scope}`
+      const scope = `UpdateStandard(${this.repo_s.find_by_id.name}) > ${standard_updated.error.scope}`
       return {
         success: false,
         error: {

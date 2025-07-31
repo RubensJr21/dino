@@ -12,7 +12,7 @@ type UseCaseInterface = IUseCase<Input, BankAccount>
 export default class UpdateNicknameBankAccount implements UseCaseInterface {
   constructor(private repo_ba: IRepoBankAccount) { }
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result_searched_nickname = this.repo_ba.findByNickname(input.new_nickname)
+    const result_searched_nickname = this.repo_ba.find_by_nickname(input.new_nickname)
 
     if(result_searched_nickname.success){
       const bank_account_data = result_searched_nickname.data
@@ -21,17 +21,17 @@ export default class UpdateNicknameBankAccount implements UseCaseInterface {
           success: false,
           error: {
             code: "nickname_already_used",
-            scope: `UpdateNicknameBankAccount(${this.repo_ba.findByNickname.name})`,
+            scope: `UpdateNicknameBankAccount(${this.repo_ba.find_by_nickname.name})`,
             message: `O nickname '${input.new_nickname}' já está sendo utilizado!`
           }
         }
       }
     }
 
-    const result_search = this.repo_ba.findById(input.id)
+    const result_search = this.repo_ba.find_by_id(input.id)
 
     if(!result_search.success){
-      const scope = `UpdateNicknameBankAccount(${this.repo_ba.findById.name}) > ${result_search.error.scope}`
+      const scope = `UpdateNicknameBankAccount(${this.repo_ba.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {

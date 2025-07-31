@@ -18,7 +18,7 @@ export default class TagDrizzleRepository implements IRepoTag {
     }
   }
    
-  public findById(id: Tag["id"]): ReturnType<IRepoTag["findById"]> {
+  public find_by_id(id: Tag["id"]): ReturnType<IRepoTag["find_by_id"]> {
     const tag_searched = this.tx.query.tag.findFirst({
       where: eq(tag.id, id)
     }).sync()
@@ -39,7 +39,7 @@ export default class TagDrizzleRepository implements IRepoTag {
     };
   }
 
-  public findByDescription(description: Tag["description"]): ReturnType<IRepoTag["findByDescription"]> {
+  public find_by_description(description: Tag["description"]): ReturnType<IRepoTag["find_by_description"]> {
     const tag_searched = this.tx.query.tag.findFirst({
       where: eq(tag.description, description)
     }).sync()
@@ -60,7 +60,7 @@ export default class TagDrizzleRepository implements IRepoTag {
     };
   }
 
-  public findAll(): ReturnType<IRepoTag["findAll"]> {
+  public find_all(): ReturnType<IRepoTag["find_all"]> {
     const result = this.tx.query.tag.findMany().sync()
 
     const tags = result.map(tag_mapper)

@@ -16,10 +16,10 @@ export default abstract class UpdateCurrentRecurringAmount implements UseCaseInt
   constructor( private repo_r: IRepoRecurring ){}
   
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result_search = this.repo_r.findById(input.id);
+    const result_search = this.repo_r.find_by_id(input.id);
 
     if(!result_search.success){
-      const scope = `UpdateCurrentRecurringAmount(${this.repo_r.findById.name}) > ${result_search.error.scope}`
+      const scope = `UpdateCurrentRecurringAmount(${this.repo_r.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
@@ -41,7 +41,7 @@ export default abstract class UpdateCurrentRecurringAmount implements UseCaseInt
     })
 
     if(!result_update.success){
-      const scope = `UpdateCurrentRecurringAmount(${this.repo_r.findById.name}) > ${result_update.error.scope}`
+      const scope = `UpdateCurrentRecurringAmount(${this.repo_r.find_by_id.name}) > ${result_update.error.scope}`
       return {
         success: false,
         error: {

@@ -103,7 +103,7 @@ export default function FormTemplate({ variant, value, submitAction, formExtensi
               "Nenhum tipo de transferência conta bancária está ativa no momento. Ative algum tipo de método da conta selecionada."
           */}
 
-          <SubmitButton variant={variant === VARIANTS_OF_ITEM_VALUE.Receipt ? "Add" : "Edit"} onPress={handleAction} />
+          <SubmitButton variant={!value ? "Add" : "Edit"} onPress={handleAction} />
         </View>
       </ScrollView>
     </BasePageView>

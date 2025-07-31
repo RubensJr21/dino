@@ -45,7 +45,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
     }
   }
 
-  public findById(id: MStandard["id"]): ReturnType<IRepoStandard["findById"]> {
+  public find_by_id(id: MStandard["id"]): ReturnType<IRepoStandard["find_by_id"]> {
     const result = this.tx.query.standard.findFirst({
       where: eq(standard.id, id),
       with: {
@@ -75,7 +75,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
     }
   }
 
-  public findAll(): ReturnType<IRepoStandard["findAll"]> {
+  public find_all(): ReturnType<IRepoStandard["find_all"]> {
     const result = this.tx.query.standard.findMany({
       with: {
         item_value: {
@@ -95,7 +95,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
     }
   }
 
-  public findAllByCashflowType(cashflow_type: ItemValue["cashflow_type"]): ReturnType<IRepoStandard["findAllByCashflowType"]> {   
+  public find_all_by_cashflow_type(cashflow_type: ItemValue["cashflow_type"]): ReturnType<IRepoStandard["find_all_by_cashflow_type"]> {   
     // Segunda opção trocando a relação de one para many
     // const result2 = this.tx.query.standard.findMany({
     //   with: {

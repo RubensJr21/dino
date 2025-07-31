@@ -12,7 +12,7 @@ export default class EnableBankAccount implements UseCaseInterface {
   constructor(private repo_ba: IRepoBankAccount) { }
 
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result = this.repo_ba.findById(input.id)
+    const result = this.repo_ba.find_by_id(input.id)
 
     if(!result.success){
       return {

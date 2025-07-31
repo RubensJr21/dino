@@ -8,9 +8,9 @@ export type UpdateStandardParams = CreateStandardParams
 
 export interface IRepoStandard {
   create(data: CreateStandardParams): Result<Standard>;
-  findById(id: MStandard["id"]): Result<Standard>;
-  findAll(): Result<Standard[]>;
-  findAllByCashflowType(cashflow_type: ItemValue["cashflow_type"]): Result<Standard[]>;
+  find_by_id(id: MStandard["id"]): Result<Standard>;
+  find_all(): Result<Standard[]>;
+  find_all_by_cashflow_type(cashflow_type: ItemValue["cashflow_type"]): Result<Standard[]>;
   update(id: MStandard["id"], data: UpdateStandardParams): Result<Standard>;
   delete(id: MStandard["id"]): Result<boolean>;
 }

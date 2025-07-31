@@ -39,13 +39,13 @@ export const installment = sqliteTable("installment", {
      .notNull(),
   created_at: 
     t.integer("created_at", { mode: "timestamp" })
-     .default(sql`(date('now','localtime'))`)
+     .default(sql`(strftime('%s','now'))`)
      .$type<MInstallment["created_at"]>()
      .notNull(),
   updated_at: 
     t.integer("updated_at", { mode: "timestamp" })
-     .default(sql`(date('now','localtime'))`)
-     .$onUpdate(() => sql`(date('now','localtime'))`)
+     .default(sql`(strftime('%s','now'))`)
+     .$onUpdate(() => sql`(strftime('%s','now'))`)
      .$type<MInstallment["updated_at"]>()
      .notNull()
 })

@@ -14,13 +14,13 @@ export const standard = sqliteTable("standard", {
       .notNull(),
   created_at:
     t.integer("created_at", { mode: "timestamp" })
-      .default(sql`(date('now','localtime'))`)
+      .default(sql`(strftime('%s','now'))`)
       .$type<IStandard["created_at"]>()
       .notNull(),
   updated_at:
     t.integer("updated_at", { mode: "timestamp" })
-      .default(sql`(date('now','localtime'))`)
-      .$onUpdate(() => sql`(date('now','localtime'))`)
+      .default(sql`(strftime('%s','now'))`)
+      .$onUpdate(() => sql`(strftime('%s','now'))`)
       .$type<IStandard["updated_at"]>()
       .notNull()
 })

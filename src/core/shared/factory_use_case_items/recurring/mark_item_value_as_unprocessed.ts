@@ -60,10 +60,10 @@ export default abstract class MarkRecurringItemValueAsUnProcessed implements Use
       }
     }
 
-    const result_search_after_update = this.repo_r.findById(input.id);
+    const result_search_after_update = this.repo_r.find_by_id(input.id);
 
     if(!result_search_after_update.success){
-      const scope = `MarkRecurringItemValueAsUnProcessed(${this.repo_r.findById.name}) > ${result_search_after_update.error.scope}`
+      const scope = `MarkRecurringItemValueAsUnProcessed(${this.repo_r.find_by_id.name}) > ${result_search_after_update.error.scope}`
       return {
         success: false,
         error: {

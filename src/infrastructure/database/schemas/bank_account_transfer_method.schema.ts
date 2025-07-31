@@ -21,12 +21,12 @@ export const bank_account_transfer_method = sqliteTable("bank_account_transfer_m
      .notNull(),
   created_at: 
     t.integer("created_at", { mode: "timestamp" })
-     .default(sql`(date('now','localtime'))`)
+     .default(sql`(strftime('%s','now'))`)
      .notNull(),
   updated_at: 
     t.integer("updated_at", { mode: "timestamp" })
-     .default(sql`(date('now','localtime'))`)
-     .$onUpdate(() => sql`(date('now','localtime'))`)
+     .default(sql`(strftime('%s','now'))`)
+     .$onUpdate(() => sql`(strftime('%s','now'))`)
      .notNull()
 })
 

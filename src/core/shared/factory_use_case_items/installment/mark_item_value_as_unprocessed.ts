@@ -24,7 +24,7 @@ export default abstract class MarkInstallmentItemValueAsUnProcessed implements U
     const item_value_searched = this.repo_i.findItemValue(input.id, input.item_value_id);
 
     if (!item_value_searched.success) {
-      const scope = `MarkInstallmentItemValueAsUnProcessed(${this.repo_i.findById.name}) > ${item_value_searched.error.scope}`
+      const scope = `MarkInstallmentItemValueAsUnProcessed(${this.repo_i.find_by_id.name}) > ${item_value_searched.error.scope}`
       return {
         success: false,
         error: {
@@ -62,10 +62,10 @@ export default abstract class MarkInstallmentItemValueAsUnProcessed implements U
       }
     }
 
-    const result_search_after_update = this.repo_i.findById(input.id);
+    const result_search_after_update = this.repo_i.find_by_id(input.id);
 
     if(!result_search_after_update.success){
-      const scope = `MarkInstallmentItemValueAsUnProcessed(${this.repo_i.findById.name}) > ${result_search_after_update.error.scope}`
+      const scope = `MarkInstallmentItemValueAsUnProcessed(${this.repo_i.find_by_id.name}) > ${result_search_after_update.error.scope}`
       return {
         success: false,
         error: {

@@ -18,10 +18,10 @@ export default abstract class UpdateInstallment implements UseCaseInterface {
   ){}
   
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result_search = this.repo_i.findById(input.id);
+    const result_search = this.repo_i.find_by_id(input.id);
 
     if(!result_search.success){
-      const scope = `UpdateInstallment(${this.repo_i.findById.name}) > ${result_search.error.scope}`
+      const scope = `UpdateInstallment(${this.repo_i.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
@@ -33,10 +33,10 @@ export default abstract class UpdateInstallment implements UseCaseInterface {
 
     const old_description = result_search.data.description
     
-    const item_values_founded = this.repo_i.findAllItemValue(input.id);
+    const item_values_founded = this.repo_i.find_all_item_value(input.id);
     
     if(!item_values_founded.success){
-      const scope = `UpdateInstallment(${this.repo_i.findAllItemValue.name}) > ${item_values_founded.error.scope}`
+      const scope = `UpdateInstallment(${this.repo_i.find_all_item_value.name}) > ${item_values_founded.error.scope}`
       return {
         success: false,
         error: {
@@ -66,7 +66,7 @@ export default abstract class UpdateInstallment implements UseCaseInterface {
       const item_value_updated = this.repo_iv.update(id, rest)
 
       if(!item_value_updated.success){
-        const scope = `UpdateInstallment(${this.repo_i.findAllItemValue.name}) > ${item_value_updated.error.scope}`
+        const scope = `UpdateInstallment(${this.repo_i.find_all_item_value.name}) > ${item_value_updated.error.scope}`
         return {
           success: false,
           error: {

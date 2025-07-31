@@ -12,10 +12,10 @@ type UseCaseInterface = IUseCase<Input, BankAccount>
 export default class UpdateBalanceBankAccount implements UseCaseInterface {
   constructor(private repo_ba: IRepoBankAccount) { }
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result_search = this.repo_ba.findById(input.id)
+    const result_search = this.repo_ba.find_by_id(input.id)
 
     if (!result_search.success) {
-      const scope = `UpdateBalanceBankAccount(${this.repo_ba.findById.name}) > ${result_search.error.scope}`
+      const scope = `UpdateBalanceBankAccount(${this.repo_ba.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {

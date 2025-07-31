@@ -86,7 +86,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
     }
   }
 
-  public findById(id: MInstallment["id"]): ReturnType<IRepoInstallment["findById"]> {
+  public find_by_id(id: MInstallment["id"]): ReturnType<IRepoInstallment["find_by_id"]> {
     const installment_result = this.tx.query.installment.findFirst({
       where: eq(installment.id, id),
       with: {
@@ -147,7 +147,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
     }
   }
 
-  public findAll(): ReturnType<IRepoInstallment["findAll"]> {
+  public find_all(): ReturnType<IRepoInstallment["find_all"]> {
     const result = this.tx.query.installment.findMany({
       with: {
         transfer_method: true,
@@ -163,7 +163,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
     }
   }
 
-  public findAllByCashflowType(cashflow_type: ItemValue["cashflow_type"]): ReturnType<IRepoInstallment["findAllByCashflowType"]> {
+  public find_all_by_cashflow_type(cashflow_type: ItemValue["cashflow_type"]): ReturnType<IRepoInstallment["find_all_by_cashflow_type"]> {
     const result = this.tx.select({
       id: installment.id,
       description: installment.description,
@@ -195,7 +195,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
     }
   }
 
-  public findAllItemValue(id: MInstallment["id"]): ReturnType<IRepoInstallment["findAllItemValue"]> {
+  public find_all_item_value(id: MInstallment["id"]): ReturnType<IRepoInstallment["find_all_item_value"]> {
     const result = this.tx.query.installment_item_value.findMany({
       with: {
         item_value: {

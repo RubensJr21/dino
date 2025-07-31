@@ -30,7 +30,7 @@ export default class BankAccountDrizzleRepository implements IRepoBankAccount {
     }
   }
 
-  public findById(id: MBankAccount["id"]): ReturnType<IRepoBankAccount["findById"]> {
+  public find_by_id(id: MBankAccount["id"]): ReturnType<IRepoBankAccount["find_by_id"]> {
     const result = this.tx.query.bank_account.findFirst({
       where: eq(bank_account.id, id)
     }).sync()
@@ -52,7 +52,7 @@ export default class BankAccountDrizzleRepository implements IRepoBankAccount {
     }
   }
 
-  public findByNickname(nickname: MBankAccount["nickname"]): ReturnType<IRepoBankAccount["findByNickname"]> {
+  public find_by_nickname(nickname: MBankAccount["nickname"]): ReturnType<IRepoBankAccount["find_by_nickname"]> {
     const result = this.tx.query.bank_account.findFirst({where: eq(bank_account.nickname, nickname)}).sync()
     if(!result) {
       return {
@@ -70,7 +70,7 @@ export default class BankAccountDrizzleRepository implements IRepoBankAccount {
     }
   }
 
-  public findAll(): ReturnType<IRepoBankAccount["findAll"]> {
+  public find_all(): ReturnType<IRepoBankAccount["find_all"]> {
     const results = this.tx.query.bank_account.findMany().sync()
     return {
       success: true,

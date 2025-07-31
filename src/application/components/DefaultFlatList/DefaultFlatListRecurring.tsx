@@ -1,16 +1,17 @@
 import { DateString } from "@src/application/functions/date2String";
-import { EditRecurringScreenParams } from "@src/application/types/screens/RecurringScreenParams";
+import { DetailsRecurringScreenParams, EditRecurringScreenParams } from "@src/application/types/screens/RecurringScreenParams";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { View } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { Button, Text, useTheme } from "react-native-paper";
 import DefaultFlatList from "./index";
 
 export interface DefaultFlatListRecurringProps {
   data: Recurring[];
   navigateToEditPage: (params: EditRecurringScreenParams) => void
+  navigateToDetailsPage: (params: DetailsRecurringScreenParams) => void;
 }
 
-export default function DefaultFlatListRecurring({ data, navigateToEditPage }: DefaultFlatListRecurringProps) {
+export default function DefaultFlatListRecurring({ data, navigateToEditPage, navigateToDetailsPage }: DefaultFlatListRecurringProps) {
   const theme = useTheme()
   return (
     <DefaultFlatList
@@ -29,6 +30,13 @@ export default function DefaultFlatListRecurring({ data, navigateToEditPage }: D
               borderColor: theme.colors.outline,
               marginVertical: 5
             }}>
+              <Button
+                mode="contained"
+                onPress={() => navigateToDetailsPage({ recurring_id: item.id })}
+                style={{ marginVertical: 5, marginHorizontal: 10 }}
+              >
+                Navegar para Detalhes
+              </Button>
             {/* ATTENTION: Navegar para a tela Details do Recurring atual */}
           </View>
         </>

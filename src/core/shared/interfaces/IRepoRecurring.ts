@@ -10,11 +10,11 @@ export type UpdateRecurringParams = StrictOmit<MRecurring, "id" | "fk_id_recurre
 export interface IRepoRecurring {
   create(data: CreateRecurringParams): Result<Recurring>;
   registerNextRecurring(id: MRecurring["id"], item_value_id: MItemValue["id"]): Result<boolean>;
-  findById(id: MRecurring["id"]): Result<Recurring>;
+  find_by_id(id: MRecurring["id"]): Result<Recurring>;
   findItemValue(recurring_id: MRecurring["id"], item_value_id: MItemValue["id"]): Result<ItemValue>;
-  findAll(): Result<Recurring[]>;
-  findAllItemValue(recurring_id: MRecurring["id"]): Result<ItemValue[]>;
-  findAllByCashflowType(cashflow_type: ItemValue["cashflow_type"]): Result<Recurring[]>;
+  find_all(): Result<Recurring[]>;
+  find_all_item_value(recurring_id: MRecurring["id"]): Result<ItemValue[]>;
+  find_all_by_cashflow_type(cashflow_type: ItemValue["cashflow_type"]): Result<Recurring[]>;
   update(id: MRecurring["id"], data: UpdateRecurringParams): Result<Recurring>;
   delete(id: MRecurring["id"]): Result<boolean>
 }

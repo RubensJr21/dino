@@ -17,10 +17,10 @@ export default class UpdateTransferMethodsBankAccount implements UseCaseInterfac
     private repo_ba_tm: IRepoBankAccountTransferMethod
   ) { }
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result_transfer_methods_all = this.repo_ba_tm.findAllOfBankAccount(input.id)
+    const result_transfer_methods_all = this.repo_ba_tm.find_all_of_bank_account(input.id)
 
     if(!result_transfer_methods_all.success){
-      const scope = `UpdateTransferMethodsBankAccount(${this.repo_ba_tm.findAllOfBankAccount.name}) > ${result_transfer_methods_all.error.scope}`
+      const scope = `UpdateTransferMethodsBankAccount(${this.repo_ba_tm.find_all_of_bank_account.name}) > ${result_transfer_methods_all.error.scope}`
       return {
         success: false,
         error: {
@@ -53,7 +53,7 @@ export default class UpdateTransferMethodsBankAccount implements UseCaseInterfac
         }
     }
 
-    const bank_account = this.repo_ba.findById(input.id)
+    const bank_account = this.repo_ba.find_by_id(input.id)
 
     return bank_account
   }

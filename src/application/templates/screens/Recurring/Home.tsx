@@ -9,10 +9,11 @@ import SearchBarDate from "../../../components/SearchBar"
 interface RecurringHomeScreenTemplateProps {
   data: Recurring[]
   navigateToEditPage: DefaultFlatListRecurringProps["navigateToEditPage"]
+  navigateToDetailsPage: DefaultFlatListRecurringProps["navigateToDetailsPage"]
   fabAction: () => void
 }
 
-export default function RecurringHomeScreenTemplate({ data, navigateToEditPage, fabAction }: RecurringHomeScreenTemplateProps) {
+export default function RecurringHomeScreenTemplate({ data, navigateToEditPage, navigateToDetailsPage, fabAction }: RecurringHomeScreenTemplateProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function RecurringHomeScreenTemplate({ data, navigateToEditPage, 
       <DefaultFlatListRecurring
         {...{data}}
         {...{navigateToEditPage}}
+        {...{navigateToDetailsPage}}
       />
       <Fab
         icon="plus"

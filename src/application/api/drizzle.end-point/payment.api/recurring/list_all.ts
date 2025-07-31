@@ -7,10 +7,13 @@ async function list_all(): Promise<Recurring[] | undefined>{
   let list_payments_recurring: Recurring[] | undefined = undefined
 
   await db.transaction(async tx => {
+      console.log("Buscando na transaction...")
       const repo = new RecurringDrizzleRepository(tx);
       const list_all = new ListAllRecurringsPayment(repo);
   
       const list = await list_all.execute()
+
+      console.log("Busquei...")
       
       if(!list.success){
         tx.rollback();

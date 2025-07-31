@@ -24,7 +24,7 @@ export default abstract class MarkInstallmentItemValueAsProcessed implements Use
     const item_value_searched = this.repo_i.findItemValue(input.id, input.item_value_id);
 
     if (!item_value_searched.success) {
-      const scope = `MarkInstallmentItemValueAsProcessed(${this.repo_i.findById.name}) > ${item_value_searched.error.scope}`
+      const scope = `MarkInstallmentItemValueAsProcessed(${this.repo_i.find_by_id.name}) > ${item_value_searched.error.scope}`
       return {
         success: false,
         error: {
@@ -62,10 +62,10 @@ export default abstract class MarkInstallmentItemValueAsProcessed implements Use
       }
     }
 
-    const result_search_after_update = this.repo_i.findById(input.id);
+    const result_search_after_update = this.repo_i.find_by_id(input.id);
 
     if(!result_search_after_update.success){
-      const scope = `MarkInstallmentItemValueAsProcessed(${this.repo_i.findById.name}) > ${result_search_after_update.error.scope}`
+      const scope = `MarkInstallmentItemValueAsProcessed(${this.repo_i.find_by_id.name}) > ${result_search_after_update.error.scope}`
       return {
         success: false,
         error: {

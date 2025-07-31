@@ -18,14 +18,14 @@ export default class RegisterBankAccount implements UseCaseInterface {
     private repo_ba_tm: IRepoBankAccountTransferMethod
   ) { }
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result_search_nickname = this.repo_ba.findByNickname(input.nickname)
+    const result_search_nickname = this.repo_ba.find_by_nickname(input.nickname)
 
     if(result_search_nickname.success){
       return {
         success: false,
         error: {
           code: "nickname_already_used",
-          scope: `RegisterBankAccount(${this.repo_ba.findByNickname.name})`,
+          scope: `RegisterBankAccount(${this.repo_ba.find_by_nickname.name})`,
           message: `O nickname '${input.nickname}' já está sendo utilizado!`
         }
       }
@@ -37,7 +37,7 @@ export default class RegisterBankAccount implements UseCaseInterface {
     })
 
     if(!result_create.success){
-      const scope = `RegisterBankAccount(${this.repo_ba.findByNickname.name}) > ${result_create.error.scope}`
+      const scope = `RegisterBankAccount(${this.repo_ba.find_by_nickname.name}) > ${result_create.error.scope}`
       return {
         success: false,
         error: {
@@ -49,10 +49,10 @@ export default class RegisterBankAccount implements UseCaseInterface {
 
     const bank_account_created = result_create.data
 
-    const result_transfer_methods_all = this.repo_tm.findAll()
+    const result_transfer_methods_all = this.repo_tm.find_all()
 
     if(!result_transfer_methods_all.success){
-       const scope = `RegisterBankAccount(${this.repo_tm.findAll.name}) > ${result_transfer_methods_all.error.scope}`
+       const scope = `RegisterBankAccount(${this.repo_tm.find_all.name}) > ${result_transfer_methods_all.error.scope}`
       return {
         success: false,
         error: {
@@ -66,9 +66,9 @@ export default class RegisterBankAccount implements UseCaseInterface {
     const transfer_methods_data = result_transfer_methods_all.data.map(item => item.method)
     for (const key of transfer_methods_data) {
       // isso será feito na migration da
-      const transfer_method_searched = this.repo_tm.findByMethod(key)
+      const transfer_method_searched = this.repo_tm.find_by_method(key)
       if(!transfer_method_searched.success){
-        const scope = `RegisterBankAccount(${this.repo_tm.findByMethod.name}) > ${transfer_method_searched.error.scope}`
+        const scope = `RegisterBankAccount(${this.repo_tm.find_by_method.name}) > ${transfer_method_searched.error.scope}`
         return {
           success: false,
           error: {
