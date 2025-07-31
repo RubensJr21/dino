@@ -18,7 +18,7 @@ async function list_all_items({
       const list_all = new ListAllItemValueInstallmentPayments(repo);
   
       const list = await list_all.execute({
-        id: installment_id
+        installment_id
       })
       
       if(!list.success){

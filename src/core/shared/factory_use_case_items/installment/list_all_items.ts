@@ -5,7 +5,7 @@ import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface Input {
-  id: Installment["id"]
+  installment_id: Installment["id"]
 }
 
 type UseCaseInterface = IUseCase<Input, ItemValue[]>
@@ -16,7 +16,7 @@ export default abstract class ListAllItemValueInstallments implements UseCaseInt
   constructor(private repo_i: IRepoInstallment) { }
 
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const result_search = this.repo_i.findAllItemValue(input.id);
+    const result_search = this.repo_i.findAllItemValue(input.installment_id);
     
     if(!result_search.success){
       const scope = `ListAllItemValueInstallments(${this.repo_i.findAllItemValue.name}) > ${result_search.error.scope}`
