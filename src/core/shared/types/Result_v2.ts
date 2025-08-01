@@ -1,4 +1,7 @@
-import { MethodKeys } from "./InternalRepoErrors";
+type MethodKeys<T> =
+  Extract<
+    keyof T, string
+  >;
 
 export type EntityNames = 
   | "BankAccount"
