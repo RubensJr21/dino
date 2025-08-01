@@ -24,6 +24,9 @@ export default function Home({ navigation }: Props) {
   return (
     <RecurringHomeScreenTemplate
       data={receipts}
+      navigateToDetailsPage={(receipt) => {
+        navigation.navigate("Details", receipt);
+      }}
       navigateToEditPage={(receipt) => {
         navigation.navigate("Edit", receipt);
       }}

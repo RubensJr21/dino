@@ -8,6 +8,7 @@ import { item_value, recurrence_type, recurring, recurring_item_value, tag, tran
 import { and, eq } from 'drizzle-orm/sql'
 import { Transaction } from '../database/TransactionType'
 
+// ALERT: Encapsular todas as funções com try catch
 export default class RecurringDrizzleRepository implements IRepoRecurring {
   constructor(private tx: Transaction) { }
 
@@ -66,9 +67,9 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
       return {
         success: false,
         error: {
-          code: "id_not_found",
+          code: "internal_repo_error_Recurring(#create)",
           scope: "RecurringDrizzleRepository(#create)",
-          message: `O Erro Crítico ${error.message}`
+          message: `O Erro Crítico (message = ${error.message}, cause = ${error.cause})`
         }
       }
     }
@@ -130,7 +131,7 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
     }
   }
 
-  public findItemValue(recurring_id: MRecurring["id"], item_value_id: MItemValue["id"]): ReturnType<IRepoRecurring["findItemValue"]> {
+  public find_item_value(recurring_id: MRecurring["id"], item_value_id: MItemValue["id"]): ReturnType<IRepoRecurring["find_item_value"]> {
     const result = this.tx.query.recurring_item_value.findFirst({
       with: {
         item_value: {
@@ -206,9 +207,9 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
       return {
         success: false,
         error: {
-          code: "id_not_found",
-          scope: "RecurringDrizzleRepository(#create)",
-          message: `O Erro Crítico ${error.message}`
+          code: "internal_repo_error_Recurring(#find_all_item_value)",
+          scope: "RecurringDrizzleRepository(#find_all_item_value)",
+          message: `O Erro Crítico (message = ${error.message}, cause = ${error.cause})`
         }
       }
     }

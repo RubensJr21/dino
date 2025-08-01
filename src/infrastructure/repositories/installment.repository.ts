@@ -11,6 +11,7 @@ import { and, eq } from 'drizzle-orm/sql'
 import { Transaction } from '../database/TransactionType'
 import { tag, transfer_method } from '../database/schemas'
 
+// ALERT: Encapsular todas as funções com try catch
 export default class InstallmentDrizzleRepository implements IRepoInstallment {
   constructor(private tx: Transaction) { }
 
@@ -114,7 +115,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
     }
   }
 
-  public findItemValue(installment_id: MInstallment["id"], item_value_id: MItemValue["id"]): ReturnType<IRepoInstallment["findItemValue"]> {
+  public find_item_value(installment_id: MInstallment["id"], item_value_id: MItemValue["id"]): ReturnType<IRepoInstallment["find_item_value"]> {
     const result = this.tx.query.installment_item_value.findFirst({
       with: {
         item_value: {

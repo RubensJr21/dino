@@ -1,10 +1,11 @@
 import { MTransferMethod } from '@src/core/models/transfer_method.model'
-import { CreateTransferMethodTypeParams, IRepoTransferMethod, UpdateTransferMethodTypeParams } from '@src/core/shared/interfaces/IRepoTransferMethodType'
+import { CreateTransferMethodTypeParams, IRepoTransferMethod, UpdateTransferMethodTypeParams } from '@src/core/shared/interfaces/IRepoTransferMethod'
 import { transfer_method_mapper } from '@src/core/shared/mappers/transfer_method'
 import { transfer_method } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 import { Transaction } from '../database/TransactionType'
 
+// ALERT: Encapsular todas as funções com try catch
 export default class TransferMethodDrizzleRepository implements IRepoTransferMethod {
   constructor(private tx: Transaction) { }
   

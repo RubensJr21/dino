@@ -1,10 +1,13 @@
 import { RecurrenceType } from '@src/core/entities/recurrence_type.entity'
 import { MRecurrenceType } from '@src/core/models/recurrence_type.model'
 import { CreateRepositoryParams, IRepository, UpdateRepositoryParams } from "@src/core/shared/interfaces/bases/IRepository"
+import { InternalRepoErrors } from '../types/InternalRepoErrors'
 import { Result } from '../types/Result'
 
 export type CreateRecurrenceTypeParams = CreateRepositoryParams<MRecurrenceType>
 export type UpdateRecurrenceTypeParams = UpdateRepositoryParams<MRecurrenceType>
+
+export type InternalRepoErrorsRecurrenceType = InternalRepoErrors<IRepoRecurrenceType, "RecurrenceType">
 
 export interface IRepoRecurrenceType extends IRepository<MRecurrenceType, RecurrenceType> {
   create(data: CreateRecurrenceTypeParams): Result<RecurrenceType>;

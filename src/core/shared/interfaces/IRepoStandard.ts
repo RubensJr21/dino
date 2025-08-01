@@ -1,10 +1,13 @@
 import { MStandard } from "@src/core/models/standard.model";
 import { ItemValue } from "../../entities/item_value.entity";
 import { Standard } from "../../entities/standard.entity";
+import { InternalRepoErrors } from "../types/InternalRepoErrors";
 import { Result } from "../types/Result";
 
 export type CreateStandardParams = StrictOmit<MStandard, "id" | "created_at" | "updated_at">;
 export type UpdateStandardParams = CreateStandardParams
+
+export type InternalRepoErrorsStandard = InternalRepoErrors<IRepoStandard, "Standard">
 
 export interface IRepoStandard {
   create(data: CreateStandardParams): Result<Standard>;

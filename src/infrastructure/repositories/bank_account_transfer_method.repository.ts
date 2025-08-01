@@ -8,6 +8,7 @@ import { bank_account_transfer_method } from "@src/infrastructure/database/schem
 import { eq } from "drizzle-orm/sql";
 import { Transaction } from "../database/TransactionType";
 
+// ALERT: Encapsular todas as funções com try catch
 export default class BankAccountTransferMethodDrizzleRepository implements IRepoBankAccountTransferMethod {
   constructor(private tx: Transaction) { }
 

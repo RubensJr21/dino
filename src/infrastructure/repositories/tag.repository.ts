@@ -6,6 +6,7 @@ import { tag } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 import { Transaction } from '../database/TransactionType'
 
+// ALERT: Encapsular todas as funções com try catch
 export default class TagDrizzleRepository implements IRepoTag {
   constructor(private tx: Transaction) { }
   

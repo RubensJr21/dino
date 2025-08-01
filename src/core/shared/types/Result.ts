@@ -1,3 +1,13 @@
+import { InternalRepoErrorsBankAccount } from "../interfaces/IRepoBankAccount";
+import { InternalRepoErrorsBankAccountTransferMethod } from "../interfaces/IRepoBankAccountTransferMethod";
+import { InternalRepoErrorsInstallment } from "../interfaces/IRepoInstallment";
+import { InternalRepoErrorsItemValue } from "../interfaces/IRepoItemValue";
+import { InternalRepoErrorsRecurrenceType } from "../interfaces/IRepoRecurrenceType";
+import { InternalRepoErrorsRecurring } from "../interfaces/IRepoRecurring";
+import { InternalRepoErrorsStandard } from "../interfaces/IRepoStandard";
+import { InternalRepoErrorsTag } from "../interfaces/IRepoTag";
+import { InternalRepoErrorsTransferMethod } from "../interfaces/IRepoTransferMethod";
+
 export type ErrorCode =
   | "id_not_found"
   | "nickname_not_found"
@@ -7,6 +17,15 @@ export type ErrorCode =
   | "description_not_found"
   | "description_already_used"
   | "installment_number_less_than_2"
+  | InternalRepoErrorsBankAccount
+  | InternalRepoErrorsBankAccountTransferMethod
+  | InternalRepoErrorsInstallment
+  | InternalRepoErrorsItemValue
+  | InternalRepoErrorsRecurrenceType
+  | InternalRepoErrorsRecurring
+  | InternalRepoErrorsStandard
+  | InternalRepoErrorsTag
+  | InternalRepoErrorsTransferMethod
   ;
 
 export interface DomainError<

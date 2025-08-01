@@ -2,7 +2,7 @@ import { BankAccount, IBankAccount } from "@core/entities/bank_account.entity";
 import IUseCase from "@core/shared/IUseCase";
 import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
 import { IRepoBankAccountTransferMethod } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
-import { IRepoTransferMethod } from "@src/core/shared/interfaces/IRepoTransferMethodType";
+import { IRepoTransferMethod } from "@src/core/shared/interfaces/IRepoTransferMethod";
 import { TypeOfTransferMethods } from "@src/core/shared/types/transfer_methods";
 
 interface Input extends Pick<IBankAccount, "nickname" | "balance"> {

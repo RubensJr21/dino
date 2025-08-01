@@ -5,6 +5,7 @@ import { item_value } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 import { Transaction } from '../database/TransactionType'
 
+// ALERT: Encapsular todas as funções com try catch
 export default class ItemValueDrizzleRepository implements IRepoItemValue {
   constructor(private tx: Transaction) { }
   

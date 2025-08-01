@@ -1,16 +1,17 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
 import { BankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
 import { MBankAccountTransferMethod } from "@src/core/models/bank_account_transfer_method.model";
-import { ErrorFromMethodsOfInterface } from "../types/ErrorFromMethods";
+import { InternalRepoErrors } from "../types/InternalRepoErrors";
 import { Result } from "../types/Result";
 import { CreateRepositoryWithDatesParams, IRepositoryWithDates, UpdateRepositoryWithDatesParams } from "./bases/IRepositoryWithDates";
 
 export type CreateBankAccountTransferMethodTypeParams = CreateRepositoryWithDatesParams<MBankAccountTransferMethod>
 export type UpdateBankAccountTransferMethodTypeParams = UpdateRepositoryWithDatesParams<MBankAccountTransferMethod>
 
-export type CodeErrorsBankAccountTransferMethodRepository = ErrorFromMethodsOfInterface<IRepoBankAccountTransferMethod, "BankAccountTransferMethod">
+export type InternalRepoErrorsBankAccountTransferMethod = InternalRepoErrors<IRepoBankAccountTransferMethod, "BankAccountTransferMethod">
 
-export interface IRepoBankAccountTransferMethod extends IRepositoryWithDates<MBankAccountTransferMethod, BankAccountTransferMethod> {
+export interface IRepoBankAccountTransferMethod 
+extends IRepositoryWithDates<MBankAccountTransferMethod, BankAccountTransferMethod> {
   create(data: CreateBankAccountTransferMethodTypeParams): Result<BankAccountTransferMethod>;
   find_by_id(id: MBankAccountTransferMethod["id"]): Result<BankAccountTransferMethod>;
   find_by_bank_account_id(bank_account_id: BankAccount["id"]): Result<BankAccountTransferMethod[]>;

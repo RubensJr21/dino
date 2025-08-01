@@ -1,10 +1,13 @@
 import { BankAccount } from "@src/core/entities/bank_account.entity";
 import { MBankAccount } from "@src/core/models/bank_account.model";
 import { CreateRepositoryWithDatesParams, IRepositoryWithDates, UpdateRepositoryWithDatesParams } from "@src/core/shared/interfaces/bases/IRepositoryWithDates";
+import { InternalRepoErrors } from "../types/InternalRepoErrors";
 import { Result } from "../types/Result";
 
 export type CreateBankAccountParams = CreateRepositoryWithDatesParams<MBankAccount>
 export type UpdateBankAccountParams = UpdateRepositoryWithDatesParams<MBankAccount>
+
+export type InternalRepoErrorsBankAccount = InternalRepoErrors<IRepoBankAccount, "BankAccount">
 
 export interface IRepoBankAccount extends IRepositoryWithDates<MBankAccount, BankAccount> {
   create(data: CreateBankAccountParams): Result<BankAccount>

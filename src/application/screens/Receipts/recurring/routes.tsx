@@ -1,6 +1,6 @@
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { EditRecurringScreenParams } from '@src/application/types/screens/RecurringScreenParams';
+import { DetailsRecurringScreenParams, EditRecurringScreenParams } from '@src/application/types/screens/RecurringScreenParams';
 import { ReceiptsTabParamList } from '../routes';
 import EditRecurring from './edit';
 import Home from './home';
@@ -10,6 +10,7 @@ export type ReceiptsRecurringStackParamList = {
   Home: undefined;
   Register: undefined;
   Edit: EditRecurringScreenParams;
+  Details: DetailsRecurringScreenParams;
 }
 
 type Props = BottomTabScreenProps<ReceiptsTabParamList, 'ReceiptsRecurring'>

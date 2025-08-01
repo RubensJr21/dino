@@ -7,6 +7,7 @@ import { item_value, standard } from '@src/infrastructure/database/schemas'
 import { eq, inArray } from 'drizzle-orm/sql'
 import { Transaction } from '../database/TransactionType'
 
+// ALERT: Encapsular todas as funções com try catch
 export default class StandardDrizzleRepository implements IRepoStandard {
   constructor(private tx: Transaction) { }
   
