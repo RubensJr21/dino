@@ -19,10 +19,10 @@ export default abstract class MarkRecurringItemValueAsProcessed implements UseCa
     private repo_iv: IRepoItemValue
   ) { }
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const item_value_searched = this.repo_r.findItemValue(input.id, input.item_value_id);
+    const item_value_searched = this.repo_r.find_item_value(input.id, input.item_value_id);
 
     if (!item_value_searched.success) {
-      const scope = `MarkRecurringItemValueAsProcessed(${this.repo_r.findItemValue.name}) > ${item_value_searched.error.scope}`
+      const scope = `MarkRecurringItemValueAsProcessed(${this.repo_r.find_item_value.name}) > ${item_value_searched.error.scope}`
       return {
         success: false,
         error: {

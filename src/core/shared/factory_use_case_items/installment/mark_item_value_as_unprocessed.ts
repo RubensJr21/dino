@@ -21,7 +21,7 @@ export default abstract class MarkInstallmentItemValueAsUnProcessed implements U
   ) { }
 
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
-    const item_value_searched = this.repo_i.findItemValue(input.id, input.item_value_id);
+    const item_value_searched = this.repo_i.find_item_value(input.id, input.item_value_id);
 
     if (!item_value_searched.success) {
       const scope = `MarkInstallmentItemValueAsUnProcessed(${this.repo_i.find_by_id.name}) > ${item_value_searched.error.scope}`
