@@ -5,7 +5,6 @@ const {
 
 const tsParser = require("@typescript-eslint/parser");
 const typescriptEslint = require("@typescript-eslint/eslint-plugin");
-const jsdoc = require("eslint-plugin-jsdoc");
 const promise = require("eslint-plugin-promise");
 const checkedExceptions = require("eslint-plugin-checked-exceptions");
 const globals = require("globals");
@@ -39,14 +38,11 @@ module.exports = defineConfig([{
   },
 
   plugins: {
-    "@typescript-eslint": typescriptEslint,
     promise,
     "checked-exceptions": checkedExceptions,
   },
 
   extends: compat.extends(
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
     "plugin:promise/recommended",
   ),
 

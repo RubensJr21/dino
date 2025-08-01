@@ -1,13 +1,12 @@
-type MethodKeys<T> =
-  Exclude<
-    Extract<
-      keyof T, string
-    >,
-    | "__repository_name"
+import { EntityNames } from "./Result_v2";
+
+export type MethodKeys<T> =
+  Extract<
+    keyof T, string
   >;
 
 export type InternalRepoErrors<
   T,
-  __repository_name extends string
+  __entity_name extends EntityNames
 > =
-  `internal_repo_error_${__repository_name}(#${MethodKeys<T>})`
+  `internal_repo_error_${__entity_name}(#${MethodKeys<T>})`
