@@ -1,37 +1,16 @@
+import { BasicErrorCode } from "./BasicErrorCode";
+import { RepoInterfaceNames } from "./RepoInterfaceNames";
+
 type MethodKeys<T> =
   Extract<
     keyof T, string
   >;
 
-export type EntityNames = 
-  | "BankAccount"
-  | "BankAccountTransferMethod"
-  | "Installment"
-  | "ItemValue"
-  | "Recurring"
-  | "Standard"
-  | "Tag"
-  | "TransferMethod"
-  | "RecurrenceType"
-  ;
-
-type BasicErrorCode = 
-  | "id_not_found"
-  | "nickname_not_found"
-  | "nickname_already_used"
-  | "type_not_found"
-  | "type_already_used"
-  | "description_not_found"
-  | "description_already_used"
-  | "installment_number_less_than_2"
-  | "Z_INTERNAL_REPO_ERROR"
-  ;
-
 export interface RepoDomainError<
   Repo,
   ErrorCode extends BasicErrorCode = BasicErrorCode
 > {
-  scope: `${EntityNames}`,
+  scope: RepoInterfaceNames,
   method: MethodKeys<Repo>,
   code: ErrorCode,
   message: string

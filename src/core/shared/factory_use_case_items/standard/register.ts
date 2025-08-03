@@ -1,12 +1,33 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { Standard } from "@src/core/entities/standard.entity";
 import { CreateItemValueParams, IRepoItemValue } from "../../interfaces/IRepoItemValue";
 import { IRepoStandard } from "../../interfaces/IRepoStandard";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 type Input = CreateItemValueParams
 
-type UseCaseInterface = IUseCase<Input, Standard>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoStandard,
+  IRepoItemValue
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Standard,
+  RepoInterfaceNames.ItemValue
+]>;
+
+type Return = UseCaseResult<
+  "RegisterStandard",
+  Standard,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class RegisterStandard implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
@@ -18,12 +39,11 @@ export default abstract class RegisterStandard implements UseCaseInterface {
     const item_value_created = this.repo_iv.create(input)
 
     if(!item_value_created.success){
-      const scope = `RegisterStandard(${this.repo_iv.create.name}) > ${item_value_created.error.scope}`
       return {
         success: false,
         error: {
           ...item_value_created.error,
-          scope
+          trace: "RegisterStandard > RepoItemValue"
         }
       }
     }
@@ -35,12 +55,11 @@ export default abstract class RegisterStandard implements UseCaseInterface {
     })
 
     if(!result_create.success){
-      const scope = `RegisterStandard(${this.repo_s.create.name}) > ${result_create.error.scope}`
       return {
         success: false,
         error: {
           ...result_create.error,
-          scope
+          trace: "RegisterStandard > RepoStandard"
         }
       }
     }

@@ -1,13 +1,31 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { Installment } from "@src/core/entities/installment.entity";
 import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface Input {
   id: number
 }
 
-type UseCaseInterface = IUseCase<Input, Installment>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoInstallment
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfaces<[
+  RepoInterfaceNames.Installment
+]>;
+
+type Return = UseCaseResult<
+  "FindInstallmentById",
+  Installment,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class FindInstallmentById implements UseCaseInterface {
   protected abstract variant: TypeOfVariants
@@ -18,12 +36,11 @@ export default abstract class FindInstallmentById implements UseCaseInterface {
     const result_search = this.repo_i.find_by_id(input.id)
 
     if(!result_search.success){
-      const scope = `FindInstallmentById(${this.repo_i.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "FindInstallmentById > RepoInstallment"
         }
       }
     }

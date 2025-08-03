@@ -1,13 +1,34 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
 import { IRepoStandard } from "../../interfaces/IRepoStandard";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface Input {
   id: number
 }
 
-type UseCaseInterface = IUseCase<Input, boolean>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoStandard,
+  IRepoItemValue
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Standard,
+  RepoInterfaceNames.ItemValue
+]>;
+
+type Return = UseCaseResult<
+  "DeleteStandard",
+  boolean,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class DeleteStandard implements UseCaseInterface {
   protected abstract variant: TypeOfVariants
@@ -19,12 +40,11 @@ export default abstract class DeleteStandard implements UseCaseInterface {
     // Removendo o item_value a remoção é propagada
     const result_search = this.repo_s.find_by_id(input.id)
     if(!result_search.success){
-      const scope = `DeleteStandard(${this.repo_s.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "DeleteStandard > RepoStandard"
         }
       }
     }
@@ -34,12 +54,11 @@ export default abstract class DeleteStandard implements UseCaseInterface {
     const result_deleted = this.repo_iv.delete(standard.item_value.id)
 
     if(!result_deleted.success){
-      const scope = `DeleteStandard(${this.repo_s.delete.name}) > ${result_deleted.error.scope}`
       return {
         success: false,
         error: {
           ...result_deleted.error,
-          scope
+          trace: "DeleteStandard > RepoItemValue"
         }
       }
     }

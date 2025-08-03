@@ -1,13 +1,32 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { IRecurring, Recurring } from "@src/core/entities/recurring.entity";
 import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface Input {
   id: IRecurring["id"]
 }
 
-type UseCaseInterface = IUseCase<Input, Recurring>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoRecurring
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Recurring
+]>;
+
+type Return = UseCaseResult<
+  "RegisterRecurring",
+  Recurring,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class FindRecurringById implements UseCaseInterface {
   protected abstract variant: TypeOfVariants
@@ -18,12 +37,11 @@ export default abstract class FindRecurringById implements UseCaseInterface {
     const result_search = this.repo_r.find_by_id(input.id)
 
     if(!result_search.success){
-      const scope = `FindRecurringById(${this.repo_r.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "RegisterRecurring > RepoRecurring"
         }
       }
     }

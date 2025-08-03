@@ -17,7 +17,7 @@ export default function RegisterRecurring({ route, navigation }: RegisterRecurri
       is_disabled: false,
       start_date: data.date,
       // ALERT: Tenho que passar as classes e não os ids
-      fk_id_transfer_method: 1,
+      fk_id_transfer_method: 9,
       fk_id_tag: 1,
       fk_id_recurrence_type: 1
     }).then((result) => {
@@ -27,6 +27,9 @@ export default function RegisterRecurring({ route, navigation }: RegisterRecurri
         return;
       }
       navigation.goBack(); // Volta para a tela anterior após registrar
+    }).catch((error) => {
+      console.error("Erro ao registrar recebimento recorrente:", error);
+      Alert.alert("Erro", "Não foi possível registrar o recebimento.");
     })
   };
   

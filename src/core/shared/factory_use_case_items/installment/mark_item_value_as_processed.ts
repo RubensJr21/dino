@@ -1,8 +1,12 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { Installment } from "@src/core/entities/installment.entity";
 import { ItemValue } from "@src/core/entities/item_value.entity";
 import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
 import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface Input {
@@ -10,7 +14,24 @@ interface Input {
   item_value_id: ItemValue["id"];
 }
 
-type UseCaseInterface = IUseCase<Input, Installment>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoInstallment,
+  IRepoItemValue
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Installment,
+  RepoInterfaceNames.ItemValue
+]>;
+
+type Return = UseCaseResult<
+  "MarkInstallmentItemValueAsProcessed",
+  Installment,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class MarkInstallmentItemValueAsProcessed implements UseCaseInterface {
   protected abstract variant: TypeOfVariants
@@ -24,12 +45,11 @@ export default abstract class MarkInstallmentItemValueAsProcessed implements Use
     const item_value_searched = this.repo_i.find_item_value(input.id, input.item_value_id);
 
     if (!item_value_searched.success) {
-      const scope = `MarkInstallmentItemValueAsProcessed(${this.repo_i.find_by_id.name}) > ${item_value_searched.error.scope}`
       return {
         success: false,
         error: {
           ...item_value_searched.error,
-          scope
+          trace: "MarkInstallmentItemValueAsProcessed > RepoInstallment"
         }
       }
     }
@@ -52,12 +72,11 @@ export default abstract class MarkInstallmentItemValueAsProcessed implements Use
     const result_update = this.repo_iv.update(item_value.id, data);
 
     if(!result_update.success){
-      const scope = `MarkInstallmentItemValueAsProcessed(${this.repo_iv.update.name}) > ${result_update.error.scope}`
       return {
         success: false,
         error: {
           ...result_update.error,
-          scope
+          trace: "MarkInstallmentItemValueAsProcessed > RepoItemValue"
         }
       }
     }
@@ -65,12 +84,11 @@ export default abstract class MarkInstallmentItemValueAsProcessed implements Use
     const result_search_after_update = this.repo_i.find_by_id(input.id);
 
     if(!result_search_after_update.success){
-      const scope = `MarkInstallmentItemValueAsProcessed(${this.repo_i.find_by_id.name}) > ${result_search_after_update.error.scope}`
       return {
         success: false,
         error: {
           ...result_search_after_update.error,
-          scope
+          trace: "MarkInstallmentItemValueAsProcessed > RepoInstallment"
         }
       }
     }

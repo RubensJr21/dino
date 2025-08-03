@@ -7,6 +7,8 @@ import RecurringDrizzleRepository from "@src/infrastructure/repositories/recurri
 
 type Params = CreateRecurringParams
 
+// ALERT: Criar 'EndPointResult' 
+
 async function register({
   ...params
 }: Params): Promise<Recurring | undefined> {
@@ -28,6 +30,7 @@ async function register({
     console.log("chamei caso de uso")
 
     if (!recurring_created.success) {
+      console.error(recurring_created.error)
       tx.rollback();
       return;
     }

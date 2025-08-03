@@ -1,118 +1,198 @@
 import { Tag } from '@src/core/entities/tag.entity'
 import { MTag } from '@src/core/models/tag.model'
-import { CreateTagParams, IRepoTag, UpdateTagParams } from '@src/core/shared/interfaces/IRepoTag'
+import { build_internal_repo_error_tag, CreateTagParams, IRepoTag, UpdateTagParams } from '@src/core/shared/interfaces/IRepoTag'
 import { tag_mapper } from '@src/core/shared/mappers/tag'
+import { RepoInterfaceNames } from '@src/core/shared/types/RepoInterfaceNames'
 import { tag } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 import { Transaction } from '../database/TransactionType'
 
-// ALERT: Encapsular todas as funções com try catch
 export default class TagDrizzleRepository implements IRepoTag {
   constructor(private tx: Transaction) { }
-  
+
   public create(data: CreateTagParams): ReturnType<IRepoTag["create"]> {
-    const tag_created = this.tx.insert(tag).values(data).returning().get()
+    try {
+      const { id } = this.tx.insert(tag).values(data).returning().get()
 
-    return {
-      success: true,
-      data: tag_mapper(tag_created)
-    }
-  }
-   
-  public find_by_id(id: Tag["id"]): ReturnType<IRepoTag["find_by_id"]> {
-    const tag_searched = this.tx.query.tag.findFirst({
-      where: eq(tag.id, id)
-    }).sync()
+      const tag_created = this.tx.query.tag.findFirst({
+        where: eq(tag.id, id)
+      }).sync()
 
-    if(!tag_searched){
-      return {
-        success: false,
-        error: {
-          code: 'id_not_found',
-          scope: "tag",
-          message: `Foi retornado o valor ${tag_searched} na busca.`
+      if (!tag_created) {
+        return {
+          success: false,
+          error: {
+            scope: RepoInterfaceNames.Tag,
+            method: "create",
+            code: 'id_not_found',
+            message: "Um erro ocorreu durante a criação"
+          }
         }
       }
+
+      return {
+        success: true,
+        data: tag_mapper(tag_created)
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: build_internal_repo_error_tag(
+          "create",
+          error as Error
+        )
+      }
     }
-    return {
-      success: true,
-      data: tag_mapper(tag_searched)
-    };
+  }
+
+  public find_by_id(id: Tag["id"]): ReturnType<IRepoTag["find_by_id"]> {
+    try {
+      const tag_searched = this.tx.query.tag.findFirst({
+        where: eq(tag.id, id)
+      }).sync()
+
+      if (!tag_searched) {
+        return {
+          success: false,
+          error: {
+            scope: RepoInterfaceNames.Tag,
+            method: "find_by_id",
+            code: 'id_not_found',
+            message: `Foi retornado o valor ${tag_searched} na busca.`
+          }
+        }
+      }
+      return {
+        success: true,
+        data: tag_mapper(tag_searched)
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: build_internal_repo_error_tag(
+          "find_by_id",
+          error as Error
+        )
+      }
+    }
   }
 
   public find_by_description(description: Tag["description"]): ReturnType<IRepoTag["find_by_description"]> {
-    const tag_searched = this.tx.query.tag.findFirst({
-      where: eq(tag.description, description)
-    }).sync()
-
-     if(!tag_searched){
-      return {
-        success: false,
-        error: {
-          code: 'description_not_found',
-          scope: "tag",
-          message: `Foi retornado o valor ${tag_searched} na busca.`
+    try {
+      const tag_searched = this.tx.query.tag.findFirst({
+        where: eq(tag.description, description)
+      }).sync()
+  
+      if (!tag_searched) {
+        return {
+          success: false,
+          error: {
+            scope: RepoInterfaceNames.Tag,
+            method: "find_by_description",
+            code: 'description_not_found',
+            message: `Foi retornado o valor ${tag_searched} na busca.`
+          }
         }
       }
+      return {
+        success: true,
+        data: tag_mapper(tag_searched)
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: build_internal_repo_error_tag(
+          "find_by_description",
+          error as Error
+        )
+      }
     }
-    return {
-      success: true,
-      data: tag_mapper(tag_searched)
-    };
   }
 
   public find_all(): ReturnType<IRepoTag["find_all"]> {
-    const result = this.tx.query.tag.findMany().sync()
-
-    const tags = result.map(tag_mapper)
-
-    return {
-      success: true,
-      data: tags
-    }
-  }
-   
-  public update(id: MTag["id"], data: UpdateTagParams): ReturnType<IRepoTag["update"]> {
-    const result = this.tx.update(tag).set(data).where(eq(tag.id, id)).returning({id: tag.id}).get()
-
-    const tag_updated = this.tx.query.tag.findFirst({ where: eq(tag.id, result.id)}).sync()
-
-    if(!tag_updated) {
+    try {
+      const result = this.tx.query.tag.findMany().sync()
+  
+      const tags = result.map(tag_mapper)
+  
+      return {
+        success: true,
+        data: tags
+      }
+    } catch (error) {
       return {
         success: false,
-        error: {
-          code: "id_not_found",
-          scope: "tag",
-          message: "Um erro aconteceu ao obter a tag atualizada."
-        }
+        error: build_internal_repo_error_tag(
+          "find_all",
+          error as Error
+        )
       }
-    };
+    }
+  }
 
-    return {
-      success: true,
-      data: tag_mapper(tag_updated)
+  public update(id: MTag["id"], data: UpdateTagParams): ReturnType<IRepoTag["update"]> {
+    try {
+      const result = this.tx.update(tag).set(data).where(eq(tag.id, id)).returning({ id: tag.id }).get()
+  
+      const tag_updated = this.tx.query.tag.findFirst({ where: eq(tag.id, result.id) }).sync()
+  
+      if (!tag_updated) {
+        return {
+          success: false,
+          error: {
+            scope: RepoInterfaceNames.Tag,
+            method: "update",
+            code: "id_not_found",
+            message: "Um erro aconteceu ao obter a tag atualizada."
+          }
+        }
+      };
+  
+      return {
+        success: true,
+        data: tag_mapper(tag_updated)
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: build_internal_repo_error_tag(
+          "update",
+          error as Error
+        )
+      }
     }
   }
 
   public delete(id: number): ReturnType<IRepoTag["delete"]> {
-    const tag_deleted = this.tx.delete(tag).where(
-      eq(tag.id, id)
-    ).returning().get();
-
-    if (!tag_deleted) {
-      return {
-        success: false,
-        error: {
-          code: "id_not_found",
-          scope: "tag",
-          message: "Ocorreu um erro ao deletar a tag."
+    try {
+      const tag_deleted = this.tx.delete(tag).where(
+        eq(tag.id, id)
+      ).returning().get();
+  
+      if (!tag_deleted) {
+        return {
+          success: false,
+          error: {
+            scope: RepoInterfaceNames.Tag,
+            method: "delete",
+            code: "id_not_found",
+            message: "Ocorreu um erro ao deletar a tag."
+          }
         }
       }
-    }
-
-    return {
-      success: true,
-      data: true
+  
+      return {
+        success: true,
+        data: true
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: build_internal_repo_error_tag(
+          "delete",
+          error as Error
+        )
+      }
     }
   }
 }

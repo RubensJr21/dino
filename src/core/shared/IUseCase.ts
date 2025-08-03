@@ -1,5 +1,7 @@
-import { Result } from "./types/Result";
+// ATTENTION: Remover essa implementação
 
-export default interface IUseCase<IN, OUT> {
-	execute(input: IN): Promise<Result<OUT>>;
-}
+// import { Result } from "./types/Result";
+
+// export default interface IUseCase<IN, OUT> {
+// 	execute(input: IN): Promise<Result<OUT>>;
+// }

@@ -1,15 +1,38 @@
 import { BankAccount, IBankAccount } from "@core/entities/bank_account.entity";
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
 import { IRepoBankAccountTransferMethod } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
 import { IRepoTransferMethod } from "@src/core/shared/interfaces/IRepoTransferMethod";
+import { RepoInterfaceNames } from "@src/core/shared/types/RepoInterfaceNames";
 import { TypeOfTransferMethods } from "@src/core/shared/types/transfer_methods";
+import { UnionRepoInterfaces } from "@src/core/shared/types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "@src/core/shared/types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "@src/core/shared/types/UseCaseResult";
 
 interface Input extends Pick<IBankAccount, "nickname" | "balance"> {
   type_of_bank_transfers: Record<TypeOfTransferMethods, boolean>
 }
 
-type UseCaseInterface = IUseCase<Input, BankAccount>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoBankAccount,
+  IRepoTransferMethod,
+  IRepoBankAccountTransferMethod
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.BankAccount,
+  RepoInterfaceNames.TransferMethod,
+  RepoInterfaceNames.BankAccountTransferMethod
+]>;
+
+type Return = UseCaseResult<
+  "RegisterBankAccount",
+  BankAccount,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default class RegisterBankAccount implements UseCaseInterface {
   constructor(
@@ -25,7 +48,8 @@ export default class RegisterBankAccount implements UseCaseInterface {
         success: false,
         error: {
           code: "nickname_already_used",
-          scope: `RegisterBankAccount(${this.repo_ba.find_by_nickname.name})`,
+          trace: "RegisterBankAccount > RepoBankAccount",
+          method: "find_by_nickname",
           message: `O nickname '${input.nickname}' já está sendo utilizado!`
         }
       }
@@ -37,12 +61,11 @@ export default class RegisterBankAccount implements UseCaseInterface {
     })
 
     if(!result_create.success){
-      const scope = `RegisterBankAccount(${this.repo_ba.find_by_nickname.name}) > ${result_create.error.scope}`
       return {
         success: false,
         error: {
           ...result_create.error,
-          scope
+          trace: "RegisterBankAccount > RepoBankAccount"
         }
       }
     }
@@ -52,12 +75,11 @@ export default class RegisterBankAccount implements UseCaseInterface {
     const result_transfer_methods_all = this.repo_tm.find_all()
 
     if(!result_transfer_methods_all.success){
-       const scope = `RegisterBankAccount(${this.repo_tm.find_all.name}) > ${result_transfer_methods_all.error.scope}`
       return {
         success: false,
         error: {
           ...result_transfer_methods_all.error,
-          scope
+          trace: "RegisterBankAccount > RepoTransferMethod"
         }
       }
     }
@@ -68,12 +90,11 @@ export default class RegisterBankAccount implements UseCaseInterface {
       // isso será feito na migration da
       const transfer_method_searched = this.repo_tm.find_by_method(key)
       if(!transfer_method_searched.success){
-        const scope = `RegisterBankAccount(${this.repo_tm.find_by_method.name}) > ${transfer_method_searched.error.scope}`
         return {
           success: false,
           error: {
             ...transfer_method_searched.error,
-            scope
+            trace: "RegisterBankAccount > RepoBankAccountTransferMethod"
           }
         }
       }
@@ -87,12 +108,11 @@ export default class RegisterBankAccount implements UseCaseInterface {
       })
 
       if(!ba_tm_created.success){
-        const scope = `RegisterBankAccount(${this.repo_ba_tm.create.name}) > ${ba_tm_created.error.scope}`
         return {
           success: false,
           error: {
             ...ba_tm_created.error,
-            scope
+            trace: "RegisterBankAccount > RepoBankAccountTransferMethod"
           }
         }
       }

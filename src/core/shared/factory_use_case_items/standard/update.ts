@@ -1,9 +1,13 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { Standard } from "@src/core/entities/standard.entity";
 import { MItemValue } from "@src/core/models/item_value.model";
 import IEntityBase from "../../interfaces/bases/IEntityBase";
 import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
 import { IRepoStandard } from "../../interfaces/IRepoStandard";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface Input {
@@ -11,7 +15,24 @@ interface Input {
   data_item_value: StrictOmit<MItemValue, "id">
 }
 
-type UseCaseInterface = IUseCase<Input, Standard>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoStandard,
+  IRepoItemValue
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Standard,
+  RepoInterfaceNames.ItemValue
+]>;
+
+type Return = UseCaseResult<
+  "UpdateStandard",
+  Standard,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class UpdateStandard implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
@@ -23,12 +44,11 @@ export default abstract class UpdateStandard implements UseCaseInterface {
     const result_search = this.repo_s.find_by_id(input.id);
 
     if(!result_search.success){
-      const scope = `UpdateStandard(${this.repo_s.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "UpdateStandard > RepoStandard"
         }
       }
     }
@@ -38,12 +58,11 @@ export default abstract class UpdateStandard implements UseCaseInterface {
     const result_update = this.repo_iv.update(item_value_data.id, input.data_item_value)
 
     if(!result_update.success){
-      const scope = `UpdateStandard(${this.repo_iv.create.name}) > ${result_update.error.scope}`
       return {
         success: false,
         error: {
           ...result_update.error,
-          scope
+          trace: "UpdateStandard > RepoItemValue"
         }
       }
     }
@@ -51,12 +70,11 @@ export default abstract class UpdateStandard implements UseCaseInterface {
     const standard_updated = this.repo_s.find_by_id(input.id)
 
     if(!standard_updated.success){
-      const scope = `UpdateStandard(${this.repo_s.find_by_id.name}) > ${standard_updated.error.scope}`
       return {
         success: false,
         error: {
           ...standard_updated.error,
-          scope
+          trace: "UpdateStandard > RepoStandard"
         }
       }
     }

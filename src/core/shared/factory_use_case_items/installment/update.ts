@@ -1,58 +1,77 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { Installment } from "@src/core/entities/installment.entity";
 import { IRepoInstallment, UpdateInstallmentParams } from "../../interfaces/IRepoInstallment";
 import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 
 interface Input {
   id: number;
   data: UpdateInstallmentParams
 }
 
-type UseCaseInterface = IUseCase<Input, Installment>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoInstallment,
+  IRepoItemValue
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Installment,
+  RepoInterfaceNames.ItemValue
+]>;
+
+type Return = UseCaseResult<
+  "UpdateInstallment",
+  Installment,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class UpdateInstallment implements UseCaseInterface {
-  
+
   constructor(
     private repo_i: IRepoInstallment,
     private repo_iv: IRepoItemValue
-  ){}
-  
+  ) { }
+
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const result_search = this.repo_i.find_by_id(input.id);
 
-    if(!result_search.success){
-      const scope = `UpdateInstallment(${this.repo_i.find_by_id.name}) > ${result_search.error.scope}`
+    if (!result_search.success) {
       return {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "UpdateInstallment > RepoInstallment"
         }
       }
     }
 
     const old_description = result_search.data.description
-    
+
     const item_values_founded = this.repo_i.find_all_item_value(input.id);
-    
-    if(!item_values_founded.success){
-      const scope = `UpdateInstallment(${this.repo_i.find_all_item_value.name}) > ${item_values_founded.error.scope}`
+
+    if (!item_values_founded.success) {
       return {
         success: false,
         error: {
           ...item_values_founded.error,
-          scope
+          trace: "UpdateInstallment > RepoInstallment"
         }
       }
     }
-    
+
     const item_values_data = item_values_founded.data
-    
+
     for (const item_value of item_values_data) {
       const new_item_value_description = item_value.description.replace(old_description, input.data.description)
-      
+
       item_value.change_description(new_item_value_description)
-      
+
       const {
         id,
         tag,
@@ -65,13 +84,13 @@ export default abstract class UpdateInstallment implements UseCaseInterface {
       }
       const item_value_updated = this.repo_iv.update(id, rest)
 
-      if(!item_value_updated.success){
+      if (!item_value_updated.success) {
         const scope = `UpdateInstallment(${this.repo_i.find_all_item_value.name}) > ${item_value_updated.error.scope}`
         return {
           success: false,
           error: {
             ...item_value_updated.error,
-            scope
+            trace: "UpdateInstallment > RepoItemValue"
           }
         }
       }
@@ -80,13 +99,12 @@ export default abstract class UpdateInstallment implements UseCaseInterface {
 
     const result_update = this.repo_i.update(input.id, input.data)
 
-    if(!result_update.success){
-      const scope = `UpdateInstallment(${this.repo_i.update.name}) > ${result_update.error.scope}`
+    if (!result_update.success) {
       return {
         success: false,
         error: {
           ...result_update.error,
-          scope
+          trace: "UpdateInstallment > RepoInstallment"
         }
       }
     }

@@ -13,7 +13,7 @@ export default function HomeRecurring({ navigation }: PaymentsProps) {
 
   useEffect(() => {
     RecurringPaymentApi.list_all().then((payments_recurring) => {
-      if(!payments_recurring){
+      if(!payments_recurring || payments_recurring.length === 0) {
         Alert.alert("Erro", "Não foi possível carregar os recebimentos.");
         return;
       }

@@ -1,9 +1,30 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { Installment } from "@src/core/entities/installment.entity";
 import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
-type UseCaseInterface = IUseCase<void, Installment[]>
+type Input = void;
+
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoInstallment
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Installment
+]>;
+
+type Return = UseCaseResult<
+  "ListAllInstallments",
+  Installment[],
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class ListAllInstallments implements UseCaseInterface {
   protected abstract variant: TypeOfVariants
@@ -14,12 +35,11 @@ export default abstract class ListAllInstallments implements UseCaseInterface {
     const result_search = this.repo_i.find_all_by_cashflow_type(this.variant);
     
     if(!result_search.success){
-      const scope = `ListAllInstallments(${this.repo_i.find_all_by_cashflow_type.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "ListAllInstallments > RepoInstallment"
         }
       }
     }

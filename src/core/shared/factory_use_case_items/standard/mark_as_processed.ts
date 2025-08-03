@@ -1,14 +1,35 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { Standard } from "@src/core/entities/standard.entity";
 import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
 import { IRepoStandard } from "../../interfaces/IRepoStandard";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface Input {
   id: number
 }
 
-type UseCaseInterface = IUseCase<Input, Standard>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoStandard,
+  IRepoItemValue
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Standard,
+  RepoInterfaceNames.ItemValue
+]>;
+
+type Return = UseCaseResult<
+  "MarkStandardAsProcessed",
+  Standard,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class MarkStandardAsProcessed implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
@@ -20,12 +41,11 @@ export default abstract class MarkStandardAsProcessed implements UseCaseInterfac
     const result_search = this.repo_s.find_by_id(input.id)
 
     if(!result_search.success){
-      const scope = `MarkStandardAsProcessed(${this.repo_s.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "MarkStandardAsProcessed > RepoStandard"
         }
       }
     }
@@ -42,12 +62,11 @@ export default abstract class MarkStandardAsProcessed implements UseCaseInterfac
     })
 
     if(!result_updated.success){
-      const scope = `MarkStandardAsProcessed(${this.repo_iv.update.name}) > ${result_updated.error.scope}`
       return {
         success: false,
         error: {
           ...result_updated.error,
-          scope
+          trace: "MarkStandardAsProcessed > RepoItemValue"
         }
       }
     }
@@ -55,12 +74,11 @@ export default abstract class MarkStandardAsProcessed implements UseCaseInterfac
     const result_search_after_update = this.repo_s.find_by_id(input.id);
 
     if(!result_search_after_update.success){
-      const scope = `MarkStandardAsProcessed(${this.repo_s.find_by_id.name}) > ${result_search_after_update.error.scope}`
       return {
         success: false,
         error: {
           ...result_search_after_update.error,
-          scope
+          trace: "MarkStandardAsProcessed > RepoStandard"
         }
       }
     }

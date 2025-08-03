@@ -1,13 +1,32 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
+import { RepoInterfaceNames } from "@src/core/shared/types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "@src/core/shared/types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "@src/core/shared/types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "@src/core/shared/types/UseCaseResult";
 
 interface Input {
   id: number,
   new_balance: number
 }
 
-type UseCaseInterface = IUseCase<Input, BankAccount>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoBankAccount
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.BankAccount
+]>;
+
+type Return = UseCaseResult<
+  "UpdateBalanceBankAccount",
+  BankAccount,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default class UpdateBalanceBankAccount implements UseCaseInterface {
   constructor(private repo_ba: IRepoBankAccount) { }
@@ -15,12 +34,11 @@ export default class UpdateBalanceBankAccount implements UseCaseInterface {
     const result_search = this.repo_ba.find_by_id(input.id)
 
     if (!result_search.success) {
-      const scope = `UpdateBalanceBankAccount(${this.repo_ba.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "UpdateBalanceBankAccount > RepoBankAccount"
         }
       }
     }
@@ -34,12 +52,11 @@ export default class UpdateBalanceBankAccount implements UseCaseInterface {
     const result_update = this.repo_ba.update(id, bank_account_without_id);
 
     if (!result_update.success) {
-      const scope = `UpdateBalanceBankAccount(${this.repo_ba.update.name}) > ${result_update.error.scope}`
       return {
         success: false,
         error: {
           ...result_update.error,
-          scope
+          trace: "UpdateBalanceBankAccount > RepoBankAccount"
         }
       }
     }

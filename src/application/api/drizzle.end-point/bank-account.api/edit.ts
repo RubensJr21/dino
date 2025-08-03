@@ -38,16 +38,16 @@ async function edit({
 
     const repo_tm = new BankAccountTransferMethodDrizzleRepository(tx);
     const update_transfer_methods = new UpdateTransferMethodsBankAccount(repo, repo_tm)
-    bank_account_updated = await update_transfer_methods.execute({
+    const bank_account_transfers_updated = await update_transfer_methods.execute({
       id,
       type_of_bank_transfers
     });
 
-    if(!bank_account_updated.success){
+    if(!bank_account_transfers_updated.success){
       tx.rollback()
       return undefined;
     }
-    last_bank_account_modified = bank_account_updated.data
+    last_bank_account_modified = bank_account_transfers_updated.data
   })
 
   return last_bank_account_modified;

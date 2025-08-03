@@ -1,9 +1,30 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { Standard } from "@src/core/entities/standard.entity";
 import { IRepoStandard } from "../../interfaces/IRepoStandard";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
-type UseCaseInterface = IUseCase<void, Standard[]>
+type Input = void
+
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoStandard,
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Standard,
+]>;
+
+type Return = UseCaseResult<
+  "ListAllStandards",
+  Standard[],
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class ListAllStandards implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
@@ -15,12 +36,11 @@ export default abstract class ListAllStandards implements UseCaseInterface {
     const result_search = this.repo_s.find_all_by_cashflow_type(this.variant);
     
     if(!result_search.success){
-      const scope = `ListAllStandards(${this.repo_s.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "ListAllStandards > RepoStandard"
         }
       }
     }

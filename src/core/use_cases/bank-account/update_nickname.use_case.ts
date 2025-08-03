@@ -1,27 +1,47 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
+import { RepoInterfaceNames } from "@src/core/shared/types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "@src/core/shared/types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "@src/core/shared/types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "@src/core/shared/types/UseCaseResult";
 
 interface Input {
   id: number,
   new_nickname: string
 }
 
-type UseCaseInterface = IUseCase<Input, BankAccount>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoBankAccount
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.BankAccount
+]>;
+
+type Return = UseCaseResult<
+  "UpdateNicknameBankAccount",
+  BankAccount,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default class UpdateNicknameBankAccount implements UseCaseInterface {
   constructor(private repo_ba: IRepoBankAccount) { }
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const result_searched_nickname = this.repo_ba.find_by_nickname(input.new_nickname)
 
-    if(result_searched_nickname.success){
+    if (result_searched_nickname.success) {
       const bank_account_data = result_searched_nickname.data
-      if(bank_account_data.id !== input.id){
+      if (bank_account_data.id !== input.id) {
         return {
           success: false,
           error: {
             code: "nickname_already_used",
-            scope: `UpdateNicknameBankAccount(${this.repo_ba.find_by_nickname.name})`,
+            trace: "UpdateNicknameBankAccount > RepoBankAccount",
+            method: "find_by_nickname",
             message: `O nickname '${input.new_nickname}' já está sendo utilizado!`
           }
         }
@@ -30,13 +50,12 @@ export default class UpdateNicknameBankAccount implements UseCaseInterface {
 
     const result_search = this.repo_ba.find_by_id(input.id)
 
-    if(!result_search.success){
-      const scope = `UpdateNicknameBankAccount(${this.repo_ba.find_by_id.name}) > ${result_search.error.scope}`
+    if (!result_search.success) {
       return {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "UpdateNicknameBankAccount > RepoBankAccount"
         }
       }
     }
@@ -49,12 +68,11 @@ export default class UpdateNicknameBankAccount implements UseCaseInterface {
     const result_update = this.repo_ba.update(id, bank_account_without_id);
 
     if (!result_update.success) {
-      const scope = `UpdateNicknameBankAccount(${this.repo_ba.update.name}) > ${result_update.error.scope}`
       return {
         success: false,
         error: {
           ...result_update.error,
-          scope
+          trace: "UpdateNicknameBankAccount > RepoBankAccount"
         }
       }
     }

@@ -1,8 +1,12 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { ItemValue } from "@src/core/entities/item_value.entity";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
 import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface Input {
@@ -10,7 +14,24 @@ interface Input {
   item_value_id: ItemValue["id"];
 }
 
-type UseCaseInterface = IUseCase<Input, Recurring>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoRecurring,
+  IRepoItemValue,
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Recurring,
+  RepoInterfaceNames.ItemValue
+]>;
+
+type Return = UseCaseResult<
+  "MarkRecurringItemValueAsProcessed",
+  Recurring,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class MarkRecurringItemValueAsProcessed implements UseCaseInterface {
   protected abstract variant: TypeOfVariants
@@ -22,12 +43,11 @@ export default abstract class MarkRecurringItemValueAsProcessed implements UseCa
     const item_value_searched = this.repo_r.find_item_value(input.id, input.item_value_id);
 
     if (!item_value_searched.success) {
-      const scope = `MarkRecurringItemValueAsProcessed(${this.repo_r.find_item_value.name}) > ${item_value_searched.error.scope}`
       return {
         success: false,
         error: {
           ...item_value_searched.error,
-          scope
+          trace: "MarkRecurringItemValueAsProcessed > RepoRecurring"
         }
       }
     }
@@ -50,25 +70,23 @@ export default abstract class MarkRecurringItemValueAsProcessed implements UseCa
     const result_update = this.repo_iv.update(id, data);
 
     if(!result_update.success){
-      const scope = `MarkRecurringItemValueAsProcessed(${this.repo_iv.update.name}) > ${result_update.error.scope}`
       return {
         success: false,
         error: {
           ...result_update.error,
-          scope
-        }
+          trace: "MarkRecurringItemValueAsProcessed > RepoItemValue"
+        },
       }
     }
 
     const result_search_after_update = this.repo_r.find_by_id(input.id);
 
     if(!result_search_after_update.success){
-      const scope = `MarkRecurringItemValueAsProcessed(${this.repo_r.find_by_id.name}) > ${result_search_after_update.error.scope}`
       return {
         success: false,
         error: {
           ...result_search_after_update.error,
-          scope
+          trace: "MarkRecurringItemValueAsProcessed > RepoRecurring"
         }
       }
     }

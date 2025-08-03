@@ -1,6 +1,8 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { IRecurring, Recurring } from "@src/core/entities/recurring.entity";
 import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface Input {
@@ -8,7 +10,20 @@ interface Input {
   current_amount: IRecurring["current_amount"]
 }
 
-type UseCaseInterface = IUseCase<Input, Recurring>
+type UsedRepoInterfaces = 
+  | IRepoRecurring;
+
+type UsedRepoInterfaceNames =
+  | RepoInterfaceNames.Recurring
+
+type Return = UseCaseResult<
+  "UpdateCurrentRecurringAmount",
+  Recurring,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class UpdateCurrentRecurringAmount implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
@@ -19,12 +34,11 @@ export default abstract class UpdateCurrentRecurringAmount implements UseCaseInt
     const result_search = this.repo_r.find_by_id(input.id);
 
     if(!result_search.success){
-      const scope = `UpdateCurrentRecurringAmount(${this.repo_r.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "UpdateCurrentRecurringAmount > RepoRecurring"
         }
       }
     }
@@ -41,12 +55,11 @@ export default abstract class UpdateCurrentRecurringAmount implements UseCaseInt
     })
 
     if(!result_update.success){
-      const scope = `UpdateCurrentRecurringAmount(${this.repo_r.find_by_id.name}) > ${result_update.error.scope}`
       return {
         success: false,
         error: {
           ...result_update.error,
-          scope
+          trace: "UpdateCurrentRecurringAmount > RepoRecurring"
         }
       }
     }

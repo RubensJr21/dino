@@ -1,13 +1,32 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { Standard } from "@src/core/entities/standard.entity";
 import { IRepoStandard } from "../../interfaces/IRepoStandard";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface Input {
   id: number
 }
 
-type UseCaseInterface = IUseCase<Input, Standard>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoStandard,
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Standard,
+]>;
+
+type Return = UseCaseResult<
+  "FindStandardById",
+  Standard,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class FindStandardById implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
@@ -24,7 +43,7 @@ export default abstract class FindStandardById implements UseCaseInterface {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "FindStandardById > RepoStandard"
         }
       }
     }

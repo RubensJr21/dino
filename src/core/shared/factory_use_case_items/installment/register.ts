@@ -1,14 +1,35 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { Installment } from "@src/core/entities/installment.entity";
 import { ItemValue } from "@src/core/entities/item_value.entity";
 import { MInstallment } from "@src/core/models/installment.model";
 import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
 import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 type Input = StrictOmit<MInstallment, "id" | "created_at" | "updated_at">
 
-type UseCaseInterface = IUseCase<Input, Installment>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoInstallment,
+  IRepoItemValue
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Installment,
+  RepoInterfaceNames.ItemValue
+]>;
+
+type Return = UseCaseResult<
+  "RegisterInstallment",
+  Installment,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class RegisterInstallment implements UseCaseInterface {
   protected abstract variant: TypeOfVariants
@@ -74,8 +95,9 @@ export default abstract class RegisterInstallment implements UseCaseInterface {
       return {
         success: false,
         error: {
+          trace: "RegisterInstallment",
+          method: "verification_in_use_case",
           code: "installment_number_less_than_2",
-          scope: "RegisterInstallment",
           message: "O valor da quantidade das parcelas precisa ser de no mínimo 2."
         }
       }
@@ -91,12 +113,11 @@ export default abstract class RegisterInstallment implements UseCaseInterface {
     })
 
     if (!result_create.success) {
-      const scope = `RegisterInstallment(${this.repo_iv.create.name}) > ${result_create.error.scope}`
       return {
         success: false,
         error: {
           ...result_create.error,
-          scope
+          trace: "RegisterInstallment > RepoItemValue"
         }
       }
     }
@@ -118,12 +139,11 @@ export default abstract class RegisterInstallment implements UseCaseInterface {
       })
 
       if (!result_item_value_create.success) {
-        const scope = `RegisterInstallment(${this.repo_iv.create.name}) > ${result_item_value_create.error.scope}`
         return {
           success: false,
           error: {
             ...result_item_value_create.error,
-            scope
+            trace: "RegisterInstallment > RepoItemValue"
           }
         }
       }
@@ -135,15 +155,14 @@ export default abstract class RegisterInstallment implements UseCaseInterface {
 
     const installment = result_create.data
 
-    const installment_item_value_linked = this.repo_i.registerInstallments(installment.id, item_value_id_list);
+    const installment_item_value_linked = this.repo_i.register_installments(installment.id, item_value_id_list);
 
     if(!installment_item_value_linked.success){
-      const scope = `RegisterInstallment(${this.repo_i.registerInstallments.name}) > ${installment_item_value_linked.error.scope}`
       return {
         success: false,
         error: {
           ...installment_item_value_linked.error,
-          scope
+          trace: "RegisterInstallment > RepoInstallment"
         }
       }
     }

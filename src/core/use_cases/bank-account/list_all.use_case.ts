@@ -1,8 +1,29 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
+import { RepoInterfaceNames } from "@src/core/shared/types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "@src/core/shared/types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "@src/core/shared/types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "@src/core/shared/types/UseCaseResult";
 
-type UseCaseInterface = IUseCase<void, BankAccount[]>
+type Input = void;
+
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoBankAccount
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.BankAccount
+]>;
+
+type Return = UseCaseResult<
+  "ListAllBankAccounts",
+  BankAccount[],
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default class ListAllBankAccounts implements UseCaseInterface {
   constructor(private repo_ba: IRepoBankAccount) { }
@@ -13,7 +34,7 @@ export default class ListAllBankAccounts implements UseCaseInterface {
         success: false,
         error: {
           ...result.error,
-          scope: `ListAllBankAccounts > ${result.error.scope}`
+          trace: "ListAllBankAccounts > RepoBankAccount"
         }
       }
     }

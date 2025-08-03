@@ -1,13 +1,32 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { BankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
 import IEntityBase from "@src/core/shared/interfaces/bases/IEntityBase";
 import { IRepoBankAccountTransferMethod } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
+import { RepoInterfaceNames } from "@src/core/shared/types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "@src/core/shared/types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "@src/core/shared/types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "@src/core/shared/types/UseCaseResult";
 
 interface Input {
   id: IEntityBase["id"]
 }
 
-type UseCaseInterface = IUseCase<Input, BankAccountTransferMethod[]>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoBankAccountTransferMethod
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.BankAccountTransferMethod
+]>;
+
+type Return = UseCaseResult<
+  "ListAllTransfersMethodTypeBankAccount",
+  BankAccountTransferMethod[],
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default class ListAllTransfersMethodTypeBankAccount implements UseCaseInterface {
   constructor(
@@ -21,7 +40,7 @@ export default class ListAllTransfersMethodTypeBankAccount implements UseCaseInt
         success: false,
         error: {
           ...result.error,
-          scope: `ListAllTransfersMethodTypeBankAccount > ${result.error.scope}`
+          trace: "ListAllTransfersMethodTypeBankAccount > RepoBankAccountTransferMethod"
         }
       }
     }

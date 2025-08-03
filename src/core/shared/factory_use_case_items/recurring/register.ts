@@ -1,12 +1,33 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
 import { CreateRecurringParams, IRepoRecurring } from "../../interfaces/IRepoRecurring";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
+import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 type Input = CreateRecurringParams
 
-type UseCaseInterface = IUseCase<Input, Recurring>
+type UsedRepoInterfaces = UnionRepoInterfaces<[
+  IRepoRecurring,
+  IRepoItemValue,
+]>;
+
+type UsedRepoInterfaceNames = UnionRepoInterfacesNames<[
+  RepoInterfaceNames.Recurring,
+  RepoInterfaceNames.ItemValue
+]>;
+
+type Return = UseCaseResult<
+  "RegisterRecurring",
+  Recurring,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class RegisterRecurring implements UseCaseInterface {
   protected abstract variant: TypeOfVariants
@@ -19,12 +40,11 @@ export default abstract class RegisterRecurring implements UseCaseInterface {
     console.log("criado...")
 
     if(!result_created.success) {
-      const scope = `RegisterRecurring(${this.repo_r.create.name}) > ${result_created.error.scope}`
       return {
         success: false,
         error: {
           ...result_created.error,
-          scope
+          trace: "RegisterRecurring > RepoRecurring"
         }
       }
     }
@@ -40,12 +60,11 @@ export default abstract class RegisterRecurring implements UseCaseInterface {
     })
 
     if(!result_item_value_created.success){
-      const scope = `RegisterRecurring(${this.repo_iv.create.name}) > ${result_item_value_created.error.scope}`
       return {
         success: false,
         error: {
           ...result_item_value_created.error,
-          scope
+          trace: "RegisterRecurring > RepoItemValue",
         }
       }
     }
@@ -54,15 +73,14 @@ export default abstract class RegisterRecurring implements UseCaseInterface {
 
     const item_value = result_item_value_created.data
 
-    const recurring_item_value_linked = this.repo_r.registerNextRecurring(recurring.id, item_value.id)
+    const recurring_item_value_linked = this.repo_r.register_next_recurring(recurring.id, item_value.id)
 
     if(!recurring_item_value_linked.success){
-      const scope = `RegisterRecurring(${this.repo_r.registerNextRecurring.name}) > ${recurring_item_value_linked.error.scope}`
       return {
         success: false,
         error: {
           ...recurring_item_value_linked.error,
-          scope
+          trace: "RegisterRecurring > RepoRecurring"
         }
       }
     }

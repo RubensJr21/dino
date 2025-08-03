@@ -1,13 +1,28 @@
-import IUseCase from "@core/shared/IUseCase";
+import IUseCase from "@core/shared/IUseCase_v2";
 import { IRecurring, Recurring } from "@src/core/entities/recurring.entity";
 import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
+import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
+import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
 interface Input {
   id: IRecurring["id"]
 }
 
-type UseCaseInterface = IUseCase<Input, Recurring>
+type UsedRepoInterfaces = 
+  | IRepoRecurring;
+
+type UsedRepoInterfaceNames =
+  | RepoInterfaceNames.Recurring
+
+type Return = UseCaseResult<
+  "DeleteRecurring",
+  Recurring,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
 
 export default abstract class EnableRecurring implements UseCaseInterface {
   protected abstract variant: TypeOfVariants;
@@ -20,12 +35,11 @@ export default abstract class EnableRecurring implements UseCaseInterface {
     const result_search = this.repo_r.find_by_id(input.id)
 
     if (!result_search.success) {
-      const scope = `EnableRecurring(${this.repo_r.find_by_id.name}) > ${result_search.error.scope}`
       return {
         success: false,
         error: {
           ...result_search.error,
-          scope
+          trace: "DeleteRecurring > RepoRecurring"
         }
       }
     }
@@ -52,12 +66,11 @@ export default abstract class EnableRecurring implements UseCaseInterface {
     const result_updated = this.repo_r.update(input.id, data)
 
     if(!result_updated.success) {
-      const scope = `EnableRecurring(${this.repo_r.update.name}) > ${result_updated.error.scope}`
       return {
         success: false,
         error: {
           ...result_updated.error,
-          scope
+          trace: "DeleteRecurring > RepoRecurring"
         }
       }
     }
