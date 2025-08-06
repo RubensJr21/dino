@@ -35,13 +35,7 @@ export default function Receipts({ navigation }: Props) {
       data={receipts}
       {...{ searchQuery, setSearchQuery }}
       navigateToEditPage={(receipt) => {
-        navigation.navigate("Edit", {
-          id: receipt.id,
-          description: receipt.description,
-          date: receipt.date,
-          currency: receipt.currency,
-          tag: receipt.tag
-        });
+        navigation.navigate("Edit", receipt);
       }}
       fabAction={() => {
         navigation.navigate("Register");

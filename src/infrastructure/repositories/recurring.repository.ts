@@ -15,22 +15,20 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
   public create({
     is_disabled,
     start_date,
-    end_date,
     current_amount,
-    fk_id_tag,
-    fk_id_transfer_method,
-    fk_id_recurrence_type,
+    tag,
+    transfer_method,
+    recurrence_type,
   }: CreateRecurringParams): ReturnType<IRepoRecurring["create"]> {
     try {
       // Registra Recurring
       const { id } = this.tx.insert(recurring).values({
         is_disabled,
         start_date,
-        end_date,
         current_amount,
-        fk_id_tag,
-        fk_id_transfer_method,
-        fk_id_recurrence_type,
+        fk_id_tag: tag.id,
+        fk_id_transfer_method: transfer_method.id,
+        fk_id_recurrence_type: recurrence_type.id,
       }).returning({ id: recurring.id }).get()
       console.log("Depois do insert")
       console.log(id)

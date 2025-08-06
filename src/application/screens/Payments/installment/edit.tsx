@@ -1,13 +1,13 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { ValueFormEditTemplate } from "@src/application/templates/FormEditTemplate";
 import InstallmentEditScreenTemplate from "@src/application/templates/screens/Installment/Edit";
-import { EditInstallmentScreenParams } from "@src/application/types/screens/InstallmentScreenParams";
 import { VARIANTS_OF_ITEM_VALUE } from "@src/core/shared/types/variants_items";
 import { PaymentsInstallmentStackParamList } from "./routes";
 
 type Props = BottomTabScreenProps<PaymentsInstallmentStackParamList, 'Edit'>;
 
 export default function EditInstallment({route, navigation}: Props) {
-  const handleButton = (data: EditInstallmentScreenParams) => {
+  const handleButton = (data: ValueFormEditTemplate) => {
     console.log(data);
     navigation.goBack(); // Volta para a tela anterior após editar
   };

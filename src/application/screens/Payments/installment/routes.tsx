@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { EditInstallmentScreenParams } from '@src/application/types/screens/InstallmentScreenParams';
+import { ValueInstallmentEditScreenTemplate } from '@src/application/templates/screens/Installment/Edit';
 import EditInstallment from './edit';
 import Home from './home';
 import RegisterInstallment from './register';
@@ -7,7 +7,7 @@ import RegisterInstallment from './register';
 export type PaymentsInstallmentStackParamList = {
   Home: undefined;
   Register: undefined;
-  Edit: EditInstallmentScreenParams;
+  Edit: ValueInstallmentEditScreenTemplate;
 }
 
 const Stack = createNativeStackNavigator<PaymentsInstallmentStackParamList>();

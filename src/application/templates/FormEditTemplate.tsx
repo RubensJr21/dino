@@ -12,8 +12,8 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import TagPicker, { useRefTagPicker } from "../components/TagPicker";
 import { TextBold } from "../components/Text/TextBold";
 
-export interface ValueFormTemplate {
-  id?: number;
+export interface ValueFormEditTemplate {
+  id: number;
   description: string;
   cashflow_type: TypeOfVariants;
   scheduled_at: Date;
@@ -23,65 +23,37 @@ export interface ValueFormTemplate {
   tag_description: ITag["description"];
 }
 
-interface FormTemplateProps {
+interface FormEditTemplateProps {
   variant: TypeOfVariants;
-  value?: ValueFormTemplate;
+  value: ValueFormEditTemplate;
   formExtension?: ReactNode;
-  submitAction: (params: ValueFormTemplate) => void;
+  submitAction: (params: ValueFormEditTemplate) => void;
 }
 
 export function getVariantText(variant: TypeOfVariants) {
   return variant === VARIANTS_OF_ITEM_VALUE.Receipt ? "recebimento" : "pagamento"
 }
 
-interface PageTitleProps {
-  variant: TypeOfVariants;
-  value?: ValueFormTemplate;
-}
-
-const PageTitle = ({ variant, value }: PageTitleProps) => {
-  if (value) {
-    return (
-      <BasePageTitle>
-        Edição de {getVariantText(variant)} - ({value.id}) <TextBold children={value.description} />
-      </BasePageTitle>
-    )
-  } else {
-    return (
-      <BasePageTitle>
-        <BasePageTitle>Registrar {getVariantText(variant)}</BasePageTitle>
-      </BasePageTitle>
-    )
-  }
-}
-
-export default function FormTemplate({ variant, value, submitAction, formExtension }: FormTemplateProps) {
+export default function FormEditTemplate({ variant, value, submitAction, formExtension }: FormEditTemplateProps) {
   // 1️⃣ Declarar tudo aqui fora:
-  const refDescription = useRefInputDescription(value?.description);
-  const refDatePicker = useRefInputDatePicker(value?.scheduled_at);
-  const refCurrency = useRefInputCurrency(value?.amount);
-  const refTagPicker = useRefTagPicker(value?.tag_description ?? "others");
+  const refDescription = useRefInputDescription(value.description);
+  const refDatePicker = useRefInputDatePicker(value.scheduled_at);
+  const refCurrency = useRefInputCurrency(value.amount);
+  const refTagPicker = useRefTagPicker(value.tag_description);
 
-  const getHandleAction = (value?: ValueFormTemplate) => {
-    if (value) {
-      return (() => submitAction(value))
-    } else {
-      return () => {
-        submitAction({
-          description: refDescription.value.current,
-          scheduled_at: refDatePicker.dateRef.current,
-          amount: refCurrency.currencyRef.current,
-          // ALERT: Preciso criar o seletor de método de transferência
-          transfer_method_id: 1,
-          tag_description: refTagPicker.value.current,
-          cashflow_type: variant,
-          was_processed: false
-        })
-      }
-    }
-  }
-
-  const handleAction = getHandleAction(value);
+  const handleAction = () => {
+    submitAction({
+      id: value.id,
+      description: refDescription.value.current,
+      scheduled_at: refDatePicker.dateRef.current,
+      amount: refCurrency.currencyRef.current,
+      // ALERT: Preciso criar o seletor de método de transferência
+      transfer_method_id: 1,
+      tag_description: refTagPicker.value.current,
+      cashflow_type: variant,
+      was_processed: false
+    })
+  };
 
   const variant_text = variant === VARIANTS_OF_ITEM_VALUE.Receipt ? "recebimento" : "pagamento"
 
@@ -93,7 +65,9 @@ export default function FormTemplate({ variant, value, submitAction, formExtensi
   return (
     <BasePageView>
       <ScrollView>
-        <PageTitle variant={variant} value={value} />
+        <BasePageTitle>
+          Edição de {getVariantText(variant)} - ({value.id}) <TextBold children={value.description} />
+        </BasePageTitle>
         <View style={styles.view_form}>
           <InputDescription placeholder={placeholderDescription} {...{ refDescription }} />
           <InputDatePicker label={labelDate} {...{ refDatePicker }} />
@@ -118,7 +92,7 @@ export default function FormTemplate({ variant, value, submitAction, formExtensi
               "Nenhum tipo de transferência conta bancária está ativa no momento. Ative algum tipo de método da conta selecionada."
           */}
 
-          <SubmitButton variant={!value ? "Add" : "Edit"} onPress={handleAction} />
+          <SubmitButton variant="Edit" onPress={handleAction} />
         </View>
       </ScrollView>
     </BasePageView>

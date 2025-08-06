@@ -1,6 +1,7 @@
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { EditStandardScreenParams, HomeStandardScreenParams, RegisterStandardScreenParams } from '@src/application/types/screens/StandardScreenParams';
+import { ValueFormEditTemplate } from '@src/application/templates/FormEditTemplate';
+import { HomeStandardScreenParams } from '@src/application/types/screens/StandardScreenParams';
 import { ReceiptsTabParamList } from '../routes';
 import EditStandard from './edit';
 import Receipts from './home';
@@ -8,8 +9,8 @@ import RegisterStandard from './register';
 
 export type ReceiptsStandardStackParamList = {
   Home: HomeStandardScreenParams;
-  Register: RegisterStandardScreenParams;
-  Edit: EditStandardScreenParams;
+  Register: undefined;
+  Edit: ValueFormEditTemplate;
 }
 
 type Props = BottomTabScreenProps<ReceiptsTabParamList, 'ReceiptsStandard'>

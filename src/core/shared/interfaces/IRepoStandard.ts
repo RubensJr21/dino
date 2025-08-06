@@ -1,11 +1,14 @@
 import { MStandard } from "@src/core/models/standard.model";
-import { ItemValue } from "../../entities/item_value.entity";
+import { IItemValue, ItemValue } from "../../entities/item_value.entity";
 import { Standard } from "../../entities/standard.entity";
 import { build_internal_repo_error_generic } from "../types/BuildInternalRepoErrorGeneric";
 import { RepoInterfaceNames } from "../types/RepoInterfaceNames";
 import { RepoDomainError, RepoResult } from "../types/Result_v2";
 
-export type CreateStandardParams = StrictOmit<MStandard, "id" | "created_at" | "updated_at">;
+export interface CreateStandardParams {
+  item_value_id: IItemValue["id"];
+};
+
 export type UpdateStandardParams = CreateStandardParams
 
 export interface IRepoStandard {

@@ -1,35 +1,50 @@
-import { EditRecurringScreenParams } from "@src/application/types/screens/RecurringScreenParams";
-import { EditStandardScreenParams } from "@src/application/types/screens/StandardScreenParams";
+import { IRecurrenceType } from "@src/core/entities/recurrence_type.entity";
+import { ITag } from "@src/core/entities/tag.entity";
+import { ITransferMethod } from "@src/core/entities/transfer_method.entity";
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
 import InputRecurring, { useRefInputRecurringPicker } from "../../../components/Input/InputRecurringPicker";
-import FormTemplate, { getVariantText } from "../../FormTemplate";
+import FormEditTemplate, { ValueFormEditTemplate } from "../../FormEditTemplate";
+import { getVariantText } from "../../FormTemplate";
+
+export interface ValueRecurringEditScreenTemplate extends ValueFormEditTemplate {
+  id: number;
+  description: string;
+  cashflow_type: TypeOfVariants;
+  scheduled_at: Date;
+  amount: number;
+  was_processed: boolean;
+  transfer_method_id: ITransferMethod["id"];
+  tag_description: ITag["description"];
+
+  recurrence_type: IRecurrenceType["type"];
+}
 
 interface RecurringEditScreenTemplateProps {
   variant: TypeOfVariants;
-  value: EditRecurringScreenParams;
-  submitAction: (data: EditRecurringScreenParams) => void;
+  value: ValueRecurringEditScreenTemplate;
+  submitAction: (data: ValueRecurringEditScreenTemplate) => void;
 }
 
 export default function RecurringEditScreenTemplate({ variant, value, submitAction }: RecurringEditScreenTemplateProps) {
   const {
-    recurring,
+    recurrence_type,
     ...value_standard
   } = value
 
   const labelRecurring = `Selecione o tipo de recorrência do ${getVariantText(variant)}` 
 
-  const refRecurring = useRefInputRecurringPicker(recurring);
+  const refRecurring = useRefInputRecurringPicker(recurrence_type);
 
-  const handleAction = (standard: EditStandardScreenParams) => {
+  const handleAction = (standard: ValueFormEditTemplate) => {
     const data_recurring = {
       ...standard,
-      recurring: refRecurring.value.current
-    } satisfies EditRecurringScreenParams
+      recurrence_type: refRecurring.value.current
+    } satisfies ValueRecurringEditScreenTemplate
     submitAction(data_recurring)
   }
 
   return (
-    <FormTemplate
+    <FormEditTemplate
       {...{ variant }}
       value={value_standard}
       submitAction={handleAction}

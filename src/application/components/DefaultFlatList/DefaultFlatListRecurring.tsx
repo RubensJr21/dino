@@ -1,5 +1,6 @@
 import { DateString } from "@src/application/functions/date2String";
-import { DetailsRecurringScreenParams, EditRecurringScreenParams } from "@src/application/types/screens/RecurringScreenParams";
+import { ValueRecurringEditScreenTemplate } from "@src/application/templates/screens/Recurring/Edit";
+import { DetailsRecurringScreenParams } from "@src/application/types/screens/RecurringScreenParams";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { View } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
@@ -7,7 +8,7 @@ import DefaultFlatList from "./index";
 
 export interface DefaultFlatListRecurringProps {
   data: Recurring[];
-  navigateToEditPage: (params: EditRecurringScreenParams) => void
+  navigateToEditPage: (params: ValueRecurringEditScreenTemplate) => void
   navigateToDetailsPage: (params: DetailsRecurringScreenParams) => void;
 }
 

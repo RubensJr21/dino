@@ -1,7 +1,6 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import RecurringPaymentApi from "@src/application/api/payment/recurring.api";
-import RecurringRegisterScreenTemplate from "@src/application/templates/screens/Recurring/Register";
-import { EditRecurringScreenParams as RegisterParams } from "@src/application/types/screens/RecurringScreenParams";
+import RecurringRegisterScreenTemplate, { ValueRecurringRegisterScreenTemplate } from "@src/application/templates/screens/Recurring/Register";
 import { VARIANTS_OF_ITEM_VALUE } from "@src/core/shared/types/variants_items";
 import { Alert } from "react-native";
 import { PaymentsRecurringStackParamList } from "./routes";
@@ -9,27 +8,25 @@ import { PaymentsRecurringStackParamList } from "./routes";
 type RegisterRecurringProps = BottomTabScreenProps<PaymentsRecurringStackParamList, 'Register'>;
 
 export default function RegisterRecurring({ route, navigation }: RegisterRecurringProps) {
-  const handleButton = (data: RegisterParams) => {
-    console.log(data);
-    console.log("Registrando recebimento recorrente...");
+  const handleButton = (data: ValueRecurringRegisterScreenTemplate) => {
     RecurringPaymentApi.register({
-      current_amount: data.currency,
+      description: data.description,
+      current_amount: data.amount,
       is_disabled: false,
-      start_date: data.date,
-      // ALERT: Tenho que passar as classes e não os ids
-      fk_id_transfer_method: 9,
-      fk_id_tag: 1,
-      fk_id_recurrence_type: 1
+      start_date: data.scheduled_at,
+      transfer_method_id: data.transfer_method_id,
+      tag_description: data.tag_description,
+      recurrence_type: data.recurrence_type,
     }).then((result) => {
       console.log(result);
       if (!result) {
-        Alert.alert("Erro", "Não foi possível registrar o recebimento.");
+        Alert.alert("Erro", "Não foi possível registrar o pagamento.");
         return;
       }
       navigation.goBack(); // Volta para a tela anterior após registrar
     }).catch((error) => {
-      console.error("Erro ao registrar recebimento recorrente:", error);
-      Alert.alert("Erro", "Não foi possível registrar o recebimento.");
+      console.error("Erro ao registrar pagamento recorrente:", error);
+      Alert.alert("Erro", "Não foi possível registrar o pagamento.");
     })
   };
   

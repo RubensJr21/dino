@@ -1,13 +1,12 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import RecurringEditScreenTemplate from "@src/application/templates/screens/Recurring/Edit";
-import { EditRecurringScreenParams } from "@src/application/types/screens/RecurringScreenParams";
+import RecurringEditScreenTemplate, { ValueRecurringEditScreenTemplate } from "@src/application/templates/screens/Recurring/Edit";
 import { VARIANTS_OF_ITEM_VALUE } from "@src/core/shared/types/variants_items";
 import { ReceiptsRecurringStackParamList } from "./routes";
 
 type Props = BottomTabScreenProps<ReceiptsRecurringStackParamList, 'Edit'>;
 
 export default function EditRecurring({ route, navigation }: Props) {
-  const handleButton = (data: EditRecurringScreenParams) => {
+  const handleButton = (data: ValueRecurringEditScreenTemplate) => {
     console.log(data);
     navigation.goBack(); // Volta para a tela anterior após editar
   };

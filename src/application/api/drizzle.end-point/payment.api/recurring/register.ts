@@ -1,33 +1,74 @@
+import { IItemValue } from "@src/core/entities/item_value.entity";
+import { IRecurrenceType } from "@src/core/entities/recurrence_type.entity";
 import { Recurring } from "@src/core/entities/recurring.entity";
-import { CreateRecurringParams } from "@src/core/shared/interfaces/IRepoRecurring";
+import { ITag } from "@src/core/entities/tag.entity";
+import { ITransferMethod } from "@src/core/entities/transfer_method.entity";
 import RegisterRecurringPayment from "@src/core/use_cases/payment/recurring/register.use_case";
 import { db } from "@src/infrastructure/database/client";
 import ItemValueDrizzleRepository from "@src/infrastructure/repositories/item_value.repository";
+import RecurrenceTypeDrizzleRepository from "@src/infrastructure/repositories/recurrence_type.repository";
 import RecurringDrizzleRepository from "@src/infrastructure/repositories/recurring.repository";
+import TagDrizzleRepository from "@src/infrastructure/repositories/tag.repository";
+import TransferMethodDrizzleRepository from "@src/infrastructure/repositories/transfer_method.repository";
 
-type Params = CreateRecurringParams
+interface Params {
+  description: IItemValue["description"];
+  is_disabled: boolean;
+  start_date: Date;
+  end_date?: Date;
+  current_amount: number;
+  tag_description: ITag["description"];
+  transfer_method_id: ITransferMethod["id"];
+  recurrence_type: IRecurrenceType["type"];
+}
 
 // ALERT: Criar 'EndPointResult' 
 
 async function register({
   ...params
 }: Params): Promise<Recurring | undefined> {
-  console.log("tentando registrar...")
   let last_recurring_created: Recurring | undefined = undefined;
 
   await db.transaction(async tx => {
-    console.log("dentro da transaction")
     const repo = new RecurringDrizzleRepository(tx);
     const repo_iv = new ItemValueDrizzleRepository(tx);
-    console.log("instanciei os repositories")
-    
+    const repo_tag = new TagDrizzleRepository(tx);
+    const repo_rt = new RecurrenceTypeDrizzleRepository(tx);
+    const repo_tmt = new TransferMethodDrizzleRepository(tx);
+
+    const tag_founded = repo_tag.find_by_description(params.tag_description);
+
+    if (!tag_founded.success) {
+      tx.rollback();
+      return;
+    }
+
+    const recurrence_type_founded = repo_rt.find_by_type(params.recurrence_type);
+
+    if (!recurrence_type_founded.success) {
+      tx.rollback();
+      return;
+    }
+
+    const transfer_method_type_founded = repo_tmt.find_by_id(params.transfer_method_id);
+
+    if (!transfer_method_type_founded.success) {
+      tx.rollback();
+      return;
+    }
+
     const register_recurring = new RegisterRecurringPayment(repo, repo_iv);
 
-    console.log("instanciei o caso de uso")
-
-    const recurring_created = await register_recurring.execute(params)
-
-    console.log("chamei caso de uso")
+    const recurring_created = await register_recurring.execute({
+      description: "",
+      is_disabled: params.is_disabled,
+      start_date: params.start_date,
+      end_date: params.end_date,
+      current_amount: params.current_amount,
+      tag: tag_founded.data,
+      transfer_method: transfer_method_type_founded.data,
+      recurrence_type: recurrence_type_founded.data,
+    })
 
     if (!recurring_created.success) {
       console.error(recurring_created.error)

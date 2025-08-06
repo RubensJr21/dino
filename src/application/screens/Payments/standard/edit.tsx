@@ -10,8 +10,8 @@ type EditStandardProps = BottomTabScreenProps<PaymentsStandardStackParamList, 'E
 
 export default function EditStandard({route, navigation}: EditStandardProps) {
   const inputDescriptionRef = useRefInputDescription(route.params.description);
-  const inputDatePickerRef = useRefInputDatePicker(route.params.date);
-  const inputCurrencyRef = useRefInputCurrency(route.params.currency);
+  const inputDatePickerRef = useRefInputDatePicker(route.params.scheduled_at);
+  const inputCurrencyRef = useRefInputCurrency(route.params.amount);
 
   const handleButton = () => {
     console.log({

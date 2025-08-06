@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { EditStandardScreenParams } from '@src/application/types/screens/StandardScreenParams';
+import { ValueFormEditTemplate } from '@src/application/templates/FormEditTemplate';
 import EditStandard from './edit';
 import Payments from './home';
 import RegisterStandard from './register';
@@ -7,7 +7,7 @@ import RegisterStandard from './register';
 export type PaymentsStandardStackParamList = {
   Home: undefined;
   Register: undefined;
-  Edit: EditStandardScreenParams;
+  Edit: ValueFormEditTemplate;
 }
 
 const Stack = createNativeStackNavigator<PaymentsStandardStackParamList>();

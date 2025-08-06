@@ -7,7 +7,7 @@ import {
   List,
   MD3Theme
 } from "react-native-paper";
-import { EditStandardScreenParams } from "../types/screens/StandardScreenParams";
+import { ValueFormEditTemplate } from "../templates/FormEditTemplate";
 
 function callAlert(fnSetData: () => void) {
   return () => {
@@ -35,7 +35,7 @@ export interface StandardGroupedByDateProps {
   title: string;
   standards: Standard[];
   theme: MD3Theme;
-  navigateToEditPage: (params: EditStandardScreenParams) => void;
+  navigateToEditPage: (params: ValueFormEditTemplate) => void;
 }
 
 export default function StandardGroupedByDate({
@@ -81,9 +81,12 @@ export default function StandardGroupedByDate({
                   navigateToEditPage({
                     id: standard.id,
                     description: standard.item_value.description,
-                    date: standard.item_value.scheduled_at,
-                    currency: standard.item_value.amount,
-                    tag: standard.item_value.tag.description
+                    cashflow_type: standard.item_value.cashflow_type,
+                    scheduled_at: standard.item_value.scheduled_at,
+                    amount: standard.item_value.amount,
+                    was_processed: standard.item_value.was_processed,
+                    transfer_method_id: standard.item_value.transfer_method.id,
+                    tag_description: standard.item_value.tag.description
                   })
                 }
               />

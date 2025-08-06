@@ -15,7 +15,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
   public create(data: CreateStandardParams): ReturnType<IRepoStandard["create"]> {
     try {
       const { id } = this.tx.insert(standard)
-        .values({ fk_id_item_value: data.fk_id_item_value })
+        .values({ fk_id_item_value: data.item_value_id })
         .returning()
         .get()
 
@@ -183,7 +183,9 @@ export default class StandardDrizzleRepository implements IRepoStandard {
 
   public update(id: MStandard["id"], data: UpdateStandardParams): ReturnType<IRepoStandard["update"]> {
     try {
-      const result = this.tx.update(standard).set(data).where(eq(standard.id, id)).returning().get()
+      const result = this.tx.update(standard).set({
+        fk_id_item_value: data.item_value_id
+      }).where(eq(standard.id, id)).returning().get()
   
       const standard_updated = this.tx.query.standard.findFirst({ with: { item_value: { with: { tag: true, transfer_method: true } } }, where: eq(standard.id, result.id) }).sync()
   

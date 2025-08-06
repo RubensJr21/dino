@@ -1,13 +1,17 @@
 import InputInstallmentsNumber, { useRefInputInstallmentsNumber } from "@src/application/components/Input/InputInstallmentsNumber";
-import { EditInstallmentScreenParams } from "@src/application/types/screens/InstallmentScreenParams";
-import { EditStandardScreenParams } from "@src/application/types/screens/StandardScreenParams";
+import { IInstallment } from "@src/core/entities/installment.entity";
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
-import FormTemplate, { getVariantText } from "../../FormTemplate";
+import FormEditTemplate, { ValueFormEditTemplate } from "../../FormEditTemplate";
+import { getVariantText } from "../../FormTemplate";
+
+export interface ValueInstallmentEditScreenTemplate extends ValueFormEditTemplate {
+  installments_number: IInstallment["installments_number"];
+}
 
 interface InstallmentEditScreenTemplateProps {
   variant: TypeOfVariants;
-  value: EditInstallmentScreenParams;
-  submitAction: (data: EditInstallmentScreenParams) => void;
+  value: ValueInstallmentEditScreenTemplate;
+  submitAction: (data: ValueInstallmentEditScreenTemplate) => void;
 }
 
 export default function InstallmentEditScreenTemplate({ variant, value, submitAction }: InstallmentEditScreenTemplateProps) {
@@ -20,16 +24,16 @@ export default function InstallmentEditScreenTemplate({ variant, value, submitAc
     
     const refInstallmentNumber = useRefInputInstallmentsNumber(installments_number);
 
-  const handleAction = (standard: EditStandardScreenParams) => {
+  const handleAction = (standard: ValueFormEditTemplate) => {
     const data_recurring = {
       ...standard,
       installments_number: refInstallmentNumber.installments_number.current
-    } satisfies EditInstallmentScreenParams
+    } satisfies ValueInstallmentEditScreenTemplate
     submitAction(data_recurring)
   }
 
   return (
-    <FormTemplate
+    <FormEditTemplate
       {...{ variant }}
       value={value_standard}
       submitAction={handleAction}

@@ -15,22 +15,15 @@ import { tag, transfer_method } from '../database/schemas'
 export default class InstallmentDrizzleRepository implements IRepoInstallment {
   constructor(private tx: Transaction) { }
 
-  public create({
-    description,
-    fk_id_transfer_method,
-    fk_id_tag,
-    start_date,
-    installments_number,
-    total_amount
-  }: CreateInstallmentParams): ReturnType<IRepoInstallment["create"]> {
+  public create(data: CreateInstallmentParams): ReturnType<IRepoInstallment["create"]> {
     try {
       const result = this.tx.insert(installment).values({
-        description,
-        fk_id_transfer_method,
-        fk_id_tag,
-        start_date,
-        installments_number,
-        total_amount,
+        description: data.description,
+        fk_id_transfer_method: data.transfer_method.id,
+        fk_id_tag: data.tag.id,
+        start_date: data.start_date,
+        installments_number: data.installments_number,
+        total_amount: data.total_amount,
       }).returning({ id: installment.id }).get()
 
       const installment_created = this.tx.query.installment.findFirst({

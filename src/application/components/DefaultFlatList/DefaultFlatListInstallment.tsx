@@ -1,5 +1,5 @@
 import { DateString } from "@src/application/functions/date2String";
-import { EditInstallmentScreenParams } from "@src/application/types/screens/InstallmentScreenParams";
+import { ValueInstallmentEditScreenTemplate } from "@src/application/templates/screens/Installment/Edit";
 import { Installment } from "@src/core/entities/installment.entity";
 import { ItemValue } from "@src/core/entities/item_value.entity";
 import { View } from "react-native";
@@ -12,7 +12,7 @@ export type Data = {
 }
 export interface DefaultFlatListInstallmentProps {
   data: Data[];
-  navigateToEditPage: (params: EditInstallmentScreenParams) => void
+  navigateToEditPage: (params: ValueInstallmentEditScreenTemplate) => void
 }
 
 export default function DefaultFlatListInstallment({ data, navigateToEditPage }: DefaultFlatListInstallmentProps) {

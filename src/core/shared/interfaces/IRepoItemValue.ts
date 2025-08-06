@@ -1,10 +1,22 @@
-import { ItemValue } from '@src/core/entities/item_value.entity';
+import { IItemValue, ItemValue } from '@src/core/entities/item_value.entity';
+import { Tag } from '@src/core/entities/tag.entity';
+import { TransferMethod } from '@src/core/entities/transfer_method.entity';
 import { MItemValue } from '@src/core/models/item_value.model';
 import { build_internal_repo_error_generic } from '../types/BuildInternalRepoErrorGeneric';
 import { RepoInterfaceNames } from '../types/RepoInterfaceNames';
 import { RepoDomainError, RepoResult } from '../types/Result_v2';
+import { TypeOfVariants } from '../types/variants_items';
 
-export type CreateItemValueParams = StrictOmit<MItemValue, "id"|"created_at"|"updated_at">
+export interface CreateItemValueParams {
+  description: IItemValue["description"];
+  cashflow_type: TypeOfVariants;
+  scheduled_at: IItemValue["scheduled_at"];
+  amount: IItemValue["amount"];
+  was_processed: IItemValue["was_processed"];
+  tag: Tag;
+  transfer_method: TransferMethod;
+}
+
 export type UpdateItemValueParams = StrictOmit<MItemValue, "id"|"created_at"|"updated_at">
 
 export interface IRepoItemValue {

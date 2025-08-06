@@ -1,15 +1,14 @@
-import { EditStandardScreenParams } from "@src/application/types/screens/StandardScreenParams";
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
-import FormTemplate from "../../FormTemplate";
+import FormTemplate, { ValueFormEditTemplate } from "../../FormEditTemplate";
 
 interface StandardEditScreenTemplateProps {
   variant: TypeOfVariants;
-  value: EditStandardScreenParams
-  submitAction: (params: EditStandardScreenParams) => void
+  value: ValueFormEditTemplate
+  submitAction: (params: ValueFormEditTemplate) => void
 }
 
 export default function StandardEditScreenTemplate({ variant, value, submitAction }: StandardEditScreenTemplateProps) {
-  const handleAction = (standard: EditStandardScreenParams) => {
+  const handleAction = (standard: ValueFormEditTemplate) => {
     submitAction(standard)
   }
 

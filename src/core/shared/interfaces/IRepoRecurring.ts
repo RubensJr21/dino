@@ -1,12 +1,23 @@
+import { RecurrenceType } from "@src/core/entities/recurrence_type.entity";
+import { Tag } from "@src/core/entities/tag.entity";
+import { TransferMethod } from "@src/core/entities/transfer_method.entity";
 import { MItemValue } from "@src/core/models/item_value.model";
 import { MRecurring } from "@src/core/models/recurring.model";
 import { ItemValue } from "../../entities/item_value.entity";
-import { Recurring } from "../../entities/recurring.entity";
+import { IRecurring, Recurring } from "../../entities/recurring.entity";
 import { build_internal_repo_error_generic } from "../types/BuildInternalRepoErrorGeneric";
 import { RepoInterfaceNames } from "../types/RepoInterfaceNames";
 import { RepoDomainError, RepoResult } from "../types/Result_v2";
 
-export type CreateRecurringParams = StrictOmit<MRecurring, "id" | "created_at" | "updated_at">;
+export interface CreateRecurringParams {
+  is_disabled: IRecurring["is_disabled"];
+  start_date: IRecurring["start_date"];
+  current_amount: IRecurring["current_amount"];
+  tag: Tag;
+  transfer_method: TransferMethod;
+  recurrence_type: RecurrenceType;
+};
+
 export type UpdateRecurringParams = StrictOmit<MRecurring, "id" | "fk_id_recurrence_type" | "created_at" | "updated_at">
 
 export interface IRepoRecurring {

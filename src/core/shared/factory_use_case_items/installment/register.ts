@@ -1,7 +1,8 @@
 import IUseCase from "@core/shared/IUseCase_v2";
 import { Installment } from "@src/core/entities/installment.entity";
-import { ItemValue } from "@src/core/entities/item_value.entity";
-import { MInstallment } from "@src/core/models/installment.model";
+import { IItemValue, ItemValue } from "@src/core/entities/item_value.entity";
+import { Tag } from "@src/core/entities/tag.entity";
+import { TransferMethod } from "@src/core/entities/transfer_method.entity";
 import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
 import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
 import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
@@ -10,7 +11,15 @@ import { UnionRepoInterfacesNames } from "../../types/UnionRepoInterfacesNames";
 import { UseCaseResult } from "../../types/UseCaseResult";
 import { TypeOfVariants } from "../../types/variants_items";
 
-type Input = StrictOmit<MInstallment, "id" | "created_at" | "updated_at">
+interface Input {
+  description: IItemValue["description"]
+  transfer_method: TransferMethod;
+  tag: Tag;
+  start_date: Date;
+  current_amount: number;
+	installments_number: number;
+  total_amount: number;
+}
 
 type UsedRepoInterfaces = UnionRepoInterfaces<[
   IRepoInstallment,
@@ -84,8 +93,8 @@ export default abstract class RegisterInstallment implements UseCaseInterface {
   async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const {
       description,
-      fk_id_tag,
-      fk_id_transfer_method,
+      tag,
+      transfer_method,
       start_date,
       installments_number,
       total_amount,
@@ -105,8 +114,8 @@ export default abstract class RegisterInstallment implements UseCaseInterface {
 
     const result_create = this.repo_i.create({
       description,
-      fk_id_tag,
-      fk_id_transfer_method,
+      tag,
+      transfer_method,
       start_date,
       installments_number,
       total_amount,
@@ -134,8 +143,8 @@ export default abstract class RegisterInstallment implements UseCaseInterface {
         amount: list_installments[i],
         scheduled_at: list_dates[i],
         was_processed: false,
-        fk_id_tag,
-        fk_id_transfer_method
+        tag: input.tag,
+        transfer_method: input.transfer_method
       })
 
       if (!result_item_value_create.success) {

@@ -11,7 +11,15 @@ export default class ItemValueDrizzleRepository implements IRepoItemValue {
 
   public create(data: CreateItemValueParams): ReturnType<IRepoItemValue["create"]> {
     try {
-      const { id } = this.tx.insert(item_value).values(data).returning({ id: item_value.id }).get()
+      const { id } = this.tx.insert(item_value).values({
+        description: data.description,
+        cashflow_type: data.cashflow_type,
+        scheduled_at: data.scheduled_at,
+        amount: data.amount,
+        was_processed: data.was_processed,
+        fk_id_tag: data.tag.id,
+        fk_id_transfer_method: data.transfer_method.id,
+      }).returning({ id: item_value.id }).get()
 
       const item_value_created = this.tx.query.item_value.findFirst({
         with: {

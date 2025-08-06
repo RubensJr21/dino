@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { DetailsRecurringScreenParams, EditRecurringScreenParams, HomeRecurringScreenParams, RegisterRecurringScreenParams } from '@src/application/types/screens/RecurringScreenParams';
+import { ValueRecurringEditScreenTemplate } from '@src/application/templates/screens/Recurring/Edit';
+import { DetailsRecurringScreenParams, HomeRecurringScreenParams, RegisterRecurringScreenParams } from '@src/application/types/screens/RecurringScreenParams';
 import DetailsRecurring from './details';
 import EditRecurring from './edit';
 import Home from './home';
@@ -8,7 +9,7 @@ import RegisterRecurring from './register';
 export type PaymentsRecurringStackParamList = {
   Home: HomeRecurringScreenParams;
   Register: RegisterRecurringScreenParams;
-  Edit: EditRecurringScreenParams;
+  Edit: ValueRecurringEditScreenTemplate;
   Details: DetailsRecurringScreenParams;
 }
 

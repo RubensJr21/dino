@@ -1,12 +1,15 @@
-import { EditRecurringScreenParams as RegisterParams } from "@src/application/types/screens/RecurringScreenParams";
-import { EditStandardScreenParams } from "@src/application/types/screens/StandardScreenParams";
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
+import { RecurrencesAvailable } from "@src/core/start_configs";
 import InputRecurring, { useRefInputRecurringPicker } from "../../../components/Input/InputRecurringPicker";
-import FormTemplate, { getVariantText } from "../../FormTemplate";
+import FormTemplate, { getVariantText, ValueFormTemplate } from "../../FormTemplate";
+
+export interface ValueRecurringRegisterScreenTemplate extends ValueFormTemplate {
+  recurrence_type: RecurrencesAvailable;
+}
 
 interface RecurringRegisterScreenTemplateProps {
   variant: TypeOfVariants;
-  submitAction: (data: RegisterParams) => void
+  submitAction: (data: ValueRecurringRegisterScreenTemplate) => void
 }
 
 export default function RecurringRegisterScreenTemplate({ variant, submitAction }: RecurringRegisterScreenTemplateProps) {
@@ -14,11 +17,11 @@ export default function RecurringRegisterScreenTemplate({ variant, submitAction 
   
   const refRecurring = useRefInputRecurringPicker("monthly");
 
-  const handleAction = (standard: EditStandardScreenParams) => {
+  const handleAction = (standard: ValueFormTemplate) => {
     const data_recurring = {
       ...standard,
-      recurring: refRecurring.value.current
-    } satisfies RegisterParams
+      recurrence_type: refRecurring.value.current
+    } satisfies ValueRecurringRegisterScreenTemplate;
     submitAction(data_recurring)
   }
 

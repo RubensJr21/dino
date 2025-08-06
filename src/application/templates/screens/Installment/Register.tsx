@@ -1,12 +1,15 @@
 import InputInstallmentsNumber, { useRefInputInstallmentsNumber } from "@src/application/components/Input/InputInstallmentsNumber";
-import { EditInstallmentScreenParams as RegisterParams } from "@src/application/types/screens/InstallmentScreenParams";
-import { EditStandardScreenParams } from "@src/application/types/screens/StandardScreenParams";
+import { IInstallment } from "@src/core/entities/installment.entity";
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
-import FormTemplate, { getVariantText } from "../../FormTemplate";
+import FormTemplate, { getVariantText, ValueFormTemplate } from "../../FormTemplate";
+
+export interface ValueInstallmentRegisterScreenTemplate extends ValueFormTemplate {
+  installments_number: IInstallment["installments_number"];
+}
 
 interface InstallmentRegisterScreenTemplateProps {
   variant: TypeOfVariants
-  submitAction: (data: RegisterParams) => void
+  submitAction: (data: ValueInstallmentRegisterScreenTemplate) => void
 }
 
 export default function InstallmentRegisterScreenTemplate({ variant, submitAction }: InstallmentRegisterScreenTemplateProps) {
@@ -14,11 +17,11 @@ export default function InstallmentRegisterScreenTemplate({ variant, submitActio
   
   const refInstallmentNumber = useRefInputInstallmentsNumber();
 
-  const handleAction = (standard: EditStandardScreenParams) => {
+  const handleAction = (standard: ValueFormTemplate) => {
     const data_recurring = {
       ...standard,
-      installments_number: 2
-    } satisfies RegisterParams
+      installments_number: refInstallmentNumber.installments_number.current
+    } satisfies ValueInstallmentRegisterScreenTemplate
     submitAction(data_recurring)
   }
   
