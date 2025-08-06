@@ -4,7 +4,7 @@ import { ITransferMethod } from "@src/core/entities/transfer_method.entity";
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
 import InputRecurring, { useRefInputRecurringPicker } from "../../../components/Input/InputRecurringPicker";
 import FormEditTemplate, { ValueFormEditTemplate } from "../../FormEditTemplate";
-import { getVariantText } from "../../FormTemplate";
+import { getVariantText } from "../../FormRegisterTemplate";
 
 export interface ValueRecurringEditScreenTemplate extends ValueFormEditTemplate {
   id: number;

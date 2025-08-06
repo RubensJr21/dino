@@ -1,5 +1,5 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { ValueFormTemplate } from "@src/application/templates/FormTemplate";
+import { ValueFormRegisterTemplate } from "@src/application/templates/FormRegisterTemplate";
 import StandardRegisterScreenTemplate from "@src/application/templates/screens/Standard/Register";
 import { VARIANTS_OF_ITEM_VALUE } from "@src/core/shared/types/variants_items";
 import { PaymentsStandardStackParamList } from "./routes";
@@ -7,7 +7,7 @@ import { PaymentsStandardStackParamList } from "./routes";
 type RegisterStandardProps = BottomTabScreenProps<PaymentsStandardStackParamList, 'Register'>;
 
 export default function RegisterStandard({ route, navigation }: RegisterStandardProps) {
-  const handleButton = (data: ValueFormTemplate) => {
+  const handleButton = (data: ValueFormRegisterTemplate) => {
     // TODO: Implementar chamada ao endpoint de registro
     console.log(data);
     navigation.goBack(); // Volta para a tela anterior após registrar

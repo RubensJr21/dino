@@ -1,9 +1,9 @@
 import InputInstallmentsNumber, { useRefInputInstallmentsNumber } from "@src/application/components/Input/InputInstallmentsNumber";
 import { IInstallment } from "@src/core/entities/installment.entity";
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
-import FormTemplate, { getVariantText, ValueFormTemplate } from "../../FormTemplate";
+import FormRegisterTemplate, { getVariantText, ValueFormRegisterTemplate } from "../../FormRegisterTemplate";
 
-export interface ValueInstallmentRegisterScreenTemplate extends ValueFormTemplate {
+export interface ValueInstallmentRegisterScreenTemplate extends ValueFormRegisterTemplate {
   installments_number: IInstallment["installments_number"];
 }
 
@@ -17,7 +17,7 @@ export default function InstallmentRegisterScreenTemplate({ variant, submitActio
   
   const refInstallmentNumber = useRefInputInstallmentsNumber();
 
-  const handleAction = (standard: ValueFormTemplate) => {
+  const handleAction = (standard: ValueFormRegisterTemplate) => {
     const data_recurring = {
       ...standard,
       installments_number: refInstallmentNumber.installments_number.current
@@ -26,7 +26,7 @@ export default function InstallmentRegisterScreenTemplate({ variant, submitActio
   }
   
   return (
-    <FormTemplate
+    <FormRegisterTemplate
       {...{ variant }}
       submitAction={handleAction}
       formExtension={<InputInstallmentsNumber label={labelRecurring} {...{ refInstallmentNumber }} />}

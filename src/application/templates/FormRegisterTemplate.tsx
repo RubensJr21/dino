@@ -12,7 +12,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import TagPicker, { useRefTagPicker } from "../components/TagPicker";
 import { TextBold } from "../components/Text/TextBold";
 
-export interface ValueFormTemplate {
+export interface ValueFormRegisterTemplate {
   id?: number;
   description: string;
   cashflow_type: TypeOfVariants;
@@ -23,11 +23,11 @@ export interface ValueFormTemplate {
   tag_description: ITag["description"];
 }
 
-interface FormTemplateProps {
+interface FormRegisterTemplateProps {
   variant: TypeOfVariants;
-  value?: ValueFormTemplate;
+  value?: ValueFormRegisterTemplate;
   formExtension?: ReactNode;
-  submitAction: (params: ValueFormTemplate) => void;
+  submitAction: (params: ValueFormRegisterTemplate) => void;
 }
 
 export function getVariantText(variant: TypeOfVariants) {
@@ -36,7 +36,7 @@ export function getVariantText(variant: TypeOfVariants) {
 
 interface PageTitleProps {
   variant: TypeOfVariants;
-  value?: ValueFormTemplate;
+  value?: ValueFormRegisterTemplate;
 }
 
 const PageTitle = ({ variant, value }: PageTitleProps) => {
@@ -55,14 +55,14 @@ const PageTitle = ({ variant, value }: PageTitleProps) => {
   }
 }
 
-export default function FormTemplate({ variant, value, submitAction, formExtension }: FormTemplateProps) {
+export default function FormRegisterTemplate({ variant, value, submitAction, formExtension }: FormRegisterTemplateProps) {
   // 1️⃣ Declarar tudo aqui fora:
   const refDescription = useRefInputDescription(value?.description);
   const refDatePicker = useRefInputDatePicker(value?.scheduled_at);
   const refCurrency = useRefInputCurrency(value?.amount);
   const refTagPicker = useRefTagPicker(value?.tag_description ?? "others");
 
-  const getHandleAction = (value?: ValueFormTemplate) => {
+  const getHandleAction = (value?: ValueFormRegisterTemplate) => {
     if (value) {
       return (() => submitAction(value))
     } else {

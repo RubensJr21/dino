@@ -1,5 +1,5 @@
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
-import FormTemplate, { ValueFormEditTemplate } from "../../FormEditTemplate";
+import FormRegisterTemplate, { ValueFormEditTemplate } from "../../FormEditTemplate";
 
 interface StandardEditScreenTemplateProps {
   variant: TypeOfVariants;
@@ -13,7 +13,7 @@ export default function StandardEditScreenTemplate({ variant, value, submitActio
   }
 
   return (
-    <FormTemplate
+    <FormRegisterTemplate
       {...{ variant }}
       value={value}
       submitAction={handleAction}

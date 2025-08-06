@@ -1,18 +1,18 @@
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
-import FormTemplate, { ValueFormTemplate } from "../../FormTemplate";
+import FormRegisterTemplate, { ValueFormRegisterTemplate } from "../../FormRegisterTemplate";
 
 interface StandardRegisterScreenTemplateProps {
   variant: TypeOfVariants
-  submitAction: (params: ValueFormTemplate) => void
+  submitAction: (params: ValueFormRegisterTemplate) => void
 }
 
 export default function StandardRegisterScreenTemplate({ variant, submitAction }: StandardRegisterScreenTemplateProps) {
-  const handleAction = (standard: ValueFormTemplate) => {
+  const handleAction = (standard: ValueFormRegisterTemplate) => {
     submitAction(standard)
   }
 
   return (
-    <FormTemplate
+    <FormRegisterTemplate
       {...{ variant }}
       submitAction={handleAction}
     />

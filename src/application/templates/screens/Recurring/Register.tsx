@@ -1,9 +1,9 @@
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
 import { RecurrencesAvailable } from "@src/core/start_configs";
 import InputRecurring, { useRefInputRecurringPicker } from "../../../components/Input/InputRecurringPicker";
-import FormTemplate, { getVariantText, ValueFormTemplate } from "../../FormTemplate";
+import FormRegisterTemplate, { getVariantText, ValueFormRegisterTemplate } from "../../FormRegisterTemplate";
 
-export interface ValueRecurringRegisterScreenTemplate extends ValueFormTemplate {
+export interface ValueRecurringRegisterScreenTemplate extends ValueFormRegisterTemplate {
   recurrence_type: RecurrencesAvailable;
 }
 
@@ -17,7 +17,7 @@ export default function RecurringRegisterScreenTemplate({ variant, submitAction 
   
   const refRecurring = useRefInputRecurringPicker("monthly");
 
-  const handleAction = (standard: ValueFormTemplate) => {
+  const handleAction = (standard: ValueFormRegisterTemplate) => {
     const data_recurring = {
       ...standard,
       recurrence_type: refRecurring.value.current
@@ -26,7 +26,7 @@ export default function RecurringRegisterScreenTemplate({ variant, submitAction 
   }
 
   return (
-    <FormTemplate
+    <FormRegisterTemplate
       {...{ variant }}
       submitAction={handleAction}
       formExtension={<InputRecurring label={labelRecurring} {...{ refRecurring }} />}
