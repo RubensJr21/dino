@@ -51,7 +51,9 @@ export default function Register({ route, navigation }: Props) {
     })
     if (!bank_account) {
       Alert.alert("Erro ao registrar conta bancária.");
+      return undefined;
     }
+    return bank_account;
   };
 
   return (
@@ -77,17 +79,18 @@ export default function Register({ route, navigation }: Props) {
               initialValues={generateInitialValuesToggles()}
             />
           </View>
-          <SubmitButton variant="Add" onPress={async () => {
-            const result = await handleButton();
-            if (result !== undefined) {
-              Alert.alert("Conta bancária registrada com sucesso!");
-              // Atualiza a lista de contas bancárias com a nova conta criada
-              navigation.popTo("Home", {
-                last_bank_account_modified: result.nickname
-              });
-            } else {
-              Alert.alert("Erro ao registrar conta bancária.");
-            }
+          <SubmitButton variant="Add" onPress={() => {
+            handleButton().then(result => {
+              if (result !== undefined) {
+                Alert.alert("Conta bancária registrada com sucesso!");
+                // Atualiza a lista de contas bancárias com a nova conta criada
+                navigation.popTo("Home", {
+                  last_bank_account_modified: result.nickname
+                });
+              } else {
+                Alert.alert("Erro ao registrar conta bancária.");
+              }
+            })
           }} />
         </View>
       </ScrollView>

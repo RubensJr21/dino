@@ -1,6 +1,7 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import RecurringPaymentApi from "@src/application/api/payment/recurring.api";
 import RecurringDetailsScreenTemplate from "@src/application/templates/screens/Recurring/Details";
+import { RecurringDetailsProvider } from "@src/application/templates/screens/Recurring/Details/context";
 import { ItemValue } from "@src/core/entities/item_value.entity";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { ReceiptsRecurringStackParamList } from "./routes";
@@ -13,9 +14,11 @@ export default function DetailsRecurring({ route, navigation }: DetailsRecurring
   }
 
   return (
-    <RecurringDetailsScreenTemplate
-      recurring_id={route.params.recurring_id}
-      getRecurrings={getRecurrings}
-    />
+    <RecurringDetailsProvider>
+      <RecurringDetailsScreenTemplate
+        recurring_id={route.params.recurring_id}
+        getRecurrings={getRecurrings}
+      />
+    </RecurringDetailsProvider>
   );
 }

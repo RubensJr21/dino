@@ -4,16 +4,16 @@ import { recurrence_type_mapper } from '@src/core/shared/mappers/recurrence_type
 import { RepoInterfaceNames } from '@src/core/shared/types/RepoInterfaceNames'
 import { recurrence_type } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
-import { Transaction } from '../database/TransactionType'
+import { db } from '../database/client'
 
 export default class RecurrenceTypeDrizzleRepository implements IRepoRecurrenceType {
-  constructor(private tx: Transaction) { }
+  constructor() { }
 
   public create(data: CreateRecurrenceTypeParams): ReturnType<IRepoRecurrenceType["create"]> {
     try {
-      const { id } = this.tx.insert(recurrence_type).values(data).returning().get()
+      const { id } = db.insert(recurrence_type).values(data).returning().get()
 
-      const recurrence_type_created = this.tx.query.recurrence_type.findFirst({
+      const recurrence_type_created = db.query.recurrence_type.findFirst({
         with: {
           item_value: {
             with: {
@@ -54,7 +54,7 @@ export default class RecurrenceTypeDrizzleRepository implements IRepoRecurrenceT
 
   public find_by_id(id: MRecurrenceType["id"]): ReturnType<IRepoRecurrenceType["find_by_id"]> {
     try {
-      const recurrence_type_searched = this.tx.query.recurrence_type.findFirst({
+      const recurrence_type_searched = db.query.recurrence_type.findFirst({
         where: eq(recurrence_type.id, id)
       }).sync()
   
@@ -87,7 +87,7 @@ export default class RecurrenceTypeDrizzleRepository implements IRepoRecurrenceT
 
   public find_by_type(type: MRecurrenceType["type"]): ReturnType<IRepoRecurrenceType["find_by_type"]> {
     try {
-      const recurrence_type_searched = this.tx.query.recurrence_type.findFirst({
+      const recurrence_type_searched = db.query.recurrence_type.findFirst({
         where: eq(recurrence_type.type, type)
       }).sync()
   
@@ -120,7 +120,7 @@ export default class RecurrenceTypeDrizzleRepository implements IRepoRecurrenceT
 
   public find_all(): ReturnType<IRepoRecurrenceType["find_all"]> {
     try {
-      const result = this.tx.query.recurrence_type.findMany().sync()
+      const result = db.query.recurrence_type.findMany().sync()
   
       const recurrences_type = result.map(recurrence_type_mapper)
   
@@ -141,11 +141,11 @@ export default class RecurrenceTypeDrizzleRepository implements IRepoRecurrenceT
 
   public update(id: MRecurrenceType["id"], data: UpdateRecurrenceTypeParams): ReturnType<IRepoRecurrenceType["update"]> {
     try {
-      const result = this.tx.update(recurrence_type).set(data).where(
+      const result = db.update(recurrence_type).set(data).where(
         eq(recurrence_type.id, id)
       ).returning().get()
   
-      const recurrence_type_updated = this.tx.query.recurrence_type.findFirst({ where: eq(recurrence_type.id, result.id) }).sync()
+      const recurrence_type_updated = db.query.recurrence_type.findFirst({ where: eq(recurrence_type.id, result.id) }).sync()
   
       if (!recurrence_type_updated) {
         return {
@@ -176,7 +176,7 @@ export default class RecurrenceTypeDrizzleRepository implements IRepoRecurrenceT
 
   public delete(id: MRecurrenceType["id"]): ReturnType<IRepoRecurrenceType["delete"]> {
     try {
-      const recurrence_type_deleted = this.tx.delete(recurrence_type).where(
+      const recurrence_type_deleted = db.delete(recurrence_type).where(
         eq(recurrence_type.id, id)
       ).returning().get();
   

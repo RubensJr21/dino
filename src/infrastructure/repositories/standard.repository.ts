@@ -6,20 +6,19 @@ import { RepoInterfaceNames } from '@src/core/shared/types/RepoInterfaceNames'
 import { db } from '@src/infrastructure/database/client'
 import { item_value, standard } from '@src/infrastructure/database/schemas'
 import { eq, inArray } from 'drizzle-orm/sql'
-import { Transaction } from '../database/TransactionType'
 
 
 export default class StandardDrizzleRepository implements IRepoStandard {
-  constructor(private tx: Transaction) { }
+  constructor() { }
 
   public create(data: CreateStandardParams): ReturnType<IRepoStandard["create"]> {
     try {
-      const { id } = this.tx.insert(standard)
+      const { id } = db.insert(standard)
         .values({ fk_id_item_value: data.item_value_id })
         .returning()
         .get()
 
-      const standard_created = this.tx.query.standard.findFirst({
+      const standard_created = db.query.standard.findFirst({
         with: {
           item_value: {
             with: {
@@ -60,7 +59,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
 
   public find_by_id(id: MStandard["id"]): ReturnType<IRepoStandard["find_by_id"]> {
     try {
-      const result = this.tx.query.standard.findFirst({
+      const result = db.query.standard.findFirst({
         where: eq(standard.id, id),
         with: {
           item_value: {
@@ -101,7 +100,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
 
   public find_all(): ReturnType<IRepoStandard["find_all"]> {
     try {
-      const result = this.tx.query.standard.findMany({
+      const result = db.query.standard.findMany({
         with: {
           item_value: {
             with: {
@@ -132,7 +131,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
   public find_all_by_cashflow_type(cashflow_type: ItemValue["cashflow_type"]): ReturnType<IRepoStandard["find_all_by_cashflow_type"]> {
     try {
       // Segunda opção trocando a relação de one para many
-      // const result2 = this.tx.query.standard.findMany({
+      // const result2 = db.query.standard.findMany({
       //   with: {
       //     item_value: {
       //       where: (item_value, {eq}) => eq(item_value.cashflow_type, cashflow_type),
@@ -145,7 +144,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
       // }).sync()
   
       // https://www.answeroverflow.com/m/1190290538151284826
-      const result = this.tx.query.standard.findMany({
+      const result = db.query.standard.findMany({
         where: inArray(
           standard.fk_id_item_value,
           db
@@ -183,11 +182,11 @@ export default class StandardDrizzleRepository implements IRepoStandard {
 
   public update(id: MStandard["id"], data: UpdateStandardParams): ReturnType<IRepoStandard["update"]> {
     try {
-      const result = this.tx.update(standard).set({
+      const result = db.update(standard).set({
         fk_id_item_value: data.item_value_id
       }).where(eq(standard.id, id)).returning().get()
   
-      const standard_updated = this.tx.query.standard.findFirst({ with: { item_value: { with: { tag: true, transfer_method: true } } }, where: eq(standard.id, result.id) }).sync()
+      const standard_updated = db.query.standard.findFirst({ with: { item_value: { with: { tag: true, transfer_method: true } } }, where: eq(standard.id, result.id) }).sync()
   
       if (!standard_updated) {
         return {
@@ -219,7 +218,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
   public delete(id: MStandard["id"]): ReturnType<IRepoStandard["delete"]> {
     try {
       // Usando o onDelete com modo cascade basta apagar o pai e todos os outros serão apagados
-      const standard_deleted = this.tx.delete(standard).where(eq(standard.id, id)).get()
+      const standard_deleted = db.delete(standard).where(eq(standard.id, id)).get()
   
       if (!standard_deleted) {
         return {

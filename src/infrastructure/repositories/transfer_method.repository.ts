@@ -4,14 +4,14 @@ import { transfer_method_mapper } from '@src/core/shared/mappers/transfer_method
 import { RepoInterfaceNames } from '@src/core/shared/types/RepoInterfaceNames'
 import { transfer_method } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
-import { Transaction } from '../database/TransactionType'
+import { db } from '../database/client'
 
 export default class TransferMethodDrizzleRepository implements IRepoTransferMethod {
-  constructor(private tx: Transaction) { }
+  constructor() { }
 
   public create(data: CreateTransferMethodTypeParams): ReturnType<IRepoTransferMethod["create"]> {
     try {
-      const transfer_method_created = this.tx.insert(transfer_method).values(data).returning().get()
+      const transfer_method_created = db.insert(transfer_method).values(data).returning().get()
 
       return {
         success: true,
@@ -30,7 +30,7 @@ export default class TransferMethodDrizzleRepository implements IRepoTransferMet
 
   public find_by_id(id: MTransferMethod["id"]): ReturnType<IRepoTransferMethod["find_by_id"]> {
     try {
-      const transfer_method_searched = this.tx.query.transfer_method.findFirst({
+      const transfer_method_searched = db.query.transfer_method.findFirst({
         where: eq(transfer_method.id, id)
       }).sync()
 
@@ -62,7 +62,7 @@ export default class TransferMethodDrizzleRepository implements IRepoTransferMet
 
   public find_by_method(method: MTransferMethod["method"]): ReturnType<IRepoTransferMethod["find_by_method"]> {
     try {
-      const transfer_method_searched = this.tx.query.transfer_method.findFirst({
+      const transfer_method_searched = db.query.transfer_method.findFirst({
         where: eq(transfer_method.method, method)
       }).sync()
 
@@ -94,7 +94,7 @@ export default class TransferMethodDrizzleRepository implements IRepoTransferMet
 
   public find_all(): ReturnType<IRepoTransferMethod["find_all"]> {
     try {
-      const result = this.tx.query.transfer_method.findMany().sync()
+      const result = db.query.transfer_method.findMany().sync()
 
       const transfer_methods = result.map(transfer_method_mapper)
 
@@ -115,11 +115,11 @@ export default class TransferMethodDrizzleRepository implements IRepoTransferMet
 
   public update(id: MTransferMethod["id"], data: UpdateTransferMethodTypeParams): ReturnType<IRepoTransferMethod["update"]> {
     try {
-      const result = this.tx.update(transfer_method).set(data).where(
+      const result = db.update(transfer_method).set(data).where(
         eq(transfer_method.id, id)
       ).returning({ id: transfer_method.id }).get()
 
-      const transfer_method_updated = this.tx.query.transfer_method.findFirst({ where: eq(transfer_method.id, result.id) }).sync()
+      const transfer_method_updated = db.query.transfer_method.findFirst({ where: eq(transfer_method.id, result.id) }).sync()
 
       if (!transfer_method_updated) {
         return {
@@ -150,7 +150,7 @@ export default class TransferMethodDrizzleRepository implements IRepoTransferMet
 
   public delete(id: MTransferMethod["id"]): ReturnType<IRepoTransferMethod["delete"]> {
     try {
-      const transfer_method_deleted = this.tx.delete(transfer_method).where(
+      const transfer_method_deleted = db.delete(transfer_method).where(
         eq(transfer_method.id, id)
       ).returning().get();
 

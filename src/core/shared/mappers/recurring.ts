@@ -16,7 +16,6 @@ interface MapperInput extends StrictOmit<IRecurring, "tag" | "transfer_method" |
 }
 
 export function recurring_mapper(input: MapperInput): Recurring {
-  console.log(input)
   return new Recurring({
     ...input,
     end_date: input.end_date ?? undefined,

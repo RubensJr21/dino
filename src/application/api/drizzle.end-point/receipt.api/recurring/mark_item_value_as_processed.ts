@@ -4,6 +4,7 @@ import MarkRecurringReceiptItemValueAsProcessed from "@src/core/use_cases/receip
 import { db } from "@src/infrastructure/database/client";
 import ItemValueDrizzleRepository from "@src/infrastructure/repositories/item_value.repository";
 import RecurringDrizzleRepository from "@src/infrastructure/repositories/recurring.repository";
+import { sql } from "drizzle-orm/sql";
 
 interface Params {
   id: Recurring["id"];
@@ -14,28 +15,24 @@ async function mark_item_value_as_processed({
   id,
   item_value_id
 }: Params): Promise<Recurring | undefined> {
-  let last_recurring_modified: Recurring | undefined = undefined;
+  db.run(sql.raw("BEGIN"))
+  const repo = new RecurringDrizzleRepository();
+  const repo_iv = new ItemValueDrizzleRepository();
 
-  await db.transaction(async tx => {
-    const repo = new RecurringDrizzleRepository(tx);
-    const repo_iv = new ItemValueDrizzleRepository(tx);
+  const mark_item_value_as_processed = new MarkRecurringReceiptItemValueAsProcessed(repo, repo_iv);
 
-    const mark_item_value_as_processed = new MarkRecurringReceiptItemValueAsProcessed(repo, repo_iv);
-
-    const recurring_processed = await mark_item_value_as_processed.execute({
-      id,
-      item_value_id
-    })
-
-    if(!recurring_processed.success){
-      tx.rollback()
-      return;
-    }
-
-    last_recurring_modified = recurring_processed.data
+  const recurring_processed = await mark_item_value_as_processed.execute({
+    id,
+    item_value_id
   })
 
-  return last_recurring_modified;
+  if (!recurring_processed.success) {
+    db.run(sql.raw("ROLLBACK"))
+    return undefined;
+  }
+
+  db.run(sql.raw("COMMIT"))
+  return recurring_processed.data
 }
 
 export default mark_item_value_as_processed;

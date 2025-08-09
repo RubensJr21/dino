@@ -86,6 +86,7 @@ export default class RegisterBankAccount implements UseCaseInterface {
 
     // Quando um banco é adicionado é necessário popular a tabela de bank_account_transfer_method
     const transfer_methods_data = result_transfer_methods_all.data.map(item => item.method)
+    // CASO AS INFORMAÇÕES NÃO ESTEJAM INSERIDAS NO BANCO, OU ESTEJAM DIFERENTES DARÁ ERRO.
     for (const key of transfer_methods_data) {
       // isso será feito na migration da
       const transfer_method_searched = this.repo_tm.find_by_method(key)
@@ -105,6 +106,7 @@ export default class RegisterBankAccount implements UseCaseInterface {
         fk_id_bank_account: bank_account_created.id,
         fk_id_transfer_method: transfer_method_data.id,
         is_disabled: input.type_of_bank_transfers[key]
+        // is_disabled: true
       })
 
       if(!ba_tm_created.success){

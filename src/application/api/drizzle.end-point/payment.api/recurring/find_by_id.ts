@@ -2,6 +2,7 @@ import { IRecurring, Recurring } from "@src/core/entities/recurring.entity";
 import FindRecurringPaymentById from "@src/core/use_cases/payment/recurring/find_by_id.use_case";
 import { db } from "@src/infrastructure/database/client";
 import RecurringDrizzleRepository from "@src/infrastructure/repositories/recurring.repository";
+import { sql } from "drizzle-orm/sql";
 
 interface Params {
   id: IRecurring["id"]
@@ -10,24 +11,20 @@ interface Params {
 async function find_by_id({
   id
 }: Params): Promise<Recurring | undefined> {
-  let last_recurring_founded: Recurring | undefined = undefined;
-  
-    await db.transaction(async tx => {
-      const repo = new RecurringDrizzleRepository(tx);
+  db.run(sql.raw("BEGIN"))
+  const repo = new RecurringDrizzleRepository();
 
-      const find_by_id = new FindRecurringPaymentById(repo);
-  
-      const recurring_founded = await find_by_id.execute({id})
-  
-      if(!recurring_founded.success){
-        tx.rollback()
-        return;
-      }
-      
-      last_recurring_founded = recurring_founded.data
-    })
-  
-    return last_recurring_founded;
+  const find_by_id = new FindRecurringPaymentById(repo);
+
+  const recurring_founded = await find_by_id.execute({ id })
+
+  if (!recurring_founded.success) {
+    db.run(sql.raw("ROLLBACK"))
+    return undefined;
+  }
+
+  db.run(sql.raw("COMMIT"))
+  return recurring_founded.data
 }
 
 export default find_by_id;

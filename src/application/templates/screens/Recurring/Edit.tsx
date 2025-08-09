@@ -15,7 +15,6 @@ export interface ValueRecurringEditScreenTemplate extends ValueFormEditTemplate 
   was_processed: boolean;
   transfer_method_id: ITransferMethod["id"];
   tag_description: ITag["description"];
-
   recurrence_type: IRecurrenceType["type"];
 }
 

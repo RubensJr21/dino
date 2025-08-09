@@ -2,6 +2,7 @@ import { IRecurring, Recurring } from "@src/core/entities/recurring.entity";
 import UpdateCurrentRecurringAmountReceipt from "@src/core/use_cases/receipt/recurring/update_current_amount.use_case";
 import { db } from "@src/infrastructure/database/client";
 import RecurringDrizzleRepository from "@src/infrastructure/repositories/recurring.repository";
+import { sql } from "drizzle-orm/sql";
 
 interface Params {
   id: IRecurring["id"];
@@ -14,27 +15,22 @@ async function edit({
   id,
   data
 }: Params): Promise<Recurring | undefined> {
-  let last_installment_edited: Recurring | undefined = undefined;
+  db.run(sql.raw("BEGIN"))
+  const repo = new RecurringDrizzleRepository();
+  const update_installment = new UpdateCurrentRecurringAmountReceipt(repo);
 
-  await db.transaction(async tx => {
-    const repo = new RecurringDrizzleRepository(tx);
-    const update_installment = new UpdateCurrentRecurringAmountReceipt(repo);
-
-    const installment_edited = await update_installment.execute({
-      id,
-      current_amount: data.current_amount
-    })
-
-    if(!installment_edited.success){
-      tx.rollback();
-      return;
-    }
-
-    last_installment_edited = installment_edited.data;
-
+  const installment_edited = await update_installment.execute({
+    id,
+    current_amount: data.current_amount
   })
 
-  return last_installment_edited
+  if (!installment_edited.success) {
+    db.run(sql.raw("ROLLBACK"));
+    return undefined;
+  }
+
+  db.run(sql.raw("COMMIT"))
+  return installment_edited.data;
 }
 
 export default edit;

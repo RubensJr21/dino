@@ -3,6 +3,7 @@ import MarkStandardPaymentAsProcessed from "@src/core/use_cases/payment/standard
 import { db } from "@src/infrastructure/database/client";
 import ItemValueDrizzleRepository from "@src/infrastructure/repositories/item_value.repository";
 import StandardDrizzleRepository from "@src/infrastructure/repositories/standard.repository";
+import { sql } from "drizzle-orm/sql";
 
 interface Params {
   id: IStandard["id"]
@@ -11,24 +12,21 @@ interface Params {
 async function mark_as_processed({
   id
 }: Params): Promise<Standard | undefined> {
-  let last_standard_modified: Standard | undefined = undefined
+  db.run(sql.raw("BEGIN"))
 
-  await db.transaction(async tx => {
-    const repo = new StandardDrizzleRepository(tx);
-    const repo_iv = new ItemValueDrizzleRepository(tx);
-    const mark_as_processed = new MarkStandardPaymentAsProcessed(repo, repo_iv);
+  const repo = new StandardDrizzleRepository();
+  const repo_iv = new ItemValueDrizzleRepository();
+  const mark_as_processed = new MarkStandardPaymentAsProcessed(repo, repo_iv);
 
-    const standard_processed = await mark_as_processed.execute({id})
+  const standard_processed = await mark_as_processed.execute({ id })
 
-    if(!standard_processed.success){
-      tx.rollback()
-      return;
-    }
+  if (!standard_processed.success) {
+    db.run(sql.raw("ROLLBACK"))
+    return undefined;
+  }
 
-    last_standard_modified = standard_processed.data
-  })
-
-  return last_standard_modified;
+  db.run(sql.raw("COMMIT"))
+  return standard_processed.data;
 }
 
 export default mark_as_processed;

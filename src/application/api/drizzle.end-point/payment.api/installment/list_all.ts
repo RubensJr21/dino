@@ -2,25 +2,22 @@ import { Installment } from "@src/core/entities/installment.entity";
 import ListAllInstallmentsPayment from "@src/core/use_cases/payment/installment/list_all.use_case";
 import { db } from "@src/infrastructure/database/client";
 import InstallmentDrizzleRepository from "@src/infrastructure/repositories/installment.repository";
+import { sql } from "drizzle-orm/sql";
 
-async function delete_installment(): Promise<Installment[] | undefined>{
-  let list_payments_installment: Installment[] | undefined = undefined
+async function delete_installment(): Promise<Installment[] | undefined> {
+  db.run(sql.raw("BEGIN"))
+  const repo = new InstallmentDrizzleRepository();
+  const list_all = new ListAllInstallmentsPayment(repo);
 
-  await db.transaction(async tx => {
-      const repo = new InstallmentDrizzleRepository(tx);
-      const list_all = new ListAllInstallmentsPayment(repo);
-  
-      const list = await list_all.execute()
-      
-      if(!list.success){
-        tx.rollback();
-        return;
-      }
-  
-      list_payments_installment = list.data
-    })
+  const list = await list_all.execute()
 
-  return list_payments_installment
+  if (!list.success) {
+    db.run(sql.raw("ROLLBACK"));
+    return;
+  }
+
+  db.run(sql.raw("COMMIT"))
+  return list.data
 }
 
 export default delete_installment;

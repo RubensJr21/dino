@@ -4,14 +4,14 @@ import { item_value_mapper } from '@src/core/shared/mappers/item_value'
 import { RepoInterfaceNames } from '@src/core/shared/types/RepoInterfaceNames'
 import { item_value } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
-import { Transaction } from '../database/TransactionType'
+import { db } from '../database/client'
 
 export default class ItemValueDrizzleRepository implements IRepoItemValue {
-  constructor(private tx: Transaction) { }
+  constructor() { }
 
   public create(data: CreateItemValueParams): ReturnType<IRepoItemValue["create"]> {
     try {
-      const { id } = this.tx.insert(item_value).values({
+      const { id } = db.insert(item_value).values({
         description: data.description,
         cashflow_type: data.cashflow_type,
         scheduled_at: data.scheduled_at,
@@ -21,7 +21,7 @@ export default class ItemValueDrizzleRepository implements IRepoItemValue {
         fk_id_transfer_method: data.transfer_method.id,
       }).returning({ id: item_value.id }).get()
 
-      const item_value_created = this.tx.query.item_value.findFirst({
+      const item_value_created = db.query.item_value.findFirst({
         with: {
           tag: true,
           transfer_method: true
@@ -58,7 +58,7 @@ export default class ItemValueDrizzleRepository implements IRepoItemValue {
 
   public find_by_id(id: MItemValue["id"]): ReturnType<IRepoItemValue["find_by_id"]> {
     try {
-      const result = this.tx.query.item_value.findFirst({
+      const result = db.query.item_value.findFirst({
         where: eq(item_value.id, id),
         with: {
           transfer_method: true,
@@ -95,7 +95,7 @@ export default class ItemValueDrizzleRepository implements IRepoItemValue {
 
   public find_all(): ReturnType<IRepoItemValue["find_all"]> {
     try {
-      const results = this.tx.query.item_value.findMany({
+      const results = db.query.item_value.findMany({
         with: {
           tag: true,
           transfer_method: true
@@ -121,9 +121,9 @@ export default class ItemValueDrizzleRepository implements IRepoItemValue {
 
   public update(id: MItemValue["id"], data: UpdateItemValueParams): ReturnType<IRepoItemValue["update"]> {
     try {
-      const result = this.tx.update(item_value).set(data).where(eq(item_value.id, id)).returning({ id: item_value.id }).get()
+      const result = db.update(item_value).set(data).where(eq(item_value.id, id)).returning({ id: item_value.id }).get()
   
-      const item_value_updated = this.tx.query.item_value.findFirst({
+      const item_value_updated = db.query.item_value.findFirst({
         with: {
           tag: true,
           transfer_method: true
@@ -160,7 +160,7 @@ export default class ItemValueDrizzleRepository implements IRepoItemValue {
 
   public delete(id: MItemValue["id"]): ReturnType<IRepoItemValue["delete"]> {
     try {
-      const item_value_deleted = this.tx.delete(item_value).where(eq(item_value.id, id)).returning().get();
+      const item_value_deleted = db.delete(item_value).where(eq(item_value.id, id)).returning().get();
   
       if (!item_value_deleted) {
         return {

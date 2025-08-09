@@ -9,15 +9,15 @@ import { installment } from '@src/infrastructure/database/schemas/installment.sc
 import { installment_item_value } from '@src/infrastructure/database/schemas/installment_item_value.schema'
 import { item_value } from '@src/infrastructure/database/schemas/item_value.schema'
 import { and, eq } from 'drizzle-orm/sql'
-import { Transaction } from '../database/TransactionType'
+import { db } from '../database/client'
 import { tag, transfer_method } from '../database/schemas'
 
 export default class InstallmentDrizzleRepository implements IRepoInstallment {
-  constructor(private tx: Transaction) { }
+  constructor() { }
 
   public create(data: CreateInstallmentParams): ReturnType<IRepoInstallment["create"]> {
     try {
-      const result = this.tx.insert(installment).values({
+      const result = db.insert(installment).values({
         description: data.description,
         fk_id_transfer_method: data.transfer_method.id,
         fk_id_tag: data.tag.id,
@@ -26,7 +26,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
         total_amount: data.total_amount,
       }).returning({ id: installment.id }).get()
 
-      const installment_created = this.tx.query.installment.findFirst({
+      const installment_created = db.query.installment.findFirst({
         with: {
           tag: true,
           transfer_method: true
@@ -64,12 +64,12 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
   public register_installments(id: MInstallment["id"], item_value_id_list: Array<ItemValue["id"]>): ReturnType<IRepoInstallment["register_installments"]> {
     try {
       for (const item_value_id of item_value_id_list) {
-        const result = this.tx.insert(installment_item_value).values({
+        const result = db.insert(installment_item_value).values({
           fk_id_installment: id,
           fk_id_item_value: item_value_id,
         }).returning({ id: installment_item_value.id }).get()
   
-        const installment_item_value_created = this.tx.query.installment_item_value.findFirst({
+        const installment_item_value_created = db.query.installment_item_value.findFirst({
           where: eq(installment.id, result.id)
         }).sync()
   
@@ -103,7 +103,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
 
   public find_by_id(id: MInstallment["id"]): ReturnType<IRepoInstallment["find_by_id"]> {
     try {
-      const installment_result = this.tx.query.installment.findFirst({
+      const installment_result = db.query.installment.findFirst({
         where: eq(installment.id, id),
         with: {
           transfer_method: true,
@@ -142,7 +142,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
 
   public find_item_value(installment_id: MInstallment["id"], item_value_id: MItemValue["id"]): ReturnType<IRepoInstallment["find_item_value"]> {
     try {
-      const result = this.tx.query.installment_item_value.findFirst({
+      const result = db.query.installment_item_value.findFirst({
         with: {
           item_value: {
             with: {
@@ -186,7 +186,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
 
   public find_all(): ReturnType<IRepoInstallment["find_all"]> {
     try {
-      const result = this.tx.query.installment.findMany({
+      const result = db.query.installment.findMany({
         with: {
           transfer_method: true,
           tag: true
@@ -212,7 +212,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
 
   public find_all_by_cashflow_type(cashflow_type: ItemValue["cashflow_type"]): ReturnType<IRepoInstallment["find_all_by_cashflow_type"]> {
     try {
-      const result = this.tx.select({
+      const result = db.select({
         id: installment.id,
         description: installment.description,
         start_date: installment.start_date,
@@ -254,7 +254,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
 
   public find_all_item_value(id: MInstallment["id"]): ReturnType<IRepoInstallment["find_all_item_value"]> {
     try {
-      const result = this.tx.query.installment_item_value.findMany({
+      const result = db.query.installment_item_value.findMany({
         with: {
           item_value: {
             with: {
@@ -285,12 +285,12 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
 
   public update(id: MInstallment["id"], data: UpdateInstallmentParams): ReturnType<IRepoInstallment["update"]> {
     try {
-      const result = this.tx.update(installment).set(data)
+      const result = db.update(installment).set(data)
         .where(eq(installment_item_value.id, id))
         .returning({ id: installment_item_value.id })
         .get()
   
-      const installment_updated = this.tx.query.installment.findFirst({
+      const installment_updated = db.query.installment.findFirst({
         with: {
           transfer_method: true,
           tag: true
@@ -328,7 +328,7 @@ export default class InstallmentDrizzleRepository implements IRepoInstallment {
   public delete(id: MInstallment["id"]): ReturnType<IRepoInstallment["delete"]> {
     try {
       // Usando o onDelete com modo cascade basta apagar o pai e todos os outros serão apagados
-      const installment_deleted = this.tx.delete(installment).where(eq(installment.id, id)).returning().get()
+      const installment_deleted = db.delete(installment).where(eq(installment.id, id)).returning().get()
   
       if (!installment_deleted) {
         return {

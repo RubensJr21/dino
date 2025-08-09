@@ -30,7 +30,6 @@ export default abstract class ListAllRecurring implements UseCaseInterface {
   constructor( private repo_r: IRepoRecurring ){}
   
   async execute(): ReturnType<UseCaseInterface["execute"]> {
-    console.log("ListAllRecurring")
     const result_search = this.repo_r.find_all_by_cashflow_type(this.variant);
     
     if(!result_search.success){

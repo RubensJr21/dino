@@ -1,8 +1,7 @@
 import InputInstallmentsNumber, { useRefInputInstallmentsNumber } from "@src/application/components/Input/InputInstallmentsNumber";
 import { IInstallment } from "@src/core/entities/installment.entity";
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
-import FormEditTemplate, { ValueFormEditTemplate } from "../../FormEditTemplate";
-import { getVariantText } from "../../FormRegisterTemplate";
+import FormEditTemplate, { ValueFormEditTemplate, getVariantText } from "../../FormEditTemplate";
 
 export interface ValueInstallmentEditScreenTemplate extends ValueFormEditTemplate {
   installments_number: IInstallment["installments_number"];

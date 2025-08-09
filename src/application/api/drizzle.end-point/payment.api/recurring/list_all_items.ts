@@ -3,6 +3,7 @@ import { Recurring } from "@src/core/entities/recurring.entity";
 import ListAllRecurringItemValuePayments from "@src/core/use_cases/payment/recurring/list_all_items.use_case";
 import { db } from "@src/infrastructure/database/client";
 import RecurringDrizzleRepository from "@src/infrastructure/repositories/recurring.repository";
+import { sql } from "drizzle-orm/sql";
 
 interface Params {
   recurring_id: Recurring["id"]
@@ -10,26 +11,22 @@ interface Params {
 
 async function list_all_items({
   recurring_id
-}: Params): Promise<ItemValue[] | undefined>{
-  let list_payments_recurring: ItemValue[] | undefined = undefined
+}: Params): Promise<ItemValue[] | undefined> {
+  db.run(sql.raw("BEGIN"))
+  const repo = new RecurringDrizzleRepository();
+  const list_all_items = new ListAllRecurringItemValuePayments(repo);
 
-  await db.transaction(async tx => {
-      const repo = new RecurringDrizzleRepository(tx);
-      const list_all_items = new ListAllRecurringItemValuePayments(repo);
-  
-      const list = await list_all_items.execute({
-        recurring_id
-      })
-      
-      if(!list.success){
-        tx.rollback();
-        return;
-      }
-  
-      list_payments_recurring = list.data
-    })
+  const list = await list_all_items.execute({
+    recurring_id
+  })
 
-  return list_payments_recurring
+  if (!list.success) {
+    db.run(sql.raw("ROLLBACK"));
+    return undefined;
+  }
+
+  db.run(sql.raw("COMMIT"))
+  return list.data
 }
 
 export default list_all_items;

@@ -1,7 +1,6 @@
 import { Picker } from "@react-native-picker/picker";
 import { tags_available, TagsAvailable } from "@src/core/start_configs";
 import { useRef, useState } from "react";
-import { StyleSheet } from 'react-native';
 import { Text, useTheme } from "react-native-paper";
 
 export interface InputTagTypeRef {
@@ -31,7 +30,10 @@ export default function TagPicker({ label, refTagPicker }: TagPickerProps) {
     <>
       <Text
         children={label}
-        style={styles.label}
+        style={{
+          textAlign: "center",
+          textAlignVertical: "center"
+        }}
         variant="titleMedium"
       />
       <Picker
@@ -53,10 +55,3 @@ export default function TagPicker({ label, refTagPicker }: TagPickerProps) {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  label: {
-    textAlign: "center",
-    textAlignVertical: "center"
-  }
-});

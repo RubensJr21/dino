@@ -7,6 +7,12 @@ export function build_internal_repo_error_generic<Repo>(
   error: Error
 ): RepoDomainError<Repo> {
   console.error("In Repository:", error)
+  console.info({
+    scope,
+    method: method_name,
+    code: "Z_INTERNAL_REPO_ERROR",
+    message: `O Erro Crítico (message = ${error.message}, cause = ${error.cause})`
+  })
   return {
     scope,
     method: method_name,

@@ -4,6 +4,7 @@ import MarkInstallmentPaymentItemValueAsUnProcessed from "@src/core/use_cases/pa
 import { db } from "@src/infrastructure/database/client";
 import InstallmentDrizzleRepository from "@src/infrastructure/repositories/installment.repository";
 import ItemValueDrizzleRepository from "@src/infrastructure/repositories/item_value.repository";
+import { sql } from "drizzle-orm/sql";
 
 interface Params {
   id: Installment["id"];
@@ -14,28 +15,24 @@ async function mark_item_value_as_unprocessed({
   id,
   item_value_id
 }: Params): Promise<Installment | undefined> {
-  let last_installment_modified: Installment | undefined = undefined;
+  db.run(sql.raw("BEGIN"))
+  const repo = new InstallmentDrizzleRepository();
+  const repo_iv = new ItemValueDrizzleRepository();
 
-  await db.transaction(async tx => {
-    const repo = new InstallmentDrizzleRepository(tx);
-    const repo_iv = new ItemValueDrizzleRepository(tx);
+  const mark_item_value_as_unprocessed = new MarkInstallmentPaymentItemValueAsUnProcessed(repo, repo_iv);
 
-    const mark_item_value_as_unprocessed = new MarkInstallmentPaymentItemValueAsUnProcessed(repo, repo_iv);
-
-    const installment_unprocessed = await mark_item_value_as_unprocessed.execute({
-      id,
-      item_value_id
-    })
-
-    if(!installment_unprocessed.success){
-      tx.rollback()
-      return;
-    }
-
-    last_installment_modified = installment_unprocessed.data
+  const installment_unprocessed = await mark_item_value_as_unprocessed.execute({
+    id,
+    item_value_id
   })
 
-  return last_installment_modified;
+  if (!installment_unprocessed.success) {
+    db.run(sql.raw("ROLLBACK"))
+    return undefined;
+  }
+
+  db.run(sql.raw("COMMIT"))
+  return installment_unprocessed.data
 }
 
 export default mark_item_value_as_unprocessed;

@@ -5,16 +5,16 @@ import { tag_mapper } from '@src/core/shared/mappers/tag'
 import { RepoInterfaceNames } from '@src/core/shared/types/RepoInterfaceNames'
 import { tag } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
-import { Transaction } from '../database/TransactionType'
+import { db } from '../database/client'
 
 export default class TagDrizzleRepository implements IRepoTag {
-  constructor(private tx: Transaction) { }
+  constructor() { }
 
   public create(data: CreateTagParams): ReturnType<IRepoTag["create"]> {
     try {
-      const { id } = this.tx.insert(tag).values(data).returning().get()
+      const { id } = db.insert(tag).values(data).returning().get()
 
-      const tag_created = this.tx.query.tag.findFirst({
+      const tag_created = db.query.tag.findFirst({
         where: eq(tag.id, id)
       }).sync()
 
@@ -47,7 +47,7 @@ export default class TagDrizzleRepository implements IRepoTag {
 
   public find_by_id(id: Tag["id"]): ReturnType<IRepoTag["find_by_id"]> {
     try {
-      const tag_searched = this.tx.query.tag.findFirst({
+      const tag_searched = db.query.tag.findFirst({
         where: eq(tag.id, id)
       }).sync()
 
@@ -79,7 +79,7 @@ export default class TagDrizzleRepository implements IRepoTag {
 
   public find_by_description(description: Tag["description"]): ReturnType<IRepoTag["find_by_description"]> {
     try {
-      const tag_searched = this.tx.query.tag.findFirst({
+      const tag_searched = db.query.tag.findFirst({
         where: eq(tag.description, description)
       }).sync()
   
@@ -111,7 +111,7 @@ export default class TagDrizzleRepository implements IRepoTag {
 
   public find_all(): ReturnType<IRepoTag["find_all"]> {
     try {
-      const result = this.tx.query.tag.findMany().sync()
+      const result = db.query.tag.findMany().sync()
   
       const tags = result.map(tag_mapper)
   
@@ -132,9 +132,9 @@ export default class TagDrizzleRepository implements IRepoTag {
 
   public update(id: MTag["id"], data: UpdateTagParams): ReturnType<IRepoTag["update"]> {
     try {
-      const result = this.tx.update(tag).set(data).where(eq(tag.id, id)).returning({ id: tag.id }).get()
+      const result = db.update(tag).set(data).where(eq(tag.id, id)).returning({ id: tag.id }).get()
   
-      const tag_updated = this.tx.query.tag.findFirst({ where: eq(tag.id, result.id) }).sync()
+      const tag_updated = db.query.tag.findFirst({ where: eq(tag.id, result.id) }).sync()
   
       if (!tag_updated) {
         return {
@@ -165,7 +165,7 @@ export default class TagDrizzleRepository implements IRepoTag {
 
   public delete(id: number): ReturnType<IRepoTag["delete"]> {
     try {
-      const tag_deleted = this.tx.delete(tag).where(
+      const tag_deleted = db.delete(tag).where(
         eq(tag.id, id)
       ).returning().get();
   

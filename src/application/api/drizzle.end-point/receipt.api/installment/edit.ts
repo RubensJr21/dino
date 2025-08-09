@@ -4,6 +4,7 @@ import UpdateInstallmentReceipt from "@src/core/use_cases/receipt/installment/up
 import { db } from "@src/infrastructure/database/client";
 import InstallmentDrizzleRepository from "@src/infrastructure/repositories/installment.repository";
 import ItemValueDrizzleRepository from "@src/infrastructure/repositories/item_value.repository";
+import { sql } from "drizzle-orm/sql";
 
 interface Params {
   id: IInstallment["id"];
@@ -14,28 +15,24 @@ async function edit({
   id,
   data
 }: Params): Promise<Installment | undefined> {
-  let last_installment_edited: Installment | undefined = undefined;
+  db.run(sql.raw("BEGIN"))
 
-  await db.transaction(async tx => {
-    const repo = new InstallmentDrizzleRepository(tx);
-    const repo_iv = new ItemValueDrizzleRepository(tx);
-    const update_installment = new UpdateInstallmentReceipt(repo, repo_iv);
+  const repo = new InstallmentDrizzleRepository();
+  const repo_iv = new ItemValueDrizzleRepository();
+  const update_installment = new UpdateInstallmentReceipt(repo, repo_iv);
 
-    const installment_edited = await update_installment.execute({
-      id,
-      data
-    })
-
-    if(!installment_edited.success){
-      tx.rollback();
-      return;
-    }
-
-    last_installment_edited = installment_edited.data;
-
+  const installment_edited = await update_installment.execute({
+    id,
+    data
   })
 
-  return last_installment_edited
+  if(!installment_edited.success){
+    db.run(sql.raw("ROLLBACK"))
+    return undefined;
+  }
+
+  db.run(sql.raw("COMMIT"))
+  return installment_edited.data;
 }
 
 export default edit;
