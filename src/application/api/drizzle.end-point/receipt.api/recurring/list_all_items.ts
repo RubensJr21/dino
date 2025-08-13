@@ -1,6 +1,6 @@
 import { ItemValue } from "@src/core/entities/item_value.entity";
 import { Recurring } from "@src/core/entities/recurring.entity";
-import ListAllRecurringItemValuePayments from "@src/core/use_cases/payment/recurring/list_all_items.use_case";
+import ListAllRecurringItemValueReceipts from "@src/core/use_cases/receipt/recurring/list_all_items.use_case";
 import { db } from "@src/infrastructure/database/client";
 import RecurringDrizzleRepository from "@src/infrastructure/repositories/recurring.repository";
 
@@ -18,7 +18,7 @@ async function list_all_items({
 try {
   result = db.transaction<Return>((tx) => {
     const repo = new RecurringDrizzleRepository(tx);
-    const list_all_items = new ListAllRecurringItemValuePayments(repo);
+    const list_all_items = new ListAllRecurringItemValueReceipts(repo);
     
     const list = list_all_items.execute({
       recurring_id

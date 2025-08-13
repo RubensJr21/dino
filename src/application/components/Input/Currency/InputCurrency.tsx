@@ -27,21 +27,6 @@ export interface InputCurrencyProps {
 	refCurrency: InputCurrencyTypeRef;
 }
 
-function parseStringToNumber(value: string): number {
-  if (!value) return 0;
-  const parsedValue = parseInt(value);
-  return isNaN(parsedValue) ? 0 : parsedValue;
-}
-type ObjectPosition = { start: number; end: number };
-
-function parseObjectPosition(text: string): ObjectPosition {
-  const length = text.length;
-  return {
-    start: length + 1,
-    end: length + 1,
-  };
-}
-
 export default function InputCurrency({ refCurrency, label }: InputCurrencyProps) {
   const inputRef = useRef<RNTextInput>(null);
 
@@ -91,10 +76,11 @@ interface HideTextInputProps extends TextInputProps {
 
 const HideTextInput = forwardRef<RNTextInput, HideTextInputProps>(
 	({ value, onChangeText, onFocus, position }, ref) => {
+    const value_text = value?.toString()
 		return (
 			<RNTextInput
 				ref={ref}
-				value={value?.toString() ?? ""}
+				value={(value_text?.length == 0 ? "" : value_text) ?? ""}
 				onChangeText={onChangeText}
 				onFocus={onFocus}
 				style={[styles.hideInput, styles.show_color]}
@@ -122,3 +108,18 @@ const styles = StyleSheet.create({
 		color: "white",
 	},
 });
+
+function parseStringToNumber(value: string): number {
+  if (!value) return 0;
+  const parsedValue = parseInt(value);
+  return isNaN(parsedValue) ? 0 : parsedValue;
+}
+type ObjectPosition = { start: number; end: number };
+
+function parseObjectPosition(text: string): ObjectPosition {
+  const length = text.length;
+  return {
+    start: length + 1,
+    end: length + 1,
+  };
+}

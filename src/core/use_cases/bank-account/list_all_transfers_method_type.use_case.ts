@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { BankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
 import IEntityBase from "@src/core/shared/interfaces/bases/IEntityBase";
 import { IRepoBankAccountTransferMethod } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
@@ -32,15 +32,27 @@ export default class ListAllTransfersMethodTypeBankAccount implements UseCaseInt
   constructor(
     private repo_ba_tm: IRepoBankAccountTransferMethod
   ) { }
-  async execute({ id }: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute({ id }: Input): ReturnType<UseCaseInterface["execute"]> {
     const result = this.repo_ba_tm.find_all_of_bank_account(id)
 
-    if(!result.success){
+    if (!result.success) {
       return {
         success: false,
         error: {
           ...result.error,
           trace: "ListAllTransfersMethodTypeBankAccount > RepoBankAccountTransferMethod"
+        }
+      }
+    }
+
+    if (result.data.length === 0) {
+      return {
+        success: false,
+        error: {
+          trace: "ListAllTransfersMethodTypeBankAccount",
+          method: "verification_in_use_case",
+          code: "empty_list",
+          message: "A lista de métodos de transferência está vazia."
         }
       }
     }

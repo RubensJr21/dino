@@ -1,5 +1,5 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { IBankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
 import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
 import { IRepoBankAccountTransferMethod } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
@@ -36,7 +36,7 @@ export default class UpdateTransferMethodsBankAccount implements UseCaseInterfac
     private repo_ba: IRepoBankAccount,
     private repo_ba_tm: IRepoBankAccountTransferMethod
   ) { }
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const result_transfer_methods_all = this.repo_ba_tm.find_all_of_bank_account(input.id)
 
     if (!result_transfer_methods_all.success) {

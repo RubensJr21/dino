@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { Installment } from "@src/core/entities/installment.entity";
 import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
 import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
@@ -31,7 +31,7 @@ export default abstract class ListAllInstallments implements UseCaseInterface {
 
   constructor(private repo_i: IRepoInstallment) { }
 
-  async execute(): ReturnType<UseCaseInterface["execute"]> {
+  execute(): ReturnType<UseCaseInterface["execute"]> {
     const result_search = this.repo_i.find_all_by_cashflow_type(this.variant);
     
     if(!result_search.success){

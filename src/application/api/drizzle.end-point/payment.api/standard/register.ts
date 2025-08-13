@@ -4,28 +4,36 @@ import RegisterStandardPayment from "@src/core/use_cases/payment/standard/regist
 import { db } from "@src/infrastructure/database/client";
 import ItemValueDrizzleRepository from "@src/infrastructure/repositories/item_value.repository";
 import StandardDrizzleRepository from "@src/infrastructure/repositories/standard.repository";
-import { sql } from "drizzle-orm/sql";
 
 type Params = CreateItemValueParams
 
+type Return = Standard | undefined
+
 async function register({
   ...params
-}: Params): Promise<Standard | undefined> {
-  db.run(sql.raw("BEGIN"));
-  const repo = new StandardDrizzleRepository();
-  const repo_iv = new ItemValueDrizzleRepository();
+}: Params): Promise<Return> {
+  let result: Return
 
-  const register_standard = new RegisterStandardPayment(repo, repo_iv);
-
-  const standard_created = await register_standard.execute(params)
-
-  if (!standard_created.success) {
-    db.run(sql.raw("ROLLBACK"));
-    return;
+  try {
+    result = db.transaction<Return>((tx) => {
+      const repo = new StandardDrizzleRepository(tx);
+      const repo_iv = new ItemValueDrizzleRepository(tx);
+    
+      const register_standard = new RegisterStandardPayment(repo, repo_iv);
+    
+      const standard_created = register_standard.execute(params)
+    
+      if (!standard_created.success) {
+        tx.rollback();
+        return;
+      }
+    
+      return standard_created.data;
+    })
+  } catch (error) {
+    // TODO: Aqui eu popularia o erro
   }
-
-  db.run(sql.raw("COMMIT"))
-  return standard_created.data;
+  return result;
 }
 
 export default register;

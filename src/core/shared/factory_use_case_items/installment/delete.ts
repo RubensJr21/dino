@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
 import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
 import { UnionRepoInterfaces } from "../../types/UnionRepoInterfaces";
@@ -32,7 +32,7 @@ export default abstract class DeleteInstallment implements UseCaseInterface {
 
   constructor(private repo_i: IRepoInstallment) { }
   
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const result_deleted = this.repo_i.delete(input.id)
     if (!result_deleted.success) {
       return {

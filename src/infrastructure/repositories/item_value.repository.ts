@@ -5,9 +5,10 @@ import { RepoInterfaceNames } from '@src/core/shared/types/RepoInterfaceNames'
 import { item_value } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 import { db } from '../database/client'
+import { Transaction } from '../database/Transaction'
 
 export default class ItemValueDrizzleRepository implements IRepoItemValue {
-  constructor() { }
+  constructor(private tx: Transaction) { }
 
   public create(data: CreateItemValueParams): ReturnType<IRepoItemValue["create"]> {
     try {

@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { IItemValue } from "@src/core/entities/item_value.entity";
 import { RecurrenceType } from "@src/core/entities/recurrence_type.entity";
 import { Recurring } from "@src/core/entities/recurring.entity";
@@ -47,7 +47,7 @@ export default abstract class RegisterRecurring implements UseCaseInterface {
 
   constructor(private repo_r: IRepoRecurring, private repo_iv: IRepoItemValue) { }
 
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const result_created = this.repo_r.create(input)
 
     if (!result_created.success) {

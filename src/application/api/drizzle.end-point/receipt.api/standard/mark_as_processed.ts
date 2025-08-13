@@ -3,29 +3,38 @@ import MarkStandardReceiptAsProcessed from "@src/core/use_cases/receipt/standard
 import { db } from "@src/infrastructure/database/client";
 import ItemValueDrizzleRepository from "@src/infrastructure/repositories/item_value.repository";
 import StandardDrizzleRepository from "@src/infrastructure/repositories/standard.repository";
-import { sql } from "drizzle-orm/sql";
 
 interface Params {
   id: IStandard["id"]
 }
 
+type Return = Standard | undefined
+
 async function mark_as_processed({
   id
-}: Params): Promise<Standard | undefined> {
-  db.run(sql.raw("BEGIN"))
-  const repo = new StandardDrizzleRepository();
-  const repo_iv = new ItemValueDrizzleRepository();
-  const mark_as_processed = new MarkStandardReceiptAsProcessed(repo, repo_iv);
+}: Params): Promise<Return> {
+  let result: Return
 
-  const standard_processed = await mark_as_processed.execute({ id })
+  try {
+    result = db.transaction<Return>((tx) => {
+      const repo = new StandardDrizzleRepository(tx);
+      const repo_iv = new ItemValueDrizzleRepository(tx);
+      const mark_as_processed = new MarkStandardReceiptAsProcessed(repo, repo_iv);
 
-  if (!standard_processed.success) {
-    db.run(sql.raw("ROLLBACK"))
-    return undefined;
+      const standard_processed = mark_as_processed.execute({ id })
+
+      if (!standard_processed.success) {
+        tx.rollback()
+        return undefined;
+      }
+
+      return standard_processed.data;
+    })
+  } catch (error) {
+    // TODO: Aqui eu popularia o erro
   }
+  return result;
 
-  db.run(sql.raw("COMMIT"))
-  return standard_processed.data
 }
 
 export default mark_as_processed;

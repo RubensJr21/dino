@@ -2,22 +2,31 @@ import { Recurring } from "@src/core/entities/recurring.entity";
 import ListAllRecurringsReceipt from "@src/core/use_cases/receipt/recurring/list_all.use_case";
 import { db } from "@src/infrastructure/database/client";
 import RecurringDrizzleRepository from "@src/infrastructure/repositories/recurring.repository";
-import { sql } from "drizzle-orm/sql";
 
-async function delete_recurring(): Promise<Recurring[] | undefined> {
-  db.run(sql.raw("BEGIN"))
-  const repo = new RecurringDrizzleRepository();
-  const list_all = new ListAllRecurringsReceipt(repo);
+type Return = Recurring[] | undefined
 
-  const list = await list_all.execute()
+async function list_all(): Promise<Return> {
+  let result: Return
 
-  if (!list.success) {
-    db.run(sql.raw("ROLLBACK"));
-    return undefined;
+  try {
+    result = db.transaction<Return>((tx) => {
+      const repo = new RecurringDrizzleRepository(tx);
+      const list_all = new ListAllRecurringsReceipt(repo);
+    
+      const list = list_all.execute()
+    
+      if (!list.success) {
+        tx.rollback()
+        return undefined;
+      }
+      
+      return list.data;
+    })
+  } catch (error) {
+    // TODO: Aqui eu popularia o erro
   }
+  return result;
 
-  db.run(sql.raw("COMMIT"))
-  return list.data
 }
 
-export default delete_recurring;
+export default list_all;

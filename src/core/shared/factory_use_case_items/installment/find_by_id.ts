@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { Installment } from "@src/core/entities/installment.entity";
 import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
 import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
@@ -32,7 +32,7 @@ export default abstract class FindInstallmentById implements UseCaseInterface {
   
   constructor( private repo_i: IRepoInstallment ){}
   
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const result_search = this.repo_i.find_by_id(input.id)
 
     if(!result_search.success){

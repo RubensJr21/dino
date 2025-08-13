@@ -1,6 +1,6 @@
 import { BankAccount } from "@src/core/entities/bank_account.entity";
 import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
-import IUseCase from "@src/core/shared/IUseCase_v2";
+import IUseCase from "@src/core/shared/IUseCase_v3";
 import { RepoInterfaceNames } from "@src/core/shared/types/RepoInterfaceNames";
 import { TypeOfTransferMethods } from "@src/core/shared/types/transfer_methods";
 import { UnionRepoInterfaces } from "@src/core/shared/types/UnionRepoInterfaces";
@@ -30,7 +30,7 @@ type Return = UseCaseResult<
 type UseCaseInterface = IUseCase<Input, Return>
 
 export default class AddTypeOfBankTransfer implements UseCaseInterface {
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
       return {} as Return
   }
 }

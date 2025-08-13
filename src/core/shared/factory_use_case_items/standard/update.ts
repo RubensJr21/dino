@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { Standard } from "@src/core/entities/standard.entity";
 import { MItemValue } from "@src/core/models/item_value.model";
 import IEntityBase from "../../interfaces/bases/IEntityBase";
@@ -40,7 +40,7 @@ export default abstract class UpdateStandard implements UseCaseInterface {
     private repo_s: IRepoStandard,
     private repo_iv: IRepoItemValue
   ){}
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const result_search = this.repo_s.find_by_id(input.id);
 
     if(!result_search.success){

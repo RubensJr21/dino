@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { Standard } from "@src/core/entities/standard.entity";
 import { IRepoStandard } from "../../interfaces/IRepoStandard";
 import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
@@ -32,7 +32,7 @@ export default abstract class ListAllStandards implements UseCaseInterface {
   constructor(
     private repo_s: IRepoStandard,
   ){}
-  async execute(): ReturnType<UseCaseInterface["execute"]> {
+  execute(): ReturnType<UseCaseInterface["execute"]> {
     const result_search = this.repo_s.find_all_by_cashflow_type(this.variant);
     
     if(!result_search.success){

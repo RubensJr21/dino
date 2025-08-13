@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { Installment } from "@src/core/entities/installment.entity";
 import { IItemValue, ItemValue } from "@src/core/entities/item_value.entity";
 import { Tag } from "@src/core/entities/tag.entity";
@@ -90,7 +90,7 @@ export default abstract class RegisterInstallment implements UseCaseInterface {
     return array
   }
 
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const {
       description,
       tag,

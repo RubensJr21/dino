@@ -8,9 +8,10 @@ import { RepoInterfaceNames } from '@src/core/shared/types/RepoInterfaceNames'
 import { item_value, recurrence_type, recurring, recurring_item_value, tag, transfer_method } from '@src/infrastructure/database/schemas'
 import { and, eq } from 'drizzle-orm/sql'
 import { db } from '../database/client'
+import { Transaction } from '../database/Transaction'
 
 export default class RecurringDrizzleRepository implements IRepoRecurring {
-  constructor() { }
+  constructor(private tx: Transaction) { }
 
   public create({
     is_disabled,

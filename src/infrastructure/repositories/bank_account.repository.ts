@@ -4,20 +4,20 @@ import { bank_account_mapper } from "@src/core/shared/mappers/bank_account";
 import { RepoInterfaceNames } from "@src/core/shared/types/RepoInterfaceNames";
 import { bank_account } from "@src/infrastructure/database/schemas";
 import { eq } from "drizzle-orm/sql";
-import { db } from "../database/client";
+import { Transaction } from "../database/Transaction";
 
 export default class BankAccountDrizzleRepository implements IRepoBankAccount {
-  constructor() { }
+  constructor(private tx: Transaction) { }
 
   public create(data: CreateBankAccountParams): ReturnType<IRepoBankAccount["create"]> {
     try {
-      const result = db.insert(bank_account).values({
+      const result = this.tx.insert(bank_account).values({
         nickname: data.nickname,
         balance: data.balance,
         is_disabled: data.is_disabled
       }).returning().get()
 
-      const bank_account_created = db.query.bank_account.findFirst({
+      const bank_account_created = this.tx.query.bank_account.findFirst({
         where: eq(bank_account.id, result.id)
       }).sync()
 
@@ -50,7 +50,7 @@ export default class BankAccountDrizzleRepository implements IRepoBankAccount {
 
   public find_by_id(id: MBankAccount["id"]): ReturnType<IRepoBankAccount["find_by_id"]> {
     try {
-      const result = db.query.bank_account.findFirst({
+      const result = this.tx.query.bank_account.findFirst({
         where: eq(bank_account.id, id)
       }).sync()
   
@@ -83,7 +83,7 @@ export default class BankAccountDrizzleRepository implements IRepoBankAccount {
 
   public find_by_nickname(nickname: MBankAccount["nickname"]): ReturnType<IRepoBankAccount["find_by_nickname"]> {
     try {
-      const result = db.query.bank_account.findFirst({ where: eq(bank_account.nickname, nickname) }).sync()
+      const result = this.tx.query.bank_account.findFirst({ where: eq(bank_account.nickname, nickname) }).sync()
       if (!result) {
         return {
           success: false,
@@ -112,7 +112,7 @@ export default class BankAccountDrizzleRepository implements IRepoBankAccount {
 
   public find_all(): ReturnType<IRepoBankAccount["find_all"]> {
     try {
-      const results = db.query.bank_account.findMany().sync()
+      const results = this.tx.query.bank_account.findMany().sync()
       return {
         success: true,
         data: results.map(bank_account_mapper)
@@ -130,11 +130,11 @@ export default class BankAccountDrizzleRepository implements IRepoBankAccount {
 
   public update(id: MBankAccount["id"], data: UpdateBankAccountParams): ReturnType<IRepoBankAccount["update"]> {
     try {
-      const result = db.update(bank_account).set(data).where(
+      const result = this.tx.update(bank_account).set(data).where(
         eq(bank_account.id, id)
       ).returning({ id: bank_account.id }).get()
   
-      const bank_account_updated = db.query.bank_account.findFirst({ with: { recurrence_type: true }, where: eq(bank_account.id, result.id) }).sync()
+      const bank_account_updated = this.tx.query.bank_account.findFirst({ with: { recurrence_type: true }, where: eq(bank_account.id, result.id) }).sync()
   
       if (!bank_account_updated) {
         return {
@@ -165,7 +165,7 @@ export default class BankAccountDrizzleRepository implements IRepoBankAccount {
 
   public delete(id: MBankAccount["id"]): ReturnType<IRepoBankAccount["delete"]> {
     try {
-      const result = db.delete(bank_account).where(
+      const result = this.tx.delete(bank_account).where(
         eq(bank_account.id, id)
       ).returning().get()
   

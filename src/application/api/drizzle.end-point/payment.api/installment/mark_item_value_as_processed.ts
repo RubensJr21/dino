@@ -4,35 +4,44 @@ import MarkInstallmentPaymentItemValueAsProcessed from "@src/core/use_cases/paym
 import { db } from "@src/infrastructure/database/client";
 import InstallmentDrizzleRepository from "@src/infrastructure/repositories/installment.repository";
 import ItemValueDrizzleRepository from "@src/infrastructure/repositories/item_value.repository";
-import { sql } from "drizzle-orm/sql";
 
 interface Params {
   id: Installment["id"];
   item_value_id: ItemValue["id"]
 }
 
+type Return = Installment | undefined
+
 async function mark_item_value_as_processed({
   id,
   item_value_id
-}: Params): Promise<Installment | undefined> {
-  db.run(sql.raw("BEGIN"))
-  const repo = new InstallmentDrizzleRepository();
-  const repo_iv = new ItemValueDrizzleRepository();
+}: Params): Promise<Return> {
+  let result: Return
 
-  const mark_item_value_as_processed = new MarkInstallmentPaymentItemValueAsProcessed(repo, repo_iv);
-
-  const installment_processed = await mark_item_value_as_processed.execute({
-    id,
-    item_value_id
-  })
-
-  if (!installment_processed.success) {
-    db.run(sql.raw("ROLLBACK"))
-    return undefined;
+  try {
+    result = db.transaction<Return>((tx) => {
+      const repo = new InstallmentDrizzleRepository(tx);
+      const repo_iv = new ItemValueDrizzleRepository(tx);
+    
+      const mark_item_value_as_processed = new MarkInstallmentPaymentItemValueAsProcessed(repo, repo_iv);
+    
+      const installment_processed = mark_item_value_as_processed.execute({
+        id,
+        item_value_id
+      })
+    
+      if (!installment_processed.success) {
+        tx.rollback();
+        return undefined;
+      }
+    
+      return installment_processed.data
+    })
+  } catch (error) {
+    // TODO: Aqui eu popularia o erro
   }
+  return result;
 
-  db.run(sql.raw("COMMIT"))
-  return installment_processed.data
 }
 
 export default mark_item_value_as_processed;

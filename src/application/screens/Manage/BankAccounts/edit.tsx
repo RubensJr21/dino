@@ -43,6 +43,10 @@ export default function Edit({ route, navigation }: Props) {
       title: `Edição da conta: ${nickname}`,
     });
     BankAccountApi.list_all_transfers_methods_type({ id }).then((transfer_methods) => {
+      if (transfer_methods === undefined) {
+        Alert.alert("Erro ocorreu ao carregar os métodos de pagamento!", "Não foi possível carregar os métodos de pagamento.")
+        return;
+      }
       const transfer_method_entries = transfer_methods.map((value) => (
         [value.transfer_method.method, value.is_disabled] as [TypeOfTransferMethods, boolean]
       ));

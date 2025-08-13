@@ -4,34 +4,42 @@ import UpdateStandardReceipt from "@src/core/use_cases/receipt/standard/update.u
 import { db } from "@src/infrastructure/database/client";
 import ItemValueDrizzleRepository from "@src/infrastructure/repositories/item_value.repository";
 import StandardDrizzleRepository from "@src/infrastructure/repositories/standard.repository";
-import { sql } from "drizzle-orm/sql";
 
 interface Params {
   id: IStandard["id"];
   data_item_value: StrictOmit<MItemValue, "id">
 }
 
+type Return = Standard | undefined
+
 async function update({
   id,
   data_item_value
-}: Params): Promise<Standard | undefined> {
-  db.run(sql.raw("BEGIN"))
-  const repo = new StandardDrizzleRepository();
-  const repo_iv = new ItemValueDrizzleRepository();
-  const update_standard = new UpdateStandardReceipt(repo, repo_iv);
+}: Params): Promise<Return> {
+  let result: Return
 
-  const standard_edited = await update_standard.execute({
-    id,
-    data_item_value
-  })
+  try {
+    result = db.transaction<Return>((tx) => {
+      const repo = new StandardDrizzleRepository(tx);
+      const repo_iv = new ItemValueDrizzleRepository(tx);
+      const update_standard = new UpdateStandardReceipt(repo, repo_iv);
 
-  if (!standard_edited.success) {
-    db.run(sql.raw("ROLLBACK"));
-    return undefined;
+      const standard_edited = update_standard.execute({
+        id,
+        data_item_value
+      })
+
+      if (!standard_edited.success) {
+        tx.rollback();
+        return undefined;
+      }
+
+      return standard_edited.data;
+    })
+  } catch (error) {
+    // TODO: Aqui eu popularia o erro
   }
-
-  db.run(sql.raw("COMMIT"))
-  return standard_edited.data;
+  return result;
 }
 
 export default update;

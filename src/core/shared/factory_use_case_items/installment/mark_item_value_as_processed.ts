@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { Installment } from "@src/core/entities/installment.entity";
 import { ItemValue } from "@src/core/entities/item_value.entity";
 import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
@@ -41,7 +41,7 @@ export default abstract class MarkInstallmentItemValueAsProcessed implements Use
     private repo_iv: IRepoItemValue
   ) { }
 
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const item_value_searched = this.repo_i.find_item_value(input.id, input.item_value_id);
 
     if (!item_value_searched.success) {

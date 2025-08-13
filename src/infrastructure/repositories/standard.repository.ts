@@ -6,10 +6,10 @@ import { RepoInterfaceNames } from '@src/core/shared/types/RepoInterfaceNames'
 import { db } from '@src/infrastructure/database/client'
 import { item_value, standard } from '@src/infrastructure/database/schemas'
 import { eq, inArray } from 'drizzle-orm/sql'
-
+import { Transaction } from '../database/Transaction'
 
 export default class StandardDrizzleRepository implements IRepoStandard {
-  constructor() { }
+  constructor(private tx: Transaction) { }
 
   public create(data: CreateStandardParams): ReturnType<IRepoStandard["create"]> {
     try {

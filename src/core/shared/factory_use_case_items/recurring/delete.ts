@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { IRecurring } from "@src/core/entities/recurring.entity";
 import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
 import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
@@ -35,7 +35,7 @@ export default abstract class DeleteRecurring implements UseCaseInterface {
     private repo_r: IRepoRecurring
   ){}
 
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const result_deleted = this.repo_r.delete(input.id)
 
     if (!result_deleted.success) {

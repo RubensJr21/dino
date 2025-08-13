@@ -5,9 +5,10 @@ import { RepoInterfaceNames } from '@src/core/shared/types/RepoInterfaceNames'
 import { recurrence_type } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 import { db } from '../database/client'
+import { Transaction } from '../database/Transaction'
 
 export default class RecurrenceTypeDrizzleRepository implements IRepoRecurrenceType {
-  constructor() { }
+  constructor(private tx: Transaction) { }
 
   public create(data: CreateRecurrenceTypeParams): ReturnType<IRepoRecurrenceType["create"]> {
     try {

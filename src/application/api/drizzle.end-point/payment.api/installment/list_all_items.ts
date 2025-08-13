@@ -3,30 +3,38 @@ import { ItemValue } from "@src/core/entities/item_value.entity";
 import ListAllItemValueInstallmentPayments from "@src/core/use_cases/payment/installment/list_all_items.use_case";
 import { db } from "@src/infrastructure/database/client";
 import InstallmentDrizzleRepository from "@src/infrastructure/repositories/installment.repository";
-import { sql } from "drizzle-orm/sql";
 
 interface Params {
   installment_id: Installment["id"]
 }
 
+type Return = ItemValue[] | undefined
+
 async function list_all_items({
   installment_id
 }: Params): Promise<ItemValue[] | undefined> {
-  db.run(sql.raw("BEGIN"))
-  const repo = new InstallmentDrizzleRepository();
-  const list_all = new ListAllItemValueInstallmentPayments(repo);
+  let result: Return
 
-  const list = await list_all.execute({
-    installment_id
-  })
-
-  if (!list.success) {
-    db.run(sql.raw("ROLLBACK"));
-    return;
+  try {
+    result = db.transaction<Return>((tx) => {
+      const repo = new InstallmentDrizzleRepository(tx);
+      const list_all = new ListAllItemValueInstallmentPayments(repo);
+    
+      const list = list_all.execute({
+        installment_id
+      })
+    
+      if (!list.success) {
+        tx.rollback();
+        return;
+      }
+    
+      return list.data
+    })
+  } catch (error) {
+    // TODO: Aqui eu popularia o erro
   }
-
-  db.run(sql.raw("COMMIT"))
-  return list.data
+  return result;
 }
 
 export default list_all_items;

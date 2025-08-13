@@ -6,9 +6,10 @@ import { RepoInterfaceNames } from '@src/core/shared/types/RepoInterfaceNames'
 import { tag } from '@src/infrastructure/database/schemas'
 import { eq } from 'drizzle-orm/sql'
 import { db } from '../database/client'
+import { Transaction } from '../database/Transaction'
 
 export default class TagDrizzleRepository implements IRepoTag {
-  constructor() { }
+  constructor(private tx: Transaction) { }
 
   public create(data: CreateTagParams): ReturnType<IRepoTag["create"]> {
     try {

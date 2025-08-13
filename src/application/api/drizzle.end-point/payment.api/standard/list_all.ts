@@ -2,23 +2,31 @@ import { Standard } from "@src/core/entities/standard.entity";
 import ListAllStandardPayments from "@src/core/use_cases/payment/standard/list_all.use_case";
 import { db } from "@src/infrastructure/database/client";
 import StandardDrizzleRepository from "@src/infrastructure/repositories/standard.repository";
-import { sql } from "drizzle-orm/sql";
 
-async function list_all(): Promise<Standard[] | undefined> {
-  db.run(sql.raw("BEGIN"))
+type Return = Standard[] | undefined
 
-  const repo = new StandardDrizzleRepository();
-  const list_all = new ListAllStandardPayments(repo);
+async function list_all(): Promise<Return> {
+  let result: Return
 
-  const list = await list_all.execute()
-  
-  if(!list.success){
-    db.run(sql.raw("ROLLBACK"));
-    return;
+  try {
+    result = db.transaction<Return>((tx) => {
+      const repo = new StandardDrizzleRepository(tx);
+      const list_all = new ListAllStandardPayments(repo);
+
+      const list = list_all.execute()
+
+      if (!list.success) {
+        tx.rollback();
+        return;
+      }
+
+      return list.data
+    })
+  } catch (error) {
+    // TODO: Aqui eu popularia o erro
   }
+  return result;
 
-  db.run(sql.raw("COMMIT"))
-  return list.data
 }
 
 export default list_all;

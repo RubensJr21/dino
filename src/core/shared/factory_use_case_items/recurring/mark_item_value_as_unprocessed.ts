@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { ItemValue } from "@src/core/entities/item_value.entity";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { IRepoItemValue } from "../../interfaces/IRepoItemValue";
@@ -39,7 +39,7 @@ export default abstract class MarkRecurringItemValueAsUnProcessed implements Use
     private repo_r: IRepoRecurring,
     private repo_iv: IRepoItemValue
   ) { }
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const item_value_searched = this.repo_r.find_item_value(input.id, input.item_value_id);
 
     if (!item_value_searched.success) {

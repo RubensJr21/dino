@@ -1,4 +1,4 @@
-import { ColorSchemeName, StatusBar, useColorScheme } from "react-native";
+import { ColorSchemeName, StatusBar, useColorScheme, View } from "react-native";
 
 import {
   DarkTheme,
@@ -6,7 +6,7 @@ import {
   NavigationContainer,
   ThemeProvider,
 } from "@react-navigation/native";
-import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
+import { ActivityIndicator, MD3DarkTheme, MD3LightTheme, PaperProvider, Text } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { MdiIcons, MdiNamesIcon } from "@src/application/components/ChooseIcon";
@@ -26,6 +26,20 @@ export default function Root() {
   const scheme: ColorSchemeName = useColorScheme();
   const isDark: boolean = scheme === "dark";
 
+  if(error){
+    return (
+      <View>
+        <Text>{error.message}</Text>
+      </View>
+    )
+  }
+
+  if(!success){
+    return (
+      <ActivityIndicator />
+    )
+  }
+  
   return (
     <NavigationContainer>
       <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>

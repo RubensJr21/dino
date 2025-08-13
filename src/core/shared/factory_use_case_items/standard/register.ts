@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { IItemValue } from "@src/core/entities/item_value.entity";
 import { Standard } from "@src/core/entities/standard.entity";
 import { Tag } from "@src/core/entities/tag.entity";
@@ -45,7 +45,7 @@ export default abstract class RegisterStandard implements UseCaseInterface {
     private repo_s: IRepoStandard,
     private repo_iv: IRepoItemValue
   ) { }
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const item_value_created = this.repo_iv.create({
       description: input.description,
       cashflow_type: input.cashflow_type,

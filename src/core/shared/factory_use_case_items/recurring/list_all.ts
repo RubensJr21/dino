@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
 import { RepoInterfaceNames } from "../../types/RepoInterfaceNames";
@@ -29,7 +29,7 @@ export default abstract class ListAllRecurring implements UseCaseInterface {
   
   constructor( private repo_r: IRepoRecurring ){}
   
-  async execute(): ReturnType<UseCaseInterface["execute"]> {
+  execute(): ReturnType<UseCaseInterface["execute"]> {
     const result_search = this.repo_r.find_all_by_cashflow_type(this.variant);
     
     if(!result_search.success){

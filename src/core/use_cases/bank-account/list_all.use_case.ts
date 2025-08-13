@@ -1,5 +1,5 @@
 import { BankAccount } from "@core/entities/bank_account.entity";
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
 import { RepoInterfaceNames } from "@src/core/shared/types/RepoInterfaceNames";
 import { UnionRepoInterfaces } from "@src/core/shared/types/UnionRepoInterfaces";
@@ -27,7 +27,7 @@ type UseCaseInterface = IUseCase<Input, Return>
 
 export default class ListAllBankAccounts implements UseCaseInterface {
   constructor(private repo_ba: IRepoBankAccount) { }
-  async execute(): ReturnType<UseCaseInterface["execute"]> {
+  execute(): ReturnType<UseCaseInterface["execute"]> {
     const result = this.repo_ba.find_all();
     if (!result.success) {
       return {

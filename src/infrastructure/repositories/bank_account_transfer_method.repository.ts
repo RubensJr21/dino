@@ -4,16 +4,16 @@ import { MBankAccountTransferMethod } from "@src/core/models/bank_account_transf
 import { build_internal_repo_error_bank_account_transfer_method, CreateBankAccountTransferMethodTypeParams, IRepoBankAccountTransferMethod, UpdateBankAccountTransferMethodTypeParams } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
 import { bank_account_transfer_method_mapper } from "@src/core/shared/mappers/bank_account_transfer_method";
 import { RepoInterfaceNames } from "@src/core/shared/types/RepoInterfaceNames";
-import { db } from "@src/infrastructure/database/client";
 import { bank_account_transfer_method } from "@src/infrastructure/database/schemas";
 import { eq } from "drizzle-orm/sql";
+import { Transaction } from "../database/Transaction";
 
 export default class BankAccountTransferMethodDrizzleRepository implements IRepoBankAccountTransferMethod {
-  constructor() { }
+  constructor(private tx: Transaction) { }
 
   public create(data: CreateBankAccountTransferMethodTypeParams): ReturnType<IRepoBankAccountTransferMethod["create"]> {
     try {      
-      const { id } = db.insert(bank_account_transfer_method).values({
+      const { id } = this.tx.insert(bank_account_transfer_method).values({
         is_disabled: data.is_disabled,
         fk_id_bank_account: data.fk_id_bank_account,
         fk_id_transfer_method: data.fk_id_transfer_method
@@ -21,7 +21,7 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
         id: bank_account_transfer_method.id
       }).get()
 
-      const bank_account_transfer_method_created = db.query.bank_account_transfer_method.findFirst({
+      const bank_account_transfer_method_created = this.tx.query.bank_account_transfer_method.findFirst({
         where: eq(bank_account_transfer_method.id, id),
         with: {
           bank_account: true,
@@ -58,7 +58,7 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
 
   public find_by_id(id: MBankAccountTransferMethod["id"]): ReturnType<IRepoBankAccountTransferMethod["find_by_id"]> {
     try {
-      const result = db.query.bank_account_transfer_method.findFirst({
+      const result = this.tx.query.bank_account_transfer_method.findFirst({
         where: eq(bank_account_transfer_method.id, id),
         with: {
           bank_account: true,
@@ -95,7 +95,7 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
 
   public find_by_bank_account_id(bank_account_id: BankAccount["id"]): ReturnType<IRepoBankAccountTransferMethod["find_by_bank_account_id"]> {
     try {
-      const bankId_transfers = db.query.bank_account_transfer_method.findMany({
+      const bankId_transfers = this.tx.query.bank_account_transfer_method.findMany({
         where: eq(bank_account_transfer_method.fk_id_bank_account, bank_account_id),
         with: {
           bank_account: true,
@@ -132,7 +132,7 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
 
   public find_all(): ReturnType<IRepoBankAccountTransferMethod["find_all"]> {
     try {
-      const results = db.query.bank_account_transfer_method.findMany({ with: { bank_account: true, transfer_method: true } }).sync()
+      const results = this.tx.query.bank_account_transfer_method.findMany({ with: { bank_account: true, transfer_method: true } }).sync()
       return {
         success: true,
         data: results.map((bank_account_transfer_method_mapper))
@@ -150,7 +150,7 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
 
   public find_all_of_bank_account(bank_account_id: BankAccount["id"]): ReturnType<IRepoBankAccountTransferMethod["find_all_of_bank_account"]> {
     try {
-      const results = db.query.bank_account_transfer_method.findMany({
+      const results = this.tx.query.bank_account_transfer_method.findMany({
         with: {
           bank_account: true,
           transfer_method: true
@@ -174,9 +174,9 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
 
   public update(id: BankAccountTransferMethod["id"], data: UpdateBankAccountTransferMethodTypeParams): ReturnType<IRepoBankAccountTransferMethod["update"]> {
     try {
-      const result = db.update(bank_account_transfer_method).set(data).where(eq(bank_account_transfer_method.id, id)).returning().get()
+      const result = this.tx.update(bank_account_transfer_method).set(data).where(eq(bank_account_transfer_method.id, id)).returning().get()
 
-      const bank_account_transfer_method_updated = db.query.bank_account_transfer_method.findFirst({ with: { bank_account: true, transfer_method: true }, where: eq(bank_account_transfer_method.id, result.id) }).sync()
+      const bank_account_transfer_method_updated = this.tx.query.bank_account_transfer_method.findFirst({ with: { bank_account: true, transfer_method: true }, where: eq(bank_account_transfer_method.id, result.id) }).sync()
 
       if (!bank_account_transfer_method_updated) {
         return {
@@ -207,7 +207,7 @@ export default class BankAccountTransferMethodDrizzleRepository implements IRepo
 
   public delete(id: BankAccountTransferMethod["id"]): ReturnType<IRepoBankAccountTransferMethod["delete"]> {
     try {
-      const result = db.delete(bank_account_transfer_method).where(eq(bank_account_transfer_method.id, id)).returning().get()
+      const result = this.tx.delete(bank_account_transfer_method).where(eq(bank_account_transfer_method.id, id)).returning().get()
 
       if (!result) {
         return {

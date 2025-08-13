@@ -1,5 +1,5 @@
 import { BankAccount, IBankAccount } from "@core/entities/bank_account.entity";
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { IRepoBankAccount } from "@src/core/shared/interfaces/IRepoBankAccount";
 import { IRepoBankAccountTransferMethod } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
 import { IRepoTransferMethod } from "@src/core/shared/interfaces/IRepoTransferMethod";
@@ -40,10 +40,10 @@ export default class RegisterBankAccount implements UseCaseInterface {
     private repo_tm: IRepoTransferMethod,
     private repo_ba_tm: IRepoBankAccountTransferMethod
   ) { }
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const result_search_nickname = this.repo_ba.find_by_nickname(input.nickname)
 
-    if(result_search_nickname.success){
+    if (result_search_nickname.success) {
       return {
         success: false,
         error: {
@@ -60,7 +60,7 @@ export default class RegisterBankAccount implements UseCaseInterface {
       is_disabled: false,
     })
 
-    if(!result_create.success){
+    if (!result_create.success) {
       return {
         success: false,
         error: {
@@ -74,7 +74,7 @@ export default class RegisterBankAccount implements UseCaseInterface {
 
     const result_transfer_methods_all = this.repo_tm.find_all()
 
-    if(!result_transfer_methods_all.success){
+    if (!result_transfer_methods_all.success) {
       return {
         success: false,
         error: {
@@ -86,11 +86,24 @@ export default class RegisterBankAccount implements UseCaseInterface {
 
     // Quando um banco é adicionado é necessário popular a tabela de bank_account_transfer_method
     const transfer_methods_data = result_transfer_methods_all.data.map(item => item.method)
+
+    if (transfer_methods_data.length === 0) {
+      return {
+        success: false,
+        error: {
+          trace: "RegisterBankAccount",
+          method: "find_all",
+          code: "empty_list",
+          message: "Nenhum método de transferência cadastrado no APP."
+        }
+      }
+    }
+
     // CASO AS INFORMAÇÕES NÃO ESTEJAM INSERIDAS NO BANCO, OU ESTEJAM DIFERENTES DARÁ ERRO.
     for (const key of transfer_methods_data) {
       // isso será feito na migration da
       const transfer_method_searched = this.repo_tm.find_by_method(key)
-      if(!transfer_method_searched.success){
+      if (!transfer_method_searched.success) {
         return {
           success: false,
           error: {
@@ -101,15 +114,17 @@ export default class RegisterBankAccount implements UseCaseInterface {
       }
 
       const transfer_method_data = transfer_method_searched.data
-      
+
       const ba_tm_created = this.repo_ba_tm.create({
         fk_id_bank_account: bank_account_created.id,
         fk_id_transfer_method: transfer_method_data.id,
         is_disabled: input.type_of_bank_transfers[key]
-        // is_disabled: true
+        // is_disabled: null as any
       })
 
-      if(!ba_tm_created.success){
+      console.log(ba_tm_created)
+
+      if (!ba_tm_created.success) {
         return {
           success: false,
           error: {

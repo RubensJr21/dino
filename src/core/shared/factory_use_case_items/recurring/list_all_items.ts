@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { ItemValue } from "@src/core/entities/item_value.entity";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { IRepoRecurring } from "../../interfaces/IRepoRecurring";
@@ -34,7 +34,7 @@ export default abstract class ListAllRecurringItems implements UseCaseInterface 
   
   constructor( private repo_r: IRepoRecurring ){}
   
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const result_search = this.repo_r.find_all_item_value(input.recurring_id);
     
     if(!result_search.success){

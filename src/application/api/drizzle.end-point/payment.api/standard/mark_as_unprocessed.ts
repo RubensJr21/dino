@@ -3,30 +3,37 @@ import MarkStandardPaymentAsUnProcessed from "@src/core/use_cases/payment/standa
 import { db } from "@src/infrastructure/database/client";
 import ItemValueDrizzleRepository from "@src/infrastructure/repositories/item_value.repository";
 import StandardDrizzleRepository from "@src/infrastructure/repositories/standard.repository";
-import { sql } from "drizzle-orm/sql";
 
 interface Params {
   id: IStandard["id"]
 }
 
+type Return = Standard | undefined
+
 async function mark_as_unprocessed({
   id
 }: Params): Promise<Standard | undefined> {
-  db.run(sql.raw("BEGIN"));
+  let result: Return
 
-  const repo = new StandardDrizzleRepository();
-  const repo_iv = new ItemValueDrizzleRepository();
-  const mark_as_unprocessed = new MarkStandardPaymentAsUnProcessed(repo, repo_iv);
-
-  const standard_processed = await mark_as_unprocessed.execute({ id })
-
-  if (!standard_processed.success) {
-    db.run(sql.raw("ROLLBACK"));
-    return;
+  try {
+    result = db.transaction<Return>((tx) => {
+      const repo = new StandardDrizzleRepository(tx);
+      const repo_iv = new ItemValueDrizzleRepository(tx);
+      const mark_as_unprocessed = new MarkStandardPaymentAsUnProcessed(repo, repo_iv);
+    
+      const standard_processed = mark_as_unprocessed.execute({ id })
+    
+      if (!standard_processed.success) {
+        tx.rollback();
+        return;
+      }
+    
+      return standard_processed.data;
+    })
+  } catch (error) {
+    // TODO: Aqui eu popularia o erro
   }
-
-  db.run(sql.raw("COMMIT"));
-  return standard_processed.data;
+  return result;
 }
 
 export default mark_as_unprocessed;

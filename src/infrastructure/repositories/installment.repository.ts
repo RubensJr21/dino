@@ -11,9 +11,10 @@ import { item_value } from '@src/infrastructure/database/schemas/item_value.sche
 import { and, eq } from 'drizzle-orm/sql'
 import { db } from '../database/client'
 import { tag, transfer_method } from '../database/schemas'
+import { Transaction } from '../database/Transaction'
 
 export default class InstallmentDrizzleRepository implements IRepoInstallment {
-  constructor() { }
+  constructor(private tx: Transaction) { }
 
   public create(data: CreateInstallmentParams): ReturnType<IRepoInstallment["create"]> {
     try {

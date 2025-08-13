@@ -6,11 +6,15 @@ type MethodKeys<T> =
     keyof T, string
   >;
 
+type UseCaseCodeError =
+  | BasicErrorCode
+  | "empty_list"
+
 interface UseCaseDomainError<
   UseCase extends string,
   Repo,
   RepoName extends RepoInterfaceNames,
-  ErrorCode extends BasicErrorCode = BasicErrorCode
+  ErrorCode extends UseCaseCodeError = UseCaseCodeError
 > {
   trace: UseCase | `${UseCase} > ${RepoName}`,
   method: MethodKeys<Repo> | "verification_in_use_case",

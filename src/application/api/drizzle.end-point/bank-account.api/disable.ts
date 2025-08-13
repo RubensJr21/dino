@@ -2,31 +2,37 @@ import { BankAccount, IBankAccount } from "@src/core/entities/bank_account.entit
 import DisableBankAccount from "@src/core/use_cases/bank-account/disable.use_case";
 import { db } from "@src/infrastructure/database/client";
 import BankAccountDrizzleRepository from "@src/infrastructure/repositories/bank_account.repository";
-import { sql } from "drizzle-orm/sql";
 
 interface Params {
   id: IBankAccount["id"]
 }
 
+type Return = BankAccount | undefined
+
 async function disable({
   id
-}: Params): Promise<BankAccount | undefined> {
-  db.run(sql.raw("BEGIN"))
+}: Params): Promise<Return> {
+  let result: Return
 
-  const repo = new BankAccountDrizzleRepository()
-  const disable_bank_account = new DisableBankAccount(repo)
+  try {
+    result = db.transaction<Return>((tx) => {
+      const repo = new BankAccountDrizzleRepository(tx)
+      const disable_bank_account = new DisableBankAccount(repo)
   
-  const bank_account_disabled = await disable_bank_account.execute({
-    id
-  })
-
-  if (!bank_account_disabled.success) {
-    db.run(sql.raw("ROLLBACK"))
-    return undefined;
+      const bank_account_disabled = disable_bank_account.execute({
+        id
+      })
+  
+      if (!bank_account_disabled.success) {
+        tx.rollback()
+        return undefined;
+      }
+      return bank_account_disabled.data;
+    })
+  } catch (error) {
+    // TODO: Aqui eu popularia o erro
   }
-
-  db.run(sql.raw("COMMIT"))
-  return bank_account_disabled.data;
+  return result;
 }
 
 export default disable;

@@ -1,4 +1,4 @@
-import IUseCase from "@core/shared/IUseCase_v2";
+import IUseCase from "@core/shared/IUseCase_v3";
 import { Installment } from "@src/core/entities/installment.entity";
 import { ItemValue } from "@src/core/entities/item_value.entity";
 import { IRepoInstallment } from "../../interfaces/IRepoInstallment";
@@ -34,7 +34,7 @@ export default abstract class ListAllItemValueInstallments implements UseCaseInt
 
   constructor(private repo_i: IRepoInstallment) { }
 
-  async execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
     const result_search = this.repo_i.find_all_item_value(input.installment_id);
     
     if(!result_search.success){
