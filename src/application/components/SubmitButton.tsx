@@ -1,9 +1,10 @@
-import { Button } from "react-native-paper";
+import { Button, ButtonProps } from "react-native-paper";
 import { MdiNamesIcon } from "./ChooseIcon";
 
 interface SubmitButtonProps {
   variant: 'Add' | 'Edit'
   onPress: () => void;
+  style?: ButtonProps["style"]
 }
 
 type ConfigButton = ['Registrar'|'Editar', MdiNamesIcon]
@@ -19,7 +20,7 @@ function getConfig(variant: SubmitButtonProps["variant"]): ConfigButton {
   }
 }
 
-export const SubmitButton = ({ variant, onPress }: SubmitButtonProps) => {
+export const SubmitButton = ({ variant, onPress, style }: SubmitButtonProps) => {
   const [label, icon] = getConfig(variant)
   return (
     <Button
@@ -27,6 +28,7 @@ export const SubmitButton = ({ variant, onPress }: SubmitButtonProps) => {
       icon={icon}
       contentStyle={{ flexDirection: "row-reverse" }}
       onPress={onPress}
+      style={style}
     >
       {label}
     </Button>

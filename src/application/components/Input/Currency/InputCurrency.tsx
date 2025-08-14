@@ -46,7 +46,7 @@ export default function InputCurrency({ refCurrency, label }: InputCurrencyProps
       <Text
         children={label}
         style={styles.label}
-        variant="titleMedium"
+        variant="titleLarge"
       />
       <TextCurrency
         value={value}

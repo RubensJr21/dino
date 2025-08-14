@@ -11,6 +11,7 @@ import { ReactNode } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import TagPicker, { useRefTagPicker } from "../components/TagPicker";
 import { TextBold } from "../components/Text/TextBold";
+import { TransferMethodPicker } from "../components/TransferMethodPicker";
 
 export interface ValueFormEditTemplate {
   id: number;
@@ -64,10 +65,10 @@ export default function FormEditTemplate({ variant, value, submitAction, formExt
 
   return (
     <BasePageView>
-      <ScrollView>
-        <BasePageTitle>
-          Edição de {getVariantText(variant)} - ({value.id}) <TextBold children={value.description} />
-        </BasePageTitle>
+      <BasePageTitle style={styles.title_page}>
+        Edição de {getVariantText(variant)} - ({value.id}) <TextBold children={value.description} />
+      </BasePageTitle>
+      <ScrollView contentContainerStyle={styles.scroll_view_container}>
         <View style={styles.view_form}>
           <InputDescription placeholder={placeholderDescription} {...{ refDescription }} />
           <InputDatePicker label={labelDate} {...{ refDatePicker }} />
@@ -77,29 +78,23 @@ export default function FormEditTemplate({ variant, value, submitAction, formExt
 
           <TagPicker label={labelTag} {...{ refTagPicker }} />
 
-          {/*
-          // TODO: Preciso informar para onde está saindo aquele valor
-            TransferMethodPicker
-            1. Precisa selecionar de qual banco vai transferir
-            1.1 O sistema vai buscar os métodos de transferência disponíveis daquela conta
-            2. Precisa selecionar o método de transferência
+          <TransferMethodPicker />
 
-            <BankPicker />
-            Obs: Se nenhum banco estiver ativado exibir um aviso:
-              "Nenhuma conta bancária está ativa no momento. Ative ou registre alguma conta bancária."
-            <TransferMethodOfBankPicker />
-            Obs: Se nenhuma método de transferência do banco escolhido estiver ativado exibir:
-              "Nenhum tipo de transferência conta bancária está ativa no momento. Ative algum tipo de método da conta selecionada."
-          */}
-
-          <SubmitButton variant="Edit" onPress={handleAction} />
         </View>
       </ScrollView>
+      <SubmitButton variant="Edit" onPress={handleAction} />
     </BasePageView>
   )
 }
 
 const styles = StyleSheet.create({
+  title_page: {
+    marginBottom: 0
+  },
+  scroll_view_container: {
+    flexGrow: 1,
+    justifyContent: "space-between",
+  },
   view_form: {
     flex: 1,
     justifyContent: "flex-start",

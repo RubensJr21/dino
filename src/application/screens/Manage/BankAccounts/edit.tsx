@@ -75,20 +75,20 @@ export default function Edit({ route, navigation }: Props) {
 
   return (
     <BasePageView>
-      <ScrollView>
-        <BasePageTitle>
-          Edição da conta no <TextBold>{nickname}</TextBold>
-        </BasePageTitle>
+      <BasePageTitle
+        style={styles.title_page}
+      >
+        Edição da conta: <TextBold>{nickname}</TextBold>
+      </BasePageTitle>
+      <ScrollView contentContainerStyle={styles.scroll_view_container}>
         <View style={styles.view_form}>
-          <InputBankName
-            refBankName={inputBankNameRef}
-          />
+          <InputBankName refBankName={inputBankNameRef} />
 
           <View style={styles.view_transfer_methods}>
             <Text
               style={styles.title_transfer_methods}
               children={"Métodos de transferência:"}
-              variant="headlineLarge"
+              variant="headlineMedium"
               numberOfLines={2}
             />
             <TransferMethodsToggles
@@ -97,36 +97,46 @@ export default function Edit({ route, navigation }: Props) {
             />
           </View>
 
-          <SubmitButton variant="Edit" onPress={async () => {
-            const result = await handleButton();
-            if (result === undefined) {
-              Alert.alert("Erro ao atualizar conta bancária.");
-              return;
-            }
-            Alert.alert("Conta bancária atualizada com sucesso!");
-            navigation.popTo("Home", {
-              last_bank_account_modified: result.nickname
-            });
-          }} />
         </View>
       </ScrollView>
+      <SubmitButton variant="Edit" onPress={async () => {
+        const result = await handleButton();
+        if (result === undefined) {
+          Alert.alert("Erro ao atualizar conta bancária.");
+          return;
+        }
+        Alert.alert("Conta bancária atualizada com sucesso!");
+        navigation.popTo("Home", {
+          last_bank_account_modified: result.nickname
+        });
+      }} />
     </BasePageView>
   );
 }
 
 const styles = StyleSheet.create({
+  title_page: {
+    marginBottom: 0
+  },
+  scroll_view_container: {
+    flexGrow: 1,
+    justifyContent: "space-between",
+  },
+  view_form: {
+    flexGrow: 1,
+    justifyContent: "flex-start",
+    gap: 10,
+    flexDirection: "column",
+  },
+  view_transfer_methods: {
+    padding: 10,
+    gap: 10,
+    flexDirection: "column",
+    borderWidth: 4,
+  },
   title_transfer_methods: {
     width: "75%",
     alignSelf: "center",
-    textAlign: "center"
-  },
-  view_transfer_methods: {
-    flexDirection: "column",
-    justifyContent: "space-between"
-  },
-  view_form: {
-    flex: 1,
-    justifyContent: "flex-start",
-    gap: 10,
+    textAlign: "center",
   },
 });

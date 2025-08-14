@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import BankAccountApi from "@src/application/api/bank-account.api";
 import { BankAccount, IBankAccount } from "@src/core/entities/bank_account.entity";
 import { BankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
@@ -57,6 +58,7 @@ function mapper_transfer_method_picker_item(bank: BankAccountTransferMethod): Tr
 export function TransferMethodPickerProvider({
   children
 }: TransferMethodPickerProviderProps) {
+  const navigation = useNavigation()
   const [isLoading, setLoading] = useState<boolean>(true);
 
   const [banks, setBanks] = useState<BankPickerItem[]>([])
@@ -71,6 +73,7 @@ export function TransferMethodPickerProvider({
       }
       if (banks.length === 0) {
         Alert.alert("É necessário cadastrar pelo menos um banco primeiro!")
+        navigation.goBack()
         return;
       }
       setBanks(banks.map(mapper_bank_picker_item))

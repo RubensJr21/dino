@@ -18,7 +18,9 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png"
-      }
+      },
+      // https://docs.expo.dev/guides/keyboard-handling/#:~:text=%22softwareKeyboardLayoutMode%22%3A%20%22pan%22
+      "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
       "bundler": "metro",

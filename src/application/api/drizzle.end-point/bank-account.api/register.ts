@@ -1,5 +1,4 @@
 import { BankAccount, IBankAccount } from "@src/core/entities/bank_account.entity";
-import { TypeOfTransferMethods } from "@src/core/shared/types/transfer_methods";
 import RegisterBankAccount from "@src/core/use_cases/bank-account/register.use_case";
 import { db } from "@src/infrastructure/database/client";
 import BankAccountDrizzleRepository from "@src/infrastructure/repositories/bank_account.repository";
@@ -9,7 +8,7 @@ import TransferMethodDrizzleRepository from "@src/infrastructure/repositories/tr
 interface Params {
   balance: IBankAccount["balance"];
   nickname: IBankAccount["nickname"];
-  type_of_bank_transfers: Record<TypeOfTransferMethods, boolean>
+  type_of_bank_transfers: Array<string>
 }
 
 type Return = BankAccount | undefined

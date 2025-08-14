@@ -50,6 +50,7 @@
 1. [Develop>tools (expo-cli)](https://docs.expo.dev/develop/tools/#expo-cli)
 1. [expo-cli details](https://docs.expo.dev/more/expo-cli/)
 1. [@react-native-picker/picker](https://docs.expo.dev/versions/latest/sdk/picker/)
+1. [Parâmetro para o teclado não redimensionar a interface (foco no ScrollView)](https://docs.expo.dev/guides/keyboard-handling/#:~:text=%22softwareKeyboardLayoutMode%22%3A%20%22pan%22)
 
 ## (react-native)
 

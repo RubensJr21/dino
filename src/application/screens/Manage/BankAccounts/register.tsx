@@ -1,32 +1,25 @@
-import BankAccountApi from "@src/application/api/bank-account.api";
-import InputCurrency, { useRefInputCurrency } from "@src/application/components/Input/Currency/InputCurrency";
-import InputBankName, { useRefInputBankName } from "@src/application/screens/Manage/BankAccounts/components/InputBankName";
-import { createTogglesRef, TransferMethodsToggles } from "@src/application/screens/Manage/BankAccounts/components/TransferMethodsToggle";
-import { BankAccount } from "@src/core/entities/bank_account.entity";
-import { TransferMethodsAvailable, TypeOfTransferMethods } from "@src/core/shared/types/transfer_methods";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
-import { Text } from "react-native-paper";
-
-export type RegisterParams = undefined
-
-function generateInitialValuesToggles(): Record<TypeOfTransferMethods, boolean> {
-  return Object.fromEntries(
-    Object.entries(TransferMethodsAvailable).map(([key, value]) => [value, true])
-  ) as Record<TypeOfTransferMethods, boolean>;
-}
-
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import BankAccountApi from "@src/application/api/bank-account.api";
 import BasePageTitle from "@src/application/components/BasePage/BasePageTitle";
 import BasePageView from "@src/application/components/BasePage/BasePageView";
+import InputCurrency, { useRefInputCurrency } from "@src/application/components/Input/Currency/InputCurrency";
 import { SubmitButton } from "@src/application/components/SubmitButton";
+import InputBankName, { useRefInputBankName } from "@src/application/screens/Manage/BankAccounts/components/InputBankName";
+import { BankAccount } from "@src/core/entities/bank_account.entity";
+import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { useTheme } from "react-native-paper";
+import { SelectTransferMethods, useRefSelectTransferMethods } from "./components/SelectTransferMethods";
 import { BankAccountsStackParamList } from "./routes";
+
+export type RegisterParams = undefined
 
 type Props = NativeStackScreenProps<BankAccountsStackParamList, 'Register'>;
 
 export default function Register({ route, navigation }: Props) {
+  const theme = useTheme()
   var inputBankNameRef = useRefInputBankName();
   var inputCurrencyRef = useRefInputCurrency();
-  const togglesRef = createTogglesRef();
+  var selectTransferMethodsRef = useRefSelectTransferMethods();
 
   const handleButton = async (): Promise<BankAccount | undefined> => {
     const nickname = inputBankNameRef.bank_name.current;
@@ -40,14 +33,13 @@ export default function Register({ route, navigation }: Props) {
       Alert.alert("Por favor, preencha o campo de valor inicial.");
       return;
     }
+
+    console.warn(selectTransferMethodsRef.transfer_methods_selected)
+
     const bank_account = await BankAccountApi.register({
       nickname,
       balance: Number(balance),
-      type_of_bank_transfers: {
-        PIX: togglesRef.PIX.current?.value ?? true,
-        DEBIT: togglesRef.DEBIT.current?.value ?? true,
-        BANK_TRANSFER: togglesRef.BANK_TRANSFER.current?.value ?? true
-      }
+      type_of_bank_transfers: selectTransferMethodsRef.transfer_methods_selected.current
     })
     if (!bank_account) {
       Alert.alert("Erro ao registrar conta bancária.");
@@ -57,9 +49,9 @@ export default function Register({ route, navigation }: Props) {
   };
 
   return (
-    <BasePageView>
-      <ScrollView>
-        <BasePageTitle>Registrar conta bancária</BasePageTitle>
+      <BasePageView>
+      <BasePageTitle style={styles.title_page}>Registrar conta bancária</BasePageTitle>
+      <ScrollView contentContainerStyle={styles.scroll_view_container}>
         <View style={styles.view_form}>
           <InputBankName refBankName={inputBankNameRef} />
           <InputCurrency
@@ -67,19 +59,13 @@ export default function Register({ route, navigation }: Props) {
             refCurrency={inputCurrencyRef}
           />
 
-          <View style={styles.view_transfer_methods}>
-            <Text
-              style={styles.title_transfer_methods}
-              children={"Métodos de transferência:"}
-              variant="headlineLarge"
-              numberOfLines={2}
-            />
-            <TransferMethodsToggles
-              data={togglesRef}
-              initialValues={generateInitialValuesToggles()}
-            />
-          </View>
-          <SubmitButton variant="Add" onPress={() => {
+          <SelectTransferMethods refSelectTransferMethods={selectTransferMethodsRef} />
+        </View>
+      </ScrollView>
+      <View>
+        <SubmitButton
+          variant="Add"
+          onPress={() => {
             handleButton().then(result => {
               if (result !== undefined) {
                 Alert.alert("Conta bancária registrada com sucesso!");
@@ -92,25 +78,34 @@ export default function Register({ route, navigation }: Props) {
               }
             })
           }} />
-        </View>
-      </ScrollView>
+      </View>
     </BasePageView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
+  title_page: {
+    marginBottom: 0
+  },
+  scroll_view_container: {
+    flexGrow: 1,
+    justifyContent: "space-between",
+  },
+  view_form: {
+    flexGrow: 1,
+    justifyContent: "flex-start",
+    gap: 10,
+    flexDirection: "column",
+  },
+  view_transfer_methods: {
+    padding: 10,
+    gap: 10,
+    flexDirection: "column",
+    borderWidth: 4,
+  },
   title_transfer_methods: {
     width: "75%",
     alignSelf: "center",
-    textAlign: "center"
-  },
-  view_transfer_methods: {
-    flexDirection: "column",
-    justifyContent: "space-between"
-  },
-  view_form: {
-    flex: 1,
-    justifyContent: "flex-start",
-    gap: 10,
+    textAlign: "center",
   },
 });

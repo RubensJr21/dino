@@ -61,10 +61,10 @@ export default function FormRegisterTemplate({ variant, submitAction, formExtens
 
   return (
     <BasePageView>
-      <ScrollView>
-        <BasePageTitle>
-          <BasePageTitle>Registrar {getVariantText(variant)}</BasePageTitle>
-        </BasePageTitle>
+      <BasePageTitle style={styles.title_page}>
+        Registrar {getVariantText(variant)}
+      </BasePageTitle>
+      <ScrollView contentContainerStyle={styles.scroll_view_container}>
         <View style={styles.view_form}>
           <InputDescription placeholder={placeholderDescription} {...{ refDescription }} />
           <InputDatePicker label={labelDate} {...{ refDatePicker }} />
@@ -76,14 +76,21 @@ export default function FormRegisterTemplate({ variant, submitAction, formExtens
 
           <TransferMethodPicker />
 
-          <SubmitButton variant="Add" onPress={handleAction} />
         </View>
       </ScrollView>
+      <SubmitButton variant="Add" onPress={handleAction} />
     </BasePageView>
   )
 }
 
 const styles = StyleSheet.create({
+  title_page: {
+    marginBottom: 0
+  },
+  scroll_view_container: {
+    flexGrow: 1,
+    justifyContent: "space-between",
+  },
   view_form: {
     flex: 1,
     justifyContent: "flex-start",

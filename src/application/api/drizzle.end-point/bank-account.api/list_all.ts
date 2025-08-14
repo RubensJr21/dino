@@ -7,24 +7,22 @@ type Return = BankAccount[] | undefined
 
 async function list_all(): Promise<Return> {
   let result: Return
-
-  const resultado = await db.transaction(async (tx) => {
-    const repo = new BankAccountDrizzleRepository(tx);
-    const list_all = new ListAllBankAccounts(repo);
-    const bank_accounts_founded = list_all.execute();
-
-    if (!bank_accounts_founded.success) {
-      tx.rollback()
-      return undefined;
-    }
-    return bank_accounts_founded.data
-  })
-    .then((result) => result)
-    .catch((error) => {
-      console.error("list_all.ts", error)
-      return undefined
+  
+  try {
+    result = db.transaction<Return>((tx) => {
+      const repo = new BankAccountDrizzleRepository(tx);
+      const list_all = new ListAllBankAccounts(repo);
+      const bank_accounts_founded = list_all.execute();
+  
+      if (!bank_accounts_founded.success) {
+        tx.rollback()
+        return undefined;
+      }
+      return bank_accounts_founded.data
     })
-  result = resultado
+  } catch (error) {
+    // TODO: Aqui eu popularia o erro
+  }
   return result;
 }
 
