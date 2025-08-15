@@ -9,6 +9,7 @@ type MethodKeys<T> =
 type UseCaseCodeError =
   | BasicErrorCode
   | "empty_list"
+  ;
 
 interface UseCaseDomainError<
   UseCase extends string,

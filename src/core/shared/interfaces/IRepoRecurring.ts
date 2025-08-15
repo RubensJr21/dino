@@ -18,7 +18,7 @@ export interface CreateRecurringParams {
   recurrence_type: RecurrenceType;
 };
 
-export type UpdateRecurringParams = StrictOmit<MRecurring, "id" | "fk_id_recurrence_type" | "created_at" | "updated_at">
+export type UpdateRecurringParams = StrictOmit<MRecurring, "id" | "created_at" | "updated_at">
 
 export interface IRepoRecurring {
   create(data: CreateRecurringParams): RepoResult<Recurring, IRepoRecurring>;

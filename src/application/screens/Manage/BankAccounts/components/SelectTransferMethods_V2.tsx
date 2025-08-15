@@ -1,35 +1,29 @@
-import TransferMethodApi from "@src/application/api/transfer-method.api";
-import { MCIcons } from "@src/application/components/Icons.lib";
-import { useEffect, useRef, useState } from "react";
-import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
-import { MultiSelect } from "react-native-element-dropdown";
-import { Text, useTheme } from "react-native-paper";
+import BankAccountApi from '@src/application/api/bank-account.api';
+import TransferMethodApi from '@src/application/api/transfer-method.api';
+import { MCIcons } from '@src/application/components/Icons.lib';
+import { IBankAccount } from '@src/core/entities/bank_account.entity';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { ActivityIndicator, Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { MultiSelect } from 'react-native-element-dropdown';
+import { Text, useTheme } from 'react-native-paper';
 
-export interface SelectTransferMethodsTypeRef {
-  transfer_methods_selected: React.MutableRefObject<Array<string>>;
-  changeTransferMethods: (list: Array<string>) => void;
+interface SelectTransferMethods_V2Props {
+  bank_id?: IBankAccount["id"];
 }
 
-export function useRefSelectTransferMethods(initialValue: Array<string> = []): SelectTransferMethodsTypeRef {
-  const ref = useRef<Array<string>>(initialValue)
-  const changeTransferMethods = (list: Array<string>) => ref.current = list;
-  return {
-    transfer_methods_selected: ref,
-    changeTransferMethods,
-  };
+export interface SelectTransferMethods_V2Ref {
+  selectionOfTransferMethods: Array<string>;
 }
 
-interface SelectTransferMethodsProps {
-  selectionOfTransferMethods?: Array<string>;
-  changeSelectionOfTransferMethods?: (new_selection: Array<string>) => void;
-  refSelectTransferMethods: SelectTransferMethodsTypeRef;
-}
-
-export function SelectTransferMethods({ refSelectTransferMethods }: SelectTransferMethodsProps) {
+const SelectTransferMethods_V2 = forwardRef<SelectTransferMethods_V2Ref, SelectTransferMethods_V2Props>(({ bank_id }, ref) => {
   const theme = useTheme();
 
   const [available_transfer_methods, set_available_transfer_methods] = useState<Array<{ id: number, method: string }>>([]);
-  const [selectedTransferMethods, setSelectedTransferMethods] = useState<Array<string>>([]);
+  const [selectionOfTransferMethods, setSelectionOfTransferMethods] = useState<Array<string>>([]);
+
+  useImperativeHandle(ref, () => {
+    return { selectionOfTransferMethods };
+  }, [selectionOfTransferMethods]);
 
   useEffect(() => {
     TransferMethodApi.list_all()
@@ -49,9 +43,31 @@ export function SelectTransferMethods({ refSelectTransferMethods }: SelectTransf
       })
   }, [])
 
+  // Só será executado caso bank_id for passado
+  useEffect(() => {
+    if(bank_id === undefined){
+      return;
+    }
+    BankAccountApi.list_all_transfers_methods_type({ id: bank_id! }).then((transfer_methods) => {
+      if (transfer_methods === undefined) {
+        Alert.alert("Erro ocorreu ao carregar os métodos de pagamento!", "Não foi possível carregar os métodos de pagamento.")
+        return;
+      }
+
+      setSelectionOfTransferMethods(
+        transfer_methods
+          .filter(ba_tm => ba_tm.is_disabled)
+          .map(ba_tm => ba_tm.transfer_method.method)
+      )
+    });
+
+  }, [bank_id]);
+
   if (available_transfer_methods.length === 0) {
     // Alert.alert("Não existem métodos de transferências disponíveis ainda...")
-    return null;
+    return (
+      <ActivityIndicator />
+    )
   }
 
   return (
@@ -78,12 +94,9 @@ export function SelectTransferMethods({ refSelectTransferMethods }: SelectTransf
         labelField="method"
         valueField="method"
         placeholder="Escolha os métodos de transferência"
-        value={selectedTransferMethods}
-        onChange={(selected, ...rest) => {
-          setSelectedTransferMethods((prev) => {
-            refSelectTransferMethods.changeTransferMethods(selected)
-            return selected
-          })
+        value={selectionOfTransferMethods}
+        onChange={(selection, ...rest) => {
+          setSelectionOfTransferMethods(selection)
         }}
         renderItem={(item, selected) => {
           return (
@@ -117,9 +130,11 @@ export function SelectTransferMethods({ refSelectTransferMethods }: SelectTransf
         )}
       />
     </View>
-  )
+  );
 }
+);
 
+export default SelectTransferMethods_V2;
 const styles = StyleSheet.create({
   view_transfer_methods: {
     padding: 10,

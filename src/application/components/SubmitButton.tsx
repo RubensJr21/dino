@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from "react-native-paper";
-import { MdiNamesIcon } from "./ChooseIcon";
+import { Entypo, IconNames } from "./Icons.lib";
 
 interface SubmitButtonProps {
   variant: 'Add' | 'Edit'
@@ -7,16 +7,16 @@ interface SubmitButtonProps {
   style?: ButtonProps["style"]
 }
 
-type ConfigButton = ['Registrar'|'Editar', MdiNamesIcon]
+type ConfigButton = ['Registrar'|'Editar', IconNames<typeof Entypo>]
 
 function getConfig(variant: SubmitButtonProps["variant"]): ConfigButton {
   switch (variant) {
     case 'Add':
-      return ['Registrar', "plus-box"]
+      return ['Registrar', "squared-plus"]
     case 'Edit':
-      return ['Editar', "pencil"]
+      return ['Editar', "edit"]
     default:
-      return ['Registrar', "plus-box"]
+      return ['Registrar', "squared-plus"]
   }
 }
 

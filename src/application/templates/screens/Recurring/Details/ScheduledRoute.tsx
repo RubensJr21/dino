@@ -8,9 +8,9 @@ export const ScheduledRoute = () => {
       <Text>Scheduled</Text>
       <Divider />
       {
-        items.values().map((item) => {
-          <Text style={{color: "red"}}>{item.description}</Text>
-        })
+        Array.from(items).map((item) => 
+          <Text style={{color: "red"}} key={`scheduled-${item.created_at}`} >Item {item.id} {item.description}</Text>
+        )
       }
     </>
   )

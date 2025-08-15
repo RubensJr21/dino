@@ -1,10 +1,11 @@
+import { ComponentProps } from "react";
 import { Searchbar, SearchbarProps } from "react-native-paper";
-import { MdiIcons, MdiIconsProps } from "./ChooseIcon";
+import { MCIcons } from "./Icons.lib";
 
 export interface SearchBarDateProps {
   value: SearchbarProps["value"];
   onChange: SearchbarProps["onChangeText"];
-  onPressIcon: MdiIconsProps["onPress"]
+  onPressIcon: ComponentProps<typeof MCIcons>["onPress"]
 }
 
 export default function SearchBarDate({ value, onChange, onPressIcon }: SearchBarDateProps){
@@ -15,9 +16,9 @@ export default function SearchBarDate({ value, onChange, onPressIcon }: SearchBa
         value={value}
         elevation={5}
         right={(props) => (
-          <MdiIcons
+          <MCIcons
             {...props}
-            name="calendar-filter"
+            name="calendar-range"
             size={24}
             onPress={onPressIcon}
           />

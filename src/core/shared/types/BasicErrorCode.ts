@@ -8,4 +8,5 @@ export type BasicErrorCode =
   | "description_already_used"
   | "installment_number_less_than_2"
   | "Z_INTERNAL_REPO_ERROR"
+  | "method_not_found"
   ;

@@ -18,7 +18,6 @@ export default function RegisterRecurring({ route, navigation }: RegisterRecurri
       tag_description: data.tag_description,
       recurrence_type: data.recurrence_type,
     }).then((result) => {
-      console.log(result);
       if (!result) {
         Alert.alert("Erro", "Não foi possível registrar o pagamento.");
         return;

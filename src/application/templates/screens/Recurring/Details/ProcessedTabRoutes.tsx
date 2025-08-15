@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { MdiIcons } from "@src/application/components/ChooseIcon";
+import { MCIcons } from "@src/application/components/Icons.lib";
 import { useTheme } from "react-native-paper";
 import { ProcessedRoute } from "./ProcessedRoute";
 import { ScheduledRoute } from "./ScheduledRoute";
@@ -36,7 +36,8 @@ export function ProcessedTabRoutes() {
         options={{
           title: 'Processados',
           tabBarIcon: ({ color, size }) => (
-            <MdiIcons name="cash-check" color={color} size={size} />
+            <MCIcons name="checkbox-marked" color={color} size={size} />
+            // <MCIcons name="check-circle" color={color} size={size} />
           ),
         }}
       />
@@ -46,7 +47,7 @@ export function ProcessedTabRoutes() {
         options={{
           title: 'Agendados',
           tabBarIcon: ({ color, size }) => (
-            <MdiIcons name="cash-clock" color={color} size={size} />
+            <MCIcons name="calendar-clock" color={color} size={size} />
           ),
         }}
       />

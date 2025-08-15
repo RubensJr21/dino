@@ -11,9 +11,8 @@ import { getRandomInt } from "@src/application/utils/math";
 import { CardData, generateCardsData } from "@src/application/_mocks/CardData";
 import BasePageTitle from "@src/application/components/BasePage/BasePageTitle";
 import { TextBold } from "@src/application/components/Text/TextBold";
-import { UnknownOutputParams } from "expo-router";
 
-export interface AccountsBankReportsParams extends UnknownOutputParams {
+export interface AccountsBankReportsParams {
 	id: string;
 	nickname: string;
 }

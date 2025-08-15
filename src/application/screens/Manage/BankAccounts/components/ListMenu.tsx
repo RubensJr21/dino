@@ -1,12 +1,11 @@
-import { MdiNamesIcon } from "@src/application/components/ChooseIcon";
+import { IconNames, MCIcons } from "@src/application/components/Icons.lib";
 import { NonEmptyArray } from "@src/types/utility-types";
 import { StyleSheet, Text, TouchableNativeFeedback, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { MdiIcons } from "../../../../components/ChooseIcon";
 
 type ItemType = {
 	key: string;
-	icon: MdiNamesIcon;
+	icon: IconNames<typeof MCIcons>;
 	title: string;
 	onPress: () => void;
 };
@@ -63,7 +62,7 @@ export default function ListMenu({ items }: ListMenuProps) {
 }
 
 interface ItemMenuProps {
-  icon: MdiNamesIcon;
+  icon: IconNames<typeof MCIcons>;
   title: string;
   onPress: () => void;
   aspectRatio: number;
@@ -82,7 +81,7 @@ function ItemMenu({
         background={TouchableNativeFeedback.Ripple("gray", true)}
       >
         <View style={styles.ItemMenuViwTitle}>
-          <MdiIcons
+          <MCIcons
             name={icon}
             size={75}
           />

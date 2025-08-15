@@ -8,7 +8,7 @@ type Props = BottomTabScreenProps<ReceiptsStandardStackParamList, 'Edit'>;
 
 export default function EditStandard({ route, navigation }: Props) {
   const handleButton = (data: ValueFormEditTemplate) => {
-    console.log(data);
+    console.info(data);
     navigation.goBack(); // Volta para a tela anterior após editar
   };
 

@@ -3,7 +3,7 @@ import { IRecurring, Recurring } from "@src/core/entities/recurring.entity";
 import { Tag } from "@src/core/entities/tag.entity";
 import { TransferMethod } from "@src/core/entities/transfer_method.entity";
 
-interface MapperInput extends StrictOmit<IRecurring, "tag" | "transfer_method" | "recurrence_type" | "end_date"> {
+interface MapperInput extends StrictOmit<IRecurring, "tag" | "transfer_method" | "recurrence_type" | "end_date" | "is_disabled"> {
   id: number;
   created_at: Date;
   updated_at: Date;

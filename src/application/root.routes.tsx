@@ -10,7 +10,7 @@ export type RootTabParamList = {
 
 const Drawer = createDrawerNavigator<RootTabParamList>();
 
-import { MdiIcons } from './components/ChooseIcon';
+import { MCIcons } from './components/Icons.lib';
 import Home from './screens/Home';
 import Manage from './screens/Manage';
 import Payments from './screens/Payments';
@@ -31,7 +31,7 @@ export default function DrawerRoutes() {
         options={{
           title: 'Home',
           drawerIcon: (props) => (
-						<MdiIcons
+						<MCIcons
 							name="home"
 							{...props}
 						/>
@@ -44,7 +44,7 @@ export default function DrawerRoutes() {
         options={{
           title: 'Recebimentos',
           drawerIcon: (props) => (
-						<MdiIcons
+						<MCIcons
 							name="cash-plus"
 							{...props}
 						/>
@@ -57,7 +57,7 @@ export default function DrawerRoutes() {
         options={{
           title: 'Pagamentos',
           drawerIcon: (props) => (
-						<MdiIcons
+						<MCIcons
 							name="cash-minus"
 							{...props}
 						/>
@@ -70,8 +70,8 @@ export default function DrawerRoutes() {
         options={{
           title: 'Gerenciar',
           drawerIcon: (props) => (
-            <MdiIcons
-              name="view-dashboard-edit"
+            <MCIcons
+              name="wallet-outline"
               {...props}
             />
           ),

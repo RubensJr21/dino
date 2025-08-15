@@ -9,7 +9,7 @@ type Props = BottomTabScreenProps<ReceiptsStandardStackParamList, 'Register'>;
 export default function RegisterStandard({ route, navigation }: Props) {
   const handleButton = (data: ValueFormRegisterTemplate) => {
       // TODO: Implementar chamada ao endpoint de registro
-    console.log(data);
+    console.info(data);
     navigation.goBack(); // Volta para a tela anterior após registrar
   };
 

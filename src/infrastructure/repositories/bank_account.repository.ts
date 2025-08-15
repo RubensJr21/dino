@@ -14,7 +14,7 @@ export default class BankAccountDrizzleRepository implements IRepoBankAccount {
       const result = this.tx.insert(bank_account).values({
         nickname: data.nickname,
         balance: data.balance,
-        is_disabled: data.is_disabled
+        is_disabled: data.is_disabled ? 1 : 0
       }).returning().get()
 
       const bank_account_created = this.tx.query.bank_account.findFirst({
@@ -130,11 +130,17 @@ export default class BankAccountDrizzleRepository implements IRepoBankAccount {
 
   public update(id: MBankAccount["id"], data: UpdateBankAccountParams): ReturnType<IRepoBankAccount["update"]> {
     try {
-      const result = this.tx.update(bank_account).set(data).where(
+      const result = this.tx.update(bank_account).set({
+        nickname: data.nickname,
+        balance: data.balance,
+        is_disabled: data.is_disabled ? 1 : 0
+      }).where(
         eq(bank_account.id, id)
       ).returning({ id: bank_account.id }).get()
   
-      const bank_account_updated = this.tx.query.bank_account.findFirst({ with: { recurrence_type: true }, where: eq(bank_account.id, result.id) }).sync()
+      const bank_account_updated = this.tx.query.bank_account.findFirst({
+        where: eq(bank_account.id, result.id)
+      }).sync()
   
       if (!bank_account_updated) {
         return {

@@ -1,6 +1,6 @@
 import IUseCase from "@core/shared/IUseCase_v3";
+import { BankAccount } from "@src/core/entities/bank_account.entity";
 import { BankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
-import IEntityBase from "@src/core/shared/interfaces/bases/IEntityBase";
 import { IRepoBankAccountTransferMethod } from "@src/core/shared/interfaces/IRepoBankAccountTransferMethod";
 import { RepoInterfaceNames } from "@src/core/shared/types/RepoInterfaceNames";
 import { UnionRepoInterfaces } from "@src/core/shared/types/UnionRepoInterfaces";
@@ -8,7 +8,7 @@ import { UnionRepoInterfacesNames } from "@src/core/shared/types/UnionRepoInterf
 import { UseCaseResult } from "@src/core/shared/types/UseCaseResult";
 
 interface Input {
-  id: IEntityBase["id"]
+  id: BankAccount["id"]
 }
 
 type UsedRepoInterfaces = UnionRepoInterfaces<[

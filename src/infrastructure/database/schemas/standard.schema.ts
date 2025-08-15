@@ -1,3 +1,4 @@
+import { IItemValue } from '@src/core/entities/item_value.entity';
 import { IStandard } from '@src/core/entities/standard.entity';
 import { relations, sql } from 'drizzle-orm';
 import * as t from 'drizzle-orm/sqlite-core';
@@ -10,18 +11,21 @@ export const standard = sqliteTable("standard", {
       .primaryKey({ autoIncrement: true }),
   fk_id_item_value:
     t.integer("fk_id_item_value")
+      .$type<IItemValue["id"]>()
       .references(() => item_value.id, { onDelete: "cascade" })
       .notNull(),
   created_at:
     t.integer("created_at", { mode: "timestamp" })
-      .default(sql`(strftime('%s','now'))`)
       .$type<IStandard["created_at"]>()
+      .default(sql`(strftime('%s','now'))`)
       .notNull(),
   updated_at:
     t.integer("updated_at", { mode: "timestamp" })
-      .default(sql`(strftime('%s','now'))`)
-      .$onUpdate(() => sql`(strftime('%s','now'))`)
       .$type<IStandard["updated_at"]>()
+      .default(sql`(strftime('%s','now'))`)
+      .$onUpdateFn(() => new Date())
+      // .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
+      // .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
       .notNull()
 })
 

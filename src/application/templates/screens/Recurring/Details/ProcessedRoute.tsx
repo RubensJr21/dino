@@ -8,9 +8,9 @@ export const ProcessedRoute = () => {
       <Text>Processed</Text>
       <Divider />
       {
-        items.values().map((item) => {
-          <Text style={{color: "red"}}>{item.description}</Text>
-        })
+        Array.from(items).map((item) => 
+          <Text style={{color: "red"}} key={item.id} >Item {item.id} {item.description}</Text>
+        )
       }
     </>
   )

@@ -9,5 +9,6 @@ export const tag = sqliteTable("tag", {
   description: 
     t.text("description")
      .$type<ITag["description"]>()
+     .unique()
      .notNull()
 })

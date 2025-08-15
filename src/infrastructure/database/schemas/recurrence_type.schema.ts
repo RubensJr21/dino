@@ -8,7 +8,7 @@ export const recurrence_type = sqliteTable("recurrence_type", {
     .primaryKey({autoIncrement: true}),
   type: 
     t.text("type")
-    .unique()
     .$type<IRecurrenceType["type"]>()
+    .unique()
     .notNull()
 })

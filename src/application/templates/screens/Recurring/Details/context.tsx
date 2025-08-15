@@ -17,8 +17,8 @@ interface RecurringDetailsProviderProps {
 }
 
 export function RecurringDetailsProvider({ children }: RecurringDetailsProviderProps) {
-  const [processedItems, setProcessedItems] = useState(new Set<ItemValue>());
-  const [scheduledItems, setScheduledItems] = useState(new Set<ItemValue>());
+  const [processedItems, setProcessedItems] = useState(new Set<ItemValue>([]));
+  const [scheduledItems, setScheduledItems] = useState(new Set<ItemValue>([]));
 
   const add_items_processed = useCallback((item: ItemValue) => {
     // Isso faz com que automaticamente o item seja "movido" de uma lista para outra

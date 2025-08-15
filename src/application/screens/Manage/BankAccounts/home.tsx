@@ -12,7 +12,7 @@ import { EditParams } from "./edit";
 import { BankAccount } from "@src/core/entities/bank_account.entity";
 
 import BankAccountApi from "@src/application/api/bank-account.api";
-import Fab from "@src/application/components/ActionsFab/Fab";
+import Fab from "@src/application/components/Fab";
 import { FlatListDivider } from "@src/application/components/FlatList/FlatListDivider";
 import { AccountBankListItem } from "@src/application/screens/Manage/BankAccounts/components/AccountBankListItem";
 import { BankAccountsStackParamList } from "./routes";

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { GestureResponderEvent, StyleSheet } from "react-native";
 import { Text, TextInput } from "react-native-paper";
-import { MdiNamesIcon } from "../ChooseIcon";
+import { IconNames, MCIcons } from "../Icons.lib";
 
 const DEFAULT_MIN_INSTALLMENT_NUMBER = 2
 
@@ -29,7 +29,7 @@ export default function InputInstallmentsNumber({ label, refInstallmentNumber }:
 
   // 1) Fábrica de ícones (memoizada ou não)
   const makeIcon = useCallback(
-    (icon: MdiNamesIcon, onPress: (e: GestureResponderEvent) => void) => (
+    (icon: IconNames<typeof MCIcons>, onPress: (e: GestureResponderEvent) => void) => (
       <TextInput.Icon
         key={icon}
         icon={icon}

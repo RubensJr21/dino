@@ -8,7 +8,7 @@ import {
 } from "react";
 import { StyleSheet } from "react-native";
 import { Button, Text } from "react-native-paper";
-import { MdiNamesIcon } from "../ChooseIcon";
+import { IconNames, MCIcons } from "../Icons.lib";
 
 export interface InputDatePickerTypeRef {
   dateRef: React.MutableRefObject<Date>;
@@ -57,7 +57,7 @@ export default function InputDatePicker({ label, refDatePicker }: InputDatePicke
 
       <Button
         mode="contained"
-        icon={"calendar" as MdiNamesIcon}
+        icon={"calendar" satisfies IconNames<typeof MCIcons>}
         labelStyle={styles.button_select_date_label}
         contentStyle={styles.button_select_date_content}
         onPress={onPressButtonDate}

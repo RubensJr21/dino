@@ -1,7 +1,6 @@
 import { BankAccountTransferMethod, IBankAccountTransferMethod } from "@src/core/entities/bank_account_transfer_method.entity";
 import ListAllTransfersMethodTypeBankAccount from "@src/core/use_cases/bank-account/list_all_transfers_method_type.use_case";
 import { db } from "@src/infrastructure/database/client";
-import { tag } from "@src/infrastructure/database/schemas";
 import BankAccountTransferMethodDrizzleRepository from "@src/infrastructure/repositories/bank_account_transfer_method.repository";
 
 interface Params {
@@ -19,10 +18,6 @@ async function list_all_transfers_methods_type({
       const repo = new BankAccountTransferMethodDrizzleRepository(tx);
       const list_all_transfer_methods = new ListAllTransfersMethodTypeBankAccount(repo)
       const transfer_methods_founded = list_all_transfer_methods.execute({ id })
-
-      tx.insert(tag).values({
-        description: "teste" as any
-      })
 
       if (!transfer_methods_founded.success) {
         tx.rollback()

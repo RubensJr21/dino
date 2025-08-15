@@ -3,7 +3,7 @@ import { BankAccount } from "@src/core/entities/bank_account.entity";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { ListItemProps as ItemProps, List, MD3Theme } from "react-native-paper";
-import { MdiNamesIcon } from "../../../../components/ChooseIcon";
+import { MCIcons, type IconNames } from "../../../../components/Icons.lib";
 import { EditParams } from "../edit";
 
 async function disableAccountBank(id: number) {
@@ -45,7 +45,9 @@ export function AccountBankListItem({
       left={(props) => (
         <List.Icon
           {...props}
-          icon={"bank-outline" as MdiNamesIcon}
+          icon={({ color, size }) =>
+            <MCIcons name="bank-outline" {...{ color, size }} />
+          }
         />
       )}
       expanded={expanded}
@@ -56,6 +58,14 @@ export function AccountBankListItem({
         title="Editar conta bancária"
         color={theme.colors.onPrimaryContainer}
         icon="pencil"
+        left={(props) => (
+          <List.Icon
+            {...props}
+            icon={({ color, size }) =>
+              <MCIcons name="pencil" {...{ color, size }} />
+            }
+          />
+        )}
         onPress={async () => {
           const transfers_method_type = await BankAccountApi.list_all_transfers_methods_type({ id: bank_account.id })
           if (!transfers_method_type) {
@@ -100,6 +110,7 @@ export function AccountBankListItem({
         title="Abrir relatórios da conta bancária"
         color={theme.colors.tertiary}
         icon="finance"
+
         onPress={() => {
           // TODO: Implementar funcionalidade de navegar para a página de relatório de contas bancárias
           // navigateToReportsPage({
@@ -115,7 +126,7 @@ export function AccountBankListItem({
 interface ListItemProps extends ItemProps {
   title: string;
   color: string;
-  icon: MdiNamesIcon;
+  icon: IconNames<typeof MCIcons>;
 }
 
 function ListItem({ title, color, icon, onPress }: ListItemProps) {
@@ -125,7 +136,9 @@ function ListItem({ title, color, icon, onPress }: ListItemProps) {
       left={(props) => (
         <List.Icon
           {...props}
-          icon={icon}
+          icon={(props) => (
+            <MCIcons name={icon} {...props}/>
+          )}
           color={color}
         />
       )}

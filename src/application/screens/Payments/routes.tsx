@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MdiIcons } from '@src/application/components/ChooseIcon';
+import { MCIcons } from '@src/application/components/Icons.lib';
 import PaymentsInstallmentRoutes from './installment/routes';
 import PaymentsRecurringRoutes from './recurring/routes';
 import PaymentsStandardRoutes from './standard/routes';
@@ -26,7 +26,7 @@ export default function PaymentsRoutes() {
         options={{
           title: 'Pagamentos',
           tabBarIcon: ({ color, size }) => (
-            <MdiIcons name="cash-minus" color={color} size={size} />
+            <MCIcons name="cash-minus" color={color} size={size} />
           ),
         }}
       />
@@ -36,7 +36,7 @@ export default function PaymentsRoutes() {
         options={{
           title: 'Parcelados',
           tabBarIcon: ({ color, size }) => (
-            <MdiIcons name="cash-multiple" color={color} size={size} />
+            <MCIcons name="credit-card-multiple-outline" color={color} size={size} />
           ),
         }}
       />
@@ -46,7 +46,7 @@ export default function PaymentsRoutes() {
         options={{
           title: 'Recorrentes',
           tabBarIcon: ({ color, size }) => (
-            <MdiIcons name="cash-sync" color={color} size={size} />
+            <MCIcons name="credit-card-clock-outline" color={color} size={size} />
           ),
         }}
       />

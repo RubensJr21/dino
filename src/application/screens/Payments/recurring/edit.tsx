@@ -7,7 +7,7 @@ type EditRecurringProps = BottomTabScreenProps<PaymentsRecurringStackParamList, 
 
 export default function EditRecurring({route, navigation}: EditRecurringProps) {
   const handleButton = (data: ValueRecurringEditScreenTemplate) => {
-    console.log(data);
+    console.info(data);
     navigation.goBack(); // Volta para a tela anterior após editar
   };
 

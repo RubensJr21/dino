@@ -6,7 +6,6 @@ export function build_internal_repo_error_generic<Repo>(
   method_name: Extract<keyof Repo, string>,
   error: Error
 ): RepoDomainError<Repo> {
-  console.error("In Repository:", error)
   console.info({
     scope,
     method: method_name,

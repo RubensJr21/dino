@@ -1,5 +1,6 @@
 import { IRecurring } from '@src/core/entities/recurring.entity';
-import { MItemValue } from '@src/core/models/item_value.model';
+import { ITag } from '@src/core/entities/tag.entity';
+import { ITransferMethod } from '@src/core/entities/transfer_method.entity';
 import { relations, sql } from 'drizzle-orm';
 import * as t from 'drizzle-orm/sqlite-core';
 import { sqliteTable } from "drizzle-orm/sqlite-core";
@@ -13,7 +14,7 @@ export const recurring = sqliteTable("recurring", {
       .primaryKey({ autoIncrement: true }),
   is_disabled:
     t.integer("is_disabled")
-      .$type<IRecurring["is_disabled"]>()
+      // .$type<IRecurring["is_disabled"]>()
       .notNull(),
   start_date:
     t.integer("start_date", { mode: "timestamp" })
@@ -28,12 +29,12 @@ export const recurring = sqliteTable("recurring", {
       .notNull(),
   fk_id_transfer_method:
     t.integer("fk_id_transfer_method")
-      .$type<MItemValue["fk_id_transfer_method"]>()
+      .$type<ITransferMethod["id"]>()
       .references(() => transfer_method.id)
       .notNull(),
   fk_id_tag:
     t.integer("fk_id_tag")
-      .$type<MItemValue["fk_id_tag"]>()
+      .$type<ITag["id"]>()
       .references(() => tag.id)
       .notNull(),
   fk_id_recurrence_type:
@@ -48,7 +49,8 @@ export const recurring = sqliteTable("recurring", {
   updated_at:
     t.integer("updated_at", { mode: "timestamp" })
       .default(sql`(strftime('%s','now'))`)
-      .$onUpdate(() => sql`(strftime('%s','now'))`)
+      .$onUpdateFn(() => new Date())
+      // .$onUpdate(() => sql`(CURRENT_TIMESTAMP)`)
       .$type<IRecurring["updated_at"]>()
       .notNull()
 })

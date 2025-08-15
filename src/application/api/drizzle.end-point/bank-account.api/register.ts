@@ -33,8 +33,6 @@ async function register({
         type_of_bank_transfers
       })
 
-      console.log(bank_account_registered)
-
       if (!bank_account_registered.success) {
         tx.rollback()
         return undefined;

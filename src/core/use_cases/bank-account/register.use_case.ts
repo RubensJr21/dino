@@ -86,30 +86,29 @@ export default class RegisterBankAccount implements UseCaseInterface {
     // Quando um banco é adicionado é necessário popular a tabela de bank_account_transfer_method
     const available_transfer_methods = result_transfer_methods_all.data.map((tm) => tm.method)
 
-    console.warn("available_transfer_methods:", available_transfer_methods)
-    console.warn("input.type_of_bank_transfers:", input.type_of_bank_transfers)
-
+    // Verifica se nenhum método de transferência foi cadastrado
     if (available_transfer_methods.length === 0) {
       return {
         success: false,
         error: {
           trace: "RegisterBankAccount",
-          method: "find_all",
+          method: "verification_in_use_case",
           code: "empty_list",
           message: "Nenhum método de transferência cadastrado no APP."
         }
       }
     }
 
+    // Verifica se algum método de transferência passado é inválido
     for (const method of input.type_of_bank_transfers) {
       if (!available_transfer_methods.includes(method)) {
         return {
           success: false,
           error: {
             trace: "RegisterBankAccount",
-            method: "find_all",
-            code: "empty_list",
-            message: "Nenhum método de transferência cadastrado no APP."
+            method: "verification_in_use_case",
+            code: "method_not_found",
+            message: `Método de transferência '${method}' não encontrado na base de dados!`
           }
         }
       }
@@ -117,7 +116,6 @@ export default class RegisterBankAccount implements UseCaseInterface {
 
     // CASO AS INFORMAÇÕES NÃO ESTEJAM INSERIDAS NO BANCO, OU ESTEJAM DIFERENTES DARÁ ERRO.
     for (const key of available_transfer_methods) {
-      // isso será feito na migration da
       const transfer_method_searched = this.repo_tm.find_by_method(key)
       if (!transfer_method_searched.success) {
         return {
@@ -134,10 +132,9 @@ export default class RegisterBankAccount implements UseCaseInterface {
       const ba_tm_created = this.repo_ba_tm.create({
         fk_id_bank_account: bank_account_created.id,
         fk_id_transfer_method: transfer_method_data.id,
-        is_disabled: input.type_of_bank_transfers.includes(key)
+        // Se não estiver quer dizer que está desabilitado
+        is_disabled: !input.type_of_bank_transfers.includes(key)
       })
-
-      console.log(ba_tm_created)
 
       if (!ba_tm_created.success) {
         return {

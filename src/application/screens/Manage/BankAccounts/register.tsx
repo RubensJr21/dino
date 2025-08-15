@@ -6,9 +6,10 @@ import InputCurrency, { useRefInputCurrency } from "@src/application/components/
 import { SubmitButton } from "@src/application/components/SubmitButton";
 import InputBankName, { useRefInputBankName } from "@src/application/screens/Manage/BankAccounts/components/InputBankName";
 import { BankAccount } from "@src/core/entities/bank_account.entity";
+import { useState } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
-import { SelectTransferMethods, useRefSelectTransferMethods } from "./components/SelectTransferMethods";
+import SelectTransferMethods_V2 from "./components/SelectTransferMethods_V2";
 import { BankAccountsStackParamList } from "./routes";
 
 export type RegisterParams = undefined
@@ -19,7 +20,8 @@ export default function Register({ route, navigation }: Props) {
   const theme = useTheme()
   var inputBankNameRef = useRefInputBankName();
   var inputCurrencyRef = useRefInputCurrency();
-  var selectTransferMethodsRef = useRefSelectTransferMethods();
+
+  let [selectionOfTransferMethods, setSelectionOfTransferMethods] = useState<Array<string>>([])
 
   const handleButton = async (): Promise<BankAccount | undefined> => {
     const nickname = inputBankNameRef.bank_name.current;
@@ -34,12 +36,10 @@ export default function Register({ route, navigation }: Props) {
       return;
     }
 
-    console.warn(selectTransferMethodsRef.transfer_methods_selected)
-
     const bank_account = await BankAccountApi.register({
       nickname,
       balance: Number(balance),
-      type_of_bank_transfers: selectTransferMethodsRef.transfer_methods_selected.current
+      type_of_bank_transfers: selectionOfTransferMethods
     })
     if (!bank_account) {
       Alert.alert("Erro ao registrar conta bancária.");
@@ -58,8 +58,14 @@ export default function Register({ route, navigation }: Props) {
             label="Valor inicial da conta:"
             refCurrency={inputCurrencyRef}
           />
-
-          <SelectTransferMethods refSelectTransferMethods={selectTransferMethodsRef} />
+          
+          <SelectTransferMethods_V2 
+            ref={(returned) => {
+              if(returned !== null){
+                setSelectionOfTransferMethods(returned.selectionOfTransferMethods)
+              }
+            }}
+          />
         </View>
       </ScrollView>
       <View>

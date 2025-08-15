@@ -85,12 +85,11 @@ export function TransferMethodPickerProvider({
 
   const change_bank_account_id = async (new_id: number): Promise<void> => {
     if (!banks.find(bank_item => bank_item.id === new_id)) {
-      console.warn("O id para a conta bancária é inválido!")
+      Alert.alert("O id para a conta bancária é inválido!")
       return;
     }
     setBankAccountId(new_id);
     setTransferMethodId(0);
-    console.log("Carregando novos métodos de transferências...")
     setLoading(true);
     try {
       const transfer_methods = await BankAccountApi.list_all_transfers_methods_type({ id: new_id })
@@ -99,7 +98,7 @@ export function TransferMethodPickerProvider({
         Alert.alert("Erro ocorreu ao carregar os métodos de pagamento!", "Não foi possível carregar os métodos de pagamento.")
         return;
       }
-      console.info("transfer_methods", transfer_methods)
+      
       setTransferMethods((prev) => {
         setTransferMethodId(0);
         setLoading(false);
@@ -112,7 +111,7 @@ export function TransferMethodPickerProvider({
 
   const change_transfer_method_id = async (new_id: number): Promise<void> => {
     if (!transfer_methods.find(transfer_method_item => transfer_method_item.id === new_id)) {
-      console.warn("O id para o método de transferência é inválido!")
+      Alert.alert("O id para o método de transferência é inválido!")
       return;
     }
     setTransferMethodId(new_id);

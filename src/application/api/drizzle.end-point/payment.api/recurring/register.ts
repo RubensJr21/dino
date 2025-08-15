@@ -42,6 +42,7 @@ async function register({
       const tag_founded = repo_tag.find_by_description(params.tag_description);
 
       if (!tag_founded.success) {
+        console.error(tag_founded.error)
         tx.rollback();
         return undefined;
       }
@@ -82,6 +83,7 @@ async function register({
       return recurring_created.data;
     })
   } catch (error) {
+    console.error(error)
     // TODO: Aqui eu popularia o erro
   }
   return result;

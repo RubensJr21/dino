@@ -1,31 +1,20 @@
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import BankAccountApi from "@src/application/api/bank-account.api";
+import BasePageTitle from "@src/application/components/BasePage/BasePageTitle";
+import BasePageView from "@src/application/components/BasePage/BasePageView";
+import { SubmitButton } from "@src/application/components/SubmitButton";
 import { TextBold } from "@src/application/components/Text/TextBold";
-import InputBankName, {
-  useRefInputBankName,
-} from "@src/application/screens/Manage/BankAccounts/components/InputBankName";
-import { createTogglesRef, TransferMethodsToggles } from "@src/application/screens/Manage/BankAccounts/components/TransferMethodsToggle";
+import InputBankName, { useRefInputBankName } from "@src/application/screens/Manage/BankAccounts/components/InputBankName";
 import { BankAccount } from "@src/core/entities/bank_account.entity";
-import { TypeOfTransferMethods } from "@src/core/shared/types/transfer_methods";
+import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
-import { Text } from "react-native-paper";
+import SelectTransferMethods_V2 from "./components/SelectTransferMethods_V2";
+import { BankAccountsStackParamList } from "./routes";
 
 export interface EditParams {
   id: number;
   nickname: string;
 }
-
-function getValuesRef(togglesRef: Record<TypeOfTransferMethods, React.RefObject<{ value: boolean }>>) {
-  return Object.fromEntries(
-    Object.entries(togglesRef).map(([key, ref]) => [key, ref.current?.value ?? true])
-  ) as Record<TypeOfTransferMethods, boolean>;
-}
-
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import BasePageTitle from "@src/application/components/BasePage/BasePageTitle";
-import BasePageView from "@src/application/components/BasePage/BasePageView";
-import { SubmitButton } from "@src/application/components/SubmitButton";
-import { useEffect, useState } from "react";
-import { BankAccountsStackParamList } from "./routes";
 
 type Props = NativeStackScreenProps<BankAccountsStackParamList, 'Edit'>;
 
@@ -34,25 +23,21 @@ export default function Edit({ route, navigation }: Props) {
     id,
     nickname,
   } = route.params
-
-  const togglesRef = createTogglesRef();
-  const [transfer_methods, setTransferMethods] = useState<Record<TypeOfTransferMethods, boolean>>(getValuesRef(togglesRef))
+  
+  let [selectionOfTransferMethods, setSelectionOfTransferMethods] = useState<Array<string>>([])
 
   useEffect(() => {
-    navigation.setOptions({
-      title: `Edição da conta: ${nickname}`,
-    });
     BankAccountApi.list_all_transfers_methods_type({ id }).then((transfer_methods) => {
       if (transfer_methods === undefined) {
         Alert.alert("Erro ocorreu ao carregar os métodos de pagamento!", "Não foi possível carregar os métodos de pagamento.")
         return;
       }
-      const transfer_method_entries = transfer_methods.map((value) => (
-        [value.transfer_method.method, value.is_disabled] as [TypeOfTransferMethods, boolean]
-      ));
 
-      const transfer_methods_values = Object.fromEntries(transfer_method_entries) as Record<TypeOfTransferMethods, boolean>;
-      setTransferMethods(transfer_methods_values);
+      setSelectionOfTransferMethods(
+        transfer_methods
+          .filter(ba_tm => !ba_tm.is_disabled)
+          .map(ba_tm => ba_tm.transfer_method.method)
+      )
     });
 
   }, [navigation, nickname]);
@@ -66,45 +51,41 @@ export default function Edit({ route, navigation }: Props) {
       Alert.alert("Por favor, preencha o campo de nome da conta.");
       return;
     }
-    BankAccountApi.edit({
+
+    return BankAccountApi.edit({
       id,
       new_nickname,
-      type_of_bank_transfers: getValuesRef(togglesRef)
+      type_of_bank_transfers: selectionOfTransferMethods
     })
   };
 
   return (
     <BasePageView>
-      <BasePageTitle
-        style={styles.title_page}
-      >
+      <BasePageTitle style={styles.title_page}>
         Edição da conta: <TextBold>{nickname}</TextBold>
       </BasePageTitle>
       <ScrollView contentContainerStyle={styles.scroll_view_container}>
         <View style={styles.view_form}>
           <InputBankName refBankName={inputBankNameRef} />
 
-          <View style={styles.view_transfer_methods}>
-            <Text
-              style={styles.title_transfer_methods}
-              children={"Métodos de transferência:"}
-              variant="headlineMedium"
-              numberOfLines={2}
-            />
-            <TransferMethodsToggles
-              data={togglesRef}
-              initialValues={transfer_methods}
-            />
-          </View>
-
+          <SelectTransferMethods_V2
+            ref={(returned) => {
+              if (returned !== null) {
+                setSelectionOfTransferMethods(returned.selectionOfTransferMethods)
+              }
+            }}
+            bank_id={id}
+          />
         </View>
       </ScrollView>
       <SubmitButton variant="Edit" onPress={async () => {
         const result = await handleButton();
+
         if (result === undefined) {
           Alert.alert("Erro ao atualizar conta bancária.");
           return;
         }
+
         Alert.alert("Conta bancária atualizada com sucesso!");
         navigation.popTo("Home", {
           last_bank_account_modified: result.nickname
@@ -127,16 +108,5 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     gap: 10,
     flexDirection: "column",
-  },
-  view_transfer_methods: {
-    padding: 10,
-    gap: 10,
-    flexDirection: "column",
-    borderWidth: 4,
-  },
-  title_transfer_methods: {
-    width: "75%",
-    alignSelf: "center",
-    textAlign: "center",
   },
 });

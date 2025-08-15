@@ -9,7 +9,7 @@ type RegisterStandardProps = BottomTabScreenProps<PaymentsStandardStackParamList
 export default function RegisterStandard({ route, navigation }: RegisterStandardProps) {
   const handleButton = (data: ValueFormRegisterTemplate) => {
     // TODO: Implementar chamada ao endpoint de registro
-    console.log(data);
+    console.info(data);
     navigation.goBack(); // Volta para a tela anterior após registrar
   };
   

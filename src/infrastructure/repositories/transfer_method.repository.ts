@@ -11,7 +11,9 @@ export default class TransferMethodDrizzleRepository implements IRepoTransferMet
 
   public create(data: CreateTransferMethodTypeParams): ReturnType<IRepoTransferMethod["create"]> {
     try {
-      const transfer_method_created = this.tx.insert(transfer_method).values(data).returning().get()
+      const transfer_method_created = this.tx.insert(transfer_method).values({
+        method: data.method
+      }).returning().get()
 
       return {
         success: true,
