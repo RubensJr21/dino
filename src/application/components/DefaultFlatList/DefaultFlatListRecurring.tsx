@@ -1,6 +1,6 @@
 import { DateString } from "@src/application/functions/date2String";
 import { ValueRecurringEditScreenTemplate } from "@src/application/templates/screens/Recurring/Edit";
-import { DetailsRecurringScreenParams } from "@src/application/types/screens/RecurringScreenParams";
+import { DetailsRecurringScreenParams } from "@src/application/templates/screens/types/RecurringScreenParams";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { View } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";

@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ValueRecurringEditScreenTemplate } from '@src/application/templates/screens/Recurring/Edit';
-import { DetailsRecurringScreenParams, HomeRecurringScreenParams, RegisterRecurringScreenParams } from '@src/application/types/screens/RecurringScreenParams';
+import { DetailsRecurringScreenParams, HomeRecurringScreenParams, RegisterRecurringScreenParams } from '@src/application/templates/screens/types/RecurringScreenParams';
 import DetailsRecurring from './details';
 import EditRecurring from './edit';
 import Home from './home';
