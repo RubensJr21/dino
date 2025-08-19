@@ -20,6 +20,7 @@ async function list_all_transfers_methods_type({
       const transfer_methods_founded = list_all_transfer_methods.execute({ id })
 
       if (!transfer_methods_founded.success) {
+        console.error(transfer_methods_founded.error)
         tx.rollback()
         return undefined;
       }
@@ -28,7 +29,7 @@ async function list_all_transfers_methods_type({
     })
     result = resultado;
   } catch (error) {
-    console.error("list_all_transfers_methods_type.ts", error)
+    // console.warn("list_all_transfers_methods_type.ts", error)
     result = undefined
   }
   return result

@@ -14,11 +14,7 @@ export default function EditStandard({route, navigation}: EditStandardProps) {
   const inputCurrencyRef = useRefInputCurrency(route.params.amount);
 
   const handleButton = () => {
-    console.info("Valor na edição do Standard:", {
-      description: inputDescriptionRef.value,
-      date: inputDatePickerRef.dateRef.current,
-      currency: inputCurrencyRef.currencyRef.current,
-    });
+    // TODO: Implementar chamada ao endpoint de edição
     navigation.goBack(); // Volta para a tela anterior após editar
   };
 

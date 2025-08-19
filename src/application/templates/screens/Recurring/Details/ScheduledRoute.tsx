@@ -3,6 +3,7 @@ import { useRecurringScheduledDetails } from "./context";
 
 export const ScheduledRoute = () => {
   const { items } = useRecurringScheduledDetails()
+  // TODO: Implementar tela de detalhamento dos itens recorrentes processados
   return (
     <>
       <Text>Scheduled</Text>

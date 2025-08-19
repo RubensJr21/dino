@@ -63,8 +63,7 @@ async function register({
       const register_recurring = new RegisterRecurringReceipt(repo, repo_iv);
 
       const recurring_created = register_recurring.execute({
-        // ATTENTION: Preciso obter o description
-        description: "",
+        description: params.description,
         is_disabled: params.is_disabled,
         start_date: params.start_date,
         end_date: params.end_date,

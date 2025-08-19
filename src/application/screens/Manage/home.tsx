@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import BasePageView from "@src/application/components/BasePage/BasePageView";
-import ListMenu, { ItemsType } from "@src/application/screens/Manage/BankAccounts/components/ListMenu";
+import ListMenu, { ItemsType } from "@src/application/screens/Manage/components/ListMenu";
 import { ManageStackParamList } from "./routes";
 
 type Props = NativeStackScreenProps<ManageStackParamList, 'Home'>;

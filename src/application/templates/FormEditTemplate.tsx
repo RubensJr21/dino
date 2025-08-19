@@ -4,14 +4,15 @@ import InputCurrency, { useRefInputCurrency } from "@src/application/components/
 import InputDatePicker, { useRefInputDatePicker } from "@src/application/components/Input/InputDatePicker";
 import InputDescription, { useRefInputDescription } from "@src/application/components/Input/InputDescription";
 import { SubmitButton } from "@src/application/components/SubmitButton";
+import { useRefTransferMethodDropdown } from "@src/application/components/TransferMethodDropdown/TransferMethodDropdown";
 import { ITag } from "@src/core/entities/tag.entity";
 import { ITransferMethod } from "@src/core/entities/transfer_method.entity";
 import { TypeOfVariants, VARIANTS_OF_ITEM_VALUE } from "@src/core/shared/types/variants_items";
 import { ReactNode } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import TagPicker, { useRefTagPicker } from "../components/TagPicker";
+import TagDropdown, { useRefTagDropdown } from "../components/TagDropdown";
 import { TextBold } from "../components/Text/TextBold";
-import { TransferMethodPicker } from "../components/TransferMethodPicker";
+import { TransferMethodDropdown } from "../components/TransferMethodDropdown";
 
 export interface ValueFormEditTemplate {
   id: number;
@@ -40,7 +41,8 @@ export default function FormEditTemplate({ variant, value, submitAction, formExt
   const refDescription = useRefInputDescription(value.description);
   const refDatePicker = useRefInputDatePicker(value.scheduled_at);
   const refCurrency = useRefInputCurrency(value.amount);
-  const refTagPicker = useRefTagPicker(value.tag_description);
+  const refTagDropdown = useRefTagDropdown(value.tag_description);
+  const refTransferMethodDropdown = useRefTransferMethodDropdown(value.transfer_method_id)
 
   const handleAction = () => {
     submitAction({
@@ -48,9 +50,8 @@ export default function FormEditTemplate({ variant, value, submitAction, formExt
       description: refDescription.value.current,
       scheduled_at: refDatePicker.dateRef.current,
       amount: refCurrency.currencyRef.current,
-      // ALERT: Preciso criar o seletor de método de transferência
-      transfer_method_id: 1,
-      tag_description: refTagPicker.value.current,
+      transfer_method_id: refTransferMethodDropdown.selected.current,
+      tag_description: refTagDropdown.selected.current,
       cashflow_type: variant,
       was_processed: false
     })
@@ -62,6 +63,7 @@ export default function FormEditTemplate({ variant, value, submitAction, formExt
   const labelDate = `Selecione a data do ${variant_text}:`
   const labelCurrency = `Valor do ${variant_text}:`
   const labelTag = `Selecione uma categoria para o ${variant_text}`
+  const titleTransferMethod = `Selecione um método de ${variant_text}`
 
   return (
     <BasePageView>
@@ -76,9 +78,8 @@ export default function FormEditTemplate({ variant, value, submitAction, formExt
 
           {formExtension}
 
-          <TagPicker label={labelTag} {...{ refTagPicker }} />
-
-          <TransferMethodPicker />
+          <TagDropdown label={labelTag} {...{refTagDropdown}} />
+          <TransferMethodDropdown title={titleTransferMethod} {...{refTransferMethodDropdown}}/>
 
         </View>
       </ScrollView>

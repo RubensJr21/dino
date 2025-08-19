@@ -9,7 +9,7 @@ import {
 import { ActivityIndicator, MD3DarkTheme, MD3LightTheme, PaperProvider, Text } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { Entypo, type IconNames } from "@src/application/components/Icons.lib";
+import { MCIcons, type IconNames } from "@src/application/components/Icons.lib";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import RootRoutes from "./root.routes";
@@ -72,7 +72,7 @@ export default function Root() {
             <PaperProvider
               theme={isDark ? MD3DarkTheme : MD3LightTheme}
               settings={{
-                icon: ({ name, ...props }) => <Entypo name={name as IconNames<typeof Entypo>} {...props} />
+                icon: ({ name, ...props }) => <MCIcons name={name as IconNames<typeof MCIcons>} {...props} />
               }}
             >
               <RootRoutes />

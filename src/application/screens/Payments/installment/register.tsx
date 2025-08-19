@@ -8,7 +8,6 @@ type RegisterInstallmentProps = BottomTabScreenProps<PaymentsInstallmentStackPar
 export default function RegisterInstallment({ route, navigation }: RegisterInstallmentProps) {
   const handleButton = (data: ValueInstallmentRegisterScreenTemplate) => {
     // TODO: Implementar chamada ao endpoint de registro
-    console.info(data);
     navigation.goBack(); // Volta para a tela anterior após registrar
   };
 

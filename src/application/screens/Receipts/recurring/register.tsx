@@ -9,6 +9,7 @@ type Props = BottomTabScreenProps<ReceiptsRecurringStackParamList, 'Register'>;
 
 export default function RegisterRecurringReceipt({ route, navigation }: Props) {
   const handleButton = (data: ValueRecurringRegisterScreenTemplate) => {
+    console.warn({data})
     RecurringReceiptApi.register({
       description: data.description,
       current_amount: data.amount,

@@ -8,7 +8,7 @@ import InputBankName, { useRefInputBankName } from "@src/application/screens/Man
 import { BankAccount } from "@src/core/entities/bank_account.entity";
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
-import SelectTransferMethods_V2 from "./components/SelectTransferMethods_V2";
+import SelectionTransferMethods_V2 from "./components/SelectionTransferMethods";
 import { BankAccountsStackParamList } from "./routes";
 
 export interface EditParams {
@@ -29,7 +29,10 @@ export default function Edit({ route, navigation }: Props) {
   useEffect(() => {
     BankAccountApi.list_all_transfers_methods_type({ id }).then((transfer_methods) => {
       if (transfer_methods === undefined) {
-        Alert.alert("Erro ocorreu ao carregar os métodos de pagamento!", "Não foi possível carregar os métodos de pagamento.")
+        Alert.alert(
+          "'src/application/screens/Manage/BankAccounts/edit.tsx' diz:",
+          "Não foi possível carregar os métodos de pagamento."
+        )
         return;
       }
 
@@ -68,7 +71,7 @@ export default function Edit({ route, navigation }: Props) {
         <View style={styles.view_form}>
           <InputBankName refBankName={inputBankNameRef} />
 
-          <SelectTransferMethods_V2
+          <SelectionTransferMethods_V2
             ref={(returned) => {
               if (returned !== null) {
                 setSelectionOfTransferMethods(returned.selectionOfTransferMethods)

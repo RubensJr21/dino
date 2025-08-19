@@ -1,7 +1,7 @@
 import { GroupedStandardByDate } from "@src/application/functions/groupStandardByDate";
 import { useTheme } from "react-native-paper";
-import StandardGroupedByDate, { StandardGroupedByDateProps } from "../StandardGroupByDate";
-import DefaultFlatList from "./index";
+import DefaultFlatList from "../index";
+import StandardGroupedByDate, { StandardGroupedByDateProps } from "./StandardGroupByDate";
 
 export interface DefaultFlatListStandardProps {
   data: GroupedStandardByDate[];

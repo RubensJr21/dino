@@ -5,8 +5,10 @@ const madge = require('madge');
 madge('./src/', {
   // baseDir: "./src/",
   excludeRegExp: [
-    /_mocks/g,
-    /types\/global.d.ts/
+    /_mocks/,
+    /drizzle\//,
+    /types\/global.d.ts/,
+    /application\/root\.tsx/
   ],
   fileExtensions: [
     "tsx",

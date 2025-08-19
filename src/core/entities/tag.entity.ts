@@ -1,8 +1,7 @@
 import IEntityBase from "../shared/interfaces/bases/IEntityBase";
-import { TagsAvailable } from "../start_configs";
 
 export interface ITag extends IEntityBase {
-  description: TagsAvailable;
+  description: string;
 }
 
 type ReturnProperties = ITag

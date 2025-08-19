@@ -2,6 +2,7 @@ import { IEntityWithDates } from "../shared/interfaces/bases/IEntityWithDates";
 
 export interface IBankAccount extends IEntityWithDates {
   nickname: string;
+  // ALERT: Remover atributo is_disabled da entidade
   is_disabled: boolean;
   balance: number;
 }

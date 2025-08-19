@@ -9,7 +9,7 @@ import { BankAccount } from "@src/core/entities/bank_account.entity";
 import { useState } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
-import SelectTransferMethods_V2 from "./components/SelectTransferMethods_V2";
+import TransferMethodDropdowns_V2 from "./components/SelectionTransferMethods";
 import { BankAccountsStackParamList } from "./routes";
 
 export type RegisterParams = undefined
@@ -59,7 +59,7 @@ export default function Register({ route, navigation }: Props) {
             refCurrency={inputCurrencyRef}
           />
           
-          <SelectTransferMethods_V2 
+          <TransferMethodDropdowns_V2 
             ref={(returned) => {
               if(returned !== null){
                 setSelectionOfTransferMethods(returned.selectionOfTransferMethods)

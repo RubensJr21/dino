@@ -2,8 +2,8 @@ import { GroupedStandardByDate } from "@src/application/functions/groupStandardB
 import { useEffect, useState } from "react"
 import { Alert } from "react-native"
 import BasePageView from "../../../components/BasePage/BasePageView"
-import DefaultFlatListStandard, { DefaultFlatListStandardProps } from "../../../components/DefaultFlatList/DefaultFlatListStandard"
 import Fab from "../../../components/Fab"
+import DefaultFlatListStandard, { DefaultFlatListStandardProps } from "../../../components/FlatList/DefaultFlatList/DefaultFlatListStandard"
 import SearchBarDate from "../../../components/SearchBar"
 
 interface StandardHomeScreenTemplateProps {

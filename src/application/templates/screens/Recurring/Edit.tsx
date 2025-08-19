@@ -1,8 +1,8 @@
+import RecurringDropdown, { useRefRecurringDropdown } from "@src/application/components/RecurringDropdown";
 import { IRecurrenceType } from "@src/core/entities/recurrence_type.entity";
 import { ITag } from "@src/core/entities/tag.entity";
 import { ITransferMethod } from "@src/core/entities/transfer_method.entity";
 import { TypeOfVariants } from "@src/core/shared/types/variants_items";
-import InputRecurring, { useRefInputRecurringPicker } from "../../../components/Input/InputRecurringPicker";
 import FormEditTemplate, { ValueFormEditTemplate } from "../../FormEditTemplate";
 import { getVariantText } from "../../FormRegisterTemplate";
 
@@ -30,14 +30,13 @@ export default function RecurringEditScreenTemplate({ variant, value, submitActi
     ...value_standard
   } = value
 
-  const labelRecurring = `Selecione o tipo de recorrência do ${getVariantText(variant)}` 
-
-  const refRecurring = useRefInputRecurringPicker(recurrence_type);
+  const labelRecurring = `Selecione o tipo de recorrência do ${getVariantText(variant)}`
+  const refRecurringDropdown = useRefRecurringDropdown(recurrence_type);
 
   const handleAction = (standard: ValueFormEditTemplate) => {
     const data_recurring = {
       ...standard,
-      recurrence_type: refRecurring.value.current
+      recurrence_type: refRecurringDropdown.selected.current
     } satisfies ValueRecurringEditScreenTemplate
     submitAction(data_recurring)
   }
@@ -47,7 +46,7 @@ export default function RecurringEditScreenTemplate({ variant, value, submitActi
       {...{ variant }}
       value={value_standard}
       submitAction={handleAction}
-      formExtension={<InputRecurring label={labelRecurring} {...{ refRecurring }} />}
+      formExtension={<RecurringDropdown label={labelRecurring} {...{refRecurringDropdown}}/>}
     />
   );
 }

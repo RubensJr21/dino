@@ -23,7 +23,7 @@ export const tags_available = {
   shopping: 'Compras',
   taxes: 'Impostos/Taxas',
   others: 'Outros'
-} as const satisfies TagsAvailableType
+} as Record<string, string>
 
 export type TagsAvailable = (keyof typeof tags_available)
 
@@ -51,15 +51,15 @@ export const recurrence_types_available = {
       new Date().getFullYear() !== date.getFullYear()
     )
   },
-} as const satisfies RecurrencesAvailableType
+} satisfies RecurrencesAvailableType
 
 export type RecurrencesAvailable = (keyof typeof recurrence_types_available)
 
 export const transfer_methods_available = {
-  PIX: "pix",
-  DEBIT: "débito",
-  BANK_TRANSFER: "transferência bancária"
-} as const
+  PIX: "Pix",
+  DEBIT: "Débito",
+  BANK_TRANSFER: "Transferência bancária"
+}
 
 export type TypeOfTransferMethods = (keyof typeof transfer_methods_available)
 

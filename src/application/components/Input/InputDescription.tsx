@@ -30,7 +30,9 @@ export default function InputDescription({ placeholder, refDescription }: InputD
   return (
     <View>
       <TextInput
-        placeholder={placeholder}
+        mode="outlined"
+        label={placeholder}
+        // placeholder={placeholder}
         value={description}
         onChangeText={(text) => {
           refDescription.changeDescription(text);

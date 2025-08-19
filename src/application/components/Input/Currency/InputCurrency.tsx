@@ -9,13 +9,13 @@ import { Text, TextInputProps } from "react-native-paper";
 import TextCurrency from "./TextCurrency";
 
 export interface InputCurrencyTypeRef {
-	currencyRef: React.MutableRefObject<number>;
+  currencyRef: React.MutableRefObject<number>;
   changeCurrency: (currency: number) => void;
 }
 
 export function useRefInputCurrency(initialValue: number = 0): InputCurrencyTypeRef {
   const currencyRef = useRef<number>(initialValue);
-  const changeCurrency = (currency: number) => currencyRef.current = currency;
+  const changeCurrency = (currency: number) => currencyRef.current += currency;
   return {
     currencyRef,
     changeCurrency,
@@ -24,7 +24,7 @@ export function useRefInputCurrency(initialValue: number = 0): InputCurrencyType
 
 export interface InputCurrencyProps {
   label: string;
-	refCurrency: InputCurrencyTypeRef;
+  refCurrency: InputCurrencyTypeRef;
 }
 
 export default function InputCurrency({ refCurrency, label }: InputCurrencyProps) {
@@ -33,6 +33,7 @@ export default function InputCurrency({ refCurrency, label }: InputCurrencyProps
   const [value, setValue] = useState<number>(refCurrency.currencyRef.current);
   const [position, setPosition] = useState<ObjectPosition>(parseObjectPosition(value.toString()));
 
+
   useEffect(() => {
     const hideListener = Keyboard.addListener("keyboardDidHide", () =>
       inputRef.current?.blur()
@@ -40,6 +41,14 @@ export default function InputCurrency({ refCurrency, label }: InputCurrencyProps
 
     return () => hideListener.remove();
   }, []);
+
+  useEffect(() => {
+    setPosition(parseObjectPosition(value.toString()))
+  }, [value])
+
+  useEffect(() => {
+    inputRef.current?.setSelection(position.start, position.end);
+  }, [position])
 
   return (
     <>
@@ -59,38 +68,37 @@ export default function InputCurrency({ refCurrency, label }: InputCurrencyProps
           const value = parseStringToNumber(text.replace(/\D/g, ""))
           refCurrency.changeCurrency(value);
           setValue(value);
-          setPosition(parseObjectPosition(text));
         }}
         onFocus={() => {
-          setPosition(parseObjectPosition(value.toString()));
+          const input = inputRef.current?.props?.value
+          setPosition(parseObjectPosition(value.toString()))
         }}
-        position={position}
+        // position={position}
       />
     </>
   );
 };
 
 interface HideTextInputProps extends TextInputProps {
-	position: { start: number; end: number };
+  // position: { start: number; end: number };
 }
 
 const HideTextInput = forwardRef<RNTextInput, HideTextInputProps>(
-	({ value, onChangeText, onFocus, position }, ref) => {
+  ({ value, onChangeText, onFocus}, ref) => {
     const value_text = value?.toString()
-		return (
-			<RNTextInput
-				ref={ref}
-				value={(value_text?.length == 0 ? "" : value_text) ?? ""}
-				onChangeText={onChangeText}
-				onFocus={onFocus}
-				style={[styles.hideInput, styles.show_color]}
-				keyboardType="numeric"
-				secureTextEntry={false}
-				selection={position}
-				maxLength={11}
-			/>
-		);
-	}
+    return (
+      <RNTextInput
+        ref={ref}
+        value={(value_text?.length == 0 ? "" : value_text) ?? ""}
+        onChangeText={onChangeText}
+        onFocus={onFocus}
+        style={[styles.hideInput, styles.show_color]}
+        keyboardType="numeric"
+        secureTextEntry={false}
+        maxLength={11}
+      />
+    );
+  }
 );
 
 const styles = StyleSheet.create({
@@ -98,15 +106,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textAlignVertical: "center"
   },
-	hideInput: {
-		position: "absolute",
-		opacity: 0,
-		height: 0,
-		width: 0,
-	},
-	show_color: {
-		color: "white",
-	},
+  hideInput: {
+    position: "absolute",
+    opacity: 0,
+    height: 0,
+    width: 0,
+  },
+  show_color: {
+    color: "white",
+  },
 });
 
 function parseStringToNumber(value: string): number {
@@ -120,6 +128,6 @@ function parseObjectPosition(text: string): ObjectPosition {
   const length = text.length;
   return {
     start: length + 1,
-    end: length + 1,
+    end: length + 1
   };
 }

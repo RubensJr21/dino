@@ -7,7 +7,7 @@ interface SubmitButtonProps {
   style?: ButtonProps["style"]
 }
 
-type ConfigButton = ['Registrar'|'Editar', IconNames<typeof Entypo>]
+type ConfigButton = ['Registrar' | 'Editar', IconNames<typeof Entypo>]
 
 function getConfig(variant: SubmitButtonProps["variant"]): ConfigButton {
   switch (variant) {
@@ -25,10 +25,15 @@ export const SubmitButton = ({ variant, onPress, style }: SubmitButtonProps) => 
   return (
     <Button
       mode="contained"
-      icon={icon}
+      icon={(props) => (
+        <Entypo name={icon} {...props} />
+      )}
       contentStyle={{ flexDirection: "row-reverse" }}
       onPress={onPress}
-      style={style}
+      style={[
+        style,
+        { borderRadius: 12 }
+      ]}
     >
       {label}
     </Button>

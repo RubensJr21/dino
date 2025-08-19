@@ -7,7 +7,7 @@ import {
   List,
   MD3Theme
 } from "react-native-paper";
-import { ValueFormEditTemplate } from "../templates/FormEditTemplate";
+import { ValueFormEditTemplate } from "../../../../templates/FormEditTemplate";
 
 function callAlert(fnSetData: () => void) {
   return () => {

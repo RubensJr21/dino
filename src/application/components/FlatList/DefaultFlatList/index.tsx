@@ -1,6 +1,6 @@
 import { FlatList, FlatListProps, StyleSheet, View } from "react-native";
 import { Text } from 'react-native-paper';
-import { FlatListDivider } from "../FlatList/FlatListDivider";
+import { FlatListDivider } from "../FlatListDivider";
 
 interface Props<T> {
   data: FlatListProps<T>["data"],

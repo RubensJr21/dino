@@ -1,9 +1,7 @@
 import {
-  KeyboardAvoidingView,
-  Platform,
   StyleSheet,
   View,
-  ViewProps,
+  ViewProps
 } from "react-native";
 
 interface BasePageViewProps extends ViewProps {}
@@ -14,20 +12,20 @@ export default function BasePageView({ style, children, ...props }: BasePageView
       {children}
     </View>
   )
-	return (
-		<KeyboardAvoidingView
-			style={StyleSheet.compose(styles.baseView, style)}
-			behavior={Platform.select({
-				ios: "padding",
-				android: "height",
-			})}
-			enabled
-			keyboardVerticalOffset={90}
-			{...props}
-		>
-			{children}
-		</KeyboardAvoidingView>
-	);
+	// return (
+	// 	<KeyboardAvoidingView
+	// 		style={StyleSheet.compose(styles.baseView, style)}
+	// 		behavior={Platform.select({
+	// 			ios: "padding",
+	// 			android: "height",
+	// 		})}
+	// 		enabled
+	// 		keyboardVerticalOffset={90}
+	// 		{...props}
+	// 	>
+	// 		{children}
+	// 	</KeyboardAvoidingView>
+	// );
 }
 
 const styles = StyleSheet.create({

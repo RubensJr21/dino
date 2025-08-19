@@ -12,7 +12,7 @@
     "test": "jest --watchAll",
     "ts-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
-    "check-dead-files": "node orphans.js"
+    "check-dead-files": "node scripts/orphans.js"
   },
   "jest": {
     "preset": "jest-expo"
@@ -49,6 +49,7 @@
     "react-native-input-select": "^2.1.7",
     "react-native-paper": "^5.12.5",
     "react-native-paper-dates": "^0.22.27",
+    "react-native-paper-dropdown": "^2.3.1",
     "react-native-reanimated": "~3.16.1",
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.4.0",

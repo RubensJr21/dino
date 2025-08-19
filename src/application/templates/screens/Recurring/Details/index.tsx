@@ -1,5 +1,3 @@
-// ALERT: Implementar tela de detalhamento dos itens recorrentes
-
 import { ItemValue } from "@src/core/entities/item_value.entity";
 import { Recurring } from "@src/core/entities/recurring.entity";
 import { useEffect } from "react";

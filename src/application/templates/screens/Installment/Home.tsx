@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { Alert } from "react-native"
 import BasePageView from "../../../components/BasePage/BasePageView"
-import DefaultFlatListInstallment, { DefaultFlatListInstallmentProps } from "../../../components/DefaultFlatList/DefaultFlatListInstallment"
 import Fab from "../../../components/Fab"
+import DefaultFlatListInstallment, { DefaultFlatListInstallmentProps } from "../../../components/FlatList/DefaultFlatList/DefaultFlatListInstallment"
 import SearchBarDate from "../../../components/SearchBar"
 
 

@@ -8,9 +8,10 @@ import { ITag } from "@src/core/entities/tag.entity";
 import { ITransferMethod } from "@src/core/entities/transfer_method.entity";
 import { TypeOfVariants, VARIANTS_OF_ITEM_VALUE } from "@src/core/shared/types/variants_items";
 import { ReactNode } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
-import TagPicker, { useRefTagPicker } from "../components/TagPicker";
-import { TransferMethodPicker } from "../components/TransferMethodPicker";
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
+import TagDropdown, { useRefTagDropdown } from "../components/TagDropdown";
+import { TransferMethodDropdown } from "../components/TransferMethodDropdown";
+import { useRefTransferMethodDropdown } from "../components/TransferMethodDropdown/TransferMethodDropdown";
 
 export interface ValueFormRegisterTemplate {
   description: string;
@@ -33,20 +34,22 @@ export function getVariantText(variant: TypeOfVariants) {
 }
 
 export default function FormRegisterTemplate({ variant, submitAction, formExtension }: FormRegisterTemplateProps) {
+  // ATTENTION: Talvez o interessante seria buscar quais contas estão habilitadas aqui
+
   // 1️⃣ Declarar tudo aqui fora:
   const refDescription = useRefInputDescription();
   const refDatePicker = useRefInputDatePicker();
   const refCurrency = useRefInputCurrency();
-  const refTagPicker = useRefTagPicker("others");
+  const refTagDropdown = useRefTagDropdown("others");
+  const refTransferMethodDropdown = useRefTransferMethodDropdown()
 
   const handleAction = () => {
     submitAction({
       description: refDescription.value.current,
       scheduled_at: refDatePicker.dateRef.current,
       amount: refCurrency.currencyRef.current,
-      // ALERT: Preciso criar o seletor de método de transferência
-      transfer_method_id: 1,
-      tag_description: refTagPicker.value.current,
+      transfer_method_id: refTransferMethodDropdown.selected.current,
+      tag_description: refTagDropdown.selected.current,
       cashflow_type: variant,
       was_processed: false
     })
@@ -58,26 +61,31 @@ export default function FormRegisterTemplate({ variant, submitAction, formExtens
   const labelDate = `Selecione a data do ${variant_text}:`
   const labelCurrency = `Valor do ${variant_text}:`
   const labelTag = `Selecione uma categoria para o ${variant_text}`
+  const titleTransferMethod = `Selecione um método de ${variant_text}`
 
   return (
     <BasePageView>
       <BasePageTitle style={styles.title_page}>
         Registrar {getVariantText(variant)}
       </BasePageTitle>
-      <ScrollView contentContainerStyle={styles.scroll_view_container}>
-        <View style={styles.view_form}>
-          <InputDescription placeholder={placeholderDescription} {...{ refDescription }} />
-          <InputDatePicker label={labelDate} {...{ refDatePicker }} />
-          <InputCurrency label={labelCurrency} {...{ refCurrency }} />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView contentContainerStyle={styles.scroll_view_container} keyboardShouldPersistTaps="handled">
 
-          {formExtension}
+          <View style={styles.view_form}>
+            <InputDescription placeholder={placeholderDescription} {...{ refDescription }} />
+            <InputDatePicker label={labelDate} {...{ refDatePicker }} />
+            <InputCurrency label={labelCurrency} {...{ refCurrency }} />
 
-          <TagPicker label={labelTag} {...{ refTagPicker }} />
+            {formExtension}
+            <TagDropdown label={labelTag} {...{refTagDropdown}} />
+            <TransferMethodDropdown title={titleTransferMethod} {...{ refTransferMethodDropdown }} />
 
-          <TransferMethodPicker />
-
-        </View>
-      </ScrollView>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
       <SubmitButton variant="Add" onPress={handleAction} />
     </BasePageView>
   )

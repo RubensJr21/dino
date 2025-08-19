@@ -1,8 +1,7 @@
 import IEntityBase from "../shared/interfaces/bases/IEntityBase";
-import { RecurrencesAvailable } from "../start_configs";
 
 export interface IRecurrenceType extends IEntityBase {
-  type: RecurrencesAvailable
+  type: string
 }
 
 type ReturnProperties = IRecurrenceType

@@ -8,7 +8,7 @@ type Props = BottomTabScreenProps<PaymentsInstallmentStackParamList, 'Edit'>;
 
 export default function EditInstallment({route, navigation}: Props) {
   const handleButton = (data: ValueFormEditTemplate) => {
-    console.info(data);
+    // TODO: Implementar chamada ao endpoint de edição
     navigation.goBack(); // Volta para a tela anterior após editar
   };
 

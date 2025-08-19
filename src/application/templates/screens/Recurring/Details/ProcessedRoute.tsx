@@ -3,6 +3,7 @@ import { useRecurringProcessedDetails } from "./context";
 
 export const ProcessedRoute = () => {
   const { items } = useRecurringProcessedDetails()
+  // TODO: Implementar tela de detalhamento dos itens recorrentes processados
   return (
     <>
       <Text>Processed</Text>
