@@ -34,12 +34,25 @@ export function DropdownIndex<T>({
     }
   }, [modalIsVisible])
 
+  const Label = useCallback(() => (
+    <Text
+      variant="bodySmall"
+      style={{
+        position: "absolute",
+        left: 7,
+        top: 0,
+        backgroundColor: theme.colors.background,
+        paddingHorizontal: 6
+      }}
+      children={label} />
+  ), [])
+
   const ModalCallInput = useCallback(() => {
     return (
       <TextInput
         ref={inputRef}
         mode="outlined"
-        label={label}
+        style={{marginTop: 8, backgroundColor: theme.colors.background}}
         value={selected.label}
         onFocus={() => show_modal()}
         showSoftInputOnFocus={false} // não abrir teclado no campo principal
@@ -82,7 +95,10 @@ export function DropdownIndex<T>({
 
   return (
     <View>
-      <ModalCallInput />
+      <View>
+        <ModalCallInput />
+        <Label />
+      </View>
       <Modal
         animationType="fade"
         transparent={true}

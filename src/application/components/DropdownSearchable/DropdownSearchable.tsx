@@ -35,11 +35,24 @@ export function DropdownSearchableIndex<T>({
     }
   }, [modalIsVisible])
 
+  const Label = useCallback(() => (
+    <Text
+      variant="bodySmall"
+      style={{
+        position: "absolute",
+        left: 7,
+        top: 0,
+        backgroundColor: theme.colors.background,
+        paddingHorizontal: 6
+      }}
+      children={label} />
+  ), [])
+
   const ModalCallInput = useCallback(() => (
     <TextInput
       ref={inputRef}
       mode="outlined"
-      label={label}
+      style={{marginTop: 8}}
       value={selected.label}
       onFocus={() => show_modal()}
       showSoftInputOnFocus={false} // não abrir teclado no campo principal
@@ -50,7 +63,7 @@ export function DropdownSearchableIndex<T>({
         />}
       cursorColor="transparent"
     />
-  ), [selected, label, modalIsVisible])
+  ), [selected, modalIsVisible])
 
   const ModalBox = useCallback(({ children }: { children: ReactNode }) => (
     <KeyboardAvoidingView
@@ -82,7 +95,10 @@ export function DropdownSearchableIndex<T>({
   return (
     <View>
       {/* <ModalCallButton /> */}
-      <ModalCallInput />
+      <View>
+        <ModalCallInput />
+        <Label />
+      </View>
       <Modal
         animationType="fade"
         transparent={true}

@@ -3,7 +3,7 @@ import { DropdownSearchable } from "../DropdownSearchable";
 import { useBankAccounts } from "./_context";
 
 interface BankAccountDropdownProps {
-  label: string;
+  label: React.ComponentProps<typeof DropdownSearchable>["label"];
 }
 
 export function BankAccountDropdownSearchable({
@@ -14,10 +14,6 @@ export function BankAccountDropdownSearchable({
     choose,
     change_bank_account
   } = useBankAccounts()
-
-  // if (items.length === 0) {
-  //   return;
-  // }
 
   return (
     <DropdownSearchable

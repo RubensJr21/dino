@@ -72,13 +72,8 @@ export function TransferMethodDropdownIndex({
       >
         {title}
       </Text>
-      {/* <SelectBankAccount /> */}
-      <BankAccountDropdownSearchable
-        label="Selecione uma conta bancária"
-      />
-      <TransferMethodDropdownOfBank
-        label="Selecione um método de transferência"
-      />
+      <BankAccountDropdownSearchable label="Selecione uma conta bancária" />
+      <TransferMethodDropdownOfBank label="Selecione um método de transferência"/>
     </View>
   )
 }

@@ -5,6 +5,9 @@
     "emitDecoratorMetadata": true,
     "allowJs": true,
     "strict": true,
+    // Para tipagem do React Navigation
+    "strictNullChecks": true,
+    "moduleResolution": "bundler",
     "baseUrl": "./src/",
     "paths": {
       "@root/*": [

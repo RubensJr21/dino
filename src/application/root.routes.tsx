@@ -8,7 +8,10 @@ export type RootTabParamList = {
   Manage: undefined;
 }
 
-const Drawer = createDrawerNavigator<RootTabParamList>();
+export const ID_NAVIGATOR_ROOT = "DrawerRoot" as const
+
+// ALERT: PRECISO COMPOR TIPAGEM DOS PROPS DOS FILHOS
+const Drawer = createDrawerNavigator<RootTabParamList, typeof ID_NAVIGATOR_ROOT>();
 
 import { MCIcons } from './components/Icons.lib';
 import Home from './screens/Home';
@@ -24,6 +27,7 @@ export default function DrawerRoutes() {
 				// drawerHideOnKeyboard: true,
 				// headerShown: false,
 			}}
+      id={ID_NAVIGATOR_ROOT}
     >
       <Drawer.Screen
         name="Home"

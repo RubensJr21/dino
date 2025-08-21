@@ -1,12 +1,18 @@
 import { Alert, ColorSchemeName, StatusBar, useColorScheme, View } from "react-native";
 
 import {
-  DarkTheme,
-  DefaultTheme,
   NavigationContainer,
-  ThemeProvider,
+  DarkTheme as NavigationDarkTheme,
+  DefaultTheme as NavigationDefaultTheme
 } from "@react-navigation/native";
-import { ActivityIndicator, MD3DarkTheme, MD3LightTheme, PaperProvider, Text } from "react-native-paper";
+import {
+  ActivityIndicator,
+  MD3DarkTheme as PaperDarkTheme,
+  MD3LightTheme as PaperDefaultTheme,
+  PaperProvider,
+  Text,
+  ThemeProvider
+} from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { MCIcons, type IconNames } from "@src/application/components/Icons.lib";
@@ -21,6 +27,25 @@ import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { useMemo, useState } from "react";
 
+const RNavigationDefaultTheme = {
+  ...NavigationDefaultTheme,
+  colors: {
+    ...NavigationDefaultTheme.colors,
+    ...PaperDefaultTheme.colors,
+    primary: PaperDefaultTheme.colors.primary,
+    background: PaperDefaultTheme.colors.background
+  },
+};
+
+const RNavigationDarkTheme = {
+  ...NavigationDarkTheme,
+  colors: {
+    ...NavigationDarkTheme.colors,
+    primary: PaperDarkTheme.colors.primary,
+    background: PaperDarkTheme.colors.background
+  },
+};
+
 export default function Root() {
   const { success, error } = useMigrations(db, migrations);
   const [started, setStarted] = useState<boolean>(false)
@@ -29,16 +54,18 @@ export default function Root() {
   const scheme: ColorSchemeName = useColorScheme();
   const isDark: boolean = scheme === "dark";
 
+  const themePaper = isDark ? PaperDarkTheme : PaperDefaultTheme;
+  const themeNavigation = isDark ? RNavigationDarkTheme : RNavigationDefaultTheme;
 
   const _ = useMemo(() => {
-    if(success) {
+    if (success) {
       populate_database()
-      .then(() => {
-        setStarted(true)
-      })
-      .catch(() => {
-        Alert.alert("Algum erro aconteceu durante o povoamento do banco de dados!")
-      })
+        .then(() => {
+          setStarted(true)
+        })
+        .catch(() => {
+          Alert.alert("Algum erro aconteceu durante o povoamento do banco de dados!")
+        })
     }
   }, [success])
 
@@ -65,13 +92,14 @@ export default function Root() {
   }
 
   return (
-    <NavigationContainer>
-      <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+    <NavigationContainer theme={themeNavigation}>
+      <ThemeProvider theme={themePaper}>
         <SafeAreaProvider>
           <GestureHandlerRootView>
             <PaperProvider
-              theme={isDark ? MD3DarkTheme : MD3LightTheme}
+              theme={themePaper}
               settings={{
+                rippleEffectEnabled: true,
                 icon: ({ name, ...props }) => <MCIcons name={name as IconNames<typeof MCIcons>} {...props} />
               }}
             >

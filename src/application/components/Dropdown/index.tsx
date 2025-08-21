@@ -5,7 +5,7 @@ import { DropdownIndex } from "./Dropdown";
 export { Option };
 
 interface Props<T> {
-  label: string;
+  label: React.ComponentProps<typeof DropdownIndex>["label"];
   options: Option<T>[];
   onSelect: (selected: Option<T>) => void;
   renderItem: React.ComponentProps<typeof ListDropdown>["renderItem"];

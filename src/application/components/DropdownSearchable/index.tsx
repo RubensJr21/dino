@@ -5,7 +5,7 @@ import { DropdownSearchableIndex } from "./DropdownSearchable";
 export { Option };
 
 interface Props<T> {
-  label: string;
+  label: React.ComponentProps<typeof DropdownSearchableIndex>["label"];
   options: Option<T>[];
   onSelect: (selected: Option<T>) => void;
   renderItem: React.ComponentProps<typeof ListDropdownSearchable>["renderItem"];

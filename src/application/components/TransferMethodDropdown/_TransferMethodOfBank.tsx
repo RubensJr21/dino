@@ -3,7 +3,7 @@ import { Text } from "react-native-paper";
 import { useTransferMethods } from "./_context";
 
 interface TransferMethodDropdownOfBankProps {
-  label: string;
+  label: React.ComponentProps<typeof Dropdown>["label"];
 }
 
 export function TransferMethodDropdownOfBank({
@@ -14,10 +14,6 @@ export function TransferMethodDropdownOfBank({
     choose,
     change_transfer_method
   } = useTransferMethods();
-
-  // if (items.length === 0) {
-  //   return;
-  // }
 
   return (
     <Dropdown
