@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-namespace */
 import { CSSPropertiesColor, PreferenceType } from "@src/types/color";
 
 export namespace Color_Parses {

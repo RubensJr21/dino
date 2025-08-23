@@ -31,5 +31,13 @@
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "headerClassName"
+  ],
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

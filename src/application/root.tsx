@@ -1,7 +1,6 @@
-import { Alert, ColorSchemeName, StatusBar, useColorScheme, View } from "react-native";
+import { Alert, ColorSchemeName, useColorScheme, View } from "react-native";
 
 import {
-  NavigationContainer,
   DarkTheme as NavigationDarkTheme,
   DefaultTheme as NavigationDefaultTheme
 } from "@react-navigation/native";
@@ -10,8 +9,7 @@ import {
   MD3DarkTheme as PaperDarkTheme,
   MD3LightTheme as PaperDefaultTheme,
   PaperProvider,
-  Text,
-  ThemeProvider
+  Text
 } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -92,27 +90,29 @@ export default function Root() {
   }
 
   return (
-    <NavigationContainer theme={themeNavigation}>
-      <ThemeProvider theme={themePaper}>
-        <SafeAreaProvider>
-          <GestureHandlerRootView>
-            <PaperProvider
-              theme={themePaper}
-              settings={{
-                rippleEffectEnabled: true,
-                icon: ({ name, ...props }) => <MCIcons name={name as IconNames<typeof MCIcons>} {...props} />
-              }}
-            >
-              <RootRoutes />
-            </PaperProvider>
-            <StatusBar
-              barStyle={isDark ? "light-content" : "dark-content"}
-              backgroundColor={"transparent"}
-              translucent={true}
-            />
-          </GestureHandlerRootView>
-        </SafeAreaProvider>
-      </ThemeProvider>
-    </NavigationContainer>
+    <>
+      {/* <NavigationContainer theme={themeNavigation}> */}
+        {/* <ThemeProvider theme={themePaper}> */}
+          {/* <SafeAreaProvider> */}
+            <GestureHandlerRootView>
+              <PaperProvider
+                theme={themePaper}
+                settings={{
+                  rippleEffectEnabled: true,
+                  icon: ({ name, ...props }) => <MCIcons name={name as IconNames<typeof MCIcons>} {...props} />
+                }}
+              >
+                <RootRoutes />
+              </PaperProvider>
+              {/* <StatusBar
+                // barStyle={isDark ? "light-content" : "dark-content"}
+                // backgroundColor={"transparent"}
+                // translucent={true}
+              /> */}
+            </GestureHandlerRootView>
+          {/* </SafeAreaProvider> */}
+        {/* </ThemeProvider> */}
+      {/* </NavigationContainer> */}
+    </>
   );
 }

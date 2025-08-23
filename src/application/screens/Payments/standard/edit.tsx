@@ -8,6 +8,8 @@ import { PaymentsStandardStackParamList } from "./routes";
 
 type EditStandardProps = BottomTabScreenProps<PaymentsStandardStackParamList, 'Edit'>;
 
+// ALERT: Preciso receber apenas o id
+
 export default function EditStandard({route, navigation}: EditStandardProps) {
   const inputDescriptionRef = useRefInputDescription(route.params.description);
   const inputDatePickerRef = useRefInputDatePicker(route.params.scheduled_at);

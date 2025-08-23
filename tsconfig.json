@@ -3,11 +3,8 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "types": ["expo-router"],
     "allowJs": true,
-    "strict": true,
-    // Para tipagem do React Navigation
-    "strictNullChecks": true,
-    "moduleResolution": "bundler",
     "baseUrl": "./src/",
     "paths": {
       "@root/*": [
@@ -39,14 +36,14 @@
       ],
       "@api/*": [
         "./application/api/*"
-      ]
+      ],
     }
   },
   "include": [
-    "**/*.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "App.jsx"
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
   ],
   "exclude": [
     "node_modules",

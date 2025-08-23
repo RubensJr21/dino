@@ -111,8 +111,7 @@ export class Recurring implements IRecurring {
   public get updated_at(): Recurring["_updated_at"] {
     return this._updated_at
   }
-
-  // @Override
+  
   get properties(): ReturnProperties {
 		return {
       id: this.id,

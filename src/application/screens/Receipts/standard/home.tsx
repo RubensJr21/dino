@@ -9,6 +9,7 @@ import { ReceiptsStandardStackParamList } from "./routes";
 type Props = BottomTabScreenProps<ReceiptsStandardStackParamList, 'Home'>;
 
 export default function Receipts({ navigation }: Props) {
+  // ALERT: QUERO MUDAR AQUI O VALOR DO HEADER TITLE
   const [receipts, setReceipts] = useState<GroupedStandardByDate[]>([]);
 
   useEffect(() => {

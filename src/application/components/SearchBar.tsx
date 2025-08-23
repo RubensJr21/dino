@@ -8,21 +8,21 @@ export interface SearchBarDateProps {
   onPressIcon: ComponentProps<typeof MCIcons>["onPress"]
 }
 
-export default function SearchBarDate({ value, onChange, onPressIcon }: SearchBarDateProps){
+export default function SearchBarDate({ value, onChange, onPressIcon }: SearchBarDateProps) {
   return (
     <Searchbar
-        placeholder="Digite uma descrição ou um valor"
-        onChangeText={onChange}
-        value={value}
-        elevation={5}
-        right={(props) => (
-          <MCIcons
-            {...props}
-            name="calendar-range"
-            size={24}
-            onPress={onPressIcon}
-          />
-        )}
-      />
+      placeholder="Digite uma descrição ou um valor"
+      onChangeText={onChange}
+      value={value}
+      elevation={5}
+      right={(props) => (
+        <MCIcons
+          {...props}
+          name="calendar-range"
+          size={24}
+          onPress={onPressIcon}
+        />
+      )}
+    />
   )
 }

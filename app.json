@@ -5,7 +5,8 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    // para dino://{rota}
+    "scheme": "dino",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -22,14 +23,17 @@
       // https://docs.expo.dev/guides/keyboard-handling/#:~:text=%22softwareKeyboardLayoutMode%22%3A%20%22pan%22
       "softwareKeyboardLayoutMode": "pan"
     },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
+    // "web": {
+    //   "bundler": "metro",
+    //   "output": "static",
+    //   "favicon": "./assets/images/favicon.png"
+    // },
     "plugins": [
       "expo-sqlite",
-      // "expo-router"
-    ]
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }
