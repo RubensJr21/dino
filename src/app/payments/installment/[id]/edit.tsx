@@ -1,4 +1,4 @@
-import InstallmentScreenBase from "@src/template/pages/TransactionScreenBase/InstallmentScreenBase";
+import InstallmentScreenBase from "@components/pages/TransactionScreenBase/InstallmentScreenBase";
 import { Redirect, useLocalSearchParams } from "expo-router";
 
 export default function InstallmentEdit() {

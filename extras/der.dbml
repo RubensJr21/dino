@@ -1,7 +1,7 @@
 // Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
 
-Project "Dinô - Update 8" {
+Project "Dinô" {
   datatype: 'SQLITE'
   Note: 'Projeto desenvolvido para o Trabalho de conclusão de curso.'
 }
@@ -19,7 +19,6 @@ Table transfer_method {
 
 Table item_value {
   id integer [pk, increment]
-  description text [not null]
   cashflow_type integer [not null, note: "0 = Entrada, 1 = Saída; CHECK(type IN (0,1))"]
   // gasto está agendado para uma data futura específica
   // Ao invés de data seria ideal ter hora e data, mas
@@ -38,6 +37,7 @@ Table item_value {
 
 Table standard {
   id integer [pk, increment]
+  description text [not null]
   fk_id_item_value integer [not null, ref: - item_value.id]
   created_at date [not null, default: "(date('now','localtime'))"]
   updated_at date [not null, default: "(date('now','localtime'))"]
@@ -51,6 +51,7 @@ Table recurrence_type {
 
 Table recurring {
   id integer [pk, increment]
+  description text [not null]
   is_disabled boolean [not null]
   start_date date [not null]
   end_date date

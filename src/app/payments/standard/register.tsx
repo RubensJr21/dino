@@ -1,5 +1,5 @@
-import { Text } from "react-native"
+import TransactionStandardScreen from "@pages/TransactionScreenBase/StandardScreenBase";
 
 export default function StandardRegister() {
-  return <Text>Standard Register</Text>
+  return <TransactionStandardScreen kind="payment" /> 
 }

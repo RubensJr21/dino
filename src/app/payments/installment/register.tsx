@@ -1,5 +1,5 @@
-import InstallmentPaymentScreen from "@src/template/pages/TransactionScreenBase/InstallmentScreenBase"
+import TransactionInstallmentScreen from "@components/pages/TransactionScreenBase/InstallmentScreenBase"
 
 export default function InstallmentPaymentRegister() {
-  return <InstallmentPaymentScreen kind="payment" /> 
+  return <TransactionInstallmentScreen kind="payment" /> 
 }

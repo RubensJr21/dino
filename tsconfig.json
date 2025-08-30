@@ -3,39 +3,55 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["expo-router"],
+    "strict": true,
+    "strictNullChecks": true,
+    "types": [
+      "expo-router",
+      "react-native",
+      "react"
+    ],
     "allowJs": true,
     "baseUrl": "./src/",
     "paths": {
-      "@root/*": [
+      "@root-project/*": [
         "../*"
       ],
-      "@src/*": [
-        "./*"
+      "@app/*": [
+        "./app/*"
       ],
-      "@application/*": [
-        "./application/*"
+      "@configs/*": [
+        "./_configs/*"
+      ],
+      "@core-types/*": [
+        "./_core/types/*"
+      ],
+      "@core-utils/*": [
+        "./_core/utils/*"
       ],
       "@core/*": [
-        "./core/*"
+        "./_core/*"
       ],
-      "@infrastructure/*": [
-        "./infrastructure/*"
+      "@domain/*": [
+        "./_domain/*"
       ],
-      "@schemas/*": [
-        "./infrastructure/database/drizzle/schemas/*"
+      "@pages/*": [
+        "./components/pages/*"
       ],
-      "@tests/*": [
-        "./tests/*"
+      // Components
+      "@components/*": [
+        "./components/*"
       ],
-      "@app-components/*": [
-        "./application/components/*"
+      "@utils/*": [
+        "./_utils/*"
       ],
-      "@app/*": [
-        "./application/app/*"
+      "@src-types/*": [
+        "./@types/*"
       ],
-      "@api/*": [
-        "./application/api/*"
+      "@lib/*": [
+        "./lib/*"
+      ],
+      "@server/*": [
+        "./server/*"
       ],
     }
   },
@@ -43,7 +59,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
   ],
   "exclude": [
     "node_modules",

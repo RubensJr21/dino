@@ -1,4 +1,4 @@
-import { MCIcons } from '@src/application/components/Icons.lib';
+import { MCIcons } from '@lib/icons.lib';
 import { Drawer } from 'expo-router/drawer';
 
 export default function LayoutPayments() {

@@ -1,10 +1,24 @@
-import InstallmentHomeBase from "@src/template/pages/HomeScreenBase/InstallmentHomeBase";
+import InstallmentHomeBase from "@components/pages/HomeScreenBase/InstallmentHomeBase";
+import { Installment } from "@domain/entities/installment.entity";
+import { useIsFocused } from "@react-navigation/native";
+import { list_of_installments } from "@utils/factories/installments.factory";
 import { useRouter } from "expo-router";
-import { Button, Text } from "react-native";
+import { useEffect, useState } from "react";
+
+// ALERT: Colocar aqui dados fictícios. Gerar com o chat GPT
 
 export default function InstallmentHome() {
+  const [data, setData] = useState<Installment[]>([])
+  const isFocused = useIsFocused()
+
   const route = useRouter()
-  
+
+  useEffect(() => {
+    if (isFocused === false) return;
+    // Lógica para recuperar os dados. Usar CallToast para alertar!
+    setData(list_of_installments)
+  }, [isFocused])
+
   const goToRegister = () => {
     route.navigate('/payments/installment/register')
   }
@@ -17,14 +31,11 @@ export default function InstallmentHome() {
   }
 
   return (
-    <InstallmentHomeBase kind="payment" />
-  )
-
-  return (
-    <>
-      <Text>Installment Home</Text>
-      <Button onPress={goToRegister} title="Go to Register" />
-      <Button onPress={goToEdit} title="Go to Edit" />
-    </>
+    <InstallmentHomeBase
+      kind="payment"
+      data={data}
+      goToRegister={goToRegister}
+      goToEdit={goToEdit}
+    />
   )
 }

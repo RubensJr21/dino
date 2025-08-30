@@ -1,5 +1,5 @@
-import { Text } from "react-native"
+import TransactionRecurringScreen from "@pages/TransactionScreenBase/RecurringScreenBase";
 
 export default function RecurringRegister() {
-  return <Text>Recurring Register</Text>
+  return <TransactionRecurringScreen kind="payment" />
 }

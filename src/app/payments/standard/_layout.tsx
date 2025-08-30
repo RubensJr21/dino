@@ -2,17 +2,18 @@ import { Stack, useNavigation } from "expo-router";
 import { useCallback } from "react";
 
 const headerTitles = {
-  "index": "Standard",
-  "register": "Register Standard",
-  "[id]/index": "View Standard",
-  "[id]/edit": "Edit Standard"
+  "index": "Pagamentos",
+  "register": "Registrar Pagamento",
+  "[id]/index": "Visualizar Pagamento",
+  "[id]/edit": "Editar Pagamento"
 }
 
 export default function StandardLayout() {
   const navigation = useNavigation();
 
   const changeHeaderTitleOfFather = useCallback((routeName: string) => {
-    const title = headerTitles[routeName] || "Standard"
+    // ESSE TYPE CASTING FOI CONSCIENTE
+    const title = headerTitles[routeName as keyof typeof headerTitles] || "Pagamentos"
     navigation.setOptions({
       headerTitle: title
     })
@@ -23,6 +24,7 @@ export default function StandardLayout() {
       screenOptions={{ headerShown: false }}
       screenListeners={() => ({
         focus: ({ target, ...rest }) => {
+          if(target === undefined) return;
           changeHeaderTitleOfFather(target.split("-")[0])
         }
       })

@@ -2,17 +2,18 @@ import { Stack, useNavigation } from "expo-router";
 import { useCallback } from "react";
 
 const headerTitles = {
-  "index": "Installment",
-  "register": "Register Installment",
-  "[id]/index": "View Installment",
-  "[id]/edit": "Edit Installment"
+  "index": "Pagamentos Parcelados",
+  "register": "Registrar Pagamento Parcelado",
+  "[id]/index": "Visualizar Pagamento Parcelado",
+  "[id]/edit": "Editar Pagamento Parcelado"
 }
 
 export default function InstallmentLayout() {
   const navigation = useNavigation();
 
   const changeHeaderTitleOfFather = useCallback((routeName: string) => {
-    const title = headerTitles[routeName] || "Installment"
+    // ESSE TYPE CASTING FOI CONSCIENTE
+    const title = headerTitles[routeName as keyof typeof headerTitles] || "Pagamentos Parcelados"
     navigation.setOptions({
       headerTitle: title
     })
@@ -23,6 +24,7 @@ export default function InstallmentLayout() {
       screenOptions={{ headerShown: false }}
       screenListeners={() => ({
         focus: ({ target, ...rest }) => {
+          if(target === undefined) return;
           changeHeaderTitleOfFather(target.split("-")[0])
         }
       })

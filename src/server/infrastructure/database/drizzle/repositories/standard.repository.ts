@@ -1,0 +1,249 @@
+import { RepoInterfaceNames } from '@core-types/enum/RepoInterfaceNames'
+import { standard_mapper } from '@core-utils/mappers/standard'
+import { MStandard } from '@core/models/standard.model'
+import { ItemValue } from '@domain/entities/item_value.entity'
+import { build_internal_repo_error_standard, CreateStandardParams, IRepoStandard, UpdateStandardParams } from "@domain/repositories/IRepoStandard"
+import { db } from '@server/infrastructure/database/drizzle/client'
+import { item_value, standard } from '@server/infrastructure/database/drizzle/schemas'
+import { Transaction } from '@src-types/transaction'
+import { eq, inArray } from 'drizzle-orm/sql'
+
+export default class StandardDrizzleRepository implements IRepoStandard {
+  constructor(private tx: Transaction) { }
+
+  public create(data: CreateStandardParams): ReturnType<IRepoStandard["create"]> {
+    try {
+      const { id } = db.insert(standard)
+        .values({ description: data.description, fk_id_item_value: data.item_value_id })
+        .returning()
+        .get()
+
+      const standard_created = db.query.standard.findFirst({
+        with: {
+          item_value: {
+            with: {
+              tag: true,
+              transfer_method: true
+            }
+          }
+        },
+        where: eq(standard.id, id)
+      }).sync()
+
+      if (!standard_created) {
+        return {
+          success: false,
+          error: {
+            scope: RepoInterfaceNames.Standard,
+            method: "create",
+            code: 'id_not_found',
+            message: "Um erro ocorreu durante a criação"
+          }
+        }
+      }
+
+      return {
+        success: true,
+        data: standard_mapper(standard_created)
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: build_internal_repo_error_standard(
+          "create",
+          error as Error
+        )
+      }
+    }
+  }
+
+  public find_by_id(id: MStandard["id"]): ReturnType<IRepoStandard["find_by_id"]> {
+    try {
+      const result = db.query.standard.findFirst({
+        where: eq(standard.id, id),
+        with: {
+          item_value: {
+            with: {
+              tag: true,
+              transfer_method: true
+            }
+          }
+        }
+      }).sync()
+  
+      if (!result) {
+        return {
+          success: false,
+          error: {
+            scope: RepoInterfaceNames.Standard,
+            method: "find_by_id",
+            code: "id_not_found",
+            message: `Foi retornado o valor ${result} na busca.`
+          }
+        }
+      };
+  
+      return {
+        success: true,
+        data: standard_mapper(result)
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: build_internal_repo_error_standard(
+          "find_by_id",
+          error as Error
+        )
+      }
+    }
+  }
+
+  public find_all(): ReturnType<IRepoStandard["find_all"]> {
+    try {
+      const result = db.query.standard.findMany({
+        with: {
+          item_value: {
+            with: {
+              tag: true,
+              transfer_method: true
+            }
+          }
+        }
+      }).sync()
+  
+      const standards = result.map(standard_mapper)
+  
+      return {
+        success: true,
+        data: standards
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: build_internal_repo_error_standard(
+          "find_all",
+          error as Error
+        )
+      }
+    }
+  }
+
+  public find_all_by_cashflow_type(cashflow_type: ItemValue["cashflow_type"]): ReturnType<IRepoStandard["find_all_by_cashflow_type"]> {
+    try {
+      // Segunda opção trocando a relação de one para many
+      // const result2 = db.query.standard.findMany({
+      //   with: {
+      //     item_value: {
+      //       where: (item_value, {eq}) => eq(item_value.cashflow_type, cashflow_type),
+      //       with: {
+      //         tag: true,
+      //         transfer_method: true
+      //       }
+      //     }
+      //   }
+      // }).sync()
+  
+      // https://www.answeroverflow.com/m/1190290538151284826
+      const result = db.query.standard.findMany({
+        where: inArray(
+          standard.fk_id_item_value,
+          db
+            .select({ id: item_value.id })
+            .from(item_value)
+            .where(eq(item_value.cashflow_type, cashflow_type))
+        ),
+        with: {
+          item_value: {
+            with: {
+              tag: true,
+              transfer_method: true,
+            },
+          },
+        },
+      }).sync()
+  
+      const standards = result
+        .map(standard_mapper)
+  
+      return {
+        success: true,
+        data: standards
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: build_internal_repo_error_standard(
+          "find_all_by_cashflow_type",
+          error as Error
+        )
+      }
+    }
+  }
+
+  public update(id: MStandard["id"], data: UpdateStandardParams): ReturnType<IRepoStandard["update"]> {
+    try {
+      const result = db.update(standard).set({
+        fk_id_item_value: data.item_value_id
+      }).where(eq(standard.id, id)).returning().get()
+  
+      const standard_updated = db.query.standard.findFirst({ with: { item_value: { with: { tag: true, transfer_method: true } } }, where: eq(standard.id, result.id) }).sync()
+  
+      if (!standard_updated) {
+        return {
+          success: false,
+          error: {
+            scope: RepoInterfaceNames.Standard,
+            method: "update",
+            code: "id_not_found",
+            message: "Um erro aconteceu ao obter o item valor padrão atualizado."
+          }
+        }
+      }
+  
+      return {
+        success: true,
+        data: standard_mapper(standard_updated)
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: build_internal_repo_error_standard(
+          "update",
+          error as Error
+        )
+      }
+    }
+  }
+
+  public delete(id: MStandard["id"]): ReturnType<IRepoStandard["delete"]> {
+    try {
+      // Usando o onDelete com modo cascade basta apagar o pai e todos os outros serão apagados
+      const standard_deleted = db.delete(standard).where(eq(standard.id, id)).get()
+  
+      if (!standard_deleted) {
+        return {
+          success: false,
+          error: {
+            scope: RepoInterfaceNames.Standard,
+            method: "delete",
+            code: "id_not_found",
+            message: "Ocorreu um erro ao deletar o item valor padrão."
+          }
+        }
+      }
+  
+      return {
+        success: true,
+        data: true
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: build_internal_repo_error_standard(
+          "delete",
+          error as Error
+        )
+      }
+    }
+  }
+}

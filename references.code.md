@@ -2,17 +2,13 @@
 
 1. [React Native Expo Router - Hiding the Stack header on home screen](https://stackoverflow.com/a/76170046)
 1. [Stack - Expo Documentation](https://docs.expo.dev/router/advanced/stack/)
-1. [Icons - React Native Paper](https://callstack.github.io/react-native-paper/docs/guides/icons#1-an-icon-name)
 1. [Icons - Expo Documentation (Button Component)](https://docs.expo.dev/guides/icons/#button-component)
 1. [@expo/vector-icons@14.0.4 (Popular icon sets)](https://icons.expo.fyi/Index)
 1. [Example List in React Native Paper](https://stackoverflow.com/a/63202753)
-1. [Using AppBar with expo router header the back button always showing](https://github.com/callstack/react-native-paper/issues/4504)
 1. [Typedef in Typescript](https://stackoverflow.com/questions/61295715/typedef-equivalent-for-typescript#answer-61296495)
 1. [How to convert type to interface in Typescript](https://stackoverflow.com/a/61296495)
 1. [Vídeo sobre o Drawer menu](https://youtu.be/YxyW_xnn0Cs?list=PL0M0Gw41U7Orn6C_in8ceI65XdXsnzZcZ)
 1. [Resolver as Views que não trocam de cor junto com o tema](https://expo.github.io/router/docs/migration/react-navigation/themes/)
-1. [Usar ícones customizados](https://callstack.github.io/react-native-paper/docs/guides/icons/#4-use-custom-icons)
-1. [Recomendações de uso de Date Picker do React Native Paper](https://callstack.github.io/react-native-paper/docs/guides/recommended-libraries/#date-picker)
 1. [Repositório do React Native DateTimePicker](https://github.com/react-native-datetimepicker/datetimepicker)
 1. [Documentação referente a parte do Android Imperative API do React Native DateTimePicker](https://github.com/react-native-datetimepicker/datetimepicker?tab=readme-ov-file#android-imperative-api)
 1. [Recomendação de uso de Date Picker do Expo](https://docs.expo.dev/versions/latest/sdk/date-time-picker/)
@@ -36,9 +32,6 @@
 1. [Adicionar função ao prototype da String](https://stackoverflow.com/a/39877446)
 1. [Acessor Decorators (usado no elemento TextInputCurrency)](https://www.typescriptlang.org/docs/handbook/decorators.html#accessor-decorators)
 1. [useImperativeHandle - Problema de elemento filho devolver elemento para o elemento Pai](https://youtu.be/lA8o3kUl1TA?t=1914)
-1. [react-native-picker](https://github.com/react-native-picker/picker?tab=readme-ov-file#usage)
-1. [Estilizar elemento Picker (@react-native-picker/picker)](https://pt.stackoverflow.com/a/440997)
-1. [Tipografia dos textos do React Native Paper](https://callstack.github.io/react-native-paper/docs/components/Text/)
 1. [Transformar arrays em objetos](https://www.geeksforgeeks.org/javascript/convert-an-array-to-an-object-in-javascript/#3-using-javascript-objectfromentries-method)
 
 ## (expo)
@@ -49,15 +42,20 @@
 1. [Use Custom expo-router entrypoint](https://docs.expo.dev/router/installation/#custom-entry-point-to-initialize-and-load)
 1. [Develop>tools (expo-cli)](https://docs.expo.dev/develop/tools/#expo-cli)
 1. [expo-cli details](https://docs.expo.dev/more/expo-cli/)
-1. [@react-native-picker/picker](https://docs.expo.dev/versions/latest/sdk/picker/)
 1. [Parâmetro para o teclado não redimensionar a interface (foco no ScrollView)](https://docs.expo.dev/guides/keyboard-handling/#:~:text=%22softwareKeyboardLayoutMode%22%3A%20%22pan%22)
+1. [Tipagem das props icons](https://youtu.be/XJsFM6AZlMQ?list=PL0M0Gw41U7OpdVcJAwMaOXM7IaZpuIw8y)
+
+## (FlashList - Recomendado pelo Expo)
+
+1. [@shopify/flash-list - docs.expo.dev](https://docs.expo.dev/versions/latest/sdk/flash-list/)
+1. [Documentação do FlashList](https://shopify.github.io/flash-list/docs/usage)
 
 ## (react-native)
 
 1. [Documentation StatusBar - Expo](https://docs.expo.dev/versions/latest/sdk/status-bar/)
-1. [Guide Configuration StatusBar](https://docs.expo.dev/guides/configuring-statusbar/)
-1. [Status Bar in _layout has no effect](https://github.com/expo/router/issues/754#issuecomment-2220037302)
-1. [Documentation StatusBar - StatusBarStyle](https://reactnative.dev/docs/statusbar#statusbarstyle)
+2. [Guide Configuration StatusBar](https://docs.expo.dev/guides/configuring-statusbar/)
+3. [Status Bar in _layout has no effect](https://github.com/expo/router/issues/754#issuecomment-2220037302)
+4. [Documentation StatusBar - StatusBarStyle](https://reactnative.dev/docs/statusbar#statusbarstyle)
 
 ## (react)
 
@@ -84,6 +82,9 @@
 1. [Inserir datas no banco de dados com drizzle](https://orm.drizzle.team/docs/column-types/sqlite#integer)
 1. [Como fazer 'join' com o drizzle](https://orm.drizzle.team/docs/joins)
 1. [Utilizando tipagem do domínio no drizzle - (Customizing data type)](https://orm.drizzle.team/docs/column-types/sqlite#customizing-data-type)
+<!-- Recomendação pelo Expo e pelo https://reactnative.directory -->
+1. [Página do react-native-paper-dates](https://github.com/web-ridge/react-native-paper-dates)
+1. [Documentação do react-native-paper-dates](https://web-ridge.github.io/react-native-paper-dates/docs/intro)
 
 ## Typescript
 
@@ -132,3 +133,8 @@
 1. [Navigation object reference](https://reactnavigation.org/docs/navigation-object/)
 1. [I get the warning "Non-serializable values were found in the navigation state"](https://reactnavigation.org/docs/troubleshooting/#i-get-the-warning-non-serializable-values-were-found-in-the-navigation-state)
 1. [Passing parameters to routes - Passing params to a previous screen](https://reactnavigation.org/docs/params/#passing-params-to-a-previous-screen)
+
+## Ui
+
+1. [Expo-router](https://docs.expo.dev/versions/latest/sdk/router/)
+1. [Configuração da área de uso e barra (inferior) do android](https://github.com/zoontek/react-native-edge-to-edge?tab=readme-ov-file#expo)

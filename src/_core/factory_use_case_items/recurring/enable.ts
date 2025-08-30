@@ -1,0 +1,83 @@
+import { RepoInterfaceNames } from "@core-types/enum/RepoInterfaceNames";
+import { UseCaseResult } from "@core-types/UseCaseResult";
+import { TypeOfVariants } from "@core-types/variants_items";
+import IUseCase from "@core/interfaces/IUseCase_v3";
+import { IRecurring, Recurring } from "@domain/entities/recurring.entity";
+import { IRepoRecurring } from "@domain/repositories/IRepoRecurring";
+
+interface Input {
+  id: IRecurring["id"]
+}
+
+type UsedRepoInterfaces = 
+  | IRepoRecurring;
+
+type UsedRepoInterfaceNames =
+  | RepoInterfaceNames.Recurring
+
+type Return = UseCaseResult<
+  "DeleteRecurring",
+  Recurring,
+  UsedRepoInterfaces,
+  UsedRepoInterfaceNames
+>
+
+type UseCaseInterface = IUseCase<Input, Return>
+
+export default abstract class EnableRecurring implements UseCaseInterface {
+  protected abstract variant: TypeOfVariants;
+  
+  constructor(
+    private repo_r: IRepoRecurring
+  ){}
+  
+  execute(input: Input): ReturnType<UseCaseInterface["execute"]> {
+    const result_search = this.repo_r.find_by_id(input.id)
+
+    if (!result_search.success) {
+      return {
+        success: false,
+        error: {
+          ...result_search.error,
+          trace: "DeleteRecurring > RepoRecurring"
+        }
+      }
+    }
+
+    const recurring = result_search.data
+
+    recurring.enable();
+    
+    const {
+      id,
+      tag,
+      transfer_method,
+      recurrence_type,
+      created_at,
+      updated_at,
+      ...data
+    } = {
+      ...recurring.properties,
+      fk_id_tag: recurring.tag.id,
+      fk_id_transfer_method: recurring.transfer_method.id,
+      fk_id_recurrence_type: recurring.recurrence_type.id,
+    }
+
+    const result_updated = this.repo_r.update(input.id, data)
+
+    if(!result_updated.success) {
+      return {
+        success: false,
+        error: {
+          ...result_updated.error,
+          trace: "DeleteRecurring > RepoRecurring"
+        }
+      }
+    }
+
+    return {
+      success: true,
+      data: result_updated.data
+    }
+  }
+}

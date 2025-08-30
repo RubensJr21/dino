@@ -41,3 +41,6 @@ Partes do sistema.txt
 # drizzle
 drizzle/*
 *.sql
+
+# dummy file to fileNesting
+config.files

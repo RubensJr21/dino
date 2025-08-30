@@ -1,0 +1,53 @@
+import { TransactionRecurringCard } from '@components/ui/TransactionRecurringCard';
+import { Recurring } from '@domain/entities/recurring.entity';
+import { Kind } from '@lib/types';
+import HomeScreenBase from '@pages/HomeScreenBase';
+import { ReactNode, useRef } from 'react';
+import { Animated } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
+import { Text } from "react-native-paper";
+
+interface RecurringHomeBaseProps {
+  kind: Kind;
+  extras?: ReactNode;
+  data: Array<Recurring>;
+  goToRegister: () => void;
+  goToEdit: () => void;
+}
+
+export default function RecurringHomeBase({ kind, data, goToEdit, goToRegister }: RecurringHomeBaseProps) {
+  const scrollY = useRef(new Animated.Value(0));
+
+  return (
+    <HomeScreenBase
+      refFab={scrollY}
+      goToRegister={goToRegister}
+      flatlist={
+        <FlatList
+          data={data}
+          keyExtractor={standard => `${standard.id}`}
+          style={{ marginTop: 5 }}
+          contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 5 }}
+          renderItem={({ item: recurring }) => (
+            <TransactionRecurringCard
+              startDate={recurring.start_date}
+              description={recurring.description}
+              method={recurring.transfer_method.method}
+              tag={recurring.tag.description}
+              isDisabled={recurring.is_disabled}
+              onToggleIsDisabled={() => console.info("Toggle do isDisabled...")}
+              onEdit={goToEdit}
+              goToDetails={() => console.info("Navegando para a tela de detalhes...")}
+            />
+          )}
+          ListEmptyComponent={<Text>Nenhum {kind} encontrado.</Text>}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
+            { useNativeDriver: false }
+          )}
+        // estimatedItemSize={116}
+        />
+      }
+    />
+  )
+}
