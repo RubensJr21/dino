@@ -10,11 +10,25 @@ export const standardStrategies: Record<
 > = {
   payment: {
     insert: (data) => console.log("Insert Standard Payment", data),
-    fetchById: async (id) => ({ description: "Padaria", value: 50, date: "2025-08-22" })
+    fetchById: async (id) => ({
+      description: "Padaria",
+      amountValue: "50",
+      scheduledAt: new Date("2025-08-22"),
+      tagSelected: "Tag 1",
+      bankSelected: "Bank 1",
+      transferMethodSelected: "Bank 1 -TransferMethod 1"
+    })
   },
   receipt: {
     insert: (data) => console.log("Insert Standard Receipt", data),
-    fetchById: async (id) => ({ description: "Salário", value: 2000, date: "2025-08-22" })
+    fetchById: async (id) => ({
+      description: "Salário",
+      amountValue: "2000",
+      scheduledAt: new Date("2025-08-22"),
+      tagSelected: "Tag 1",
+      bankSelected: "Bank 1",
+      transferMethodSelected: "Bank 1 -TransferMethod 1"
+    })
   }
 }
 
@@ -28,11 +42,27 @@ export const installmentStrategies: Record<
 > = {
   payment: {
     insert: (data) => console.log("Insert Parcelado Payment", data),
-    fetchById: async (id) => ({ description: "Notebook", value: 3000, date: "2025-08-22", installments: 12 })
+    fetchById: async (id) => ({
+      description: "Notebook",
+      amountValue: "3000",
+      startDate: new Date("2025-08-22"),
+      installments: "12",
+      tagSelected: "Tag 1",
+      bankSelected: "Bank 1",
+      transferMethodSelected: "Bank 1 -TransferMethod 1"
+    })
   },
   receipt: {
     insert: (data) => console.log("Insert Parcelado Receipt", data),
-    fetchById: async (id) => ({ description: "Venda", value: 1500, date: "2025-08-22", installments: 6 })
+    fetchById: async (id) => ({
+      description: "Venda",
+      amountValue: "1500",
+      startDate: new Date("2025-08-22"),
+      installments: "6",
+      tagSelected: "Tag 1",
+      bankSelected: "Bank 1",
+      transferMethodSelected: "Bank 1 -TransferMethod 1"
+    })
   }
 }
 
@@ -46,10 +76,26 @@ export const recurringStrategies: Record<
 > = {
   payment: {
     insert: (data) => console.log("Insert Recorrente Payment", data),
-    fetchById: async (id) => ({ description: "Academia", value: 120, date: "2025-08-22", frequency: "MONTHLY" })
+    fetchById: async (id) => ({
+      description: "Academia",
+      amountValue: "120",
+      date: new Date("2025-08-22"),
+      frequency: "MONTHLY",
+      tagSelected: "Tag 1",
+      bankSelected: "Bank 1",
+      transferMethodSelected: "Bank 1 -TransferMethod 1"
+    })
   },
   receipt: {
     insert: (data) => console.log("Insert Recorrente Receipt", data),
-    fetchById: async (id) => ({ description: "Assinatura", value: 50, date: "2025-08-22", frequency: "MONTHLY" })
+    fetchById: async (id) => ({
+      description: "Assinatura",
+      amountValue: "50",
+      date: new Date("2025-08-22"),
+      frequency: "MONTHLY",
+      tagSelected: "Tag 1",
+      bankSelected: "Bank 1",
+      transferMethodSelected: "Bank 1 -TransferMethod 1"
+    })
   }
 }

@@ -82,6 +82,7 @@
 1. [Inserir datas no banco de dados com drizzle](https://orm.drizzle.team/docs/column-types/sqlite#integer)
 1. [Como fazer 'join' com o drizzle](https://orm.drizzle.team/docs/joins)
 1. [Utilizando tipagem do domínio no drizzle - (Customizing data type)](https://orm.drizzle.team/docs/column-types/sqlite#customizing-data-type)
+1. [React Native DatePicker](https://github.com/react-native-datetimepicker/datetimepicker)
 <!-- Recomendação pelo Expo e pelo https://reactnative.directory -->
 1. [Página do react-native-paper-dates](https://github.com/web-ridge/react-native-paper-dates)
 1. [Documentação do react-native-paper-dates](https://web-ridge.github.io/react-native-paper-dates/docs/intro)

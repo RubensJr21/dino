@@ -16,6 +16,7 @@ export default function Button({ iconName, style, mode, ...props }: Props) {
         style
       ]}
       rippleColor={theme.colors.onPrimaryContainer}
+      textColor="white"
       {...props}
     />
   )

@@ -1,102 +1,159 @@
 import BasePage from "@components/ui/BasePage"
 import { ButtonSubmit } from "@components/ui/ButtonSubmit"
-import DatePickerSingle from "@components/ui/DatePickerSingle"
-import Dropdown from "@components/ui/Dropdown"
-import KeyboardAvoidingScrollView from "@components/ui/KeyboardAvoindingScrollView"
-import { useEffect, useState } from "react"
-import { StyleSheet } from "react-native"
+import ScrollView from "@components/ui/ScrollView"
+import { SelectTagButton } from "@components/ui/SelectTagButton"
+import { SelectBankButton } from "@components/ui/SelectTransferMethodOfBank/SelectBankButton"
+import { SelectTransferMethodButton } from "@components/ui/SelectTransferMethodOfBank/SelectTransferMethodButton"
+import { TransactionScreenBaseInsert } from "@lib/types"
+import { useCallback, useEffect, useState } from "react"
+import { StyleSheet, View } from "react-native"
 import { TextInput } from "react-native-paper"
 
 type TransactionScreenBaseProps<T> = {
   id?: string
   initialData: T
   fetchById?: (id: string) => Promise<T>
-  onInsert: (data: T) => void
+  onSubmit: (data: T) => void
+  CardElement: React.ComponentType<{ data: T }>
   renderExtras?: (data: T, setData: React.Dispatch<React.SetStateAction<T>>) => React.ReactNode
-}
-
-interface InitialDataBase {
-  description: string
-  value: number
-  date: string
 }
 
 export const initialDataBase = {
   description: "",
-  value: 0,
-  date: new Date().toISOString().split("T")[0] // Formato YYYY-MM-DD
-} satisfies InitialDataBase
+  amountValue: "0,00",
+  tagSelected: "",
+  bankSelected: "",
+  transferMethodSelected: ""
+} satisfies TransactionScreenBaseInsert
 
-export function TransactionScreenBase<T extends InitialDataBase>({
+export function TransactionScreenBase<T extends TransactionScreenBaseInsert>({
   id,
   initialData,
   fetchById,
-  onInsert,
+  onSubmit,
+  CardElement,
   renderExtras
 }: TransactionScreenBaseProps<T>) {
   const [data, setData] = useState<T>(initialData)
 
   useEffect(() => {
     if (id && fetchById) {
-      fetchById(id).then(setData)
+      fetchById(id).then((fetchData) => {
+        if (fetchData !== undefined) {
+          setData(fetchData)
+        }
+      })
     }
   }, [id, fetchById])
 
+  const handleTextCurrencyInput = useCallback((value: string) => {
+    const onlyNumbers = Number(value.replaceAll(/\D/g, "")) / 100
+
+    const valueFormatted = new Intl.NumberFormat('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(onlyNumbers);
+    
+    setData(prev => ({
+      ...prev,
+      amountValue: valueFormatted
+    }))
+  }, [setData])
+
   return (
     <BasePage style={styles.page}>
-      <KeyboardAvoidingScrollView contentContainerStyle={{ rowGap: 5 }}>
+      <CardElement data={data} />
+      <ScrollView contentContainerStyle={{ rowGap: 5 }}>
         <TextInput
-          label="Descrição"
+          dense
+          label="Insira uma descrição:"
           mode="outlined"
-          placeholder="Descrição"
+          placeholder="Escreva uma descrição..."
           value={data.description}
-          onChangeText={v => setData({ ...data, description: v })}
-          style={{ marginBottom: 5 }}
-        />
-
-        <DatePickerSingle
-          onDateConfirm={(date) => {
-            setData({
-              ...data,
-              date
-            })
-          }}
+          style={{ marginVertical: 0 }}
+          onChangeText={v =>
+            setData(prev => ({
+              ...prev,
+              description: v
+            }))
+          }
         />
 
         <TextInput
+          dense
           label="Valor"
           mode="outlined"
           placeholder="Valor"
           keyboardType="numeric"
-          value={data.value.toString()}
-          onChangeText={v => setData({ ...data, value: Number(v) })}
-          style={{ marginBottom: 0 }}
-        />
-
-        <TextInput
-          label="Data"
-          mode="outlined"
-          placeholder="Data"
-          value={data.date}
-          onChangeText={v => setData({ ...data, date: v })}
-          style={{ marginBottom: 0 }}
+          value={data.amountValue}
+          style={{ marginVertical: 0, writingDirection: "rtl" }}
+          onChangeText={handleTextCurrencyInput}
+          inputMode="numeric"
+          maxLength={21}
         />
 
         {renderExtras?.(data, setData)}
 
-        <Dropdown>Dropdown da Tag</Dropdown>
-        <Dropdown>Conjunto Dropdown do TransferMethod</Dropdown>
-      </KeyboardAvoidingScrollView>
+        <View style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: 5,
+        }}>
+          <SelectTagButton
+            style={{
+              flexGrow: 1,          // ocupa o máximo possível
+              flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
+            }}
+            onSelected={(tagSelected) => {
+              setData(prev => ({
+                ...prev,
+                tagSelected,
+              }))
+            }}
+          />
+          <SelectBankButton
+            style={{
+              flexGrow: 1,          // ocupa o máximo possível
+              flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
+            }}
+            onSelected={(bankSelected) => {
+              setData(prev => ({
+                ...prev,
+                bankSelected,
+              }))
+            }}
+          />
 
-      <ButtonSubmit
-        onInsert={() => onInsert(data)}
-      />
+          {
+            data.bankSelected !== "" ?
+              <SelectTransferMethodButton
+                style={{
+                  flexGrow: 1,          // ocupa o máximo possível
+                  flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
+                }}
+                bankSelected={data.bankSelected}
+                transferMethodSelected={data.transferMethodSelected}
+                onSelected={(transferMethodSelected) => {
+                  setData(prev => ({
+                    ...prev,
+                    transferMethodSelected
+                  }))
+                }}
+                isOpen
+              />
+              :
+              null
+          }
+
+        </View>
+      </ScrollView>
+      <ButtonSubmit onSubmit={() => onSubmit(data)} />
     </BasePage>
   )
 }
 
 const styles = StyleSheet.create({
   page: {
-    rowGap: 5
+    rowGap: 0
   }
 })

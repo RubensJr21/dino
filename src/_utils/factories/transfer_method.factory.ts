@@ -8,9 +8,17 @@ function makeTransferMethod(): TransferMethod {
   });
 }
 
-export const list_of_transfer_methods = faker.helpers.multiple(makeTransferMethod, {
+const list = faker.helpers.multiple(makeTransferMethod, {
   count: {
-    min: 2,
-    max: 10
+    min: 5,
+    max: 15
   }
+})
+
+const withoutDuplicates = new Set<TransferMethod["method"]>();
+
+export const list_of_transfer_methods = list.filter(tm => {
+  const duplicate = withoutDuplicates.has(tm.method)
+  withoutDuplicates.add(tm.method)
+  return !duplicate
 })

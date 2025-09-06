@@ -24,11 +24,10 @@ export default function InstallmentLayout() {
       screenOptions={{ headerShown: false }}
       screenListeners={() => ({
         focus: ({ target, ...rest }) => {
-          if(target === undefined) return;
+          if (target === undefined) return;
           changeHeaderTitleOfFather(target.split("-")[0])
         }
-      })
-      }
+      })}
     />
   )
 }

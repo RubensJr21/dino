@@ -1,17 +1,23 @@
 export interface TransactionScreenBaseInsert {
-  description: string
-  value: number
-  date: string
+  description: string;
+  amountValue: string;
+  tagSelected: string;
+  bankSelected: string;
+  transferMethodSelected: string;
 }
 
-export interface StandardScreenInsert extends TransactionScreenBaseInsert {}
+export interface StandardScreenInsert extends TransactionScreenBaseInsert {
+  scheduledAt: Date;
+}
 
 export interface InstallmentScreenInsert extends TransactionScreenBaseInsert {
-  installments: number
+  startDate: Date;
+  installments: string
 }
 
 export interface RecurringScreenInsert extends TransactionScreenBaseInsert {
-  frequency: "WEEKLY" | "MONTHLY" | "YEARLY"
+  startDate: Date;
+  frequency: string
 }
 
 export type Kind = "payment" | "receipt"

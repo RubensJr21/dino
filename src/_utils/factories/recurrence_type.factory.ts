@@ -4,7 +4,7 @@ import { faker } from "@utils/factories/_faker";
 function makeRecurrenceType(v: unknown, index: number): RecurrenceType {
   return new RecurrenceType({
     id: index,
-    type: faker.helpers.arrayElement(["monthly", "yearly"]),
+    type: faker.helpers.arrayElement(["Mês", "Ano"]),
   });
 }
 

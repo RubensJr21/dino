@@ -1,4 +1,4 @@
-import TransactionInstallmentScreen from "@components/pages/TransactionScreenBase/InstallmentScreenBase"
+import TransactionInstallmentScreen from "@pages/TransactionScreenInstallment"
 
 export default function InstallmentPaymentRegister() {
   return <TransactionInstallmentScreen kind="payment" /> 
