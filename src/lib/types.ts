@@ -3,7 +3,10 @@ export interface TransactionScreenBaseInsert {
   amountValue: string;
   tagSelected: string;
   bankSelected: string;
-  transferMethodSelected: string;
+  transferMethodSelected: {
+    id: number;
+    label: string;
+  };
 }
 
 export interface StandardScreenInsert extends TransactionScreenBaseInsert {

@@ -1,5 +1,5 @@
-import TransactionInstallmentScreen from "@pages/TransactionScreenInstallment"
+import { TransactionInstallmentScreen } from "@pages/TransactionScreenInstallment"
 
 export default function InstallmentPaymentRegister() {
-  return <TransactionInstallmentScreen kind="payment" /> 
+  return <TransactionInstallmentScreen kind="payment" />
 }

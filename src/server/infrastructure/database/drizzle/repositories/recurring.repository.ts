@@ -6,7 +6,7 @@ import { MRecurring } from '@core/models/recurring.model'
 import { ItemValue } from '@domain/entities/item_value.entity'
 import { build_internal_repo_error_recurring, CreateRecurringParams, IRepoRecurring, UpdateRecurringParams } from '@domain/repositories/IRepoRecurring'
 import { db } from '@server/infrastructure/database/drizzle/client'
-import { item_value, recurrence_type, recurring, recurring_item_value, tag, transfer_method } from '@server/infrastructure/database/drizzle/schemas'
+import { bank_account, item_value, recurrence_type, recurring, recurring_item_value, tag, transfer_method } from '@server/infrastructure/database/drizzle/schemas'
 import { Transaction } from '@src-types/transaction'
 import { and, eq } from 'drizzle-orm/sql'
 
@@ -37,7 +37,11 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
       const recurring_created = db.query.recurring.findFirst({
         with: {
           tag: true,
-          transfer_method: true,
+          transfer_method: {
+            with: {
+              bank: true
+            }
+          },
           recurrence_type: true
         },
         where: eq(recurring.id, id)
@@ -102,7 +106,11 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
       where: eq(recurring.id, id),
       with: {
         tag: true,
-        transfer_method: true,
+        transfer_method: {
+          with: {
+            bank: true
+          }
+        },
         recurrence_type: true
       }
     }).sync()
@@ -165,7 +173,11 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
     const result = db.query.recurring.findMany({
       with: {
         tag: true,
-        transfer_method: true,
+        transfer_method: {
+          with: {
+            bank: true
+          }
+        },
         recurrence_type: true
       },
     }).sync()
@@ -214,7 +226,11 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
         },
         transfer_method: {
           id: transfer_method.id,
-          method: transfer_method.method
+          method: transfer_method.method,
+        },
+        bank: {
+          id: bank_account.id,
+          nickname: bank_account.nickname
         },
         recurrence_type: {
           id: recurrence_type.id,
@@ -266,7 +282,11 @@ export default class RecurringDrizzleRepository implements IRepoRecurring {
     const recurring_updated = db.query.recurring.findFirst({
       with: {
         tag: true,
-        transfer_method: true,
+        transfer_method: {
+          with: {
+            bank: true
+          }
+        },
         recurrence_type: true
       },
       where: eq(recurring.id, result.id)

@@ -30,12 +30,20 @@ export default function InstallmentHome() {
     })
   }
 
+  const goToDetails = () => {
+    route.navigate({
+      pathname: '/payments/installment/[id]',
+      params: { id: '123' }
+    })
+  }
+
   return (
     <InstallmentHomeBase
       kind="payment"
       data={data}
       goToRegister={goToRegister}
       goToEdit={goToEdit}
+      goToDetails={goToDetails}
     />
   )
 }

@@ -4,11 +4,11 @@ import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
 
-interface TransactionStandardCardRegisterProps {
+interface TransactionStandardCardViewerProps {
   data: StandardScreenInsert
 }
 
-export function TransactionStandardCardRegister({
+export function TransactionStandardCardViewer({
   data: {
     tagSelected: tag,
     description,
@@ -17,7 +17,7 @@ export function TransactionStandardCardRegister({
     transferMethodSelected: method,
     amountValue
   }
-}: TransactionStandardCardRegisterProps) {
+}: TransactionStandardCardViewerProps) {
   const theme = useTheme()
 
   const tagIsEmpty = tag.trim() === ""

@@ -1,5 +1,13 @@
-import { Text } from "react-native-paper";
+import { TransactionRecurringScreen } from "@pages/TransactionScreenRecurring";
+import { Redirect, useLocalSearchParams } from "expo-router";
 
 export default function RecurringEdit() {
-  return <Text>Recurring Edit</Text>
+  const { id } = useLocalSearchParams<{ id?: string }>()
+
+  if (!id) {
+    <Redirect href={"/payments/recurring"} />
+    return;
+  }
+
+  return <TransactionRecurringScreen id={id} kind="payment" />
 }

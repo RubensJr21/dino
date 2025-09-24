@@ -10,12 +10,11 @@ import TransferMethodDrizzleRepository from "@server/infrastructure/database/dri
 
 interface Params {
   description: IInstallment["description"]
-  transfer_method_id: ITransferMethod["id"];
-  tag_description: ITag["description"];
-  start_date: Date;
-  current_amount: number;
-  installments_number: number;
-  total_amount: number;
+  startDate: Date;
+  installments: number;
+  totalAmount: number;
+  tagSelected: ITag["description"];
+  transferMethodId: ITransferMethod["id"];
 }
 
 type Return = Installment | undefined
@@ -32,14 +31,14 @@ async function register({
       const repo_tag = new TagDrizzleRepository(tx);
       const repo_tmt = new TransferMethodDrizzleRepository(tx);
 
-      const tag_founded = repo_tag.find_by_description(params.tag_description);
+      const tag_founded = repo_tag.find_by_description(params.tagSelected);
 
       if (!tag_founded.success) {
         tx.rollback();
         return undefined;
       }
 
-      const transfer_method_founded = repo_tmt.find_by_id(params.transfer_method_id);
+      const transfer_method_founded = repo_tmt.find_by_id(params.transferMethodId);
 
       if (!transfer_method_founded.success) {
         tx.rollback();
@@ -52,10 +51,9 @@ async function register({
         description: params.description,
         transfer_method: transfer_method_founded.data,
         tag: tag_founded.data,
-        start_date: params.start_date,
-        current_amount: params.current_amount,
-        installments_number: params.installments_number,
-        total_amount: params.total_amount,
+        start_date: params.startDate,
+        installments_number: params.installments,
+        total_amount: params.totalAmount,
       })
 
       if (!installment_created.success) {

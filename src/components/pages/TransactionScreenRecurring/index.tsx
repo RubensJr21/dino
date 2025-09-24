@@ -4,8 +4,9 @@ import { TransactionRecurringCardRegister } from "@components/ui/TransactionCard
 import { recurringStrategies } from "@lib/strategies";
 import { Kind, RecurringScreenInsert } from "@lib/types";
 import { initialDataBase, TransactionScreenBase } from "@pages/TransactionScreenBase";
+import { useEffect, useState } from "react";
 
-interface RecurringScreenProps {
+interface TransactionRecurringScreenProps {
   id?: string;
   kind: Kind
 }
@@ -16,37 +17,58 @@ const initialDataRecurring = {
   startDate: new Date()
 } satisfies RecurringScreenInsert
 
-export default function RecurringScreen({ id, kind }: RecurringScreenProps) {
+export function TransactionRecurringScreen({ id, kind }: TransactionRecurringScreenProps) {
+  const [initialData, setInitialData] = useState<RecurringScreenInsert>()
+  const isEdit = id !== undefined
+
+  useEffect(() => {
+    if (id) {
+      recurringStrategies[kind].fetchById(id).then((fetchData) => {
+        if (fetchData !== undefined) {
+          setInitialData(fetchData)
+        }
+      })
+    } else {
+      setInitialData(initialDataRecurring)
+    }
+  }, [id])
+
+  if (initialData === undefined) {
+    // Quer dizer que o conteúdo ainda não foi inicializado ou carregado
+    return null;
+  }
+
   return (
     <TransactionScreenBase<RecurringScreenInsert>
-      id={id}
-      initialData={initialDataRecurring}
-      fetchById={recurringStrategies[kind].fetchById}
+      initialData={initialData}
       onSubmit={recurringStrategies[kind].insert}
       CardElement={TransactionRecurringCardRegister}
       renderExtras={(data, setData) => (
-        <>
-          <DatePicker
-            label="Selecionar data de início"
-            selectedLabel="Mudar data de início"
-            date={data.startDate}
-            onDateConfirm={date => {
-              setData(prev => ({
-                ...prev,
-                startDate: date
-              }))
-            }}
-          />
-          <SelectRecurrenceButton
-            recurrenceSelected={data.frequency}
-            onSelected={(frequency) => {
-              setData(prev => ({
-                ...prev,
-                frequency
-              }))
-            }}
-          />
-        </>
+        (
+          !isEdit &&
+          <>
+            <DatePicker
+              label="Selecionar data de início"
+              selectedLabel="Mudar data de início"
+              date={data.startDate}
+              onDateConfirm={date => {
+                setData(prev => ({
+                  ...prev,
+                  startDate: date
+                }))
+              }}
+            />
+            <SelectRecurrenceButton
+              recurrenceSelected={data.frequency}
+              onSelected={(frequency) => {
+                setData(prev => ({
+                  ...prev,
+                  frequency
+                }))
+              }}
+            />
+          </>
+        )
       )}
     />
   )

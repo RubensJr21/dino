@@ -1,29 +1,31 @@
 import { MCIcons } from '@lib/icons.lib';
-import { StandardScreenInsert } from '@lib/types';
+import { RecurringScreenInsert } from '@lib/types';
 import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
 
-interface TransactionStandardCardRegisterProps {
-  data: StandardScreenInsert
+interface TransactionRecurringCardViewerProps {
+  data: RecurringScreenInsert
 }
 
-export function TransactionStandardCardRegister({
+export function TransactionRecurringCardViewer({
   data: {
-    tagSelected: tag,
+    startDate,
     description,
-    scheduledAt,
-    bankSelected: bank,
     transferMethodSelected: method,
-    amountValue
-  }
-}: TransactionStandardCardRegisterProps) {
+    tagSelected: tag,
+    amountValue,
+    bankSelected: bank,
+    frequency
+  },
+}: TransactionRecurringCardViewerProps) {
   const theme = useTheme()
 
   const tagIsEmpty = tag.trim() === ""
   const descriptionIsEmpty = description.trim() === ""
   const bankIsEmpty = bank.trim() === ""
   const methodIsEmpty = method.label.trim() === ""
+  const frequencyIsEmpty = frequency.trim() === ""
   const amountValueIsZero = Number(amountValue.replace(/\D/, "")) === 0
 
   return (
@@ -46,7 +48,7 @@ export function TransactionStandardCardRegister({
         titleNumberOfLines={2}
         titleStyle={{ marginTop: 10, color: descriptionIsEmpty ? theme.colors.outline : theme.colors.onSurface }}
 
-        subtitle={`Agendado para: ${scheduledAt.toLocaleDateString()}`}
+        subtitle={`Início em: ${startDate.toLocaleDateString()}`}
         subtitleVariant='bodySmall'
       />
       <Card.Content>
@@ -56,19 +58,39 @@ export function TransactionStandardCardRegister({
         <Text variant='titleSmall' style={[styles.method, { color: methodIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
           {methodIsEmpty ? "Selecione um método de transferência..." : method.label}
         </Text>
-        <Text variant='headlineSmall' style={[styles.currencyValue, { color: amountValueIsZero ? theme.colors.outline : theme.colors.onSurface }]}>
-          {amountValue}
-        </Text>
+        <View style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: 5,
+        }}>
+          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: amountValueIsZero ? theme.colors.outline : theme.colors.onSurface }]}>
+            {amountValue}
+          </Text>
+        </View>
       </Card.Content>
-      <Card.Actions style={{ paddingRight: 15, marginBottom: 5, }}>
-        <View style={[styles.statusRow]} >
+      <Card.Actions style={{ paddingRight: 15, marginBottom: 5, justifyContent: "space-between" }}>
+        <View style={[styles.isDisabledRow]}>
           <MCIcons
-            name="clock-outline"
+            name={"refresh"}
             size={theme.fonts.titleLarge.fontSize}
-            color={theme.colors.tertiary}
+            color={
+              frequencyIsEmpty
+                ? theme.colors.tertiary
+                : theme.colors.onPrimaryContainer
+            }
           />
-          <Text variant='titleLarge' style={[styles.statusText, { color: theme.colors.onSurface }]}>
-            PENDENTE
+          <Text variant='titleLarge' style={[styles.isDisabledText, { color: frequencyIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
+            {frequencyIsEmpty ? "..." : frequency}
+          </Text>
+        </View>
+        <View style={[styles.isDisabledRow]}>
+          <MCIcons
+            name={"calendar-refresh"}
+            size={theme.fonts.titleLarge.fontSize}
+            color={theme.colors.primary}
+          />
+          <Text variant='titleLarge' style={[styles.isDisabledText, { color: theme.colors.onSurface }]}>
+            Habilitado
           </Text>
         </View>
       </Card.Actions>
@@ -86,28 +108,36 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  scheduledAt: {
+  startDate: {
     fontSize: 14,
     fontWeight: "600",
   },
-  method: {
+  description: {
     fontWeight: "bold",
-  },
-  currencyValue: {
-    fontWeight: "bold",
-    textAlign: "right",
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
   },
-  statusRow: {
+  method: {
+    fontSize: 14,
+  },
+  isDisabledRow: {
     flexDirection: "row",
     alignItems: "center",
+    columnGap: 2
   },
-  statusText: {
-    fontSize: 14,
-    marginLeft: 4,
+  isDisabledText: {
+    marginRight: 4,
+    textTransform: 'capitalize', 
   },
+  currencyValue: {
+    fontWeight: "bold",
+    textAlign: "right",
+  },
+  gridCell: {
+    flexGrow: 1,          // ocupa o máximo possível
+    flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
+  }
 });

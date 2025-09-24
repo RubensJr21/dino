@@ -24,7 +24,7 @@ export function TransactionRecurringCardRegister({
   const tagIsEmpty = tag.trim() === ""
   const descriptionIsEmpty = description.trim() === ""
   const bankIsEmpty = bank.trim() === ""
-  const methodIsEmpty = method.trim() === ""
+  const methodIsEmpty = method.label.trim() === ""
   const frequencyIsEmpty = frequency.trim() === ""
   const amountValueIsZero = Number(amountValue.replace(/\D/, "")) === 0
 
@@ -48,7 +48,7 @@ export function TransactionRecurringCardRegister({
         titleNumberOfLines={2}
         titleStyle={{ marginTop: 10, color: descriptionIsEmpty ? theme.colors.outline : theme.colors.onSurface }}
 
-        subtitle={startDate.toLocaleDateString()}
+        subtitle={`Início em: ${startDate.toLocaleDateString()}`}
         subtitleVariant='bodySmall'
       />
       <Card.Content>
@@ -56,7 +56,7 @@ export function TransactionRecurringCardRegister({
           {bankIsEmpty ? "Selecione um banco..." : bank}
         </Text>
         <Text variant='titleSmall' style={[styles.method, { color: methodIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {methodIsEmpty ? "Selecione um método de transferência..." : method}
+          {methodIsEmpty ? "Selecione um método de transferência..." : method.label}
         </Text>
         <View style={{
           flexDirection: "row",

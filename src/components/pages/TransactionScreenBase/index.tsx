@@ -3,19 +3,18 @@ import { ButtonSubmit } from "@components/ui/ButtonSubmit"
 import ScrollView from "@components/ui/ScrollView"
 import { SelectTagButton } from "@components/ui/SelectTagButton"
 import { SelectBankButton } from "@components/ui/SelectTransferMethodOfBank/SelectBankButton"
-import { SelectTransferMethodButton } from "@components/ui/SelectTransferMethodOfBank/SelectTransferMethodButton"
+import { INITIAL_TRANSFER_METHOD, SelectTransferMethodButton } from "@components/ui/SelectTransferMethodOfBank/SelectTransferMethodButton"
 import { TransactionScreenBaseInsert } from "@lib/types"
-import { useCallback, useEffect, useState } from "react"
+import { formatCurrencyString } from "@utils/formatCurrencyString"
+import { useCallback, useState } from "react"
 import { StyleSheet, View } from "react-native"
 import { TextInput } from "react-native-paper"
 
 type TransactionScreenBaseProps<T> = {
-  id?: string
-  initialData: T
-  fetchById?: (id: string) => Promise<T>
-  onSubmit: (data: T) => void
-  CardElement: React.ComponentType<{ data: T }>
-  renderExtras?: (data: T, setData: React.Dispatch<React.SetStateAction<T>>) => React.ReactNode
+  initialData: T;
+  onSubmit: (data: T) => void;
+  CardElement: React.ComponentType<{ data: T }>;
+  renderExtras?: (data: T, setData: React.Dispatch<React.SetStateAction<T>>) => React.ReactNode;
 }
 
 export const initialDataBase = {
@@ -23,36 +22,19 @@ export const initialDataBase = {
   amountValue: "0,00",
   tagSelected: "",
   bankSelected: "",
-  transferMethodSelected: ""
+  transferMethodSelected: INITIAL_TRANSFER_METHOD
 } satisfies TransactionScreenBaseInsert
 
 export function TransactionScreenBase<T extends TransactionScreenBaseInsert>({
-  id,
   initialData,
-  fetchById,
   onSubmit,
   CardElement,
   renderExtras
 }: TransactionScreenBaseProps<T>) {
   const [data, setData] = useState<T>(initialData)
 
-  useEffect(() => {
-    if (id && fetchById) {
-      fetchById(id).then((fetchData) => {
-        if (fetchData !== undefined) {
-          setData(fetchData)
-        }
-      })
-    }
-  }, [id, fetchById])
-
   const handleTextCurrencyInput = useCallback((value: string) => {
-    const onlyNumbers = Number(value.replaceAll(/\D/g, "")) / 100
-
-    const valueFormatted = new Intl.NumberFormat('pt-BR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(onlyNumbers);
+    const valueFormatted = formatCurrencyString(value)
     
     setData(prev => ({
       ...prev,
@@ -104,6 +86,7 @@ export function TransactionScreenBase<T extends TransactionScreenBaseInsert>({
               flexGrow: 1,          // ocupa o máximo possível
               flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
             }}
+            tagSelected={data.tagSelected}
             onSelected={(tagSelected) => {
               setData(prev => ({
                 ...prev,
@@ -116,6 +99,7 @@ export function TransactionScreenBase<T extends TransactionScreenBaseInsert>({
               flexGrow: 1,          // ocupa o máximo possível
               flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
             }}
+            bankSelected={data.bankSelected}
             onSelected={(bankSelected) => {
               setData(prev => ({
                 ...prev,
@@ -139,7 +123,8 @@ export function TransactionScreenBase<T extends TransactionScreenBaseInsert>({
                     transferMethodSelected
                   }))
                 }}
-                isOpen
+                // Está abrindo pela primeira vez
+                isOpen={data.transferMethodSelected.label.length === 0}
               />
               :
               null

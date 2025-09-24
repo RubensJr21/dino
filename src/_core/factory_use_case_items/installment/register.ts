@@ -16,7 +16,6 @@ interface Input {
   transfer_method: TransferMethod;
   tag: Tag;
   start_date: Date;
-  current_amount: number;
 	installments_number: number;
   total_amount: number;
 }

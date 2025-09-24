@@ -5,6 +5,10 @@ function makeTransferMethod(): TransferMethod {
   return new TransferMethod({
     id: faker.number.int({ min: 1, max: 9999 }),
     method: faker.finance.transactionType(),
+    bank: {
+      id: 1,
+      nickname: "Bank Test"
+    }
   });
 }
 

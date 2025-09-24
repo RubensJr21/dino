@@ -3,11 +3,11 @@ import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
 
-interface TransactionInstallmentCardRegisterProps {
+interface TransactionInstallmentCardViewerProps {
   data: InstallmentScreenInsert
 }
 
-export function TransactionInstallmentCardRegister({
+export function TransactionInstallmentCardViewer({
   data: {
     tagSelected: tag,
     description,
@@ -17,14 +17,8 @@ export function TransactionInstallmentCardRegister({
     amountValue,
     installments
   }
-}: TransactionInstallmentCardRegisterProps) {
+}: TransactionInstallmentCardViewerProps) {
   const theme = useTheme()
-
-  const tagIsEmpty = tag.trim() === ""
-  const descriptionIsEmpty = description.trim() === ""
-  const bankIsEmpty = bank.trim() === ""
-  const methodIsEmpty = method.label.trim() === ""
-  const amountValueIsZero = Number(amountValue.replace(/\D/, "")) === 0
 
   return (
     <Card style={[
@@ -36,25 +30,25 @@ export function TransactionInstallmentCardRegister({
     ]}>
       <Chip
         style={{ backgroundColor: theme.colors.primaryContainer, borderRadius: 0 }}
-        textStyle={{ color: tagIsEmpty ? theme.colors.outline : theme.colors.onPrimaryContainer }}
+        textStyle={{ color: theme.colors.onPrimaryContainer }}
       >
-        {tagIsEmpty ? "Selecione uma categoria..." : tag}
+        {tag}
       </Chip>
       <Card.Title
-        title={descriptionIsEmpty ? "Escreva uma descrição..." : description}
+        title={description}
         titleVariant='titleLarge'
         titleNumberOfLines={2}
-        titleStyle={{ marginTop: 10, color: descriptionIsEmpty ? theme.colors.outline : theme.colors.onSurface }}
+        titleStyle={{ marginTop: 10, color: theme.colors.onSurface }}
 
         subtitle={`Data de início: ${startDate.toLocaleDateString()}`}
         subtitleVariant='bodySmall'
       />
       <Card.Content>
-        <Text variant='titleSmall' style={[styles.method, { color: bankIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {bankIsEmpty ? "Selecione um banco..." : bank}
+        <Text variant='titleSmall' style={[styles.method, { color: theme.colors.onSurface }]}>
+          {bank}
         </Text>
-        <Text variant='titleSmall' style={[styles.method, { color: methodIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {methodIsEmpty ? "Selecione um método de transferência..." : method.label}
+        <Text variant='titleSmall' style={[styles.method, { color: theme.colors.onSurface }]}>
+          {method.label}
         </Text>
         <View style={{
           flexDirection: "row",
@@ -64,10 +58,10 @@ export function TransactionInstallmentCardRegister({
           <Text variant='titleMedium' style={[styles.isDisabledText, styles.gridCell, { color: theme.colors.onSurface }]}>
             Nº Parcelas: {installments}
           </Text>
-          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: amountValueIsZero ? theme.colors.outline : theme.colors.onSurface }]}>
+          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: theme.colors.onSurface }]}>
             Valor Total:
           </Text>
-          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: amountValueIsZero ? theme.colors.outline : theme.colors.onSurface }]}>
+          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: theme.colors.onSurface }]}>
             {amountValue}
           </Text>
         </View>

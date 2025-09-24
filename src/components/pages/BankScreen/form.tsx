@@ -23,6 +23,7 @@ const initialDataBank = {
 export function BankFormScreen({ id }: BankFormScreenProps) {
   const theme = useTheme()
   const [data, setData] = useState<BankFormScreenInsert>(initialDataBank)
+  const isEdit = id !== undefined
 
   useEffect(() => {
     if (id) {
@@ -46,7 +47,6 @@ export function BankFormScreen({ id }: BankFormScreenProps) {
 
   return (
     <BasePage style={{ rowGap: 5 }}>
-
       <MCIcons
         style={{textAlign: "center"}}
         name="bank-outline"
@@ -58,7 +58,7 @@ export function BankFormScreen({ id }: BankFormScreenProps) {
         dense
         label="Insira um apelido para a conta bancária:"
         mode="outlined"
-        placeholder="Conta do banco X..."
+        placeholder="Ex: Conta do banco X..."
         value={data.nickname}
         onChangeText={v =>
           setData(prev => ({
@@ -67,17 +67,22 @@ export function BankFormScreen({ id }: BankFormScreenProps) {
           }))
         }
       />
-      <TextInput
-        dense
-        label="Valor atual em conta:"
-        mode="outlined"
-        keyboardType="numeric"
-        value={data.balance}
-        style={{ marginVertical: 0, writingDirection: "rtl" }}
-        onChangeText={handleTextCurrencyInput}
-        inputMode="numeric"
-        maxLength={21}
-      />
+
+      {
+        !isEdit && (
+          <TextInput
+            dense
+            label="Valor atual em conta:"
+            mode="outlined"
+            keyboardType="numeric"
+            value={data.balance}
+            style={{ marginVertical: 0, writingDirection: "rtl" }}
+            onChangeText={handleTextCurrencyInput}
+            inputMode="numeric"
+            maxLength={21}
+          />
+        )
+      }
       <SelectMultiTransferMethodButton
         style={{marginTop: 5}}
         transferMethodsSelected={data.transfer_methods_enable}

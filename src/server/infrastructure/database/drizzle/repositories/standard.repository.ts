@@ -23,7 +23,11 @@ export default class StandardDrizzleRepository implements IRepoStandard {
           item_value: {
             with: {
               tag: true,
-              transfer_method: true
+              transfer_method: {
+                with: {
+                  bank: true
+                }
+              }
             }
           }
         },
@@ -65,12 +69,16 @@ export default class StandardDrizzleRepository implements IRepoStandard {
           item_value: {
             with: {
               tag: true,
-              transfer_method: true
+              transfer_method: {
+                with: {
+                  bank: true
+                }
+              }
             }
           }
         }
       }).sync()
-  
+
       if (!result) {
         return {
           success: false,
@@ -82,7 +90,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
           }
         }
       };
-  
+
       return {
         success: true,
         data: standard_mapper(result)
@@ -105,14 +113,18 @@ export default class StandardDrizzleRepository implements IRepoStandard {
           item_value: {
             with: {
               tag: true,
-              transfer_method: true
+              transfer_method: {
+                with: {
+                  bank: true
+                }
+              }
             }
           }
         }
       }).sync()
-  
+
       const standards = result.map(standard_mapper)
-  
+
       return {
         success: true,
         data: standards
@@ -142,7 +154,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
       //     }
       //   }
       // }).sync()
-  
+
       // https://www.answeroverflow.com/m/1190290538151284826
       const result = db.query.standard.findMany({
         where: inArray(
@@ -156,15 +168,19 @@ export default class StandardDrizzleRepository implements IRepoStandard {
           item_value: {
             with: {
               tag: true,
-              transfer_method: true,
+              transfer_method: {
+                with: {
+                  bank: true
+                }
+              }
             },
           },
         },
       }).sync()
-  
+
       const standards = result
         .map(standard_mapper)
-  
+
       return {
         success: true,
         data: standards
@@ -185,9 +201,23 @@ export default class StandardDrizzleRepository implements IRepoStandard {
       const result = db.update(standard).set({
         fk_id_item_value: data.item_value_id
       }).where(eq(standard.id, id)).returning().get()
-  
-      const standard_updated = db.query.standard.findFirst({ with: { item_value: { with: { tag: true, transfer_method: true } } }, where: eq(standard.id, result.id) }).sync()
-  
+
+      const standard_updated = db.query.standard.findFirst({
+        with: {
+          item_value: {
+            with: {
+              tag: true,
+              transfer_method: {
+                with: {
+                  bank: true
+                }
+              }
+            }
+          }
+        },
+        where: eq(standard.id, result.id)
+      }).sync()
+
       if (!standard_updated) {
         return {
           success: false,
@@ -199,7 +229,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
           }
         }
       }
-  
+
       return {
         success: true,
         data: standard_mapper(standard_updated)
@@ -219,7 +249,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
     try {
       // Usando o onDelete com modo cascade basta apagar o pai e todos os outros serão apagados
       const standard_deleted = db.delete(standard).where(eq(standard.id, id)).get()
-  
+
       if (!standard_deleted) {
         return {
           success: false,
@@ -231,7 +261,7 @@ export default class StandardDrizzleRepository implements IRepoStandard {
           }
         }
       }
-  
+
       return {
         success: true,
         data: true

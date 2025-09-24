@@ -12,9 +12,10 @@ interface InstallmentHomeProps {
   extras?: ReactNode;
   goToRegister: () => void;
   goToEdit: () => void;
+  goToDetails: () => void;
 }
 
-export default function InstallmentHomeHomeBase({ kind, data, goToEdit, goToRegister }: InstallmentHomeProps) {
+export default function InstallmentHomeHomeBase({ kind, data, goToEdit, goToRegister, goToDetails }: InstallmentHomeProps) {
   const scrollY = useRef(new Animated.Value(0));
 
   return (
@@ -37,7 +38,7 @@ export default function InstallmentHomeHomeBase({ kind, data, goToEdit, goToRegi
               totalAmount={installment.total_amount}
               onToggleIsDisabled={() => console.info("Toggle do isDisabled...")}
               onEdit={goToEdit}
-              goToDetails={() => console.info("Navegando para a tela de detalhes...")}
+              goToDetails={goToDetails}
             />
           )}
           ListEmptyComponent={<Text>Nenhum {kind} encontrado.</Text>}

@@ -1,5 +1,13 @@
-import { Text } from "react-native-paper";
+import { TransactionStandardScreen } from "@pages/TransactionScreenStandard";
+import { Redirect, useLocalSearchParams } from "expo-router";
 
 export default function StandardEdit() {
-  return <Text>Standard Edit</Text>
+  const { id } = useLocalSearchParams<{ id?: string }>()
+
+  if (!id) {
+    <Redirect href={"/payments/standard"} />
+    return;
+  }
+
+  return <TransactionStandardScreen id={id} kind="payment" />
 }

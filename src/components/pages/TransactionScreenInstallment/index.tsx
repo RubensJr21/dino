@@ -4,13 +4,13 @@ import { installmentStrategies } from "@lib/strategies";
 import { InstallmentScreenInsert, Kind } from "@lib/types";
 import { initialDataBase, TransactionScreenBase } from "@pages/TransactionScreenBase";
 import { ButtonStepper } from "@pages/TransactionScreenInstallment/ButtonStepper";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-paper";
 
-interface InstallmentScreenProps {
+interface TransactionInstallmentScreenProps {
   id?: string;
-  kind: Kind
+  kind: Kind;
 }
 
 const DEFAULT_MIN_INSTALLMENT_NUMBER = 2
@@ -22,12 +22,30 @@ const initialDataInstallment = {
   installments: DEFAULT_MIN_INSTALLMENT,
 } satisfies InstallmentScreenInsert;
 
-export default function InstallmentScreen({ id, kind }: InstallmentScreenProps) {
+export function TransactionInstallmentScreen({ id, kind }: TransactionInstallmentScreenProps) {
+  const [initialData, setInitialData] = useState<InstallmentScreenInsert>()
+  const isEdit = id !== undefined
+
+  useEffect(() => {
+    if (id) {
+      installmentStrategies[kind].fetchById(id).then((fetchData) => {
+        if (fetchData !== undefined) {
+          setInitialData(fetchData)
+        }
+      })
+    } else {
+      setInitialData(initialDataInstallment)
+    }
+  }, [id])
+
+  if (initialData === undefined) {
+    // Quer dizer que o conteúdo ainda não foi inicializado ou carregado
+    return null;
+  }
+
   return (
     <TransactionScreenBase<InstallmentScreenInsert>
-      id={id}
-      initialData={initialDataInstallment}
-      fetchById={installmentStrategies[kind].fetchById}
+      initialData={initialData}
       onSubmit={installmentStrategies[kind].insert}
       CardElement={TransactionInstallmentCardRegister}
       renderExtras={(data, setData) => {
@@ -51,16 +69,12 @@ export default function InstallmentScreen({ id, kind }: InstallmentScreenProps) 
             }
           })
         }, [setData])
-        return (
+
+        return !isEdit && (
           <>
-            <View style={{
-              flexDirection: "row",
-              columnGap: 5,
-              // paddingVertical: 5
-            }}>
+            <View style={{ flexDirection: "row", columnGap: 5 }}>
               <ButtonStepper iconName="minus" onPress={decrement} />
               <TextInput
-                dense
                 value={data.installments.toString()}
                 onChangeText={(text: string) => {
                   const textOnlyNumbers = text.replaceAll(/\D/g, "")
@@ -85,6 +99,7 @@ export default function InstallmentScreen({ id, kind }: InstallmentScreenProps) 
                 contentStyle={{ textAlign: "center" }}
                 inputMode="numeric"
                 mode="outlined"
+                dense
               />
               <ButtonStepper iconName="plus" onPress={increment} />
             </View>

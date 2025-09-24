@@ -4,8 +4,9 @@ import { TransactionScreenBase, initialDataBase } from "../TransactionScreenBase
 
 import DatePicker from "@components/ui/SelectDateButton";
 import { TransactionStandardCardRegister } from "@components/ui/TransactionCardRegister/TransactionStandardCardRegister";
+import { useEffect, useState } from "react";
 
-interface StandardScreenProps {
+interface TransactionStandardScreenProps {
   id?: string;
   kind: Kind
 }
@@ -15,12 +16,29 @@ const initialDataStandard = {
   scheduledAt: new Date()
 } satisfies StandardScreenInsert
 
-export default function StandardScreen({ id, kind }: StandardScreenProps) {
+export function TransactionStandardScreen({ id, kind }: TransactionStandardScreenProps) {
+  const [initialData, setInitialData] = useState<StandardScreenInsert>()
+
+  useEffect(() => {
+    if (id) {
+      standardStrategies[kind].fetchById(id).then((fetchData) => {
+        if (fetchData !== undefined) {
+          setInitialData(fetchData)
+        }
+      })
+    } else {
+      setInitialData(initialDataStandard)
+    }
+  }, [id])
+
+  if (initialData === undefined) {
+    // Quer dizer que o conteúdo ainda não foi inicializado ou carregado
+    return null;
+  }
+  
   return (
     <TransactionScreenBase<StandardScreenInsert>
-      id={id}
-      initialData={initialDataStandard}
-      fetchById={standardStrategies[kind].fetchById}
+      initialData={initialData}
       onSubmit={standardStrategies[kind].insert}
       CardElement={TransactionStandardCardRegister}
       renderExtras={(data, setData) => (

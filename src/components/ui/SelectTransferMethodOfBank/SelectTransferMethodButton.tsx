@@ -1,23 +1,36 @@
 import Button from "@components/ui/Button";
 import { CustomModal } from "@components/ui/CustomModal";
-import React, { useEffect, useMemo, useState } from "react";
-import { StyleSheet, TouchableHighlight } from "react-native";
+import { useUpdateEffect } from "@utils/useUpdateEffect";
+import React, { useMemo, useState } from "react";
+import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 
+type transferMethodSelectedType = {
+  id: number;
+  label: string;
+}
+
+type onSelectedType = (transferMethodSelected: transferMethodSelectedType) => void
+
 interface SelectTransferMethodButtonProps {
   bankSelected: string;
-  transferMethodSelected?: string;
-  onSelected: (transferMethodSelected: string) => void;
+  transferMethodSelected: transferMethodSelectedType;
+  onSelected: onSelectedType;
   isOpen?: boolean;
   style?: React.ComponentProps<typeof Button>["style"];
 }
+
+export const INITIAL_TRANSFER_METHOD = {
+  id: -1,
+  label: ""
+} satisfies transferMethodSelectedType
 
 export function SelectTransferMethodButton({ bankSelected, transferMethodSelected, onSelected, isOpen, style }: SelectTransferMethodButtonProps) {
   const theme = useTheme();
 
   const [open, setOpen] = useState(isOpen ?? false)
-  const [selection, setSelection] = useState(transferMethodSelected ?? "")
+  const [selection, setSelection] = useState<transferMethodSelectedType>(transferMethodSelected)
 
 
   const show_modal = () => {
@@ -27,32 +40,32 @@ export function SelectTransferMethodButton({ bankSelected, transferMethodSelecte
     setOpen(false)
   }
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     onSelected(selection)
   }, [selection])
 
-  useEffect(() => {
-    setSelection("")
+  useUpdateEffect(() => {
+    setSelection(INITIAL_TRANSFER_METHOD)
     show_modal()
   }, [bankSelected])
 
   const data = useMemo(() => (
     [
-      { nome: `${bankSelected} - TransferMethod 1` },
-      { nome: `${bankSelected} - TransferMethod 2` },
-      { nome: `${bankSelected} - TransferMethod 3` },
-      { nome: `${bankSelected} - TransferMethod 4` },
-      { nome: `${bankSelected} - TransferMethod 5` },
-      { nome: `${bankSelected} - TransferMethod 6` },
-      { nome: `${bankSelected} - TransferMethod 7` },
-      { nome: `${bankSelected} - TransferMethod 8` },
+      { id: 1, label: `${bankSelected} - TransferMethod 1` },
+      { id: 2, label: `${bankSelected} - TransferMethod 2` },
+      { id: 3, label: `${bankSelected} - TransferMethod 3` },
+      { id: 4, label: `${bankSelected} - TransferMethod 4` },
+      { id: 5, label: `${bankSelected} - TransferMethod 5` },
+      { id: 6, label: `${bankSelected} - TransferMethod 6` },
+      { id: 7, label: `${bankSelected} - TransferMethod 7` },
+      { id: 8, label: `${bankSelected} - TransferMethod 8` },
     ]
   ), [bankSelected])
 
   return (
     <>
       <Button style={style} onPress={() => show_modal()}>
-        {selection === "" ? "Selecionar método de transferência" : `Mudar método de transferência`}
+        {selection.label === "" ? "Selecionar método de transferência" : `Mudar método de transferência`}
       </Button>
       <CustomModal
         isOpen={open}
@@ -68,11 +81,11 @@ export function SelectTransferMethodButton({ bankSelected, transferMethodSelecte
             paddingHorizontal: 5,
             backgroundColor: theme.colors.backdrop,
           }}
-          keyExtractor={({ nome }) => `${nome}`}
-          renderItem={({ item: { nome } }) => (
+          keyExtractor={({ id }) => `${id}`}
+          renderItem={({ item }) => (
             <TouchableHighlight
               onPress={() => {
-                setSelection(nome)
+                setSelection(item)
                 dismiss_modal()
               }}
               style={{
@@ -83,7 +96,7 @@ export function SelectTransferMethodButton({ bankSelected, transferMethodSelecte
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{nome}</Text>
+              <Text>{item.label}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}
@@ -92,14 +105,3 @@ export function SelectTransferMethodButton({ bankSelected, transferMethodSelecte
     </>
   )
 }
-
-const styles = StyleSheet.create({
-  dropdownBox: {
-    minHeight: 400,
-    maxHeight: 400,
-    overflow: "hidden",
-    rowGap: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 10
-  },
-})

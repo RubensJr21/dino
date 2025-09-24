@@ -1,4 +1,4 @@
-import InstallmentPaymentDrizzleApi from "../../infrastructure/database/drizzle/end_points/payment.api/installment";
+import InstallmentPaymentDrizzleApi from "@server/infrastructure/database/drizzle/end_points/payment.api/installment";
 
 const InstallmentPaymentApi = InstallmentPaymentDrizzleApi;
 
