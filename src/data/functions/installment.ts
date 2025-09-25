@@ -50,6 +50,7 @@ export async function get(
         baseTransactionType,
         eq(installment.id, baseTransactionType.id)
       )
+      .innerJoin(category, eq(baseTransactionType.fk_id_category, category.id))
       .innerJoin(
         transactionInstrument,
         eq(
@@ -57,6 +58,7 @@ export async function get(
           transactionInstrument.id
         )
       )
+      .innerJoin(bankAccount, eq(bankAccount.id, transactionInstrument.fk_id_bank_account))
       .innerJoin(
         transferMethod,
         eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)
