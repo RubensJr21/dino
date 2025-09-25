@@ -48,11 +48,11 @@ export const recurringStrategies: Record<
   }
 > = {
   payment: {
-    insert: async (data) => console.log("Insert Recorrente Payment", data),
+    insert: async (data) => sharedInsert(data, "payment"),
     fetchById: async (id) => sharedFetch(id)
   },
   receipt: {
-    insert: async (data) => console.log("Insert Recorrente Receipt", data),
+    insert: async (data) => sharedInsert(data, "receipt"),
     fetchById: async (id) => sharedFetch(id)
   }
 }
