@@ -22,7 +22,7 @@ export async function sharedFetch(id: string): Promise<StandardScreenInsert | un
     description: standard_founded.description,
     category: {
       id: standard_founded.category_id,
-      code: standard_founded.category
+      code: standard_founded.category_code
     },
     amountValue: String(standard_founded.amount),
     scheduledAt: standard_founded.scheduled_at,
