@@ -23,7 +23,20 @@ export function TransactionStandardScreen({ id, kind }: TransactionStandardScree
     if (id) {
       standardStrategies[kind].fetchById(id).then((fetchData) => {
         if (fetchData !== undefined) {
-          setInitialData(fetchData)
+          setInitialData({
+            amountValue: fetchData.amountValue.toString(),
+            transactionInstrument: {
+              id: fetchData.transactionInstrument.id,
+              nickname: fetchData.transactionInstrument.nickname,
+              transfer_method_code: fetchData.transactionInstrument.transfer_method_code
+            },
+            category: {
+              id: fetchData.category.id,
+              code: fetchData.category.code
+            },
+            description: fetchData.description,
+            scheduledAt: new Date(fetchData.scheduledAt)
+          })
         }
       })
     } else {

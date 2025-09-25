@@ -1,39 +1,52 @@
-import { Kind, StandardScreenInsert } from "../types"
+import { find_standard } from "@data/playground/standard/find"
+import { insert_standard } from "@data/playground/standard/insert"
+import { getCashflowType, Kind, StandardScreenInsert } from "../types"
 
-// Base Standard
+export async function sharedInsert(data: StandardScreenInsert, kind: Kind) {
+  return await insert_standard({
+    description: data.description,
+    cashflow_type: getCashflowType(kind),
+    category_id: data.category.id,
+    amount: Number(data.amountValue),
+    scheduled_at: data.scheduledAt,
+    transaction_instrument_id: data.transactionInstrument.id,
+    transfer_method_code: data.transactionInstrument.transfer_method_code
+  })
+}
+export async function sharedFetch(id: string): Promise<StandardScreenInsert | undefined> {
+  const standard_founded = await find_standard(Number(id))
+  if (standard_founded === undefined) {
+    return undefined;
+  }
+  return {
+    description: standard_founded.description,
+    category: {
+      id: standard_founded.category_id,
+      code: standard_founded.category
+    },
+    amountValue: String(standard_founded.amount),
+    scheduledAt: standard_founded.scheduled_at,
+    transactionInstrument: {
+      id: standard_founded.transaction_instrument_id,
+      nickname: standard_founded.transaction_instrument_nickname,
+      transfer_method_code: standard_founded.transfer_method_code
+    },
+  }
+}
+
 export const standardStrategies: Record<
   Kind,
   {
-    insert: (data: StandardScreenInsert) => void
-    fetchById: (id: string) => Promise<StandardScreenInsert>
+    insert: (data: StandardScreenInsert) => Promise<number>
+    fetchById: (id: string) => Promise<StandardScreenInsert | undefined>
   }
 > = {
   payment: {
-    insert: (data) => console.log("Insert Standard Payment", data),
-    fetchById: async (id) => ({
-      description: "Padaria",
-      amountValue: "50",
-      scheduledAt: new Date("2025-08-22"),
-      tagSelected: "Tag 1",
-      bankSelected: "Bank 1",
-      transferMethodSelected: {
-        id: 1,
-        label: "Bank 1 -TransferMethod 1"
-      }
-    })
+    insert: async (data) => await sharedInsert(data, "payment"),
+    fetchById: async (id) => await sharedFetch(id)
   },
   receipt: {
-    insert: (data) => console.log("Insert Standard Receipt", data),
-    fetchById: async (id) => ({
-      description: "Salário",
-      amountValue: "2000",
-      scheduledAt: new Date("2025-08-22"),
-      tagSelected: "Tag 1",
-      bankSelected: "Bank 1",
-      transferMethodSelected: {
-        id: 1,
-        label: "Bank 1 -TransferMethod 1"
-      }
-    })
+    insert: async (data) => await sharedInsert(data, "receipt"),
+    fetchById: async (id) => await sharedFetch(id)
   }
 }

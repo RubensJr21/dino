@@ -1,9 +1,9 @@
 import BasePage from "@components/ui/BasePage"
 import { ButtonSubmit } from "@components/ui/ButtonSubmit"
 import ScrollView from "@components/ui/ScrollView"
-import { SelectTagButton } from "@components/ui/SelectTagButton"
-import { SelectBankButton } from "@components/ui/SelectTransferMethodOfBank/SelectBankButton"
-import { INITIAL_TRANSFER_METHOD, SelectTransferMethodButton } from "@components/ui/SelectTransferMethodOfBank/SelectTransferMethodButton"
+import { SelectCategoryButton } from "@components/ui/SelectCategoryButton"
+import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton"
+import { SelectTransferMethodButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransferMethodButton"
 import { TransactionScreenBaseInsert } from "@lib/types"
 import { formatCurrencyString } from "@utils/formatCurrencyString"
 import { useCallback, useState } from "react"
@@ -17,12 +17,18 @@ type TransactionScreenBaseProps<T> = {
   renderExtras?: (data: T, setData: React.Dispatch<React.SetStateAction<T>>) => React.ReactNode;
 }
 
+export const INITIAL_DESCRIPTION = ""
+export const INITIAL_AMOUNT_VALUE = "0,00"
+export const INITIAL_CATEGORY = {
+  id: -1,
+  code: ""
+}
+
 export const initialDataBase = {
-  description: "",
-  amountValue: "0,00",
-  tagSelected: "",
-  bankSelected: "",
-  transferMethodSelected: INITIAL_TRANSFER_METHOD
+  description: INITIAL_DESCRIPTION,
+  amountValue: INITIAL_AMOUNT_VALUE,
+  category: INITIAL_CATEGORY,
+  transactionInstrument: INITIAL_TRANSACTION_INSTRUMENT
 } satisfies TransactionScreenBaseInsert
 
 export function TransactionScreenBase<T extends TransactionScreenBaseInsert>({
@@ -35,7 +41,7 @@ export function TransactionScreenBase<T extends TransactionScreenBaseInsert>({
 
   const handleTextCurrencyInput = useCallback((value: string) => {
     const valueFormatted = formatCurrencyString(value)
-    
+
     setData(prev => ({
       ...prev,
       amountValue: valueFormatted
@@ -81,50 +87,54 @@ export function TransactionScreenBase<T extends TransactionScreenBaseInsert>({
           flexWrap: "wrap",
           gap: 5,
         }}>
-          <SelectTagButton
+          <SelectCategoryButton
             style={{
               flexGrow: 1,          // ocupa o máximo possível
               flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
             }}
-            tagSelected={data.tagSelected}
-            onSelected={(tagSelected) => {
+            categoryId={data.category.id}
+            onSelected={(categoryId) => {
               setData(prev => ({
                 ...prev,
-                tagSelected,
+                categoryId,
               }))
             }}
           />
-          <SelectBankButton
+
+          <SelectTransferMethodButton
             style={{
               flexGrow: 1,          // ocupa o máximo possível
               flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
             }}
-            bankSelected={data.bankSelected}
-            onSelected={(bankSelected) => {
+            transferMethodCode={data.transactionInstrument.transfer_method_code}
+            onSelected={(transferMethodCode) => {
               setData(prev => ({
                 ...prev,
-                bankSelected,
+                transactionInstrument: {
+                  ...prev.transactionInstrument,
+                  transfer_method_code: transferMethodCode
+                }
               }))
             }}
           />
 
           {
-            data.bankSelected !== "" ?
-              <SelectTransferMethodButton
+            data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code ?
+              <SelectTransactionInstrumentButton
                 style={{
                   flexGrow: 1,          // ocupa o máximo possível
                   flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
                 }}
-                bankSelected={data.bankSelected}
-                transferMethodSelected={data.transferMethodSelected}
-                onSelected={(transferMethodSelected) => {
+                transferMethod={data.transactionInstrument.transfer_method_code}
+                transactionInstrumentSelected={data.transactionInstrument}
+                onSelected={(transactionInstrumentSelected) => {
                   setData(prev => ({
                     ...prev,
-                    transferMethodSelected
+                    transactionInstrumentSelected
                   }))
                 }}
                 // Está abrindo pela primeira vez
-                isOpen={data.transferMethodSelected.label.length === 0}
+                isOpen={data.transactionInstrument.nickname.length === 0}
               />
               :
               null

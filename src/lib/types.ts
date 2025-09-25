@@ -1,12 +1,19 @@
+export interface TransactionInstrument {
+  id: number;
+  nickname: string;
+  transfer_method_code: string;
+}
+
+export interface Category {
+  id: number;
+  code: string
+}
+
 export interface TransactionScreenBaseInsert {
   description: string;
   amountValue: string;
-  tagSelected: string;
-  bankSelected: string;
-  transferMethodSelected: {
-    id: number;
-    label: string;
-  };
+  category: Category;
+  transactionInstrument: TransactionInstrument;
 }
 
 export interface StandardScreenInsert extends TransactionScreenBaseInsert {
@@ -24,3 +31,12 @@ export interface RecurringScreenInsert extends TransactionScreenBaseInsert {
 }
 
 export type Kind = "payment" | "receipt"
+
+export function getCashflowType(kind: Kind): Cashflow_Type {
+  switch (kind) {
+    case "payment":
+      return -1;
+    case "receipt":
+      return 1;
+  }
+}

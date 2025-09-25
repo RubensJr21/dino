@@ -1,21 +1,21 @@
 import Button from "@components/ui/Button";
 import { CustomModal } from "@components/ui/CustomModal";
+import { list_of_tags } from "@utils/factories/tag.factory";
 import React, { useEffect, useMemo, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 
-interface SelectBankButtonProps {
-  bankSelected?: string
-  onSelected: (bankSelected: string) => void
+interface SelectCategoryButtonProps {
+  categoryId?: number
+  onSelected: (categoryId: number) => void
   style?: React.ComponentProps<typeof Button>["style"]
 }
 
-export function SelectBankButton({ bankSelected, onSelected, style }: SelectBankButtonProps) {
+export function SelectCategoryButton({ categoryId, onSelected, style }: SelectCategoryButtonProps) {
   const theme = useTheme();
 
   const [open, setOpen] = useState(false)
-
   const show_modal = () => {
     setOpen(true)
   }
@@ -23,39 +23,28 @@ export function SelectBankButton({ bankSelected, onSelected, style }: SelectBank
     setOpen(false)
   }
 
-  const [selection, setSelection] = useState(bankSelected ?? "")
+  const [selection, setSelection] = useState(categoryId ?? -1)
   useEffect(() => {
     onSelected(selection)
   }, [selection])
 
-  const [search, setSearch] = useState("")
-  useEffect(() => {
-    setSearch("")
-  }, [open])
-
   const data = useMemo(() => (
-    [
-      { nome: "Bank 1" },
-      { nome: "Bank 2" },
-      { nome: "Bank 3" },
-      { nome: "Bank 4" },
-      { nome: "Bank 6" },
-      { nome: "Bank 7" },
-      { nome: "Bank 8" },
-      { nome: "Bank 9" },
-    ]
-      .filter(({ nome }) => nome.includes(search))
-  ), [search])
+    Array.from(
+      new Map(
+        list_of_tags
+          .map(category => [category.description, category])))
+      .sort(([descA], [descB]) => descA.localeCompare(descB))
+  ), [])
 
   return (
     <>
-      <Button style={style} onPress={() => show_modal()}>
-        {selection === "" ? "Selecionar banco" : `Mudar banco`}
+      <Button style={style} onPress={show_modal}>
+        {selection === -1 ? "Selecionar categoria" : `Mudar categoria`}
       </Button>
       <CustomModal
         isOpen={open}
         dismiss_modal={dismiss_modal}
-        title="Selecione um Banco"
+        title="Selecione uma categoria"
       >
         <FlatList
           data={data}
@@ -68,11 +57,11 @@ export function SelectBankButton({ bankSelected, onSelected, style }: SelectBank
             paddingHorizontal: 5,
             backgroundColor: theme.colors.backdrop,
           }}
-          keyExtractor={({ nome }) => `${nome}`}
-          renderItem={({ item: { nome } }) => (
+          keyExtractor={([desc, { id }]) => `${id}`}
+          renderItem={({ item: [desc, { id }] }) => (
             <TouchableHighlight
               onPress={() => {
-                setSelection(nome)
+                setSelection(id)
                 dismiss_modal()
               }}
               style={{
@@ -83,7 +72,7 @@ export function SelectBankButton({ bankSelected, onSelected, style }: SelectBank
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{nome}</Text>
+              <Text>{desc}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}

@@ -1,18 +1,19 @@
 import Button from "@components/ui/Button";
 import { CustomModal } from "@components/ui/CustomModal";
-import { list_of_tags } from "@utils/factories/tag.factory";
+import { INITIAL_TRANSACTION_INSTRUMENT } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton";
+import { list_of_transfer_methods } from "@utils/factories/transfer_method.factory";
 import React, { useEffect, useMemo, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 
-interface SelectTagButtonProps {
-  tagSelected?: string
-  onSelected: (tagSelected: string) => void
+interface SelectTransferMethodButtonProps {
+  transferMethodCode?: string
+  onSelected: (transferMethodCode: string) => void
   style?: React.ComponentProps<typeof Button>["style"]
 }
 
-export function SelectTagButton({ tagSelected, onSelected, style }: SelectTagButtonProps) {
+export function SelectTransferMethodButton({ transferMethodCode, onSelected, style }: SelectTransferMethodButtonProps) {
   const theme = useTheme();
 
   const [open, setOpen] = useState(false)
@@ -23,7 +24,7 @@ export function SelectTagButton({ tagSelected, onSelected, style }: SelectTagBut
     setOpen(false)
   }
 
-  const [selection, setSelection] = useState(tagSelected ?? "")
+  const [selection, setSelection] = useState(transferMethodCode ?? INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code)
   useEffect(() => {
     onSelected(selection)
   }, [selection])
@@ -31,20 +32,20 @@ export function SelectTagButton({ tagSelected, onSelected, style }: SelectTagBut
   const data = useMemo(() => (
     Array.from(
       new Map(
-        list_of_tags
-          .map(tag => [tag.description, tag])))
+        list_of_transfer_methods
+          .map(transferMethod => [transferMethod.method, transferMethod])))
       .sort(([descA], [descB]) => descA.localeCompare(descB))
   ), [])
 
   return (
     <>
       <Button style={style} onPress={show_modal}>
-        {selection === "" ? "Selecionar categoria" : `Mudar categoria`}
+        {selection === INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code ? "Selecionar método de transferência" : `Mudar método de transferência`}
       </Button>
       <CustomModal
         isOpen={open}
         dismiss_modal={dismiss_modal}
-        title="Selecione uma categoria"
+        title="Selecione um método de transferência"
       >
         <FlatList
           data={data}
@@ -57,11 +58,11 @@ export function SelectTagButton({ tagSelected, onSelected, style }: SelectTagBut
             paddingHorizontal: 5,
             backgroundColor: theme.colors.backdrop,
           }}
-          keyExtractor={([desc, { id }]) => `${id}`}
-          renderItem={({ item: [desc] }) => (
+          keyExtractor={([method, { id }]) => `${id}`}
+          renderItem={({ item: [method] }) => (
             <TouchableHighlight
               onPress={() => {
-                setSelection(desc)
+                setSelection(method)
                 dismiss_modal()
               }}
               style={{
@@ -72,7 +73,7 @@ export function SelectTagButton({ tagSelected, onSelected, style }: SelectTagBut
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{desc}</Text>
+              <Text>{method}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}

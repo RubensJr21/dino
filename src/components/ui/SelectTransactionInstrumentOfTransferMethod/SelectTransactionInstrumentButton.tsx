@@ -1,36 +1,33 @@
 import Button from "@components/ui/Button";
 import { CustomModal } from "@components/ui/CustomModal";
+import { TransactionInstrument } from "@lib/types";
 import { useUpdateEffect } from "@utils/useUpdateEffect";
 import React, { useMemo, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 
-type transferMethodSelectedType = {
-  id: number;
-  label: string;
-}
+type onSelectedType = (transactionInstrumentSelected: TransactionInstrument) => void
 
-type onSelectedType = (transferMethodSelected: transferMethodSelectedType) => void
-
-interface SelectTransferMethodButtonProps {
-  bankSelected: string;
-  transferMethodSelected: transferMethodSelectedType;
+interface SelectTransactionInstrumentButtonProps {
+  transferMethod: TransactionInstrument["transfer_method_code"];
+  transactionInstrumentSelected: TransactionInstrument;
   onSelected: onSelectedType;
   isOpen?: boolean;
   style?: React.ComponentProps<typeof Button>["style"];
 }
 
-export const INITIAL_TRANSFER_METHOD = {
+export const INITIAL_TRANSACTION_INSTRUMENT: TransactionInstrument = {
   id: -1,
-  label: ""
-} satisfies transferMethodSelectedType
+  nickname: "",
+  transfer_method_code: ""
+}
 
-export function SelectTransferMethodButton({ bankSelected, transferMethodSelected, onSelected, isOpen, style }: SelectTransferMethodButtonProps) {
+export function SelectTransactionInstrumentButton({ transferMethod, transactionInstrumentSelected, onSelected, isOpen, style }: SelectTransactionInstrumentButtonProps) {
   const theme = useTheme();
 
   const [open, setOpen] = useState(isOpen ?? false)
-  const [selection, setSelection] = useState<transferMethodSelectedType>(transferMethodSelected)
+  const [selection, setSelection] = useState<TransactionInstrument>(transactionInstrumentSelected)
 
 
   const show_modal = () => {
@@ -45,27 +42,28 @@ export function SelectTransferMethodButton({ bankSelected, transferMethodSelecte
   }, [selection])
 
   useUpdateEffect(() => {
-    setSelection(INITIAL_TRANSFER_METHOD)
+    setSelection(INITIAL_TRANSACTION_INSTRUMENT)
     show_modal()
-  }, [bankSelected])
+  }, [transferMethod])
 
-  const data = useMemo(() => (
+  // Simula função de chamada a api
+  const data = useMemo<TransactionInstrument[]>(() => (
     [
-      { id: 1, label: `${bankSelected} - TransferMethod 1` },
-      { id: 2, label: `${bankSelected} - TransferMethod 2` },
-      { id: 3, label: `${bankSelected} - TransferMethod 3` },
-      { id: 4, label: `${bankSelected} - TransferMethod 4` },
-      { id: 5, label: `${bankSelected} - TransferMethod 5` },
-      { id: 6, label: `${bankSelected} - TransferMethod 6` },
-      { id: 7, label: `${bankSelected} - TransferMethod 7` },
-      { id: 8, label: `${bankSelected} - TransferMethod 8` },
+      { id: 1, nickname: `TransactionInstrument 1`, transfer_method_code: transferMethod.toString() },
+      { id: 2, nickname: `TransactionInstrument 2`, transfer_method_code: transferMethod.toString() },
+      { id: 3, nickname: `TransactionInstrument 3`, transfer_method_code: transferMethod.toString() },
+      { id: 4, nickname: `TransactionInstrument 4`, transfer_method_code: transferMethod.toString() },
+      { id: 5, nickname: `TransactionInstrument 5`, transfer_method_code: transferMethod.toString() },
+      { id: 6, nickname: `TransactionInstrument 6`, transfer_method_code: transferMethod.toString() },
+      { id: 7, nickname: `TransactionInstrument 7`, transfer_method_code: transferMethod.toString() },
+      { id: 8, nickname: `TransactionInstrument 8`, transfer_method_code: transferMethod.toString() },
     ]
-  ), [bankSelected])
+  ), [transferMethod])
 
   return (
     <>
       <Button style={style} onPress={() => show_modal()}>
-        {selection.label === "" ? "Selecionar método de transferência" : `Mudar método de transferência`}
+        {selection.nickname === "" ? "Selecionar método de transferência" : `Mudar método de transferência`}
       </Button>
       <CustomModal
         isOpen={open}
@@ -96,7 +94,7 @@ export function SelectTransferMethodButton({ bankSelected, transferMethodSelecte
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{item.label}</Text>
+              <Text>{item.nickname}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}
