@@ -9,21 +9,19 @@ interface TransactionInstallmentCardRegisterProps {
 
 export function TransactionInstallmentCardRegister({
   data: {
-    tagSelected: tag,
+    category: category,
     description,
     startDate,
-    bankSelected: bank,
-    transferMethodSelected: method,
+    transactionInstrument,
     amountValue,
     installments
   }
 }: TransactionInstallmentCardRegisterProps) {
   const theme = useTheme()
 
-  const tagIsEmpty = tag.trim() === ""
+  const categoryIsEmpty = category.id === -1
   const descriptionIsEmpty = description.trim() === ""
-  const bankIsEmpty = bank.trim() === ""
-  const methodIsEmpty = method.label.trim() === ""
+  const transactionInstrumentIsEmpty = transactionInstrument.nickname.trim() === ""
   const amountValueIsZero = Number(amountValue.replace(/\D/, "")) === 0
 
   return (
@@ -36,9 +34,9 @@ export function TransactionInstallmentCardRegister({
     ]}>
       <Chip
         style={{ backgroundColor: theme.colors.primaryContainer, borderRadius: 0 }}
-        textStyle={{ color: tagIsEmpty ? theme.colors.outline : theme.colors.onPrimaryContainer }}
+        textStyle={{ color: categoryIsEmpty ? theme.colors.outline : theme.colors.onPrimaryContainer }}
       >
-        {tagIsEmpty ? "Selecione uma categoria..." : tag}
+        {categoryIsEmpty ? "Selecione uma categoria..." : category.code}
       </Chip>
       <Card.Title
         title={descriptionIsEmpty ? "Escreva uma descrição..." : description}
@@ -50,11 +48,8 @@ export function TransactionInstallmentCardRegister({
         subtitleVariant='bodySmall'
       />
       <Card.Content>
-        <Text variant='titleSmall' style={[styles.method, { color: bankIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {bankIsEmpty ? "Selecione um banco..." : bank}
-        </Text>
-        <Text variant='titleSmall' style={[styles.method, { color: methodIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {methodIsEmpty ? "Selecione um método de transferência..." : method.label}
+        <Text variant='titleSmall' style={[styles.method, { color: transactionInstrumentIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
+          {transactionInstrumentIsEmpty ? "Selecione um método de transferência..." : transactionInstrument.nickname}
         </Text>
         <View style={{
           flexDirection: "row",
