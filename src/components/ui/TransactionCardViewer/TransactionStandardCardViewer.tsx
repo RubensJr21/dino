@@ -4,27 +4,20 @@ import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
 
-interface TransactionStandardCardViewerProps {
+interface TransactionStandardCardRegisterProps {
   data: StandardScreenInsert
 }
 
-export function TransactionStandardCardViewer({
+export function TransactionStandardCardRegister({
   data: {
-    tagSelected: tag,
+    category,
     description,
     scheduledAt,
-    bankSelected: bank,
-    transferMethodSelected: method,
+    transactionInstrument,
     amountValue
   }
-}: TransactionStandardCardViewerProps) {
+}: TransactionStandardCardRegisterProps) {
   const theme = useTheme()
-
-  const tagIsEmpty = tag.trim() === ""
-  const descriptionIsEmpty = description.trim() === ""
-  const bankIsEmpty = bank.trim() === ""
-  const methodIsEmpty = method.label.trim() === ""
-  const amountValueIsZero = Number(amountValue.replace(/\D/, "")) === 0
 
   return (
     <Card style={[
@@ -36,27 +29,24 @@ export function TransactionStandardCardViewer({
     ]}>
       <Chip
         style={{ backgroundColor: theme.colors.primaryContainer, borderRadius: 0 }}
-        textStyle={{ color: tagIsEmpty ? theme.colors.outline : theme.colors.onPrimaryContainer }}
+        textStyle={{ color: theme.colors.onPrimaryContainer }}
       >
-        {tagIsEmpty ? "Selecione uma categoria..." : tag}
+        {category.code}
       </Chip>
       <Card.Title
-        title={descriptionIsEmpty ? "Escreva uma descrição..." : description}
+        title={description}
         titleVariant='titleLarge'
         titleNumberOfLines={2}
-        titleStyle={{ marginTop: 10, color: descriptionIsEmpty ? theme.colors.outline : theme.colors.onSurface }}
+        titleStyle={{ marginTop: 10, color: theme.colors.onSurface }}
 
         subtitle={`Agendado para: ${scheduledAt.toLocaleDateString()}`}
         subtitleVariant='bodySmall'
       />
       <Card.Content>
-        <Text variant='titleSmall' style={[styles.method, { color: bankIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {bankIsEmpty ? "Selecione um banco..." : bank}
+        <Text variant='titleSmall' style={[styles.transactionInstrument, { color: theme.colors.onSurface }]}>
+          {transactionInstrument.nickname}
         </Text>
-        <Text variant='titleSmall' style={[styles.method, { color: methodIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {methodIsEmpty ? "Selecione um método de transferência..." : method.label}
-        </Text>
-        <Text variant='headlineSmall' style={[styles.currencyValue, { color: amountValueIsZero ? theme.colors.outline : theme.colors.onSurface }]}>
+        <Text variant='headlineSmall' style={[styles.currencyValue, { color: theme.colors.onSurface }]}>
           {amountValue}
         </Text>
       </Card.Content>
@@ -90,7 +80,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
   },
-  method: {
+  transactionInstrument: {
     fontWeight: "bold",
   },
   currencyValue: {

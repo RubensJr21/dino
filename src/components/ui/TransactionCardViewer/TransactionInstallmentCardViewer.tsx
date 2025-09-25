@@ -9,11 +9,10 @@ interface TransactionInstallmentCardViewerProps {
 
 export function TransactionInstallmentCardViewer({
   data: {
-    tagSelected: tag,
+    category: category,
     description,
     startDate,
-    bankSelected: bank,
-    transferMethodSelected: method,
+    transactionInstrument,
     amountValue,
     installments
   }
@@ -32,7 +31,7 @@ export function TransactionInstallmentCardViewer({
         style={{ backgroundColor: theme.colors.primaryContainer, borderRadius: 0 }}
         textStyle={{ color: theme.colors.onPrimaryContainer }}
       >
-        {tag}
+        {category.code}
       </Chip>
       <Card.Title
         title={description}
@@ -44,11 +43,8 @@ export function TransactionInstallmentCardViewer({
         subtitleVariant='bodySmall'
       />
       <Card.Content>
-        <Text variant='titleSmall' style={[styles.method, { color: theme.colors.onSurface }]}>
-          {bank}
-        </Text>
-        <Text variant='titleSmall' style={[styles.method, { color: theme.colors.onSurface }]}>
-          {method.label}
+        <Text variant='titleSmall' style={[styles.transactionInstrument, { color: theme.colors.onSurface }]}>
+          {transactionInstrument.nickname}
         </Text>
         <View style={{
           flexDirection: "row",
@@ -92,7 +88,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
-  method: {
+  transactionInstrument: {
     fontSize: 14,
   },
   currencyValue: {

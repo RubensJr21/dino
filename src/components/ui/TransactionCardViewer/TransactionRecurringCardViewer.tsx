@@ -4,29 +4,21 @@ import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
 
-interface TransactionRecurringCardViewerProps {
+interface TransactionRecurringCardRegisterProps {
   data: RecurringScreenInsert
 }
 
-export function TransactionRecurringCardViewer({
+export function TransactionRecurringCardRegister({
   data: {
     startDate,
     description,
-    transferMethodSelected: method,
-    tagSelected: tag,
+    transactionInstrument,
+    category,
     amountValue,
-    bankSelected: bank,
     frequency
   },
-}: TransactionRecurringCardViewerProps) {
+}: TransactionRecurringCardRegisterProps) {
   const theme = useTheme()
-
-  const tagIsEmpty = tag.trim() === ""
-  const descriptionIsEmpty = description.trim() === ""
-  const bankIsEmpty = bank.trim() === ""
-  const methodIsEmpty = method.label.trim() === ""
-  const frequencyIsEmpty = frequency.trim() === ""
-  const amountValueIsZero = Number(amountValue.replace(/\D/, "")) === 0
 
   return (
     <Card style={[
@@ -38,32 +30,29 @@ export function TransactionRecurringCardViewer({
     ]}>
       <Chip
         style={{ backgroundColor: theme.colors.primaryContainer, borderRadius: 0 }}
-        textStyle={{ color: tagIsEmpty ? theme.colors.outline : theme.colors.onPrimaryContainer }}
+        textStyle={{ color: theme.colors.onPrimaryContainer }}
       >
-        {tagIsEmpty ? "Selecione uma categoria..." : tag}
+        {category.code}
       </Chip>
       <Card.Title
-        title={descriptionIsEmpty ? "Escreva uma descrição..." : description}
+        title={description}
         titleVariant='titleLarge'
         titleNumberOfLines={2}
-        titleStyle={{ marginTop: 10, color: descriptionIsEmpty ? theme.colors.outline : theme.colors.onSurface }}
+        titleStyle={{ marginTop: 10, color: theme.colors.onSurface }}
 
         subtitle={`Início em: ${startDate.toLocaleDateString()}`}
         subtitleVariant='bodySmall'
       />
       <Card.Content>
-        <Text variant='titleSmall' style={[styles.method, { color: bankIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {bankIsEmpty ? "Selecione um banco..." : bank}
-        </Text>
-        <Text variant='titleSmall' style={[styles.method, { color: methodIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {methodIsEmpty ? "Selecione um método de transferência..." : method.label}
+        <Text variant='titleSmall' style={[styles.method, { color: theme.colors.onSurface }]}>
+          {transactionInstrument.nickname}
         </Text>
         <View style={{
           flexDirection: "row",
           flexWrap: "wrap",
           gap: 5,
         }}>
-          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: amountValueIsZero ? theme.colors.outline : theme.colors.onSurface }]}>
+          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: theme.colors.onSurface }]}>
             {amountValue}
           </Text>
         </View>
@@ -73,14 +62,10 @@ export function TransactionRecurringCardViewer({
           <MCIcons
             name={"refresh"}
             size={theme.fonts.titleLarge.fontSize}
-            color={
-              frequencyIsEmpty
-                ? theme.colors.tertiary
-                : theme.colors.onPrimaryContainer
-            }
+            color={theme.colors.onPrimaryContainer}
           />
-          <Text variant='titleLarge' style={[styles.isDisabledText, { color: frequencyIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-            {frequencyIsEmpty ? "..." : frequency}
+          <Text variant='titleLarge' style={[styles.isDisabledText, { color: theme.colors.onSurface }]}>
+            {frequency}
           </Text>
         </View>
         <View style={[styles.isDisabledRow]}>
@@ -130,7 +115,7 @@ const styles = StyleSheet.create({
   },
   isDisabledText: {
     marginRight: 4,
-    textTransform: 'capitalize', 
+    textTransform: 'capitalize',
   },
   currencyValue: {
     fontWeight: "bold",
