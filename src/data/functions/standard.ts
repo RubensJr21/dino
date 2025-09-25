@@ -26,6 +26,7 @@ export async function get(
         description: baseTransactionType.description,
 
         category_id: baseTransactionType.fk_id_category,
+        category_code: category.code,
 
         transaction_instrument_id: baseTransactionType.fk_id_transaction_instrument,
         transaction_instrument_nickname: sql<string>`
@@ -43,8 +44,6 @@ export async function get(
         amount: itemValue.amount,
         scheduled_at: itemValue.scheduled_at,
         was_processed: itemValue.was_processed,
-        category: category.code,
-
       })
       .from(standard)
       .innerJoin(baseTransactionType, eq(baseTransactionType.id, standard.id))

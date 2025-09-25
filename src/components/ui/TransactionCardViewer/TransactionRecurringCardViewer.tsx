@@ -15,7 +15,7 @@ export function TransactionRecurringCardRegister({
     transactionInstrument,
     category,
     amountValue,
-    frequency
+    recurrenceType
   },
 }: TransactionRecurringCardRegisterProps) {
   const theme = useTheme()
@@ -65,7 +65,7 @@ export function TransactionRecurringCardRegister({
             color={theme.colors.onPrimaryContainer}
           />
           <Text variant='titleLarge' style={[styles.isDisabledText, { color: theme.colors.onSurface }]}>
-            {frequency}
+            {recurrenceType.code}
           </Text>
         </View>
         <View style={[styles.isDisabledRow]}>

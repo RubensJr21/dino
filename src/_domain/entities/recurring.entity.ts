@@ -1,4 +1,4 @@
-import { RecurrenceType } from "./recurrence_type.entity";
+import { RecurrenceType } from "@lib/types";
 import { Tag } from "./tag.entity";
 import { TransferMethod } from "./transfer_method.entity";
 
@@ -16,10 +16,9 @@ export interface IRecurring {
   updated_at: Date;
 }
 
-interface ReturnProperties extends StrictOmit<IRecurring, "tag" | "transfer_method" | "recurrence_type"> {
+interface ReturnProperties extends StrictOmit<IRecurring, "tag" | "transfer_method"> {
   tag: Tag["properties"];
   transfer_method: TransferMethod["properties"];
-  recurrence_type: RecurrenceType["properties"];
 }
 
 export class Recurring implements IRecurring {
@@ -102,7 +101,7 @@ export class Recurring implements IRecurring {
       id: this.recurring.id,
       tag: this.recurring.tag.properties,
       transfer_method: this.recurring.transfer_method.properties,
-      recurrence_type: this.recurring.recurrence_type.properties
+      recurrence_type: this.recurring.recurrence_type
     } as const;
   }
 }

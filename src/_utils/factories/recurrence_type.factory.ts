@@ -1,11 +1,11 @@
-import { RecurrenceType } from "@domain/entities/recurrence_type.entity";
+import { RecurrenceType } from "@lib/types";
 import { faker } from "@utils/factories/_faker";
 
 function makeRecurrenceType(v: unknown, index: number): RecurrenceType {
-  return new RecurrenceType({
+  return {
     id: index,
-    type: faker.helpers.arrayElement(["Mês", "Ano"]),
-  });
+    code: faker.helpers.arrayElement(["Mês", "Ano"]),
+  };
 }
 
 export const list_of_recurrence_type = faker.helpers.multiple(makeRecurrenceType, {

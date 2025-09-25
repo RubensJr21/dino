@@ -1,5 +1,5 @@
 import DatePicker from "@components/ui/SelectDateButton";
-import { SelectRecurrenceButton } from "@components/ui/SelectRecurrenceButton";
+import { INITIAL_RECURRENCE_TYPE, SelectRecurrenceButton } from "@components/ui/SelectRecurrenceButton";
 import { TransactionRecurringCardRegister } from "@components/ui/TransactionCardRegister/TransactionRecurringCardRegister";
 import { recurringStrategies } from "@lib/strategies";
 import { Kind, RecurringScreenInsert } from "@lib/types";
@@ -13,8 +13,9 @@ interface TransactionRecurringScreenProps {
 
 const initialDataRecurring = {
   ...initialDataBase,
-  frequency: "",
-  startDate: new Date()
+  recurrenceType: INITIAL_RECURRENCE_TYPE,
+  startDate: new Date(),
+  endDate: null
 } satisfies RecurringScreenInsert
 
 export function TransactionRecurringScreen({ id, kind }: TransactionRecurringScreenProps) {
@@ -59,7 +60,7 @@ export function TransactionRecurringScreen({ id, kind }: TransactionRecurringScr
               }}
             />
             <SelectRecurrenceButton
-              recurrenceSelected={data.frequency}
+              recurrenceSelected={data.recurrenceType}
               onSelected={(frequency) => {
                 setData(prev => ({
                   ...prev,

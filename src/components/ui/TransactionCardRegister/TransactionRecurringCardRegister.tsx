@@ -15,7 +15,7 @@ export function TransactionRecurringCardRegister({
     transactionInstrument,
     category,
     amountValue,
-    frequency
+    recurrenceType
   },
 }: TransactionRecurringCardRegisterProps) {
   const theme = useTheme()
@@ -23,7 +23,7 @@ export function TransactionRecurringCardRegister({
   const categoryIsEmpty = category.id === -1
   const descriptionIsEmpty = description.trim() === ""
   const transactionInstrumentIsEmpty = transactionInstrument.nickname.trim() === ""
-  const frequencyIsEmpty = frequency.trim() === ""
+  const recurrenceTypeIsEmpty = recurrenceType.id === -1
   const amountValueIsZero = Number(amountValue.replace(/\D/, "")) === 0
 
   return (
@@ -69,13 +69,13 @@ export function TransactionRecurringCardRegister({
             name={"refresh"}
             size={theme.fonts.titleLarge.fontSize}
             color={
-              frequencyIsEmpty
+              recurrenceTypeIsEmpty
                 ? theme.colors.tertiary
                 : theme.colors.onPrimaryContainer
             }
           />
-          <Text variant='titleLarge' style={[styles.isDisabledText, { color: frequencyIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-            {frequencyIsEmpty ? "..." : frequency}
+          <Text variant='titleLarge' style={[styles.isDisabledText, { color: recurrenceTypeIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
+            {recurrenceTypeIsEmpty ? "..." : recurrenceType.code}
           </Text>
         </View>
         <View style={[styles.isDisabledRow]}>

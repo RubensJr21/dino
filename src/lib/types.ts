@@ -25,9 +25,15 @@ export interface InstallmentScreenInsert extends TransactionScreenBaseInsert {
   installments: string
 }
 
+export interface RecurrenceType {
+  id: number;
+  code: string;
+}
+
 export interface RecurringScreenInsert extends TransactionScreenBaseInsert {
   startDate: Date;
-  frequency: string
+  endDate: Date | null;
+  recurrenceType: RecurrenceType
 }
 
 export type Kind = "payment" | "receipt"

@@ -1,14 +1,20 @@
 import Button from "@components/ui/Button";
 import { CustomModal } from "@components/ui/CustomModal";
+import { RecurrenceType } from "@lib/types";
 import { list_of_recurrence_type } from "@utils/factories/recurrence_type.factory";
 import React, { useEffect, useMemo, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 
+export const INITIAL_RECURRENCE_TYPE: RecurrenceType = {
+  id: -1,
+  code: ""
+}
+
 interface SelectRecurrenceButtonProps {
-  recurrenceSelected: string
-  onSelected: (recurrenceSelected: string) => void
+  recurrenceSelected: RecurrenceType
+  onSelected: (recurrenceSelected: RecurrenceType) => void
   style?: React.ComponentProps<typeof Button>["style"]
 }
 
@@ -23,7 +29,7 @@ export function SelectRecurrenceButton({ recurrenceSelected, onSelected, style }
     setOpen(false)
   }
 
-  const [selection, setSelection] = useState(recurrenceSelected ?? "")
+  const [selection, setSelection] = useState(recurrenceSelected ?? INITIAL_RECURRENCE_TYPE)
   useEffect(() => {
     onSelected(selection)
   }, [selection])
@@ -32,14 +38,14 @@ export function SelectRecurrenceButton({ recurrenceSelected, onSelected, style }
     Array.from(
       new Map(
         list_of_recurrence_type
-          .map(recurrence => [recurrence.type, recurrence])))
+          .map(recurrence => [recurrence.code, recurrence])))
       .sort(([typeA], [typeB]) => typeA.localeCompare(typeB))
   ), [])
 
   return (
     <>
       <Button style={style} onPress={show_modal}>
-        {selection === "" ? "Selecionar recorrência" : `Mudar recorrência`}
+        {selection.id === -1 ? "Selecionar recorrência" : `Mudar recorrência`}
       </Button>
       <CustomModal
         isOpen={open}
@@ -58,10 +64,10 @@ export function SelectRecurrenceButton({ recurrenceSelected, onSelected, style }
             backgroundColor: theme.colors.backdrop,
           }}
           keyExtractor={([desc, { id }]) => `${id}`}
-          renderItem={({ item: [desc] }) => (
+          renderItem={({ item: [desc, recurrence_type] }) => (
             <TouchableHighlight
               onPress={() => {
-                setSelection(desc)
+                setSelection(recurrence_type)
                 dismiss_modal()
               }}
               style={{
