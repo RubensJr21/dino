@@ -139,7 +139,6 @@ export function TransactionScreenBase<T extends TransactionScreenBaseInsert>({
               :
               null
           }
-
         </View>
       </ScrollView>
       <ButtonSubmit onSubmit={() => onSubmit(data)} />

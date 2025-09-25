@@ -22,16 +22,19 @@ export default function InstallmentView() {
     <InstallmentViewerBase
       id={5}
       dataCard={{
-        tagSelected: "Aleatório",
         description: "Minha descrição",
         startDate: new Date(),
-        bankSelected: "Banco Teste",
-        transferMethodSelected: {
-          id: 1,
-          label: "Método do Banco Teste"
-        },
         amountValue: "500,00",
-        installments: "5"
+        installments: "5",
+        category: {
+          id: 1,
+          code: "alimentação",
+        },
+        transactionInstrument: {
+          id: 1,
+          nickname: "Cartão Teste",
+          transfer_method_code: "banco-teste-cartaoteste"
+        }
       }}
     />
   );
