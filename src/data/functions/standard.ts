@@ -37,7 +37,7 @@ export async function get(
           END
         `.as("transaction_instrument_nickname"),
         bank_account_id: transactionInstrument.fk_id_bank_account,
-        
+
         transfer_method_code: transferMethod.code,
 
         item_value_id: standard.fk_id_item_value,
@@ -47,6 +47,7 @@ export async function get(
       })
       .from(standard)
       .innerJoin(baseTransactionType, eq(baseTransactionType.id, standard.id))
+      .innerJoin(category, eq(category.id, baseTransactionType.fk_id_category))
       .innerJoin(
         transactionInstrument,
         eq(
@@ -54,7 +55,7 @@ export async function get(
           baseTransactionType.fk_id_transaction_instrument
         )
       )
-      .innerJoin(category, eq(category.id, baseTransactionType.fk_id_category))
+      .innerJoin(bankAccount, eq(bankAccount.id, transactionInstrument.fk_id_bank_account))
       .innerJoin(
         transferMethod,
         eq(transferMethod.id, transactionInstrument.fk_id_transfer_method)
