@@ -53,6 +53,15 @@
       "@server/*": [
         "./server/*"
       ],
+      "@data_functions/*": [
+        "./data/functions/*"
+      ],
+      "@database/*": [
+        "./data/database/*"
+      ],
+      "@data/*": [
+        "./data/*"
+      ]
     }
   },
   "include": [

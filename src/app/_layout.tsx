@@ -1,4 +1,5 @@
 import { populate_database } from "@configs/start_configs";
+import { db, expoDb } from "@database/db-instance";
 import { CallToast } from "@lib/call-toast";
 import { MCIcons } from "@lib/icons.lib";
 import {
@@ -7,7 +8,6 @@ import {
   ThemeProvider as NavigationThemeProvider,
 } from "@react-navigation/native";
 import migrations from "@root-project/drizzle/migrations";
-import { db, expoDb } from "@server/infrastructure/database/drizzle/client";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { Tabs } from "expo-router";

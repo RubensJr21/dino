@@ -1,7 +1,7 @@
 
 // REVIEW: Na inicialização preciso:
 
-import { expoDb } from "@server/infrastructure/database/drizzle/client";
+import { expoDb } from "@database/db-instance";
 
 /**
  * 1. Tentar registrar

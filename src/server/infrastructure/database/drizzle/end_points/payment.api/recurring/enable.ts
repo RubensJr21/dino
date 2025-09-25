@@ -1,1 +1,0 @@
-// TODO: Implementar end point de habilitar pagamento recorrente

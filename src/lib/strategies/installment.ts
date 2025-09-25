@@ -1,5 +1,5 @@
-import InstallmentPaymentApi from "@server/api/payment/installment.api"
-import InstallmentReceiptApi from "@server/api/receipt/installment.api"
+import InstallmentPaymentApi from "data/api/payment/installment.api"
+import InstallmentReceiptApi from "data/api/receipt/installment.api"
 import { InstallmentScreenInsert, Kind } from "../types"
 
 // Parcelados
