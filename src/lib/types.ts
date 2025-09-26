@@ -36,12 +36,17 @@ export interface RecurringScreenInsert extends TransactionScreenBaseInsert {
   recurrenceType: RecurrenceType
 }
 
+// ======================
+// EDIT TYPES
+// ======================
+
 export interface TransactionScreenBaseEdit {
   description: string;
   category: Category;
 }
 
 export interface StandardScreenEdit extends TransactionScreenBaseEdit {
+  amountValue: string;
   scheduledAt: Date;
 }
 

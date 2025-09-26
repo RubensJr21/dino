@@ -1,4 +1,4 @@
-import { TransactionStandardScreen } from "@pages/TransactionScreenStandard";
+import { TransactionStandardScreen } from "@pages/TransactionScreenStandard/register";
 import { Redirect, useLocalSearchParams } from "expo-router";
 
 export default function StandardEdit() {

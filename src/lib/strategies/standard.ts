@@ -1,6 +1,7 @@
 import { find_standard } from "@data/playground/standard/find"
 import { insert_standard } from "@data/playground/standard/insert"
-import { getCashflowType, Kind, StandardScreenInsert } from "../types"
+import { update_standard } from "@data/playground/standard/update"
+import { getCashflowType, Kind, StandardScreenEdit, StandardScreenInsert } from "../types"
 
 export async function sharedInsert(data: StandardScreenInsert, kind: Kind) {
   return await insert_standard({
@@ -34,19 +35,30 @@ export async function sharedFetch(id: string): Promise<StandardScreenInsert | un
   }
 }
 
+export async function sharedUpdate(id: string, data: StandardScreenEdit, kind: Kind) {
+  return await update_standard(Number(id), {
+    description: data.description,
+    category: data.category.code,
+    amount: data.amountValue === undefined ? undefined : Number(data.amountValue)
+  })
+}
+
 export const standardStrategies: Record<
   Kind,
   {
     insert: (data: StandardScreenInsert) => Promise<number>
     fetchById: (id: string) => Promise<StandardScreenInsert | undefined>
+    update: (id: string, data: StandardScreenEdit) => Promise<undefined>
   }
 > = {
   payment: {
     insert: async (data) => await sharedInsert(data, "payment"),
-    fetchById: async (id) => await sharedFetch(id)
+    fetchById: async (id) => await sharedFetch(id),
+    update: async (id, data) => { }
   },
   receipt: {
     insert: async (data) => await sharedInsert(data, "receipt"),
-    fetchById: async (id) => await sharedFetch(id)
+    fetchById: async (id) => await sharedFetch(id),
+    update: async (id, data) => { }
   }
 }
