@@ -50,6 +50,10 @@ export interface StandardScreenEdit extends TransactionScreenBaseEdit {
   scheduledAt?: Date;
 }
 
+export interface RecurringScreenEdit extends TransactionScreenBaseEdit {
+  currentAmount?: string;
+}
+
 export type Kind = "payment" | "receipt"
 
 export function getCashflowType(kind: Kind): Cashflow_Type {

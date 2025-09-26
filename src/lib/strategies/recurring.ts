@@ -1,6 +1,7 @@
 import { find_recurring } from "@data/playground/recurring/find";
 import { insert_recurring } from "@data/playground/recurring/insert";
-import { getCashflowType, Kind, RecurringScreenInsert } from "../types";
+import { update_recurring } from "@data/playground/recurring/update";
+import { getCashflowType, Kind, RecurringScreenEdit, RecurringScreenInsert } from "../types";
 
 export async function sharedInsert(data: RecurringScreenInsert, kind: Kind) {
   return await insert_recurring({
@@ -40,19 +41,29 @@ export async function sharedFetch(id: string): Promise<RecurringScreenInsert | u
   }
 }
 
+export async function sharedUpdate(id: string, data: RecurringScreenEdit): Promise<undefined> {
+  await update_recurring(Number(id), {
+    description: data.description,
+    category: data.category?.code,
+  })
+}
+
 export const recurringStrategies: Record<
   Kind,
   {
     insert: (data: RecurringScreenInsert) => void
     fetchById: (id: string) => Promise<RecurringScreenInsert | undefined>
+    update: (id: string, data: RecurringScreenEdit) => Promise<undefined>
   }
 > = {
   payment: {
     insert: async (data) => sharedInsert(data, "payment"),
-    fetchById: async (id) => sharedFetch(id)
+    fetchById: async (id) => sharedFetch(id),
+    update: async (id, data) => await sharedUpdate(id, data)
   },
   receipt: {
     insert: async (data) => sharedInsert(data, "receipt"),
-    fetchById: async (id) => sharedFetch(id)
+    fetchById: async (id) => sharedFetch(id),
+    update: async (id, data) => await sharedUpdate(id, data)
   }
 }

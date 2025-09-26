@@ -201,5 +201,15 @@ export async function disable(
     .where(eq(recurring.id, data.id));
 }
 
+export async function update(
+  db: DatabaseType,
+  recurring_id: typeof recurring.$inferSelect.id,
+  data: {
+    current_amount?: typeof recurring.$inferSelect.current_amount;
+  }
+) {
+  await db.update(recurring).set(data).where(eq(recurring.id, recurring_id));
+}
+
 export type { DataInsert as infer_insert, DataSelect as infer_select };
 

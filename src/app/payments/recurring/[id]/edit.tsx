@@ -1,4 +1,4 @@
-import { TransactionRecurringScreen } from "@pages/TransactionScreenRecurring";
+import { TransactionRecurringEditScreen } from "@pages/TransactionScreenRecurring/edit";
 import { Redirect, useLocalSearchParams } from "expo-router";
 
 export default function RecurringEdit() {
@@ -9,5 +9,5 @@ export default function RecurringEdit() {
     return;
   }
 
-  return <TransactionRecurringScreen id={id} kind="payment" />
+  return <TransactionRecurringEditScreen id={id} kind="payment" />
 }
