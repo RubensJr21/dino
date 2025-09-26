@@ -1,5 +1,5 @@
-import { TransactionRecurringScreen } from "@pages/TransactionScreenRecurring";
+import { TransactionRecurringRegisterScreen } from "@pages/TransactionScreenRecurring/register";
 
 export default function RecurringRegister() {
-  return <TransactionRecurringScreen kind="payment" />
+  return <TransactionRecurringRegisterScreen kind="payment" />
 }
