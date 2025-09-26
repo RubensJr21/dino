@@ -36,6 +36,15 @@ export interface RecurringScreenInsert extends TransactionScreenBaseInsert {
   recurrenceType: RecurrenceType
 }
 
+export interface TransactionScreenBaseEdit {
+  description: string;
+  category: Category;
+}
+
+export interface StandardScreenEdit extends TransactionScreenBaseEdit {
+  scheduledAt: Date;
+}
+
 export type Kind = "payment" | "receipt"
 
 export function getCashflowType(kind: Kind): Cashflow_Type {
