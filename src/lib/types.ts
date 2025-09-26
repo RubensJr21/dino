@@ -54,6 +54,8 @@ export interface RecurringScreenEdit extends TransactionScreenBaseEdit {
   currentAmount?: string;
 }
 
+export type InstallmentScreenEdit = TransactionScreenBaseEdit
+
 export type Kind = "payment" | "receipt"
 
 export function getCashflowType(kind: Kind): Cashflow_Type {

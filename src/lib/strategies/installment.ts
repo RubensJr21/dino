@@ -1,6 +1,7 @@
 import { find_installment } from "@data/playground/installment/find";
 import { insert_installment } from "@data/playground/installment/insert";
-import { getCashflowType, InstallmentScreenInsert, Kind } from "../types";
+import { update_installment } from "@data/playground/installment/update";
+import { getCashflowType, InstallmentScreenEdit, InstallmentScreenInsert, Kind } from "../types";
 
 export async function sharedInsert(data: InstallmentScreenInsert, kind: Kind) {
   return await insert_installment({
@@ -36,20 +37,30 @@ export async function sharedFetch(id: string): Promise<InstallmentScreenInsert |
   }
 }
 
+export async function sharedUpdate(id: string, data: InstallmentScreenEdit): Promise<undefined> {
+  await update_installment(Number(id), {
+    description: data.description,
+    category: data.category?.code,
+  })
+}
+
 // Parcelados
 export const installmentStrategies: Record<
   Kind,
   {
     insert: (data: InstallmentScreenInsert) => void
     fetchById: (id: string) => Promise<InstallmentScreenInsert | undefined>
+    update: (id: string, data: InstallmentScreenEdit) => Promise<undefined>
   }
 > = {
   payment: {
     insert: async (data) => sharedInsert(data, "payment"),
-    fetchById: async (id) => sharedFetch(id)
+    fetchById: async (id) => sharedFetch(id),
+    update: async (id, data) => await sharedUpdate(id, data)
   },
   receipt: {
     insert: async (data) => sharedInsert(data, "receipt"),
-    fetchById: async (id) => sharedFetch(id)
+    fetchById: async (id) => sharedFetch(id),
+    update: async (id, data) => await sharedUpdate(id, data)
   }
 }

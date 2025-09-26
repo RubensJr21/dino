@@ -1,4 +1,4 @@
-import { TransactionInstallmentScreen } from "@pages/TransactionScreenInstallment";
+import { TransactionInstallmentEditScreen } from "@pages/TransactionScreenInstallment/edit";
 import { Redirect, useLocalSearchParams } from "expo-router";
 
 export default function InstallmentEdit() {
@@ -8,5 +8,5 @@ export default function InstallmentEdit() {
     return <Redirect href={"/payments/installment"} />;
   }
 
-  return <TransactionInstallmentScreen id={id} kind="payment" />
+  return <TransactionInstallmentEditScreen id={id} kind="payment" />
 }
