@@ -84,7 +84,7 @@ export async function update_standard(
         })
       } else {
         // Garanto porque verifiquei o transafer_method
-        const bank_account_id = standard_founded.bank_account_id!
+        const transaction_instrument_id = standard_founded.transaction_instrument_id
         await bup.change_amount_and_scheduled_at_from_balance_bank(db, {
           cashflow_type,
           new_data: {
@@ -95,7 +95,7 @@ export async function update_standard(
             amount: standard_founded.amount,
             scheduled_at: standard_founded.scheduled_at
           },
-          bank_account_id
+          transaction_instrument_id
         })
       }
     } else if (data.amount !== undefined) {
@@ -114,7 +114,7 @@ export async function update_standard(
         })
       } else {
         // Garanto porque verifiquei o transafer_method
-        const bank_account_id = standard_founded.bank_account_id!
+        const transaction_instrument_id = standard_founded.transaction_instrument_id
         await bup.change_amount_from_balance_bank(db, {
           cashflow_type,
           scheduled_at,
@@ -124,7 +124,7 @@ export async function update_standard(
           old_data: {
             amount: standard_founded.amount,
           },
-          bank_account_id
+          transaction_instrument_id
         })
       }
     } else if (data.scheduled_at !== undefined) {
@@ -143,7 +143,7 @@ export async function update_standard(
         })
       } else {
         // Garanto porque verifiquei o transafer_method
-        const bank_account_id = standard_founded.bank_account_id!
+        const transaction_instrument_id = standard_founded.transaction_instrument_id
         await bup.change_scheduled_at_from_balance_bank(db, {
           cashflow_type,
           amount,
@@ -153,7 +153,7 @@ export async function update_standard(
           old_data: {
             scheduled_at: standard_founded.scheduled_at
           },
-          bank_account_id
+          transaction_instrument_id
         })
       }
     }

@@ -27,7 +27,7 @@ type BaseData = {
 
 type CashData = BaseData;
 type BankData = BaseData & {
-  bank_account_id: typeof transactionInstrument.$inferSelect.id;
+  transaction_instrument_id: typeof transactionInstrument.$inferSelect.id;
 };
 
 export async function balance_bank_update_pipeline(
@@ -40,7 +40,7 @@ export async function balance_bank_update_pipeline(
   const realAmount = getRealAmountValue(data.cashflow_type, amount, removing);
 
   // Garanto que existe, pois ele não é do tipo 'cash'
-  const bank_id = await ti.get_bank_id(db, data.bank_account_id);
+  const bank_id = await ti.get_bank_id(db, data.transaction_instrument_id);
 
   if (bank_id === null) {
     throw new Error(`Erro ao obter o valor de bank_id (${bank_id})`);
@@ -145,7 +145,7 @@ interface changeAmountAndScheduledAtBalanceBankParams {
 
   new_data: changeAmountAndScheduledAtBalanceBankParams["old_data"]
 
-  bank_account_id: ti.infer_select["id"]
+  transaction_instrument_id: ti.infer_select["id"]
 }
 export async function change_amount_and_scheduled_at_from_balance_bank(
   db: DatabaseType,
@@ -153,7 +153,7 @@ export async function change_amount_and_scheduled_at_from_balance_bank(
     cashflow_type,
     old_data,
     new_data,
-    bank_account_id
+    transaction_instrument_id
   }: changeAmountAndScheduledAtBalanceBankParams
 ) {
   const oldMonth = old_data.scheduled_at.getMonth()
@@ -171,7 +171,7 @@ export async function change_amount_and_scheduled_at_from_balance_bank(
     year: oldYear,
     cashflow_type,
     amount: oldAmount,
-    bank_account_id
+    transaction_instrument_id
   }, true)
   // Adiciona o atualizado
   await balance_bank_update_pipeline(db, {
@@ -179,7 +179,7 @@ export async function change_amount_and_scheduled_at_from_balance_bank(
     year: newYear,
     cashflow_type,
     amount: newAmount,
-    bank_account_id
+    transaction_instrument_id
   }, false)
 }
 
@@ -238,7 +238,7 @@ interface changeAmountBalanceBankParams {
 
   new_data: changeAmountBalanceBankParams["old_data"]
 
-  bank_account_id: ti.infer_select["id"]
+  transaction_instrument_id: ti.infer_select["id"]
 }
 
 export async function change_amount_from_balance_bank(
@@ -248,7 +248,7 @@ export async function change_amount_from_balance_bank(
     scheduled_at,
     old_data,
     new_data,
-    bank_account_id
+    transaction_instrument_id
   }: changeAmountBalanceBankParams
 ) {
   const month = scheduled_at.getMonth()
@@ -264,7 +264,7 @@ export async function change_amount_from_balance_bank(
     year: year,
     cashflow_type,
     amount: oldAmount,
-    bank_account_id
+    transaction_instrument_id
   }, true)
   // Adiciona o atualizado
   await balance_bank_update_pipeline(db, {
@@ -272,7 +272,7 @@ export async function change_amount_from_balance_bank(
     year: year,
     cashflow_type,
     amount: newAmount,
-    bank_account_id
+    transaction_instrument_id
   }, false)
 }
 
@@ -331,7 +331,7 @@ interface changeScheduledAtBalanceBankParams {
 
   new_data: changeScheduledAtBalanceBankParams["old_data"]
 
-  bank_account_id: ti.infer_select["id"]
+  transaction_instrument_id: ti.infer_select["id"]
 }
 export async function change_scheduled_at_from_balance_bank(
   db: DatabaseType,
@@ -340,7 +340,7 @@ export async function change_scheduled_at_from_balance_bank(
     amount,
     old_data,
     new_data,
-    bank_account_id
+    transaction_instrument_id
   }: changeScheduledAtBalanceBankParams
 ) {
   const oldMonth = old_data.scheduled_at.getMonth()
@@ -356,7 +356,7 @@ export async function change_scheduled_at_from_balance_bank(
     year: oldYear,
     cashflow_type,
     amount,
-    bank_account_id
+    transaction_instrument_id
   }, true)
   // Adiciona o atualizado
   await balance_bank_update_pipeline(db, {
@@ -364,6 +364,6 @@ export async function change_scheduled_at_from_balance_bank(
     year: newYear,
     cashflow_type,
     amount,
-    bank_account_id
+    transaction_instrument_id
   }, false)
 }
