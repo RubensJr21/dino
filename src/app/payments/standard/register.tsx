@@ -1,5 +1,5 @@
-import { TransactionStandardScreen } from "@pages/TransactionScreenStandard/register";
+import { TransactionStandardRegisterScreen } from "@pages/TransactionScreenStandard/register";
 
 export default function StandardRegister() {
-  return <TransactionStandardScreen kind="payment" />
+  return <TransactionStandardRegisterScreen kind="payment" />
 }

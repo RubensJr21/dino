@@ -19,11 +19,12 @@ type Props = {
 
 export function TransactionStandardEditScreen({ id, kind }: Props) {
   const [data, setData] = useState<StandardScreenInsert>()
+  const [lastData, setLastData] = useState<StandardScreenInsert>()
 
   useEffect(() => {
     standardStrategies[kind].fetchById(id).then((fetchData) => {
       if (fetchData !== undefined) {
-        setData({
+        const data = {
           amountValue: fetchData.amountValue.toString(),
           transactionInstrument: {
             id: fetchData.transactionInstrument.id,
@@ -36,14 +37,16 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
           },
           description: fetchData.description,
           scheduledAt: new Date(fetchData.scheduledAt)
-        })
+        }
+        setData(data)
+        setLastData(data)
       } else {
         Alert.alert("Erro", "ID inválido fornecido para edição.");
       }
     })
   }, [id])
 
-  if (data === undefined) {
+  if (data === undefined || lastData === undefined) {
     // Quer dizer que o conteúdo ainda não foi inicializado ou carregado
     return null;
   }
@@ -104,7 +107,12 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
           />
         </ControlsView>
       </ScrollView>
-      <ButtonSubmit onSubmit={() => standardStrategies[kind].update(id, data)} />
+      <ButtonSubmit onSubmit={() => standardStrategies[kind].update(id, {
+        amountValue: lastData.amountValue === data.amountValue ? undefined : data.amountValue,
+        category: lastData.category.id === data.category.id ? undefined : data.category,
+        description: lastData.description === data.description ? undefined : data.description,
+        scheduledAt: lastData.scheduledAt === data.scheduledAt ? undefined : data.scheduledAt
+      })} />
     </BasePage>
   )
 }

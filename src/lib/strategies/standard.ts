@@ -38,7 +38,7 @@ export async function sharedFetch(id: string): Promise<StandardScreenInsert | un
 export async function sharedUpdate(id: string, data: StandardScreenEdit, kind: Kind) {
   return await update_standard(Number(id), {
     description: data.description,
-    category: data.category.code,
+    category: data.category?.code,
     amount: data.amountValue === undefined ? undefined : Number(data.amountValue)
   })
 }

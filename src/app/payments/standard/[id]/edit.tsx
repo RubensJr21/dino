@@ -1,4 +1,4 @@
-import { TransactionStandardScreen } from "@pages/TransactionScreenStandard/register";
+import { TransactionStandardEditScreen } from "@pages/TransactionScreenStandard/edit";
 import { Redirect, useLocalSearchParams } from "expo-router";
 
 export default function StandardEdit() {
@@ -9,5 +9,5 @@ export default function StandardEdit() {
     return;
   }
 
-  return <TransactionStandardScreen id={id} kind="payment" />
+  return <TransactionStandardEditScreen id={id} kind="payment" />
 }

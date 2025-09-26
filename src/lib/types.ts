@@ -41,13 +41,13 @@ export interface RecurringScreenInsert extends TransactionScreenBaseInsert {
 // ======================
 
 export interface TransactionScreenBaseEdit {
-  description: string;
-  category: Category;
+  description?: string;
+  category?: Category;
 }
 
 export interface StandardScreenEdit extends TransactionScreenBaseEdit {
-  amountValue: string;
-  scheduledAt: Date;
+  amountValue?: string;
+  scheduledAt?: Date;
 }
 
 export type Kind = "payment" | "receipt"
