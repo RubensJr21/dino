@@ -7,9 +7,11 @@ import { TextInput } from "react-native-paper";
 interface Props {
   amountValue: string;
   onChangeAmount: (amountText: string) => void;
+  label?: string;
+  placeholder?: string
 }
 
-export function AmountInput({ amountValue, onChangeAmount }: Props) {
+export function AmountInput({ amountValue, onChangeAmount, label = "Valor", placeholder = "Digite um valor..." }: Props) {
   const handleTextCurrencyInput = useCallback((value: string) => {
     const valueFormatted = formatCurrencyString(value)
 
@@ -19,9 +21,9 @@ export function AmountInput({ amountValue, onChangeAmount }: Props) {
   return (
     <TextInput
       dense
-      label="Valor"
+      label={label}
       mode="outlined"
-      placeholder="Valor"
+      placeholder={placeholder}
       keyboardType="numeric"
       value={amountValue}
       style={{ marginVertical: 0, writingDirection: "rtl" }}
