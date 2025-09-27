@@ -1,8 +1,8 @@
 import Button from "@components/ui/Button";
 import { CustomModal } from "@components/ui/CustomModal";
 import ScrollView from "@components/ui/ScrollView";
-import * as ti_fns from "@data/playground/transaction_instrument";
-import { TransactionInstrumentEntity } from "@lib/types";
+import * as tm_fns from "@data/playground/transfer_method";
+import { TransferMethodEntity } from "@lib/types";
 import React, { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -17,10 +17,10 @@ interface SelectMultiTransferMethodButtonProps {
 export function SelectMultiTransferMethodButton({ transferMethodsSelected, onSelected, style }: SelectMultiTransferMethodButtonProps) {
   const theme = useTheme();
 
-  const [data, setData] = useState<TransactionInstrumentEntity[]>([])
+  const [data, setData] = useState<TransferMethodEntity[]>([])
 
   useEffect(() => {
-    ti_fns.find_all().then(recurrence_types => setData(recurrence_types))
+    tm_fns.find_all_without_code("cash").then(transfer_methods => setData(transfer_methods))
   }, [])
 
   const [open, setOpen] = useState(false)
@@ -79,24 +79,24 @@ export function SelectMultiTransferMethodButton({ transferMethodsSelected, onSel
             <TouchableHighlight
               onPress={() => {
                 setSelection(prev => {
-                  if (prev.indexOf(method.nickname) !== -1) {
-                    return prev.filter(item => item !== method.nickname)
+                  if (prev.indexOf(method.code) !== -1) {
+                    return prev.filter(item => item !== method.code)
                   }
                   return [
                     ...prev,
-                    method.nickname
+                    method.code
                   ]
                 })
               }}
               style={{
-                backgroundColor: selection.indexOf(method.nickname) !== -1 ? theme.colors.inversePrimary : theme.colors.outlineVariant,
+                backgroundColor: selection.indexOf(method.code) !== -1 ? theme.colors.inversePrimary : theme.colors.outlineVariant,
                 borderRadius: theme.roundness,
                 paddingHorizontal: 8,
                 paddingVertical: 16
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{method.nickname}</Text>
+              <Text>{method.code}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}
