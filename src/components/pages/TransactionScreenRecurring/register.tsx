@@ -100,7 +100,7 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
   }, [])
 
   const toShowTransactionInstrument = useMemo(() => {
-    return data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code
+    return (data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code)
   }, [data.transactionInstrument])
 
   const handleSubmit = async () => {

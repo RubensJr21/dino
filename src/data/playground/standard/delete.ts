@@ -102,10 +102,3 @@ export const delete_standard = async (
 		throw error;
 	}
 };
-
-async function main() {
-	const standard_id_for_delete = 1;
-	delete_standard(standard_id_for_delete);
-}
-
-main();

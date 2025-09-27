@@ -120,10 +120,3 @@ export const delete_recurring = async (recurring_id: typeof recurring.$inferSele
 		throw error;
 	}
 };
-
-async function main() {
-	const recurring_id_for_delete = 1;
-	delete_recurring(recurring_id_for_delete);
-}
-
-main();

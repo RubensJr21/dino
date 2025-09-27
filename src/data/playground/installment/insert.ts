@@ -125,7 +125,6 @@ async function main() {
 	const transfer_methods = await tm.get_all(db);
 	const indexTM = randomIndex(transfer_methods.length); // Adicionar lógica interativa
 	const method_choose = transfer_methods[indexTM];
-	console.log({ transfer_methods, indexTM, method_choose });
 
 	// ESCOLHENDO TRANSACTION_INSTRUMENT
 	const transaction_instruments = await ti.get_all_filtered_by_transfer_method(
@@ -134,23 +133,16 @@ async function main() {
 	);
 	const indexTI = randomIndex(transaction_instruments.length); // Adicionar lógica interativa
 	const selected_transaction_instrument = transaction_instruments[indexTI];
-	console.log({
-		transaction_instruments,
-		indexTI,
-		selected_transaction_instrument,
-	});
 
 	// ESCOLHENDO CATEGORY
 	const categories = await cat.get_all(db);
 	const indexC = randomIndex(categories.length); // Adicionar lógica interativa
 	const selected_category = categories[indexC];
-	console.log({ categories, indexC, selected_category });
 
 	// ESCOLHENDO RECURRENCE_TYPE
 	const recurrence_types = await rt.get_all(db);
 	const indexRT = randomIndex(recurrence_types.length); // Adicionar lógica interativa
 	const selected_recurrence_type = recurrence_types[indexRT];
-	console.log({ recurrence_types, indexRT, selected_recurrence_type });
 
 	const description = "Minha descrição de teste"; // Adicionar lógica interativa
 	const cashflow_type = drawCashflowType(); // Adicionar lógica interativa
@@ -172,5 +164,3 @@ async function main() {
 		installments_number,
 	});
 }
-
-main();

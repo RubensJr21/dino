@@ -90,7 +90,7 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
   }, [setData])
 
   const toShowTransactionInstrument = useMemo(() => {
-    return data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code
+    return (data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code)
   }, [data.transactionInstrument])
 
   return (

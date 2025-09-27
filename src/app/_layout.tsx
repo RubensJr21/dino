@@ -23,7 +23,6 @@ registerTranslation('pt', pt)
 export default function Layout() {
   const { success, error } = useMigrations(db, migrations);
   const [started, setStarted] = useState<boolean>(false)
-  useDrizzleStudio(expoDb);
 
   // verifyInstallation();
 
@@ -44,6 +43,8 @@ export default function Layout() {
         })
     }
   }, [success])
+
+  useDrizzleStudio(expoDb);
 
   if (error) {
     return (

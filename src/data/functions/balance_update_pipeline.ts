@@ -46,8 +46,6 @@ export async function balance_bank_update_pipeline(
     throw new Error(`Erro ao obter o valor de bank_id (${bank_id})`);
   }
 
-  console.log("bank_id:", bank_id);
-
   const balance_bank = await bb.get_balance(db, {
     month,
     year,

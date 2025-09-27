@@ -122,10 +122,3 @@ export const delete_recurring = async (
 		throw error;
 	}
 };
-
-async function main() {
-	const installment_id_for_delete = 1;
-	delete_recurring(installment_id_for_delete);
-}
-
-main();
