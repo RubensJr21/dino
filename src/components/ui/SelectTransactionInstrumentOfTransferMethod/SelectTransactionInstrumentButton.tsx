@@ -3,7 +3,7 @@ import { CustomModal } from "@components/ui/CustomModal";
 import * as ti_fns from "@data/playground/transaction_instrument";
 import { TransactionInstrument, TransactionInstrumentEntity } from "@lib/types";
 import { useUpdateEffect } from "@utils/useUpdateEffect";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
@@ -14,7 +14,6 @@ interface SelectTransactionInstrumentButtonProps {
   transferMethod: TransactionInstrument["transfer_method_code"];
   transactionInstrumentSelected: TransactionInstrument;
   onSelected: onSelectedType;
-  isOpen?: boolean;
   style?: React.ComponentProps<typeof Button>["style"];
 }
 
@@ -24,10 +23,14 @@ export const INITIAL_TRANSACTION_INSTRUMENT: TransactionInstrument = {
   transfer_method_code: ""
 }
 
-export function SelectTransactionInstrumentButton({ transferMethod, transactionInstrumentSelected, onSelected, isOpen, style }: SelectTransactionInstrumentButtonProps) {
+export function SelectTransactionInstrumentButton({ transferMethod, transactionInstrumentSelected, onSelected, style }: SelectTransactionInstrumentButtonProps) {
   const theme = useTheme();
 
   const [data, setData] = useState<TransactionInstrumentEntity[]>()
+
+  const isDisabled = useMemo(() => {
+    return transferMethod === "cash"
+  }, [transferMethod])
 
   useEffect(() => {
     ti_fns
@@ -35,7 +38,8 @@ export function SelectTransactionInstrumentButton({ transferMethod, transactionI
       .then(recurrence_types => setData(recurrence_types))
   }, [transferMethod])
 
-  const [open, setOpen] = useState(isOpen ?? false)
+  // Abri quando nenhum transaction_instrument tiver sido selecionado
+  const [open, setOpen] = useState(transactionInstrumentSelected.nickname === INITIAL_TRANSACTION_INSTRUMENT.nickname)
   const [selection, setSelection] = useState<TransactionInstrument>(transactionInstrumentSelected)
 
   const show_modal = () => {
@@ -56,7 +60,7 @@ export function SelectTransactionInstrumentButton({ transferMethod, transactionI
 
   return (
     <>
-      <Button style={style} onPress={() => show_modal()}>
+      <Button style={style} onPress={() => show_modal()} disabled={isDisabled}>
         {selection.nickname === "" ? "Selecionar método de transferência" : `Mudar método de transferência`}
       </Button>
       <CustomModal

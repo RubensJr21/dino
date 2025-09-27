@@ -8,6 +8,7 @@ import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton";
 import { SelectTransferMethodButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransferMethodButton";
 import { TransactionStandardCardRegister } from "@components/ui/TransactionCardRegister/TransactionStandardCardRegister";
+import * as ti_fns from "@data/playground/transaction_instrument";
 import { standardStrategies } from "@lib/strategies";
 import { Category, Kind, StandardScreenInsert, TransactionInstrument } from "@lib/types";
 import { useCallback, useMemo, useState } from "react";
@@ -66,13 +67,33 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
     })
   }, [setData])
 
-  const onConfirmTransferMethod = useCallback((transferMethodCode: string) => {
+  const onConfirmTransferMethod = useCallback(async (transferMethodCode: string) => {
+    if (transferMethodCode === "cash") {
+      ti_fns.get_transaction_instrument_cash().then(list => {
+        const transaction_instrument_cash = list.shift()
+        if (transaction_instrument_cash === undefined) {
+          throw new Error("Erro ao obter transaction_instrument_cash")
+        }
+        setData(prev => {
+          if (prev === undefined) return prev
+          return {
+            ...prev,
+            transactionInstrument: {
+              id: transaction_instrument_cash.id,
+              nickname: transaction_instrument_cash.nickname,
+              transfer_method_code: transferMethodCode
+            }
+          }
+        })
+      })
+      return;
+    }
     setData(prev => {
       if (prev === undefined) return prev
       return {
         ...prev,
         transactionInstrument: {
-          ...prev.transactionInstrument,
+          ...INITIAL_TRANSACTION_INSTRUMENT,
           transfer_method_code: transferMethodCode
         }
       }
@@ -90,8 +111,15 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
   }, [setData])
 
   const toShowTransactionInstrument = useMemo(() => {
-    return (data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code)
+    return (
+      data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code
+    )
   }, [data.transactionInstrument])
+
+
+  const handleSubmit = () => {
+    standardStrategies[kind].insert(data)
+  }
 
   return (
     <BasePage style={styles.page}>
@@ -117,14 +145,12 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
               transferMethod={data.transactionInstrument.transfer_method_code}
               transactionInstrumentSelected={data.transactionInstrument}
               onSelected={onConfirmTransactionInstrument}
-              // Está abrindo pela primeira vez
-              isOpen={data.transactionInstrument.nickname.length === 0}
             />
             :
             null
         }
       </ScrollView>
-      <ButtonSubmit onSubmit={() => standardStrategies[kind].insert(data)} />
+      <ButtonSubmit onSubmit={handleSubmit} />
     </BasePage>
   )
 }

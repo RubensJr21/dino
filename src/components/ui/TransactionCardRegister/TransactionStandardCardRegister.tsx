@@ -21,6 +21,7 @@ export function TransactionStandardCardRegister({
 
   const categoryIsEmpty = category.id === -1
   const descriptionIsEmpty = description.trim() === ""
+  const transferMethodIsEmpty = transactionInstrument.transfer_method_code === ""
   const transactionInstrumentIsEmpty = transactionInstrument.id === -1
   const amountValueIsZero = Number(amountValue.replace(/\D/, "")) === 0
 
@@ -48,8 +49,11 @@ export function TransactionStandardCardRegister({
         subtitleVariant='bodySmall'
       />
       <Card.Content>
+        <Text variant='titleSmall' style={[styles.transactionInstrument, { color: transferMethodIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
+          {transferMethodIsEmpty ? "Selecione um método de transferência..." : transactionInstrument.transfer_method_code}
+        </Text>
         <Text variant='titleSmall' style={[styles.transactionInstrument, { color: transactionInstrumentIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {transactionInstrumentIsEmpty ? "Selecione um método de transferência..." : transactionInstrument.nickname}
+          {transactionInstrumentIsEmpty ? "Selecione um instrumento de transferência..." : transactionInstrument.nickname}
         </Text>
         <Text variant='headlineSmall' style={[styles.currencyValue, { color: amountValueIsZero ? theme.colors.outline : theme.colors.onSurface }]}>
           {amountValue}

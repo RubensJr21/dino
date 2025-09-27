@@ -85,7 +85,7 @@ export async function populate_database() {
     populate_table("recurrence_type", recurrence_types_available);
     populate_table("transfer_method", transfer_methods_available);
     // populate_table("transaction_instrument", {})
-    expoDb.runSync("INSERT OR IGNORE INTO transaction_instrument (fk_id_transfer_method) VALUES (1)")
+    expoDb.runSync("INSERT OR IGNORE INTO transaction_instrument (id, fk_id_transfer_method) VALUES (1,1)")
 
   } catch (error) {
     console.error(error)

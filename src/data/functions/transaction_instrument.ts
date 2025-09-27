@@ -92,6 +92,30 @@ export async function get_all_enable_filtered_by_transfer_method(
     );
 }
 
+export async function get_all_used_transfer_methods(db: DatabaseType) {
+  return await db
+    .selectDistinct({
+      id: transferMethod.id,
+      code: transferMethod.code
+    })
+    .from(transactionInstrument)
+    .innerJoin(transferMethod, eq(transactionInstrument.fk_id_transfer_method, transferMethod.id))
+}
+
+export async function get_transaction_instrument_cash(db: DatabaseType) {
+  return await db
+    .select({
+      id: transactionInstrument.id,
+      nickname: transferMethod.code,
+    })
+    .from(transactionInstrument)
+    .innerJoin(
+      transferMethod,
+      eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)
+    )
+    .where(eq(transferMethod.code, "cash"));
+}
+
 export async function get_bank_id(
   db: DatabaseType,
   transaction_instrument_id: typeof transactionInstrument.$inferSelect.id

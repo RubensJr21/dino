@@ -22,7 +22,8 @@ export function TransactionRecurringCardRegister({
 
   const categoryIsEmpty = category.id === -1
   const descriptionIsEmpty = description.trim() === ""
-  const transactionInstrumentIsEmpty = transactionInstrument.nickname.trim() === ""
+  const transferMethodIsEmpty = transactionInstrument.transfer_method_code === ""
+  const transactionInstrumentIsEmpty = transactionInstrument.id === -1
   const recurrenceTypeIsEmpty = recurrenceType.id === -1
   const amountValueIsZero = Number(amountValue.replace(/\D/, "")) === 0
 
@@ -50,8 +51,11 @@ export function TransactionRecurringCardRegister({
         subtitleVariant='bodySmall'
       />
       <Card.Content>
-        <Text variant='titleSmall' style={[styles.method, { color: transactionInstrumentIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {transactionInstrumentIsEmpty ? "Selecione um método de transferência..." : transactionInstrument.nickname}
+        <Text variant='titleSmall' style={[styles.transactionInstrument, { color: transferMethodIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
+          {transferMethodIsEmpty ? "Selecione um método de transferência..." : transactionInstrument.transfer_method_code}
+        </Text>
+        <Text variant='titleSmall' style={[styles.transactionInstrument, { color: transactionInstrumentIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
+          {transactionInstrumentIsEmpty ? "Selecione um instrumento de transferência..." : transactionInstrument.nickname}
         </Text>
         <View style={{
           flexDirection: "row",
@@ -107,6 +111,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
   },
+  transactionInstrument: {
+    fontWeight: "bold",
+  },
   description: {
     fontWeight: "bold",
   },
@@ -125,7 +132,7 @@ const styles = StyleSheet.create({
   },
   isDisabledText: {
     marginRight: 4,
-    textTransform: 'capitalize', 
+    textTransform: 'capitalize',
   },
   currencyValue: {
     fontWeight: "bold",

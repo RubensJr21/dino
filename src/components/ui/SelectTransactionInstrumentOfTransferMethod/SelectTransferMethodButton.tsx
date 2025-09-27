@@ -1,7 +1,7 @@
 import Button from "@components/ui/Button";
 import { CustomModal } from "@components/ui/CustomModal";
 import { INITIAL_TRANSACTION_INSTRUMENT } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton";
-import * as tm_fns from "@data/playground/transfer_method";
+import * as ti_fns from "@data/playground/transaction_instrument";
 import { TransferMethodEntity } from "@lib/types";
 import React, { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native";
@@ -20,7 +20,7 @@ export function SelectTransferMethodButton({ transferMethodCode, onSelected, sty
   const [data, setData] = useState<TransferMethodEntity[]>()
 
   useEffect(() => {
-    tm_fns.find_all().then(transfers_method => setData(transfers_method))
+    ti_fns.find_all_used_transfer_methods().then(transfers_method => setData(transfers_method))
   }, [])
 
   const [open, setOpen] = useState(false)

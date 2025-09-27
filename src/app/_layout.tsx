@@ -1,5 +1,5 @@
 import { populate_database } from "@configs/start_configs";
-import { db, expoDb } from "@database/db-instance";
+import { db } from "@database/db-instance";
 import { CallToast } from "@lib/call-toast";
 import { MCIcons } from "@lib/icons.lib";
 import {
@@ -23,6 +23,7 @@ registerTranslation('pt', pt)
 export default function Layout() {
   const { success, error } = useMigrations(db, migrations);
   const [started, setStarted] = useState<boolean>(false)
+  useDrizzleStudio(db.$client);
 
   // verifyInstallation();
 
@@ -43,8 +44,6 @@ export default function Layout() {
         })
     }
   }, [success])
-
-  useDrizzleStudio(expoDb);
 
   if (error) {
     return (
