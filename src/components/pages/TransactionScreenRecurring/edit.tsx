@@ -1,15 +1,14 @@
 import BasePage from "@components/ui/BasePage";
 import { ButtonSubmit } from "@components/ui/ButtonSubmit";
 import { AmountInput } from "@components/ui/ScreenBase/AmountInput";
-import { ControlsView } from "@components/ui/ScreenBase/ControlsView";
 import { DescriptionInput } from "@components/ui/ScreenBase/DescriptionInput";
 import ScrollView from "@components/ui/ScrollView";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_RECURRENCE_TYPE } from "@components/ui/SelectRecurrenceButton";
 import { TransactionRecurringCardRegister } from "@components/ui/TransactionCardRegister/TransactionRecurringCardRegister";
 import { recurringStrategies } from "@lib/strategies";
-import { Kind, RecurringScreenInsert } from "@lib/types";
-import { initialDataBase } from "@pages/TransactionScreenBase";
+import { Category, Kind, RecurringScreenInsert } from "@lib/types";
+import { initialDataBase } from "@pages/TransactionScreenDefaultData";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
 
@@ -81,12 +80,12 @@ export function TransactionRecurringEditScreen({ id, kind }: TransactionRecurrin
     })
   }, [setData])
 
-  const onConfirmCategory = useCallback((categoryId: number) => {
+  const onConfirmCategory = useCallback((category: Category) => {
     setData(prev => {
       if (prev === undefined) return prev
       return {
         ...prev,
-        categoryId,
+        category,
       }
     })
   }, [setData])
@@ -98,13 +97,10 @@ export function TransactionRecurringEditScreen({ id, kind }: TransactionRecurrin
         <DescriptionInput description={data.description} onChangeText={onChangeDescription} />
         <AmountInput amountValue={data.amountValue} onChangeAmount={onChangeAmount} />
 
-        <ControlsView>
-          <SelectCategoryButton
-            style={styles.controls_item}
-            categoryId={data.category.id}
-            onSelected={onConfirmCategory}
-          />
-        </ControlsView>
+        <SelectCategoryButton
+          category={data.category}
+          onSelected={onConfirmCategory}
+        />
       </ScrollView>
       <ButtonSubmit onSubmit={() => recurringStrategies[kind].update(id, {
         category: lastData.category.id === data.category.id ? undefined : data.category,
@@ -118,9 +114,5 @@ export function TransactionRecurringEditScreen({ id, kind }: TransactionRecurrin
 const styles = StyleSheet.create({
   page: {
     rowGap: 0
-  },
-  controls_item: {
-    flexGrow: 1,          // ocupa o máximo possível
-    flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
   }
 })

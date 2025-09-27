@@ -1,8 +1,9 @@
 import Button from "@components/ui/Button";
 import { CustomModal } from "@components/ui/CustomModal";
-import { TransactionInstrument } from "@lib/types";
+import * as ti_fns from "@data/playground/transaction_instrument";
+import { TransactionInstrument, TransactionInstrumentEntity } from "@lib/types";
 import { useUpdateEffect } from "@utils/useUpdateEffect";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
@@ -26,9 +27,16 @@ export const INITIAL_TRANSACTION_INSTRUMENT: TransactionInstrument = {
 export function SelectTransactionInstrumentButton({ transferMethod, transactionInstrumentSelected, onSelected, isOpen, style }: SelectTransactionInstrumentButtonProps) {
   const theme = useTheme();
 
+  const [data, setData] = useState<TransactionInstrumentEntity[]>()
+
+  useEffect(() => {
+    ti_fns
+      .find_all_enable_for_transfer_method(transferMethod)
+      .then(recurrence_types => setData(recurrence_types))
+  }, [transferMethod])
+
   const [open, setOpen] = useState(isOpen ?? false)
   const [selection, setSelection] = useState<TransactionInstrument>(transactionInstrumentSelected)
-
 
   const show_modal = () => {
     setOpen(true)
@@ -45,20 +53,6 @@ export function SelectTransactionInstrumentButton({ transferMethod, transactionI
     setSelection(INITIAL_TRANSACTION_INSTRUMENT)
     show_modal()
   }, [transferMethod])
-
-  // Simula função de chamada a api
-  const data = useMemo<TransactionInstrument[]>(() => (
-    [
-      { id: 1, nickname: `TransactionInstrument 1`, transfer_method_code: transferMethod.toString() },
-      { id: 2, nickname: `TransactionInstrument 2`, transfer_method_code: transferMethod.toString() },
-      { id: 3, nickname: `TransactionInstrument 3`, transfer_method_code: transferMethod.toString() },
-      { id: 4, nickname: `TransactionInstrument 4`, transfer_method_code: transferMethod.toString() },
-      { id: 5, nickname: `TransactionInstrument 5`, transfer_method_code: transferMethod.toString() },
-      { id: 6, nickname: `TransactionInstrument 6`, transfer_method_code: transferMethod.toString() },
-      { id: 7, nickname: `TransactionInstrument 7`, transfer_method_code: transferMethod.toString() },
-      { id: 8, nickname: `TransactionInstrument 8`, transfer_method_code: transferMethod.toString() },
-    ]
-  ), [transferMethod])
 
   return (
     <>

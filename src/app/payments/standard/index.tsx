@@ -1,14 +1,13 @@
 import StandardHomeBase from "@components/pages/HomeScreenBase/StandardHomeBase";
-import { Standard } from "@domain/entities/standard.entity";
+import { StandardEntity } from "@lib/types";
 import { useIsFocused } from "@react-navigation/native";
-import { list_of_standards } from "@utils/factories/standard.factory";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 
 // ALERT: Colocar aqui dados fictícios. Gerar com o chat GPT
 
 export default function StandardHome() {
-  const [data, setData] = useState<Standard[]>([])
+  const [data, setData] = useState<StandardEntity[]>([])
   const isFocused = useIsFocused()
 
   const route = useRouter()
@@ -16,7 +15,7 @@ export default function StandardHome() {
   useEffect(() => {
     if (isFocused === false) return;
     // Lógica para recuperar os dados. Usar CallToast para alertar!
-    setData(list_of_standards)
+    setData([])
   }, [isFocused])
 
   const goToRegister = () => {

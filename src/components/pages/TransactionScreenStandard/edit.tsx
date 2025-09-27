@@ -1,14 +1,13 @@
 import BasePage from "@components/ui/BasePage";
 import { ButtonSubmit } from "@components/ui/ButtonSubmit";
 import { AmountInput } from "@components/ui/ScreenBase/AmountInput";
-import { ControlsView } from "@components/ui/ScreenBase/ControlsView";
 import { DatePicker } from "@components/ui/ScreenBase/DatePicker";
 import { DescriptionInput } from "@components/ui/ScreenBase/DescriptionInput";
 import ScrollView from "@components/ui/ScrollView";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { TransactionStandardCardRegister } from "@components/ui/TransactionCardRegister/TransactionStandardCardRegister";
 import { standardStrategies } from "@lib/strategies";
-import { Kind, StandardScreenInsert } from "@lib/types";
+import { Category, Kind, StandardScreenInsert } from "@lib/types";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
 
@@ -81,12 +80,12 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
     })
   }, [setData])
 
-  const onConfirmCategory = useCallback((categoryId: number) => {
+  const onConfirmCategory = useCallback((category: Category) => {
     setData(prev => {
       if (prev === undefined) return prev
       return {
         ...prev,
-        categoryId,
+        category,
       }
     })
   }, [setData])
@@ -99,13 +98,10 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
         <AmountInput amountValue={data.amountValue} onChangeAmount={onChangeAmount} />
         <DatePicker date={data.scheduledAt} onDateConfirm={onConfirmDate} />
 
-        <ControlsView>
-          <SelectCategoryButton
-            style={styles.controls_item}
-            categoryId={data.category.id}
-            onSelected={onConfirmCategory}
-          />
-        </ControlsView>
+        <SelectCategoryButton
+          category={data.category}
+          onSelected={onConfirmCategory}
+        />
       </ScrollView>
       <ButtonSubmit onSubmit={() => standardStrategies[kind].update(id, {
         amountValue: lastData.amountValue === data.amountValue ? undefined : data.amountValue,
@@ -120,9 +116,5 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
 const styles = StyleSheet.create({
   page: {
     rowGap: 0
-  },
-  controls_item: {
-    flexGrow: 1,          // ocupa o máximo possível
-    flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
   }
 })

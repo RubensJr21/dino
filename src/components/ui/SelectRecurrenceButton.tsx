@@ -1,8 +1,8 @@
 import Button from "@components/ui/Button";
 import { CustomModal } from "@components/ui/CustomModal";
-import { RecurrenceType } from "@lib/types";
-import { list_of_recurrence_type } from "@utils/factories/recurrence_type.factory";
-import React, { useEffect, useMemo, useState } from "react";
+import * as rt_fns from "@data/playground/recurrence_type";
+import { RecurrenceType, RecurrenceTypeEntity } from "@lib/types";
+import React, { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
@@ -21,6 +21,12 @@ interface SelectRecurrenceButtonProps {
 export function SelectRecurrenceButton({ recurrenceSelected, onSelected, style }: SelectRecurrenceButtonProps) {
   const theme = useTheme();
 
+  const [data, setData] = useState<RecurrenceTypeEntity[]>()
+
+  useEffect(() => {
+    rt_fns.find_all().then(recurrence_types => setData(recurrence_types))
+  }, [])
+
   const [open, setOpen] = useState(false)
   const show_modal = () => {
     setOpen(true)
@@ -33,14 +39,6 @@ export function SelectRecurrenceButton({ recurrenceSelected, onSelected, style }
   useEffect(() => {
     onSelected(selection)
   }, [selection])
-
-  const data = useMemo(() => (
-    Array.from(
-      new Map(
-        list_of_recurrence_type
-          .map(recurrence => [recurrence.code, recurrence])))
-      .sort(([typeA], [typeB]) => typeA.localeCompare(typeB))
-  ), [])
 
   return (
     <>
@@ -63,8 +61,8 @@ export function SelectRecurrenceButton({ recurrenceSelected, onSelected, style }
             paddingHorizontal: 5,
             backgroundColor: theme.colors.backdrop,
           }}
-          keyExtractor={([desc, { id }]) => `${id}`}
-          renderItem={({ item: [desc, recurrence_type] }) => (
+          keyExtractor={({ id }) => `${id}`}
+          renderItem={({ item: recurrence_type }) => (
             <TouchableHighlight
               onPress={() => {
                 setSelection(recurrence_type)
@@ -78,7 +76,7 @@ export function SelectRecurrenceButton({ recurrenceSelected, onSelected, style }
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{desc}</Text>
+              <Text>{recurrence_type.code}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}

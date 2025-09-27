@@ -2,7 +2,6 @@ import BasePage from "@components/ui/BasePage";
 import ScrollView from "@components/ui/ScrollView";
 import { TransactionInstallmentCardViewer } from "@components/ui/TransactionCardViewer/TransactionInstallmentCardViewer";
 import { ItemValue } from "@domain/entities/item_value.entity";
-import { makeItemValue } from "@utils/factories/item_value.factory";
 import { ComponentProps, useEffect, useState } from "react";
 import { List, useTheme } from "react-native-paper";
 import { Items } from "./Items";
@@ -35,9 +34,9 @@ export function InstallmentViewerBase({
   // Buscar baseado no ID
   useEffect(() => {
     const itemValueArray: ItemValue[] = []
-    for (let i = 1; i <= ITEM_POR_PAGINA; i++) {
-      itemValueArray.push(makeItemValue(undefined, i))
-    }
+    // for (let i = 1; i <= ITEM_POR_PAGINA; i++) {
+    //   itemValueArray.push()
+    // }
     setInstallments({
       processed: itemValueArray.filter((item_value) => item_value.was_processed),
       unprocessed: itemValueArray.filter((item_value) => !item_value.was_processed)

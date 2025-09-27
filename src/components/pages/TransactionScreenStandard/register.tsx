@@ -1,7 +1,6 @@
 import BasePage from "@components/ui/BasePage";
 import { ButtonSubmit } from "@components/ui/ButtonSubmit";
 import { AmountInput } from "@components/ui/ScreenBase/AmountInput";
-import { ControlsView } from "@components/ui/ScreenBase/ControlsView";
 import { DatePicker } from "@components/ui/ScreenBase/DatePicker";
 import { DescriptionInput } from "@components/ui/ScreenBase/DescriptionInput";
 import ScrollView from "@components/ui/ScrollView";
@@ -10,10 +9,10 @@ import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } fro
 import { SelectTransferMethodButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransferMethodButton";
 import { TransactionStandardCardRegister } from "@components/ui/TransactionCardRegister/TransactionStandardCardRegister";
 import { standardStrategies } from "@lib/strategies";
-import { Kind, StandardScreenInsert, TransactionInstrument } from "@lib/types";
+import { Category, Kind, StandardScreenInsert, TransactionInstrument } from "@lib/types";
 import { useCallback, useMemo, useState } from "react";
 import { StyleSheet } from "react-native";
-import { initialDataBase } from "../TransactionScreenBase";
+import { initialDataBase } from "../TransactionScreenDefaultData";
 
 type Props = {
   kind: Kind;
@@ -57,12 +56,12 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
     })
   }, [setData])
 
-  const onConfirmCategory = useCallback((categoryId: number) => {
+  const onConfirmCategory = useCallback((category: Category) => {
     setData(prev => {
       if (prev === undefined) return prev
       return {
         ...prev,
-        categoryId,
+        category,
       }
     })
   }, [setData])
@@ -102,33 +101,28 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
         <AmountInput amountValue={data.amountValue} onChangeAmount={onChangeAmount} />
         <DatePicker date={data.scheduledAt} onDateConfirm={onConfirmDate} />
 
-        <ControlsView>
-          <SelectCategoryButton
-            style={styles.controls_item}
-            categoryId={data.category.id}
-            onSelected={onConfirmCategory}
-          />
+        <SelectCategoryButton
+          category={data.category}
+          onSelected={onConfirmCategory}
+        />
 
-          <SelectTransferMethodButton
-            style={styles.controls_item}
-            transferMethodCode={data.transactionInstrument.transfer_method_code}
-            onSelected={onConfirmTransferMethod}
-          />
+        <SelectTransferMethodButton
+          transferMethodCode={data.transactionInstrument.transfer_method_code}
+          onSelected={onConfirmTransferMethod}
+        />
 
-          {
-            toShowTransactionInstrument ?
-              <SelectTransactionInstrumentButton
-                style={styles.controls_item}
-                transferMethod={data.transactionInstrument.transfer_method_code}
-                transactionInstrumentSelected={data.transactionInstrument}
-                onSelected={onConfirmTransactionInstrument}
-                // Está abrindo pela primeira vez
-                isOpen={data.transactionInstrument.nickname.length === 0}
-              />
-              :
-              null
-          }
-        </ControlsView>
+        {
+          toShowTransactionInstrument ?
+            <SelectTransactionInstrumentButton
+              transferMethod={data.transactionInstrument.transfer_method_code}
+              transactionInstrumentSelected={data.transactionInstrument}
+              onSelected={onConfirmTransactionInstrument}
+              // Está abrindo pela primeira vez
+              isOpen={data.transactionInstrument.nickname.length === 0}
+            />
+            :
+            null
+        }
       </ScrollView>
       <ButtonSubmit onSubmit={() => standardStrategies[kind].insert(data)} />
     </BasePage>
@@ -138,9 +132,5 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
 const styles = StyleSheet.create({
   page: {
     rowGap: 0
-  },
-  controls_item: {
-    flexGrow: 1,          // ocupa o máximo possível
-    flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
   }
 })

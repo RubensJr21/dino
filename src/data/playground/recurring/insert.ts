@@ -150,7 +150,7 @@ async function main() {
     cashflow_type,
     category_id: selected_category.id,
     transaction_instrument_id: selected_transaction_instrument.id,
-    transfer_method_code: selected_transaction_instrument.code,
+    transfer_method_code: selected_transaction_instrument.transfer_method_code,
     recurrence_type_id: selected_recurrence_type.id,
     amount,
     start_date: rangeDate.start_date,

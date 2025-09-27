@@ -1,8 +1,9 @@
 import Button from "@components/ui/Button";
 import { CustomModal } from "@components/ui/CustomModal";
 import { INITIAL_TRANSACTION_INSTRUMENT } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton";
-import { list_of_transfer_methods } from "@utils/factories/transfer_method.factory";
-import React, { useEffect, useMemo, useState } from "react";
+import * as tm_fns from "@data/playground/transfer_method";
+import { TransferMethodEntity } from "@lib/types";
+import React, { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
@@ -16,6 +17,12 @@ interface SelectTransferMethodButtonProps {
 export function SelectTransferMethodButton({ transferMethodCode, onSelected, style }: SelectTransferMethodButtonProps) {
   const theme = useTheme();
 
+  const [data, setData] = useState<TransferMethodEntity[]>()
+
+  useEffect(() => {
+    tm_fns.find_all().then(transfers_method => setData(transfers_method))
+  }, [])
+
   const [open, setOpen] = useState(false)
   const show_modal = () => {
     setOpen(true)
@@ -28,14 +35,6 @@ export function SelectTransferMethodButton({ transferMethodCode, onSelected, sty
   useEffect(() => {
     onSelected(selection)
   }, [selection])
-
-  const data = useMemo(() => (
-    Array.from(
-      new Map(
-        list_of_transfer_methods
-          .map(transferMethod => [transferMethod.method, transferMethod])))
-      .sort(([descA], [descB]) => descA.localeCompare(descB))
-  ), [])
 
   return (
     <>
@@ -58,11 +57,11 @@ export function SelectTransferMethodButton({ transferMethodCode, onSelected, sty
             paddingHorizontal: 5,
             backgroundColor: theme.colors.backdrop,
           }}
-          keyExtractor={([method, { id }]) => `${id}`}
-          renderItem={({ item: [method] }) => (
+          keyExtractor={({ id }) => `${id}`}
+          renderItem={({ item: method }) => (
             <TouchableHighlight
               onPress={() => {
-                setSelection(method)
+                setSelection(method.code)
                 dismiss_modal()
               }}
               style={{
@@ -73,7 +72,7 @@ export function SelectTransferMethodButton({ transferMethodCode, onSelected, sty
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{method}</Text>
+              <Text>{method.code}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}

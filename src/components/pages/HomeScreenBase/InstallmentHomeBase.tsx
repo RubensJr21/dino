@@ -1,6 +1,5 @@
 import { TransactionInstallmentCard } from '@components/ui/TransactionInstallmentCard';
-import { Installment } from '@domain/entities/installment.entity';
-import { Kind } from '@lib/types';
+import { InstallmentEntity, Kind } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase';
 import { ReactNode, useRef } from 'react';
 import { Animated, FlatList } from 'react-native';
@@ -8,7 +7,7 @@ import { Text } from "react-native-paper";
 
 interface InstallmentHomeProps {
   kind: Kind,
-  data: Array<Installment>,
+  data: Array<InstallmentEntity>,
   extras?: ReactNode;
   goToRegister: () => void;
   goToEdit: () => void;
@@ -25,17 +24,17 @@ export default function InstallmentHomeHomeBase({ kind, data, goToEdit, goToRegi
       flatlist={
         <FlatList
           data={data}
-          keyExtractor={standard => `${standard.id}`}
+          keyExtractor={installment => `${installment.id}`}
           style={{ marginTop: 5 }}
           contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 5 }}
           renderItem={({ item: installment }) => (
             <TransactionInstallmentCard
-              startDate={installment.start_date}
+              startDate={installment.startDate}
               description={installment.description}
-              method={installment.transfer_method.method}
-              tag={installment.tag.description}
-              installmentsNumber={installment.installments_number}
-              totalAmount={installment.total_amount}
+              transactionInstrument={installment.transactionInstrument}
+              category={installment.category}
+              installmentsNumber={Number(installment.installments)}
+              totalAmount={Number(installment.amountValue)}
               onToggleIsDisabled={() => console.info("Toggle do isDisabled...")}
               onEdit={goToEdit}
               goToDetails={goToDetails}
@@ -46,7 +45,6 @@ export default function InstallmentHomeHomeBase({ kind, data, goToEdit, goToRegi
             [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
             { useNativeDriver: false }
           )}
-        // estimatedItemSize={116}
         />
       }
     />

@@ -1,6 +1,7 @@
 import Button from '@components/ui/Button';
 import { CallToast } from '@lib/call-toast';
 import { MCIcons } from '@lib/icons.lib';
+import { Category, TransactionInstrument } from '@lib/types';
 import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
@@ -8,8 +9,8 @@ import { Card, Chip, Text, useTheme } from "react-native-paper";
 interface TransactionRecurringCardProps {
   startDate: Date;
   description: string;
-  method: string;
-  tag: string;
+  transactionInstrument: TransactionInstrument;
+  category: Category;
   isDisabled: boolean;
   onToggleIsDisabled: () => void;
   onEdit: () => void
@@ -19,8 +20,8 @@ interface TransactionRecurringCardProps {
 export function TransactionRecurringCard({
   startDate,
   description,
-  method,
-  tag,
+  transactionInstrument,
+  category,
   isDisabled: defaultIsDisabled,
   onToggleIsDisabled,
   onEdit,
@@ -41,7 +42,7 @@ export function TransactionRecurringCard({
         style={{ backgroundColor: theme.colors.primaryContainer, borderRadius: 0 }}
         textStyle={{ color: theme.colors.onPrimaryContainer }}
       >
-        {tag}
+        {category.code}
       </Chip>
       <Card.Title
         title={description}
@@ -71,7 +72,7 @@ export function TransactionRecurringCard({
       <Card.Content>
         <View style={{ flexDirection: "row", columnGap: 5 }}>
           <Text variant='titleSmall' style={[styles.description, { color: theme.colors.onSurface }]}>
-            {method}
+            {transactionInstrument.nickname}
           </Text>
         </View>
       </Card.Content>
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
-  method: {
+  transactionInstrument: {
     fontSize: 14,
   },
   isDisabledRow: {

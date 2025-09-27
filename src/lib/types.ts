@@ -66,3 +66,31 @@ export function getCashflowType(kind: Kind): Cashflow_Type {
       return 1;
   }
 }
+
+// ======================
+// ENTITIES
+// ======================
+
+export interface RecurringEntity extends RecurringScreenInsert {
+  id: number
+}
+
+export interface StandardEntity extends StandardScreenInsert {
+  id: number;
+  was_processed: boolean;
+}
+
+export interface InstallmentEntity extends InstallmentScreenInsert {
+  id: number
+}
+
+export interface TransferMethodEntity {
+  id: number;
+  code: string;
+}
+
+export type RecurrenceTypeEntity = RecurrenceType
+
+export type TransactionInstrumentEntity = TransactionInstrument
+
+export type CategoryEntity = Category

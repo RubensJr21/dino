@@ -1,5 +1,6 @@
 import { CallToast } from '@lib/call-toast';
 import { MCIcons } from '@lib/icons.lib';
+import { Category, TransactionInstrument } from '@lib/types';
 import React, { useState } from "react";
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
@@ -7,8 +8,8 @@ import { Card, Chip, Text, useTheme } from "react-native-paper";
 interface TransactionStandardCardProps {
   scheduledAt: Date;
   description: string;
-  method: string;
-  tag: string;
+  transactionInstrument: TransactionInstrument;
+  category: Category;
   status: boolean;
   onToggleStatus: () => void;
   onEdit: () => void
@@ -17,8 +18,8 @@ interface TransactionStandardCardProps {
 export function TransactionStandardCard({
   scheduledAt,
   description,
-  method,
-  tag,
+  transactionInstrument,
+  category,
   status: defaultStatus,
   onToggleStatus,
   onEdit,
@@ -38,7 +39,7 @@ export function TransactionStandardCard({
         style={{ backgroundColor: theme.colors.primaryContainer, borderRadius: 0 }}
         textStyle={{ color: theme.colors.onPrimaryContainer }}
       >
-        {tag}
+        {category.code}
       </Chip>
       <Card.Title
         title={description}
@@ -75,7 +76,7 @@ export function TransactionStandardCard({
             onPress={() => CallToast(`Pressione em ${status ? "CONCLUÍDO" : "PENDENTE"} ou no ícone para mudar o status`)}
           /> */}
           <Text variant='titleSmall' style={[styles.description, { color: theme.colors.onSurface }]}>
-            {method}
+            {transactionInstrument.nickname}
           </Text>
         </View>
       </Card.Content>
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
-  method: {
+  transactionInstrument: {
     fontSize: 14,
   },
   statusRow: {

@@ -1,6 +1,5 @@
 import { TransactionRecurringCard } from '@components/ui/TransactionRecurringCard';
-import { Recurring } from '@domain/entities/recurring.entity';
-import { Kind } from '@lib/types';
+import { Kind, RecurringEntity } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase';
 import { ReactNode, useRef } from 'react';
 import { Animated } from 'react-native';
@@ -10,7 +9,7 @@ import { Text } from "react-native-paper";
 interface RecurringHomeBaseProps {
   kind: Kind;
   extras?: ReactNode;
-  data: Array<Recurring>;
+  data: Array<RecurringEntity>;
   goToRegister: () => void;
   goToEdit: () => void;
 }
@@ -30,11 +29,11 @@ export default function RecurringHomeBase({ kind, data, goToEdit, goToRegister }
           contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 5 }}
           renderItem={({ item: recurring }) => (
             <TransactionRecurringCard
-              startDate={recurring.start_date}
+              startDate={recurring.startDate}
               description={recurring.description}
-              method={recurring.transfer_method.method}
-              tag={recurring.tag.description}
-              isDisabled={recurring.is_disabled}
+              transactionInstrument={recurring.transactionInstrument}
+              category={recurring.category}
+              isDisabled={recurring.endDate !== null}
               onToggleIsDisabled={() => console.info("Toggle do isDisabled...")}
               onEdit={goToEdit}
               goToDetails={() => console.info("Navegando para a tela de detalhes...")}

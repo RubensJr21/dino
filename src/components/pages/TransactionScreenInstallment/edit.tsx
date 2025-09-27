@@ -1,12 +1,11 @@
 import BasePage from "@components/ui/BasePage";
 import { ButtonSubmit } from "@components/ui/ButtonSubmit";
-import { ControlsView } from "@components/ui/ScreenBase/ControlsView";
 import { DescriptionInput } from "@components/ui/ScreenBase/DescriptionInput";
 import ScrollView from "@components/ui/ScrollView";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { TransactionInstallmentCardRegister } from "@components/ui/TransactionCardRegister/TransactionInstallmentCardRegister";
 import { installmentStrategies } from "@lib/strategies";
-import { InstallmentScreenInsert, Kind } from "@lib/types";
+import { Category, InstallmentScreenInsert, Kind } from "@lib/types";
 import { useCallback, useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 
@@ -38,12 +37,12 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
     })
   }, [setData])
 
-  const onConfirmCategory = useCallback((categoryId: number) => {
+  const onConfirmCategory = useCallback((category: Category) => {
     setData(prev => {
       if (prev === undefined) return prev
       return {
         ...prev,
-        categoryId,
+        category,
       }
     })
   }, [setData])
@@ -59,13 +58,10 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
       <ScrollView contentContainerStyle={{ rowGap: 5 }}>
         <DescriptionInput description={data.description} onChangeText={onChangeDescription} />
 
-        <ControlsView>
-          <SelectCategoryButton
-            style={styles.controls_item}
-            categoryId={data.category.id}
-            onSelected={onConfirmCategory}
-          />
-        </ControlsView>
+        <SelectCategoryButton
+          category={data.category}
+          onSelected={onConfirmCategory}
+        />
       </ScrollView>
       <ButtonSubmit onSubmit={() => installmentStrategies[kind].update(id, {
         category: lastData.category.id === data.category.id ? undefined : data.category,
@@ -78,9 +74,5 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
 const styles = StyleSheet.create({
   page: {
     rowGap: 0
-  },
-  controls_item: {
-    flexGrow: 1,          // ocupa o máximo possível
-    flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
   }
 })

@@ -1,5 +1,6 @@
 import Button from '@components/ui/Button';
 import { MCIcons } from '@lib/icons.lib';
+import { Category, TransactionInstrument } from '@lib/types';
 import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
@@ -7,8 +8,8 @@ import { Card, Chip, Text, useTheme } from "react-native-paper";
 interface TransactionInstallmentCardProps {
   startDate: Date;
   description: string;
-  method: string;
-  tag: string;
+  transactionInstrument: TransactionInstrument;
+  category: Category;
   installmentsNumber: number;
   totalAmount: number;
   onToggleIsDisabled: () => void;
@@ -19,8 +20,8 @@ interface TransactionInstallmentCardProps {
 export function TransactionInstallmentCard({
   startDate,
   description,
-  method,
-  tag,
+  transactionInstrument,
+  category,
   installmentsNumber,
   totalAmount,
   onToggleIsDisabled,
@@ -41,7 +42,7 @@ export function TransactionInstallmentCard({
         style={{ backgroundColor: theme.colors.primaryContainer, borderRadius: 0 }}
         textStyle={{ color: theme.colors.onPrimaryContainer }}
       >
-        {tag}
+        {category.code}
       </Chip>
       <Card.Title
         title={description}
@@ -71,7 +72,7 @@ export function TransactionInstallmentCard({
       <Card.Content>
         <View style={{ flexDirection: "row", columnGap: 5 }}>
           <Text variant='titleSmall' style={[styles.description, { color: theme.colors.onSurface }]}>
-            {method}
+            {transactionInstrument.nickname}
           </Text>
         </View>
       </Card.Content>
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
-  method: {
+  transactionInstrument: {
     fontSize: 14,
   },
   valuesAndCurrency: {

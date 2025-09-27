@@ -1,14 +1,13 @@
 import InstallmentHomeBase from "@components/pages/HomeScreenBase/InstallmentHomeBase";
-import { Installment } from "@domain/entities/installment.entity";
+import { InstallmentEntity } from "@lib/types";
 import { useIsFocused } from "@react-navigation/native";
-import { list_of_installments } from "@utils/factories/installments.factory";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 
 // ALERT: Colocar aqui dados fictícios. Gerar com o chat GPT
 
 export default function InstallmentHome() {
-  const [data, setData] = useState<Installment[]>([])
+  const [data, setData] = useState<InstallmentEntity[]>([])
   const isFocused = useIsFocused()
 
   const route = useRouter()
@@ -16,7 +15,7 @@ export default function InstallmentHome() {
   useEffect(() => {
     if (isFocused === false) return;
     // Lógica para recuperar os dados. Usar CallToast para alertar!
-    setData(list_of_installments)
+    setData([])
   }, [isFocused])
 
   const goToRegister = () => {

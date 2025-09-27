@@ -57,13 +57,13 @@ export const recurringStrategies: Record<
   }
 > = {
   payment: {
-    insert: async (data) => sharedInsert(data, "payment"),
-    fetchById: async (id) => sharedFetch(id),
+    insert: async (data) => await sharedInsert(data, "payment"),
+    fetchById: async (id) => await sharedFetch(id),
     update: async (id, data) => await sharedUpdate(id, data)
   },
   receipt: {
-    insert: async (data) => sharedInsert(data, "receipt"),
-    fetchById: async (id) => sharedFetch(id),
+    insert: async (data) => await sharedInsert(data, "receipt"),
+    fetchById: async (id) => await sharedFetch(id),
     update: async (id, data) => await sharedUpdate(id, data)
   }
 }
