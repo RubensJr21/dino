@@ -1,5 +1,5 @@
-import BasePage from "@components/ui/BasePage";
-import ScrollView from "@components/ui/ScrollView";
+import BasePage from "@components/ui/base/BasePage";
+import ScrollView from "@components/ui/base/ScrollView";
 import { TransactionInstallmentCardViewer } from "@components/ui/TransactionCardViewer/TransactionInstallmentCardViewer";
 import { ItemValue } from "@domain/entities/item_value.entity";
 import { ComponentProps, useEffect, useState } from "react";

@@ -1,4 +1,4 @@
-import Button from '@components/ui/Button';
+import Button from '@components/ui/base/Button';
 import { CallToast } from '@lib/call-toast';
 import { MCIcons } from '@lib/icons.lib';
 import { Category, TransactionInstrument } from '@lib/types';

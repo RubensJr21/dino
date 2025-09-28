@@ -1,9 +1,9 @@
-import BasePage from "@components/ui/BasePage";
-import { ButtonSubmit } from "@components/ui/ButtonSubmit";
-import { AmountInput } from "@components/ui/ScreenBase/AmountInput";
-import { DatePicker } from "@components/ui/ScreenBase/DatePicker";
-import { DescriptionInput } from "@components/ui/ScreenBase/DescriptionInput";
-import ScrollView from "@components/ui/ScrollView";
+import { AmountInput } from "@components/ui/AmountInput";
+import BasePage from "@components/ui/base/BasePage";
+import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
+import ScrollView from "@components/ui/base/ScrollView";
+import { DatePicker } from "@components/ui/DatePicker";
+import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton";
 import { SelectTransferMethodButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransferMethodButton";
@@ -71,13 +71,12 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
 
   const onConfirmTransferMethod = useCallback(async (transferMethodCode: string) => {
     if (transferMethodCode === "cash") {
-      ti_fns.get_transaction_instrument_cash().then(list => {
+      return ti_fns.get_transaction_instrument_cash().then(list => {
         const transaction_instrument_cash = list.shift()
         if (transaction_instrument_cash === undefined) {
           throw new Error("Erro ao obter transaction_instrument_cash")
         }
         setData(prev => {
-          if (prev === undefined) return prev
           return {
             ...prev,
             transactionInstrument: {
@@ -88,10 +87,8 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
           }
         })
       })
-      return;
     }
     setData(prev => {
-      if (prev === undefined) return prev
       return {
         ...prev,
         transactionInstrument: {
@@ -104,7 +101,6 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
 
   const onConfirmTransactionInstrument = useCallback((transactionInstrument: TransactionInstrument) => {
     setData(prev => {
-      if (prev === undefined) return prev
       return {
         ...prev,
         transactionInstrument
@@ -127,7 +123,7 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
     <BasePage style={styles.page}>
       <TransactionInstallmentCardRegister data={data} />
       <ScrollView contentContainerStyle={{ rowGap: 5 }}>
-        <DescriptionInput description={data.description} onChangeText={onChangeDescription} />
+        <DescriptionInput description={data.description} onChangeDescription={onChangeDescription} />
         <AmountInput amountValue={data.amountValue} onChangeAmount={onChangeAmount} />
         <InstallmentInput
           installments={data.installments}

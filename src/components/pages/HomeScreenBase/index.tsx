@@ -1,4 +1,4 @@
-import BasePage from '@components/ui/BasePage';
+import BasePage from '@components/ui/base/BasePage';
 import { Fab } from '@components/ui/Fab';
 import { Animated } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';

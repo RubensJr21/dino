@@ -28,7 +28,7 @@ export async function get_all_filtered_by_transfer_method(
     )
     .innerJoin(
       bankAccount,
-      eq(transactionInstrument.fk_id_bank_account, transferMethod)
+      eq(transactionInstrument.fk_id_bank_account, bankAccount.id)
     )
     .where(eq(transferMethod.code, method_code));
 }
@@ -55,7 +55,7 @@ export async function get_all(
     )
     .innerJoin(
       bankAccount,
-      eq(transactionInstrument.fk_id_bank_account, transferMethod)
+      eq(transactionInstrument.fk_id_bank_account, bankAccount.id)
     );
 }
 
@@ -82,7 +82,7 @@ export async function get_all_enable_filtered_by_transfer_method(
     )
     .innerJoin(
       bankAccount,
-      eq(transactionInstrument.fk_id_bank_account, transferMethod)
+      eq(transactionInstrument.fk_id_bank_account, bankAccount.id)
     )
     .where(
       and(
@@ -90,6 +90,22 @@ export async function get_all_enable_filtered_by_transfer_method(
         eq(transactionInstrument.is_enabled, true)
       )
     );
+}
+
+export async function get_all_enable_filtered_by_bank_account(db: DatabaseType, bank_account_id: number) {
+  return await db
+    .select({
+      id: transactionInstrument.id,
+      code: transferMethod.code
+    })
+    .from(transactionInstrument)
+    .innerJoin(transferMethod, eq(transactionInstrument.fk_id_transfer_method, transferMethod.id))
+    .where(
+      and(
+        eq(transactionInstrument.fk_id_bank_account, bank_account_id),
+        eq(transactionInstrument.is_enabled, true)
+      )
+    )
 }
 
 export async function get_all_used_transfer_methods(db: DatabaseType) {
@@ -100,6 +116,7 @@ export async function get_all_used_transfer_methods(db: DatabaseType) {
     })
     .from(transactionInstrument)
     .innerJoin(transferMethod, eq(transactionInstrument.fk_id_transfer_method, transferMethod.id))
+    .where(eq(transactionInstrument.is_enabled, true))
 }
 
 export async function get_transaction_instrument_cash(db: DatabaseType) {

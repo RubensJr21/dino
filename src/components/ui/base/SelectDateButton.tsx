@@ -1,4 +1,4 @@
-import Button from "@components/ui/Button";
+import Button from "@components/ui/base/Button";
 import { AndroidNativeProps, DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { useEffect, useState } from "react";
 

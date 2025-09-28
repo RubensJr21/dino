@@ -1,4 +1,4 @@
-import Button from "@components/ui/Button";
+import Button from "@components/ui/base/Button";
 import { BlurView } from "expo-blur";
 import React, { ReactNode, useMemo } from "react";
 import { KeyboardAvoidingView, Modal, Platform, StyleSheet, View } from "react-native";

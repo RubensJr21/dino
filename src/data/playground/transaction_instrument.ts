@@ -5,6 +5,10 @@ export async function find_all_enable_for_transfer_method(code: string) {
   return await ti.get_all_enable_filtered_by_transfer_method(db, code);
 }
 
+export async function find_all_enable_for_bank_account(bank_account_id: number) {
+  return await ti.get_all_enable_filtered_by_bank_account(db, bank_account_id)
+}
+
 export async function find_all() {
   return await ti.get_all(db)
 }

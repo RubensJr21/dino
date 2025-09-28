@@ -1,7 +1,9 @@
-import BasePage from "@components/ui/BasePage";
+import BasePage from "@components/ui/base/BasePage";
+import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
 import { SelectMultiTransferMethodButton } from "@components/ui/SelectMultiTransferMethodButton";
 import { MCIcons } from "@lib/icons.lib";
 import { useCallback, useEffect, useState } from "react";
+import { Alert } from "react-native";
 import { TextInput, useTheme } from "react-native-paper";
 
 interface BankFormScreenProps {
@@ -17,7 +19,7 @@ interface BankFormScreenInsert {
 const initialDataBank = {
   nickname: "",
   balance: "0,00",
-  transfer_methods_enable: []
+  transfer_methods_enable: [] as Array<string>
 } satisfies BankFormScreenInsert
 
 export function BankFormScreen({ id }: BankFormScreenProps) {
@@ -45,10 +47,14 @@ export function BankFormScreen({ id }: BankFormScreenProps) {
     }))
   }, [setData])
 
+  const handleSubmit = () => {
+    Alert.alert("Enviando dados do banco.")
+  }
+
   return (
     <BasePage style={{ rowGap: 5 }}>
       <MCIcons
-        style={{textAlign: "center"}}
+        style={{ textAlign: "center" }}
         name="bank-outline"
         color={theme.colors.primary}
         size={245}
@@ -83,8 +89,9 @@ export function BankFormScreen({ id }: BankFormScreenProps) {
           />
         )
       }
+
       <SelectMultiTransferMethodButton
-        style={{marginTop: 5}}
+        style={{ marginTop: 5 }}
         transferMethodsSelected={data.transfer_methods_enable}
         onSelected={selection => {
           setData(prev => ({
@@ -93,6 +100,8 @@ export function BankFormScreen({ id }: BankFormScreenProps) {
           }))
         }}
       />
+
+      <ButtonSubmit onSubmit={handleSubmit} />
     </BasePage>
   )
 }

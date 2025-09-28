@@ -1,7 +1,7 @@
-import BasePage from "@components/ui/BasePage";
-import { ButtonSubmit } from "@components/ui/ButtonSubmit";
-import { DescriptionInput } from "@components/ui/ScreenBase/DescriptionInput";
-import ScrollView from "@components/ui/ScrollView";
+import BasePage from "@components/ui/base/BasePage";
+import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
+import ScrollView from "@components/ui/base/ScrollView";
+import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { TransactionInstallmentCardRegister } from "@components/ui/TransactionCardRegister/TransactionInstallmentCardRegister";
 import { installmentStrategies } from "@lib/strategies";
@@ -56,7 +56,7 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
     <BasePage style={styles.page}>
       <TransactionInstallmentCardRegister data={data} />
       <ScrollView contentContainerStyle={{ rowGap: 5 }}>
-        <DescriptionInput description={data.description} onChangeText={onChangeDescription} />
+        <DescriptionInput description={data.description} onChangeDescription={onChangeDescription} />
 
         <SelectCategoryButton
           category={data.category}

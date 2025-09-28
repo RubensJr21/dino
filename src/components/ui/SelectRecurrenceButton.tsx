@@ -1,5 +1,5 @@
-import Button from "@components/ui/Button";
-import { CustomModal } from "@components/ui/CustomModal";
+import Button from "@components/ui/base/Button";
+import { CustomModal } from "@components/ui/base/CustomModal";
 import * as rt_fns from "@data/playground/recurrence_type";
 import { RecurrenceType, RecurrenceTypeEntity } from "@lib/types";
 import React, { useEffect, useState } from "react";

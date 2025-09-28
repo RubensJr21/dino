@@ -1,5 +1,5 @@
-import Button from "@components/ui/Button";
-import { CustomModal } from "@components/ui/CustomModal";
+import Button from "@components/ui/base/Button";
+import { CustomModal } from "@components/ui/base/CustomModal";
 import { INITIAL_TRANSACTION_INSTRUMENT } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton";
 import * as ti_fns from "@data/playground/transaction_instrument";
 import { TransferMethodEntity } from "@lib/types";

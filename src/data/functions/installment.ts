@@ -58,7 +58,7 @@ export async function get(
           transactionInstrument.id
         )
       )
-      .innerJoin(bankAccount, eq(bankAccount.id, transactionInstrument.fk_id_bank_account))
+      .innerJoin(bankAccount, eq(transactionInstrument.fk_id_bank_account, bankAccount.id))
       .innerJoin(
         transferMethod,
         eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)

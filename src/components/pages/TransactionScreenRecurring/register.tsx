@@ -1,9 +1,9 @@
-import BasePage from "@components/ui/BasePage";
-import { ButtonSubmit } from "@components/ui/ButtonSubmit";
-import { AmountInput } from "@components/ui/ScreenBase/AmountInput";
-import { DatePicker } from "@components/ui/ScreenBase/DatePicker";
-import { DescriptionInput } from "@components/ui/ScreenBase/DescriptionInput";
-import ScrollView from "@components/ui/ScrollView";
+import { AmountInput } from "@components/ui/AmountInput";
+import BasePage from "@components/ui/base/BasePage";
+import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
+import ScrollView from "@components/ui/base/ScrollView";
+import { DatePicker } from "@components/ui/DatePicker";
+import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_RECURRENCE_TYPE, SelectRecurrenceButton } from "@components/ui/SelectRecurrenceButton";
 import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton";
@@ -32,7 +32,6 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
 
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
-      if (prev === undefined) return prev
       return {
         ...prev,
         description: text
@@ -42,7 +41,6 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
 
   const onChangeAmount = useCallback((amountText: string) => {
     setData(prev => {
-      if (prev === undefined) return prev
       return {
         ...prev,
         amountValue: amountText
@@ -52,7 +50,6 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
 
   const onConfirmDate = useCallback((date: Date) => {
     setData(prev => {
-      if (prev === undefined) return prev
       return {
         ...prev,
         scheduledAt: date
@@ -62,7 +59,6 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
 
   const onConfirmCategory = useCallback((category: Category) => {
     setData(prev => {
-      if (prev === undefined) return prev
       return {
         ...prev,
         category,
@@ -72,13 +68,12 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
 
   const onConfirmTransferMethod = useCallback(async (transferMethodCode: string) => {
     if (transferMethodCode === "cash") {
-      ti_fns.get_transaction_instrument_cash().then(list => {
+      return ti_fns.get_transaction_instrument_cash().then(list => {
         const transaction_instrument_cash = list.shift()
         if (transaction_instrument_cash === undefined) {
           throw new Error("Erro ao obter transaction_instrument_cash")
         }
         setData(prev => {
-          if (prev === undefined) return prev
           return {
             ...prev,
             transactionInstrument: {
@@ -89,10 +84,8 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
           }
         })
       })
-      return;
     }
     setData(prev => {
-      if (prev === undefined) return prev
       return {
         ...prev,
         transactionInstrument: {
@@ -105,7 +98,6 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
 
   const onConfirmTransactionInstrument = useCallback((transactionInstrument: TransactionInstrument) => {
     setData(prev => {
-      if (prev === undefined) return prev
       return {
         ...prev,
         transactionInstrument
@@ -133,7 +125,7 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
     <BasePage style={styles.page}>
       <TransactionRecurringCardRegister data={data} />
       <ScrollView contentContainerStyle={{ rowGap: 5 }}>
-        <DescriptionInput description={data.description} onChangeText={onChangeDescription} />
+        <DescriptionInput description={data.description} onChangeDescription={onChangeDescription} />
         <AmountInput amountValue={data.amountValue} onChangeAmount={onChangeAmount} />
         <DatePicker date={data.startDate} onDateConfirm={onConfirmDate} />
         <SelectRecurrenceButton

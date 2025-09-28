@@ -1,8 +1,8 @@
-import BasePage from "@components/ui/BasePage";
-import { ButtonSubmit } from "@components/ui/ButtonSubmit";
-import { AmountInput } from "@components/ui/ScreenBase/AmountInput";
-import { DescriptionInput } from "@components/ui/ScreenBase/DescriptionInput";
-import ScrollView from "@components/ui/ScrollView";
+import { AmountInput } from "@components/ui/AmountInput";
+import BasePage from "@components/ui/base/BasePage";
+import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
+import ScrollView from "@components/ui/base/ScrollView";
+import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_RECURRENCE_TYPE } from "@components/ui/SelectRecurrenceButton";
 import { TransactionRecurringCardRegister } from "@components/ui/TransactionCardRegister/TransactionRecurringCardRegister";
@@ -94,7 +94,7 @@ export function TransactionRecurringEditScreen({ id, kind }: TransactionRecurrin
     <BasePage style={styles.page}>
       <TransactionRecurringCardRegister data={data} />
       <ScrollView contentContainerStyle={{ rowGap: 5 }}>
-        <DescriptionInput description={data.description} onChangeText={onChangeDescription} />
+        <DescriptionInput description={data.description} onChangeDescription={onChangeDescription} />
         <AmountInput amountValue={data.amountValue} onChangeAmount={onChangeAmount} />
 
         <SelectCategoryButton

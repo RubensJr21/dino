@@ -1,5 +1,5 @@
-import Button from "@components/ui/Button";
-import { CustomModal } from "@components/ui/CustomModal";
+import Button from "@components/ui/base/Button";
+import { CustomModal } from "@components/ui/base/CustomModal";
 import * as cat_fns from "@data/playground/category";
 import { Category, CategoryEntity } from "@lib/types";
 import React, { useEffect, useState } from "react";

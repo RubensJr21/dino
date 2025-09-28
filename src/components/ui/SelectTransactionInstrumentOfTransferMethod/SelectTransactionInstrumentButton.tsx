@@ -1,5 +1,5 @@
-import Button from "@components/ui/Button";
-import { CustomModal } from "@components/ui/CustomModal";
+import Button from "@components/ui/base/Button";
+import { CustomModal } from "@components/ui/base/CustomModal";
 import * as ti_fns from "@data/playground/transaction_instrument";
 import { TransactionInstrument, TransactionInstrumentEntity } from "@lib/types";
 import { useUpdateEffect } from "@utils/useUpdateEffect";
@@ -33,10 +33,14 @@ export function SelectTransactionInstrumentButton({ transferMethod, transactionI
   }, [transferMethod])
 
   useEffect(() => {
+    if (isDisabled) {
+      return;
+    }
     ti_fns
       .find_all_enable_for_transfer_method(transferMethod)
-      .then(recurrence_types => setData(recurrence_types))
-  }, [transferMethod])
+      .then(transfer_methods => setData(transfer_methods))
+      .catch((error) => { console.log(error) })
+  }, [transferMethod, isDisabled])
 
   // Abri quando nenhum transaction_instrument tiver sido selecionado
   const [open, setOpen] = useState(transactionInstrumentSelected.nickname === INITIAL_TRANSACTION_INSTRUMENT.nickname)
@@ -50,11 +54,16 @@ export function SelectTransactionInstrumentButton({ transferMethod, transactionI
   }
 
   useUpdateEffect(() => {
+    if(isDisabled) return;
     onSelected(selection)
   }, [selection])
 
   useUpdateEffect(() => {
-    setSelection(INITIAL_TRANSACTION_INSTRUMENT)
+    if(isDisabled) return;
+    setSelection({
+      ...INITIAL_TRANSACTION_INSTRUMENT,
+      transfer_method_code: transferMethod
+    })
     show_modal()
   }, [transferMethod])
 

@@ -1,5 +1,5 @@
-import BasePage from "@components/ui/BasePage";
-import Button from "@components/ui/Button";
+import BasePage from "@components/ui/base/BasePage";
+import Button from "@components/ui/base/Button";
 import { Fab } from "@components/ui/Fab";
 import { useRouter } from "expo-router";
 import { useRef } from "react";

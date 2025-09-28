@@ -1,4 +1,4 @@
-import SelectedDateButton from "@components/ui/SelectDateButton";
+import SelectedDateButton from "@components/ui/base/SelectDateButton";
 
 interface Props {
   date: Date,

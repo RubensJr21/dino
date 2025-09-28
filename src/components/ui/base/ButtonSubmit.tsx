@@ -1,4 +1,4 @@
-import Button from "@components/ui/Button";
+import Button from "@components/ui/base/Button";
 import { useTheme } from "react-native-paper";
 
 type ButtonSubmitProps = StrictOmit<React.ComponentProps<typeof Button>, "children"> & { onSubmit: () => void }

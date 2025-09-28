@@ -1,6 +1,6 @@
-import Button from "@components/ui/Button";
-import { CustomModal } from "@components/ui/CustomModal";
-import ScrollView from "@components/ui/ScrollView";
+import Button from "@components/ui/base/Button";
+import { CustomModal } from "@components/ui/base/CustomModal";
+import ScrollView from "@components/ui/base/ScrollView";
 import * as tm_fns from "@data/playground/transfer_method";
 import { TransferMethodEntity } from "@lib/types";
 import React, { useEffect, useState } from "react";

@@ -1,9 +1,9 @@
-import BasePage from "@components/ui/BasePage";
-import { ButtonSubmit } from "@components/ui/ButtonSubmit";
-import { AmountInput } from "@components/ui/ScreenBase/AmountInput";
-import { DatePicker } from "@components/ui/ScreenBase/DatePicker";
-import { DescriptionInput } from "@components/ui/ScreenBase/DescriptionInput";
-import ScrollView from "@components/ui/ScrollView";
+import { AmountInput } from "@components/ui/AmountInput";
+import BasePage from "@components/ui/base/BasePage";
+import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
+import ScrollView from "@components/ui/base/ScrollView";
+import { DatePicker } from "@components/ui/DatePicker";
+import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { TransactionStandardCardRegister } from "@components/ui/TransactionCardRegister/TransactionStandardCardRegister";
 import { standardStrategies } from "@lib/strategies";
@@ -94,7 +94,7 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
     <BasePage style={styles.page}>
       <TransactionStandardCardRegister data={data} />
       <ScrollView contentContainerStyle={{ rowGap: 5 }}>
-        <DescriptionInput description={data.description} onChangeText={onChangeDescription} />
+        <DescriptionInput description={data.description} onChangeDescription={onChangeDescription} />
         <AmountInput amountValue={data.amountValue} onChangeAmount={onChangeAmount} />
         <DatePicker date={data.scheduledAt} onDateConfirm={onConfirmDate} />
 
