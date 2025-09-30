@@ -9,12 +9,15 @@ import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } fro
 import { SelectTransferMethodButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransferMethodButton";
 import { TransactionInstallmentCardRegister } from "@components/ui/TransactionCardRegister/TransactionInstallmentCardRegister";
 import * as ti_fns from "@data/playground/transaction_instrument";
+import { CallToast } from "@lib/call-toast";
 import { installmentStrategies } from "@lib/strategies";
 import { Category, InstallmentScreenInsert, Kind, TransactionInstrument } from "@lib/types";
+import { validateInstallmentTransactionInsertData } from "@lib/validations/inserts/installment_transaction";
 import { initialDataBase } from "@pages/TransactionScreenDefaultData";
 import { DEFAULT_MIN_INSTALLMENT, InstallmentInput } from "@pages/TransactionScreenInstallment/InstallmentInput";
+import { useNavigation } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 
 interface TransactionInstallmentRegisterScreenProps {
   kind: Kind;
@@ -28,6 +31,7 @@ const initialDataInstallment = {
 
 export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstallmentRegisterScreenProps) {
   const [data, setData] = useState<InstallmentScreenInsert>(initialDataInstallment)
+    const navigation = useNavigation()
 
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
@@ -116,7 +120,20 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
   }, [setData])
 
   const handleSubmit = useCallback((data: InstallmentScreenInsert) => {
-    installmentStrategies[kind].insert(data)
+    const [hasError, errors] = validateInstallmentTransactionInsertData(data)
+    if (hasError) {
+      return Alert.alert("Atenção!", errors.join("\n"))
+    }
+    installmentStrategies[kind]
+      .insert(data)
+      .then(() => {
+        CallToast("Transação registrada!")
+        navigation.goBack()
+      })
+      .catch((error) => {
+        console.error(error)
+        Alert.alert("Erro!", "Erro ao registrar transação!")
+      })
   }, [])
 
   const toShowTransactionInstrument = useMemo(() => {

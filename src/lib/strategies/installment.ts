@@ -12,7 +12,7 @@ export async function sharedInsert(data: InstallmentScreenInsert, kind: Kind) {
     transfer_method_code: data.transactionInstrument.transfer_method_code,
     start_date: data.startDate,
     installments_number: Number(data.installments),
-    total_amount: Number(data.amountValue)
+    total_amount: parseAmount(data.amountValue)
   })
 }
 export async function sharedFetch(id: string): Promise<InstallmentScreenInsert | undefined> {
@@ -48,19 +48,23 @@ export async function sharedUpdate(id: string, data: InstallmentScreenEdit): Pro
 export const installmentStrategies: Record<
   Kind,
   {
-    insert: (data: InstallmentScreenInsert) => void
+    insert: (data: InstallmentScreenInsert) => Promise<void>
     fetchById: (id: string) => Promise<InstallmentScreenInsert | undefined>
     update: (id: string, data: InstallmentScreenEdit) => Promise<undefined>
   }
 > = {
   payment: {
-    insert: async (data) => sharedInsert(data, "payment"),
-    fetchById: async (id) => sharedFetch(id),
+    insert: async (data) => await sharedInsert(data, "payment"),
+    fetchById: async (id) => await sharedFetch(id),
     update: async (id, data) => await sharedUpdate(id, data)
   },
   receipt: {
-    insert: async (data) => sharedInsert(data, "receipt"),
-    fetchById: async (id) => sharedFetch(id),
+    insert: async (data) => await sharedInsert(data, "receipt"),
+    fetchById: async (id) => await sharedFetch(id),
     update: async (id, data) => await sharedUpdate(id, data)
   }
+}
+
+function parseAmount(amountValue: string): number {
+  throw new Error("Function not implemented.");
 }

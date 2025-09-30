@@ -1,3 +1,4 @@
+import { amountParse } from "@components/ui/AmountInput"
 import { find_standard } from "@data/playground/standard/find"
 import { insert_standard } from "@data/playground/standard/insert"
 import { update_standard } from "@data/playground/standard/update"
@@ -9,7 +10,7 @@ export async function sharedInsert(data: StandardScreenInsert, kind: Kind) {
     description: data.description,
     cashflow_type: getCashflowType(kind),
     category_id: data.category.id,
-    amount: Number(data.amountValue.replaceAll(/\D/g, "")),
+    amount: amountParse(data.amountValue),
     scheduled_at: data.scheduledAt,
     transaction_instrument_id: data.transactionInstrument.id,
     transfer_method_code: data.transactionInstrument.transfer_method_code
