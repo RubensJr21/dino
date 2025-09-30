@@ -115,6 +115,10 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
     }))
   }, [setData])
 
+  const handleSubmit = useCallback((data: InstallmentScreenInsert) => {
+    installmentStrategies[kind].insert(data)
+  }, [])
+
   const toShowTransactionInstrument = useMemo(() => {
     return (data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code)
   }, [data.transactionInstrument])
@@ -157,7 +161,7 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
             null
         }s
       </ScrollView>
-      <ButtonSubmit onSubmit={() => installmentStrategies[kind].insert(data)} />
+      <ButtonSubmit onSubmit={() => handleSubmit(data)} />
     </BasePage>
   )
 }

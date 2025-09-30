@@ -77,7 +77,7 @@ export async function populate_database() {
       `INSERT OR IGNORE INTO ${table_name} VALUES ${placeholders}`,
       values
     );
-    console.info(`INSERT OR IGNORE INTO ${table_name} VALUES ${placeholders}`, values)
+    // console.info(`INSERT OR IGNORE INTO ${table_name} VALUES ${placeholders}`, values)
     console.info(`${table_name} populada!`)
   }
   try {

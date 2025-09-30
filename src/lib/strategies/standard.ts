@@ -9,7 +9,7 @@ export async function sharedInsert(data: StandardScreenInsert, kind: Kind) {
     description: data.description,
     cashflow_type: getCashflowType(kind),
     category_id: data.category.id,
-    amount: Number(data.amountValue),
+    amount: Number(data.amountValue.replaceAll(/\D/g, "")),
     scheduled_at: data.scheduledAt,
     transaction_instrument_id: data.transactionInstrument.id,
     transfer_method_code: data.transactionInstrument.transfer_method_code

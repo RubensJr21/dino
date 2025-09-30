@@ -85,7 +85,7 @@ export const insert_standard = async (data: DataType) => {
     return standard.id;
   } catch (error) {
     transactionsFn.rollback();
-    return 500;
+    throw error;
   }
 };
 

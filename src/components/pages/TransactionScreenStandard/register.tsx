@@ -9,10 +9,13 @@ import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } fro
 import { SelectTransferMethodButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransferMethodButton";
 import { TransactionStandardCardRegister } from "@components/ui/TransactionCardRegister/TransactionStandardCardRegister";
 import * as ti_fns from "@data/playground/transaction_instrument";
+import { CallToast } from "@lib/call-toast";
 import { standardStrategies } from "@lib/strategies";
 import { Category, Kind, StandardScreenInsert, TransactionInstrument } from "@lib/types";
+import { validateStandardTransactionInsertData } from "@lib/validations/inserts/standard_transaction";
+import { useNavigation } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 import { initialDataBase } from "../TransactionScreenDefaultData";
 
 type Props = {
@@ -26,6 +29,7 @@ const initialDataStandard = {
 
 export function TransactionStandardRegisterScreen({ kind }: Props) {
   const [data, setData] = useState<StandardScreenInsert>(initialDataStandard)
+  const navigation = useNavigation()
 
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
@@ -106,9 +110,22 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
     return (data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code)
   }, [data.transactionInstrument])
 
-  const handleSubmit = () => {
-    standardStrategies[kind].insert(data)
-  }
+  const handleSubmit = useCallback((data: StandardScreenInsert) => {
+    const [hasError, errors] = validateStandardTransactionInsertData(data)
+    if (hasError) {
+      return Alert.alert("Atenção!", errors.join("\n"))
+    }
+    standardStrategies[kind]
+      .insert(data)
+      .then(() => {
+        CallToast("Transação registrada!")
+        navigation.goBack()
+      })
+      .catch((error) => {
+        console.error(error)
+        Alert.alert("Erro!", "Erro ao registrar transação!")
+      })
+  }, [])
 
   return (
     <BasePage style={styles.page}>
@@ -139,7 +156,7 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
             null
         }
       </ScrollView>
-      <ButtonSubmit onSubmit={handleSubmit} />
+      <ButtonSubmit onSubmit={() => handleSubmit(data)} />
     </BasePage>
   )
 }

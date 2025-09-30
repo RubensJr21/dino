@@ -15,6 +15,14 @@ export async function insert_bank_account(data: {
       );
     }
 
+    const banks = await ba.get_by_nickname(db, data.nickname)
+
+    if(banks.length > 0){
+      throw new Error(
+        "Nickname já está sendo utilizado por outra conta bancária."
+      )
+    }
+
     const bank_account = await ba.insert(db, {
       nickname: data.nickname,
     });
