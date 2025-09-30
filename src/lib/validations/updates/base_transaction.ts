@@ -1,7 +1,7 @@
-import { TransactionScreenBaseEdit } from "@lib/types";
+import { TransactionScreenBaseUpdate } from "@lib/types";
 import { INITIAL_CATEGORY } from "@pages/TransactionScreenDefaultData";
 
-export function validateBaseTransactionEditData(data: TransactionScreenBaseEdit): [hasError: boolean, errors: Array<string>] {
+export function validateBaseTransactionUpdateData(data: TransactionScreenBaseUpdate): [hasError: boolean, errors: Array<string>] {
   const errors = new Array<string>()
   let hasError = false
 

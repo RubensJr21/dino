@@ -37,24 +37,24 @@ export interface RecurringScreenInsert extends TransactionScreenBaseInsert {
 }
 
 // ======================
-// EDIT TYPES
+// UPDATE TYPES
 // ======================
 
-export interface TransactionScreenBaseEdit {
+export interface TransactionScreenBaseUpdate {
   description?: string;
   category?: Category;
 }
 
-export interface StandardScreenEdit extends TransactionScreenBaseEdit {
+export interface StandardScreenUpdate extends TransactionScreenBaseUpdate {
   amountValue?: string;
   scheduledAt?: Date;
 }
 
-export interface RecurringScreenEdit extends TransactionScreenBaseEdit {
+export interface RecurringScreenUpdate extends TransactionScreenBaseUpdate {
   currentAmount?: string;
 }
 
-export type InstallmentScreenEdit = TransactionScreenBaseEdit
+export type InstallmentScreenUpdate = TransactionScreenBaseUpdate
 
 export type Kind = "payment" | "receipt"
 

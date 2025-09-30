@@ -1,8 +1,8 @@
-import { RecurringScreenEdit } from "@lib/types";
-import { validateBaseTransactionEditData } from "@lib/validations/updates/base_transaction";
+import { RecurringScreenUpdate } from "@lib/types";
+import { validateBaseTransactionUpdateData } from "@lib/validations/updates/base_transaction";
 
-export function validateRecurringTransactionEditData(data: RecurringScreenEdit): [hasError: boolean, errors: Array<string>] {
-  const [baseHasError, errors] = validateBaseTransactionEditData(data)
+export function validateRecurringTransactionUpdateData(data: RecurringScreenUpdate): [hasError: boolean, errors: Array<string>] {
+  const [baseHasError, errors] = validateBaseTransactionUpdateData(data)
 
   return [baseHasError, errors]
 }

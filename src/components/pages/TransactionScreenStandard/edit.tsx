@@ -6,8 +6,11 @@ import { DatePicker } from "@components/ui/DatePicker";
 import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { TransactionStandardCardRegister } from "@components/ui/TransactionCardRegister/TransactionStandardCardRegister";
+import { CallToast } from "@lib/call-toast";
 import { standardStrategies } from "@lib/strategies";
 import { Category, Kind, StandardScreenInsert } from "@lib/types";
+import { validateStandardTransactionUpdateData } from "@lib/validations/updates/standard_transaction";
+import { useNavigation } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
 
@@ -19,6 +22,7 @@ type Props = {
 export function TransactionStandardEditScreen({ id, kind }: Props) {
   const [data, setData] = useState<StandardScreenInsert>()
   const [lastData, setLastData] = useState<StandardScreenInsert>()
+  const navigation = useNavigation()
 
   useEffect(() => {
     standardStrategies[kind].fetchById(id).then((fetchData) => {
@@ -90,6 +94,29 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
     })
   }, [setData])
 
+  const handleSubmit = useCallback((data: StandardScreenInsert) => {
+    const realData = {
+      amountValue: lastData.amountValue === data.amountValue ? undefined : data.amountValue,
+      category: lastData.category.id === data.category.id ? undefined : data.category,
+      description: lastData.description === data.description ? undefined : data.description,
+      scheduledAt: lastData.scheduledAt === data.scheduledAt ? undefined : data.scheduledAt
+    }
+    const [hasError, errors] = validateStandardTransactionUpdateData(data)
+    if (hasError) {
+      return Alert.alert("Atenção!", errors.join("\n"))
+    }
+    standardStrategies[kind]
+      .update(id, realData)
+      .then(() => {
+        CallToast("Transação registrada!")
+        navigation.goBack()
+      })
+      .catch((error) => {
+        console.error(error)
+        Alert.alert("Erro!", "Erro ao registrar transação!")
+      })
+  }, [])
+
   return (
     <BasePage style={styles.page}>
       <TransactionStandardCardRegister data={data} />
@@ -103,12 +130,7 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
           onSelected={onConfirmCategory}
         />
       </ScrollView>
-      <ButtonSubmit onSubmit={() => standardStrategies[kind].update(id, {
-        amountValue: lastData.amountValue === data.amountValue ? undefined : data.amountValue,
-        category: lastData.category.id === data.category.id ? undefined : data.category,
-        description: lastData.description === data.description ? undefined : data.description,
-        scheduledAt: lastData.scheduledAt === data.scheduledAt ? undefined : data.scheduledAt
-      })} />
+      <ButtonSubmit onSubmit={() => handleSubmit(data)} />
     </BasePage>
   )
 }

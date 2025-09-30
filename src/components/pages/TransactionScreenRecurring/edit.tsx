@@ -6,9 +6,12 @@ import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_RECURRENCE_TYPE } from "@components/ui/SelectRecurrenceButton";
 import { TransactionRecurringCardRegister } from "@components/ui/TransactionCardRegister/TransactionRecurringCardRegister";
+import { CallToast } from "@lib/call-toast";
 import { recurringStrategies } from "@lib/strategies";
 import { Category, Kind, RecurringScreenInsert } from "@lib/types";
+import { validateRecurringTransactionUpdateData } from "@lib/validations/updates/recurring_transaction";
 import { initialDataBase } from "@pages/TransactionScreenDefaultData";
+import { useNavigation } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
 
@@ -27,6 +30,7 @@ const initialDataRecurring = {
 export function TransactionRecurringEditScreen({ id, kind }: TransactionRecurringEditScreenProps) {
   const [data, setData] = useState<RecurringScreenInsert>(initialDataRecurring)
   const [lastData, setLastData] = useState<RecurringScreenInsert>()
+  const navigation = useNavigation();
 
   useEffect(() => {
     recurringStrategies[kind].fetchById(id).then((fetchData) => {
@@ -90,6 +94,28 @@ export function TransactionRecurringEditScreen({ id, kind }: TransactionRecurrin
     })
   }, [setData])
 
+  const handleSubmit = useCallback((data: RecurringScreenInsert) => {
+    const realData = {
+      category: lastData.category.id === data.category.id ? undefined : data.category,
+      description: lastData.description === data.description ? undefined : data.description,
+      currentAmount: lastData.amountValue === data.amountValue ? undefined : data.amountValue,
+    }
+    const [hasError, errors] = validateRecurringTransactionUpdateData(data)
+    if (hasError) {
+      return Alert.alert("Atenção!", errors.join("\n"))
+    }
+    recurringStrategies[kind]
+      .update(id, realData)
+      .then(() => {
+        CallToast("Transação registrada!")
+        navigation.goBack()
+      })
+      .catch((error) => {
+        console.error(error)
+        Alert.alert("Erro!", "Erro ao registrar transação!")
+      })
+  }, [])
+
   return (
     <BasePage style={styles.page}>
       <TransactionRecurringCardRegister data={data} />
@@ -102,11 +128,7 @@ export function TransactionRecurringEditScreen({ id, kind }: TransactionRecurrin
           onSelected={onConfirmCategory}
         />
       </ScrollView>
-      <ButtonSubmit onSubmit={() => recurringStrategies[kind].update(id, {
-        category: lastData.category.id === data.category.id ? undefined : data.category,
-        description: lastData.description === data.description ? undefined : data.description,
-        currentAmount: lastData.amountValue === data.amountValue ? undefined : data.amountValue,
-      })} />
+      <ButtonSubmit onSubmit={() => handleSubmit(data)} />
     </BasePage>
   )
 }

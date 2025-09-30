@@ -4,10 +4,13 @@ import ScrollView from "@components/ui/base/ScrollView";
 import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { TransactionInstallmentCardRegister } from "@components/ui/TransactionCardRegister/TransactionInstallmentCardRegister";
+import { CallToast } from "@lib/call-toast";
 import { installmentStrategies } from "@lib/strategies";
 import { Category, InstallmentScreenInsert, Kind } from "@lib/types";
+import { validateInstallmentTransactionUpdateData } from "@lib/validations/updates/installment_transaction";
+import { useNavigation } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 
 interface TransactionInstallmentEditScreenProps {
   id: string;
@@ -17,6 +20,7 @@ interface TransactionInstallmentEditScreenProps {
 export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstallmentEditScreenProps) {
   const [data, setData] = useState<InstallmentScreenInsert>()
   const [lastData, setLastData] = useState<InstallmentScreenInsert>()
+  const navigation = useNavigation()
 
   useEffect(() => {
     installmentStrategies[kind].fetchById(id).then((fetchData) => {
@@ -26,6 +30,11 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
       }
     })
   }, [id])
+
+  if (data === undefined || lastData === undefined) {
+    // Quer dizer que o conteúdo ainda não foi inicializado ou carregado
+    return null;
+  }
 
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
@@ -47,10 +56,26 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
     })
   }, [setData])
 
-  if (data === undefined || lastData === undefined) {
-    // Quer dizer que o conteúdo ainda não foi inicializado ou carregado
-    return null;
-  }
+  const handleSubmit = useCallback((data: InstallmentScreenInsert) => {
+    const realData = {
+      category: lastData.category.id === data.category.id ? undefined : data.category,
+      description: lastData.description === data.description ? undefined : data.description,
+    }
+    const [hasError, errors] = validateInstallmentTransactionUpdateData(data)
+    if (hasError) {
+      return Alert.alert("Atenção!", errors.join("\n"))
+    }
+    installmentStrategies[kind]
+      .update(id, realData)
+      .then(() => {
+        CallToast("Transação registrada!")
+        navigation.goBack()
+      })
+      .catch((error) => {
+        console.error(error)
+        Alert.alert("Erro!", "Erro ao registrar transação!")
+      })
+  }, [])
 
   return (
     <BasePage style={styles.page}>
@@ -63,10 +88,7 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
           onSelected={onConfirmCategory}
         />
       </ScrollView>
-      <ButtonSubmit onSubmit={() => installmentStrategies[kind].update(id, {
-        category: lastData.category.id === data.category.id ? undefined : data.category,
-        description: lastData.description === data.description ? undefined : data.description,
-      })} />
+      <ButtonSubmit onSubmit={() => handleSubmit(data)} />
     </BasePage>
   )
 }
