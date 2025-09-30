@@ -8,7 +8,7 @@ export async function sharedInsert(data: RecurringScreenInsert, kind: Kind) {
     description: data.description,
     cashflow_type: getCashflowType(kind),
     category_id: data.category.id,
-    amount: Number(data.amountValue),
+    amount: parseAmount(data.amountValue),
     transaction_instrument_id: data.transactionInstrument.id,
     transfer_method_code: data.transactionInstrument.transfer_method_code,
     recurrence_type_id: data.recurrenceType.id,
@@ -51,7 +51,7 @@ export async function sharedUpdate(id: string, data: RecurringScreenEdit): Promi
 export const recurringStrategies: Record<
   Kind,
   {
-    insert: (data: RecurringScreenInsert) => void
+    insert: (data: RecurringScreenInsert) => Promise<void>
     fetchById: (id: string) => Promise<RecurringScreenInsert | undefined>
     update: (id: string, data: RecurringScreenEdit) => Promise<undefined>
   }
@@ -66,4 +66,8 @@ export const recurringStrategies: Record<
     fetchById: async (id) => await sharedFetch(id),
     update: async (id, data) => await sharedUpdate(id, data)
   }
+}
+
+function parseAmount(amountValue: string): number {
+  throw new Error("Function not implemented.");
 }

@@ -10,11 +10,14 @@ import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } fro
 import { SelectTransferMethodButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransferMethodButton";
 import { TransactionRecurringCardRegister } from "@components/ui/TransactionCardRegister/TransactionRecurringCardRegister";
 import * as ti_fns from "@data/playground/transaction_instrument";
+import { CallToast } from "@lib/call-toast";
 import { recurringStrategies } from "@lib/strategies";
 import { Category, Kind, RecurrenceType, RecurringScreenInsert, TransactionInstrument } from "@lib/types";
+import { validateRecurringTransactionInsertData } from "@lib/validations/inserts/recurring_transaction";
 import { initialDataBase } from "@pages/TransactionScreenDefaultData";
+import { useNavigation } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
-import { StyleSheet } from "react-native";
+import { Alert, StyleSheet } from "react-native";
 
 interface TransactionRecurringRegisterScreenProps {
   kind: Kind
@@ -29,6 +32,7 @@ const initialDataRecurring = {
 
 export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurringRegisterScreenProps) {
   const [data, setData] = useState<RecurringScreenInsert>(initialDataRecurring)
+  const navigation = useNavigation()
 
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
@@ -116,10 +120,22 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
     return (data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code)
   }, [data.transactionInstrument])
 
-  const handleSubmit = async () => {
-    // Fazer validações
-    recurringStrategies[kind].insert(data)
-  }
+  const handleSubmit = useCallback((data: RecurringScreenInsert) => {
+    const [hasError, errors] = validateRecurringTransactionInsertData(data)
+    if (hasError) {
+      return Alert.alert("Atenção!", errors.join("\n"))
+    }
+    recurringStrategies[kind]
+      .insert(data)
+      .then(() => {
+        CallToast("Transação registrada!")
+        navigation.goBack()
+      })
+      .catch((error) => {
+        console.error(error)
+        Alert.alert("Erro!", "Erro ao registrar transação!")
+      })
+  }, [])
 
   return (
     <BasePage style={styles.page}>
@@ -154,7 +170,7 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
             null
         }
       </ScrollView>
-      <ButtonSubmit onSubmit={handleSubmit} />
+      <ButtonSubmit onSubmit={() => handleSubmit(data)} />
     </BasePage>
   )
 }
