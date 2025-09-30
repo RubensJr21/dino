@@ -8,10 +8,59 @@ import {
   transactionInstrument,
   transferMethod,
 } from "@database/schema";
-import { eq, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 
 type DataInsert = typeof standard.$inferInsert;
 type DataSelect = typeof standard.$inferSelect;
+
+export async function get_all(db: DatabaseType) {
+  return (
+    await db
+      .select({
+        id: standard.id,
+
+        cashflow_type: baseTransactionType.cashflow_type,
+        description: baseTransactionType.description,
+
+        category_id: baseTransactionType.fk_id_category,
+        category_code: category.code,
+
+        transaction_instrument_id: baseTransactionType.fk_id_transaction_instrument,
+        transaction_instrument_nickname: sql<string>`
+          CASE
+            WHEN ${bankAccount.id} IS NULL
+            THEN ${transferMethod.code}
+            ELSE ${transferMethod.code} || ' - ' || ${bankAccount.nickname}
+          END
+        `.as("transaction_instrument_nickname"),
+        bank_account_id: transactionInstrument.fk_id_bank_account,
+
+        transfer_method_code: transferMethod.code,
+
+        item_value_id: standard.fk_id_item_value,
+        amount: itemValue.amount,
+        scheduled_at: itemValue.scheduled_at,
+        was_processed: itemValue.was_processed,
+      })
+      .from(standard)
+      .innerJoin(baseTransactionType, eq(baseTransactionType.id, standard.id))
+      .innerJoin(category, eq(category.id, baseTransactionType.fk_id_category))
+      .innerJoin(
+        transactionInstrument,
+        eq(
+          transactionInstrument.id,
+          baseTransactionType.fk_id_transaction_instrument
+        )
+      )
+      .innerJoin(bankAccount, eq(bankAccount.id, transactionInstrument.fk_id_bank_account))
+      .innerJoin(
+        transferMethod,
+        eq(transferMethod.id, transactionInstrument.fk_id_transfer_method)
+      )
+      .innerJoin(itemValue, eq(itemValue.id, standard.fk_id_item_value))
+      .orderBy(desc(itemValue.scheduled_at))
+  )
+}
 
 export async function get(
   db: DatabaseType,
