@@ -9,10 +9,60 @@ import {
   transactionInstrument,
   transferMethod,
 } from "@database/schema";
-import { and, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 
 type DataInsert = typeof installment.$inferInsert;
 type DataSelect = typeof installment.$inferSelect;
+
+export async function get_all(db: DatabaseType){
+  return (
+    await db
+      .select({
+        id: installment.id,
+
+        cashflow_type: baseTransactionType.cashflow_type,
+        description: baseTransactionType.description,
+
+        category_id: baseTransactionType.fk_id_category,
+        category_code: category.code,
+
+        transaction_instrument_id: baseTransactionType.fk_id_transaction_instrument,
+        transaction_instrument_nickname: sql<string>`
+          CASE
+            WHEN ${bankAccount.id} IS NULL
+            THEN ${transferMethod.code}
+            ELSE ${transferMethod.code} || ' - ' || ${bankAccount.nickname}
+          END
+        `.as("transaction_instrument_nickname"),
+        bank_account_id: transactionInstrument.fk_id_bank_account,
+
+        transfer_method_code: transferMethod.code,
+
+        start_date: installment.start_date,
+        installments_number: installment.installments_number,
+        total_amount: installment.total_amount,
+      })
+      .from(installment)
+      .innerJoin(
+        baseTransactionType,
+        eq(installment.id, baseTransactionType.id)
+      )
+      .innerJoin(category, eq(baseTransactionType.fk_id_category, category.id))
+      .innerJoin(
+        transactionInstrument,
+        eq(
+          baseTransactionType.fk_id_transaction_instrument,
+          transactionInstrument.id
+        )
+      )
+      .innerJoin(bankAccount, eq(transactionInstrument.fk_id_bank_account, bankAccount.id))
+      .innerJoin(
+        transferMethod,
+        eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)
+      )
+      .orderBy(desc(installment.start_date))
+  )
+}
 
 export async function get(
   db: DatabaseType,
@@ -124,7 +174,8 @@ export async function get_all_item_values(
     .innerJoin(
       transferMethod,
       eq(transferMethod.id, transactionInstrument.fk_id_transfer_method)
-    );
+    )
+    .orderBy(desc(itemValue.scheduled_at));
 }
 
 export async function get_item_value(
