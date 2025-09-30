@@ -10,10 +10,64 @@ import {
   transactionInstrument,
   transferMethod,
 } from "@database/schema";
-import { and, eq, sql } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 
 type DataInsert = typeof recurring.$inferInsert;
 type DataSelect = typeof recurring.$inferSelect;
+
+export async function get_all(db: DatabaseType) {
+  return (
+    await db
+      .select({
+        id: recurring.id,
+
+        cashflow_type: baseTransactionType.cashflow_type,
+        description: baseTransactionType.description,
+
+        category_id: baseTransactionType.fk_id_category,
+        category_code: category.code,
+
+        transaction_instrument_id: baseTransactionType.fk_id_transaction_instrument,
+        transaction_instrument_nickname: sql<string>`
+          CASE
+            WHEN ${bankAccount.id} IS NULL
+            THEN ${transferMethod.code}
+            ELSE ${transferMethod.code} || ' - ' || ${bankAccount.nickname}
+          END
+        `.as("transaction_instrument_nickname"),
+        bank_account_id: transactionInstrument.fk_id_bank_account,
+
+        start_date: recurring.start_date,
+        end_date: recurring.end_date,
+        current_amount: recurring.current_amount,
+
+        transfer_method_code: transferMethod.code,
+
+        recurrence_type_id: recurring.fk_id_recurrence_type,
+        recurrence_type_code: recurrenceType.code,
+      })
+      .from(recurring)
+      .innerJoin(baseTransactionType, eq(recurring.id, baseTransactionType.id))
+      .innerJoin(
+        transactionInstrument,
+        eq(
+          baseTransactionType.fk_id_transaction_instrument,
+          transactionInstrument.id
+        )
+      )
+      .innerJoin(category, eq(category.id, baseTransactionType.fk_id_category))
+      .innerJoin(bankAccount, eq(transactionInstrument.fk_id_bank_account, bankAccount.id))
+      .innerJoin(
+        transferMethod,
+        eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)
+      )
+      .innerJoin(
+        recurrenceType,
+        eq(recurring.fk_id_recurrence_type, recurrenceType.id)
+      )
+      .orderBy(desc(recurring.start_date))
+  )
+}
 
 export async function get(
   db: DatabaseType,
@@ -117,7 +171,8 @@ export async function get_all_item_values(
     .innerJoin(
       transferMethod,
       eq(transferMethod.id, transactionInstrument.fk_id_transfer_method)
-    );
+    )
+    .orderBy(desc(itemValue.scheduled_at));
 }
 
 export async function get_item_value(
