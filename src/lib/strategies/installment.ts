@@ -1,7 +1,7 @@
 import { find_installment } from "@data/playground/installment/find";
 import { insert_installment } from "@data/playground/installment/insert";
 import { update_installment } from "@data/playground/installment/update";
-import { getCashflowType, InstallmentScreenEdit, InstallmentScreenInsert, Kind } from "../types";
+import { getCashflowType, InstallmentScreenInsert, InstallmentScreenUpdate, Kind } from "../types";
 
 export async function sharedInsert(data: InstallmentScreenInsert, kind: Kind) {
   return await insert_installment({
@@ -37,7 +37,7 @@ export async function sharedFetch(id: string): Promise<InstallmentScreenInsert |
   }
 }
 
-export async function sharedUpdate(id: string, data: InstallmentScreenEdit): Promise<undefined> {
+export async function sharedUpdate(id: string, data: InstallmentScreenUpdate): Promise<undefined> {
   await update_installment(Number(id), {
     description: data.description,
     category: data.category?.code,
@@ -50,7 +50,7 @@ export const installmentStrategies: Record<
   {
     insert: (data: InstallmentScreenInsert) => Promise<void>
     fetchById: (id: string) => Promise<InstallmentScreenInsert | undefined>
-    update: (id: string, data: InstallmentScreenEdit) => Promise<undefined>
+    update: (id: string, data: InstallmentScreenUpdate) => Promise<undefined>
   }
 > = {
   payment: {

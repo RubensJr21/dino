@@ -33,7 +33,7 @@ export default function StandardHomeBase({ kind, data, goToEdit, goToRegister }:
               description={standard.description}
               transactionInstrument={standard.transactionInstrument}
               category={standard.category}
-              status={standard.was_processed}
+              status={standard.wasProcessed}
               onToggleStatus={() => console.info("Toggle do Status...")}
               onEdit={goToEdit}
             />

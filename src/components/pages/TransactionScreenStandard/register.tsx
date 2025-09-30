@@ -13,7 +13,7 @@ import { CallToast } from "@lib/call-toast";
 import { standardStrategies } from "@lib/strategies";
 import { Category, Kind, StandardScreenInsert, TransactionInstrument } from "@lib/types";
 import { validateStandardTransactionInsertData } from "@lib/validations/inserts/standard_transaction";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
 import { initialDataBase } from "../TransactionScreenDefaultData";
@@ -29,7 +29,7 @@ const initialDataStandard = {
 
 export function TransactionStandardRegisterScreen({ kind }: Props) {
   const [data, setData] = useState<StandardScreenInsert>(initialDataStandard)
-  const navigation = useNavigation()
+  const router = useRouter();
 
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
@@ -119,7 +119,12 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
       .insert(data)
       .then(() => {
         CallToast("Transação registrada!")
-        navigation.goBack()
+        router.navigate({
+          pathname: "/payments/standard",
+          params: {
+            reload: data.scheduledAt.toISOString()
+          }
+        })
       })
       .catch((error) => {
         console.error(error)

@@ -13,7 +13,7 @@ import { desc, eq, sql } from "drizzle-orm";
 type DataInsert = typeof standard.$inferInsert;
 type DataSelect = typeof standard.$inferSelect;
 
-export async function get_all(db: DatabaseType) {
+export async function get_all(db: DatabaseType, cashflow_type: Cashflow_Type) {
   return (
     await db
       .select({
@@ -52,12 +52,13 @@ export async function get_all(db: DatabaseType) {
           baseTransactionType.fk_id_transaction_instrument
         )
       )
-      .innerJoin(bankAccount, eq(bankAccount.id, transactionInstrument.fk_id_bank_account))
+      .leftJoin(bankAccount, eq(bankAccount.id, transactionInstrument.fk_id_bank_account))
       .innerJoin(
         transferMethod,
         eq(transferMethod.id, transactionInstrument.fk_id_transfer_method)
       )
       .innerJoin(itemValue, eq(itemValue.id, standard.fk_id_item_value))
+      .where(eq(baseTransactionType.cashflow_type, cashflow_type))
       .orderBy(desc(itemValue.scheduled_at))
   )
 }

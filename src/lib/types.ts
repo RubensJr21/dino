@@ -77,7 +77,7 @@ export interface RecurringEntity extends RecurringScreenInsert {
 
 export interface StandardEntity extends StandardScreenInsert {
   id: number;
-  was_processed: boolean;
+  wasProcessed: boolean;
 }
 
 export interface InstallmentEntity extends InstallmentScreenInsert {

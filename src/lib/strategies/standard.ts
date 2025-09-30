@@ -1,9 +1,31 @@
 import { amountParse } from "@components/ui/AmountInput"
 import { find_standard } from "@data/playground/standard/find"
 import { insert_standard } from "@data/playground/standard/insert"
+import { list_all_standards } from "@data/playground/standard/list_all"
 import { update_standard } from "@data/playground/standard/update"
 import { getRealAmountValue } from "@data/playground/utils"
-import { getCashflowType, Kind, StandardScreenEdit, StandardScreenInsert } from "../types"
+import { getCashflowType, Kind, StandardScreenInsert, StandardScreenUpdate } from "../types"
+
+export async function sharedListAll(kind: Kind) {
+  return await list_all_standards(getCashflowType(kind)).then(standards => 
+    standards.map((standard) => ({
+      id: standard.id,
+      description: standard.description,
+      amountValue: standard.amount.toFixed(2),
+      wasProcessed: standard.was_processed,
+      category: {
+        id: standard.category_id,
+        code: standard.category_code
+      },
+      transactionInstrument: {
+        id: standard.transaction_instrument_id,
+        nickname: standard.transaction_instrument_nickname,
+        transfer_method_code: standard.transfer_method_code
+      },
+      scheduledAt: standard.scheduled_at,
+    }))
+  )
+}
 
 export async function sharedInsert(data: StandardScreenInsert, kind: Kind) {
   return await insert_standard({
@@ -27,7 +49,7 @@ export async function sharedFetch(id: string): Promise<StandardScreenInsert | un
       id: standard_founded.category_id,
       code: standard_founded.category_code
     },
-    amountValue: String(standard_founded.amount),
+    amountValue: standard_founded.amount.toFixed(2),
     scheduledAt: standard_founded.scheduled_at,
     transactionInstrument: {
       id: standard_founded.transaction_instrument_id,
@@ -37,7 +59,7 @@ export async function sharedFetch(id: string): Promise<StandardScreenInsert | un
   }
 }
 
-export async function sharedUpdate(id: string, data: StandardScreenEdit, kind: Kind): Promise<undefined> {
+export async function sharedUpdate(id: string, data: StandardScreenUpdate, kind: Kind): Promise<undefined> {
   const amount = data.amountValue === undefined
     ? undefined
     : getRealAmountValue(getCashflowType(kind), Number(data.amountValue))
@@ -51,17 +73,20 @@ export async function sharedUpdate(id: string, data: StandardScreenEdit, kind: K
 export const standardStrategies: Record<
   Kind,
   {
+    list_all: () => ReturnType<typeof sharedListAll>
     insert: (data: StandardScreenInsert) => Promise<number>
     fetchById: (id: string) => Promise<StandardScreenInsert | undefined>
-    update: (id: string, data: StandardScreenEdit) => Promise<undefined>
+    update: (id: string, data: StandardScreenUpdate) => Promise<undefined>
   }
 > = {
   payment: {
+    list_all: async () => await sharedListAll("payment"),
     insert: async (data) => await sharedInsert(data, "payment"),
     fetchById: async (id) => await sharedFetch(id),
     update: async (id, data) => await sharedUpdate(id, data, "payment")
   },
   receipt: {
+    list_all: async () => await sharedListAll("receipt"),
     insert: async (data) => await sharedInsert(data, "receipt"),
     fetchById: async (id) => await sharedFetch(id),
     update: async (id, data) => await sharedUpdate(id, data, "receipt")
