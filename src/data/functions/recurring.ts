@@ -1,14 +1,14 @@
 import { type DatabaseType } from "@database/db-instance";
 import {
-  bankAccount,
-  baseTransactionType,
-  category,
-  itemValue,
-  recurrenceType,
-  recurring,
-  recurringItemValue,
-  transactionInstrument,
-  transferMethod,
+    bankAccount,
+    baseTransactionType,
+    category,
+    itemValue,
+    recurrenceType,
+    recurring,
+    recurringItemValue,
+    transactionInstrument,
+    transferMethod,
 } from "@database/schema";
 import { and, desc, eq, sql } from "drizzle-orm";
 
@@ -56,7 +56,7 @@ export async function get_all(db: DatabaseType) {
         )
       )
       .innerJoin(category, eq(category.id, baseTransactionType.fk_id_category))
-      .innerJoin(bankAccount, eq(transactionInstrument.fk_id_bank_account, bankAccount.id))
+      .leftJoin(bankAccount, eq(transactionInstrument.fk_id_bank_account, bankAccount.id))
       .innerJoin(
         transferMethod,
         eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)
@@ -113,7 +113,7 @@ export async function get(
         )
       )
       .innerJoin(category, eq(category.id, baseTransactionType.fk_id_category))
-      .innerJoin(bankAccount, eq(transactionInstrument.fk_id_bank_account, bankAccount.id))
+      .leftJoin(bankAccount, eq(transactionInstrument.fk_id_bank_account, bankAccount.id))
       .innerJoin(
         transferMethod,
         eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)

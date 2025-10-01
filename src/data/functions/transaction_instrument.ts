@@ -26,7 +26,7 @@ export async function get_all_filtered_by_transfer_method(
       transferMethod,
       eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)
     )
-    .innerJoin(
+    .leftJoin(
       bankAccount,
       eq(transactionInstrument.fk_id_bank_account, bankAccount.id)
     )
@@ -53,7 +53,7 @@ export async function get_all(
       transferMethod,
       eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)
     )
-    .innerJoin(
+    .leftJoin(
       bankAccount,
       eq(transactionInstrument.fk_id_bank_account, bankAccount.id)
     );
@@ -80,7 +80,7 @@ export async function get_all_enable_filtered_by_transfer_method(
       transferMethod,
       eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)
     )
-    .innerJoin(
+    .leftJoin(
       bankAccount,
       eq(transactionInstrument.fk_id_bank_account, bankAccount.id)
     )

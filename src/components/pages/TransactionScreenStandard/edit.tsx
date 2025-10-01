@@ -28,7 +28,7 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
     standardStrategies[kind].fetchById(id).then((fetchData) => {
       if (fetchData !== undefined) {
         const data = {
-          amountValue: fetchData.amountValue.toString(),
+          amountValue: fetchData.amountValue,
           transactionInstrument: {
             id: fetchData.transactionInstrument.id,
             nickname: fetchData.transactionInstrument.nickname,
@@ -44,15 +44,11 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
         setData(data)
         setLastData(data)
       } else {
+        console.log(id)
         Alert.alert("Erro", "ID inválido fornecido para edição.");
       }
     })
   }, [id])
-
-  if (data === undefined || lastData === undefined) {
-    // Quer dizer que o conteúdo ainda não foi inicializado ou carregado
-    return null;
-  }
 
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
@@ -95,27 +91,43 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
   }, [setData])
 
   const handleSubmit = useCallback((data: StandardScreenInsert) => {
+    if (lastData === undefined) return undefined;
     const realData = {
       amountValue: lastData.amountValue === data.amountValue ? undefined : data.amountValue,
       category: lastData.category.id === data.category.id ? undefined : data.category,
       description: lastData.description === data.description ? undefined : data.description,
       scheduledAt: lastData.scheduledAt === data.scheduledAt ? undefined : data.scheduledAt
     }
+
+    if (Object.values(realData).every(value => value === undefined)) {
+      // Não tem nada pra atualizar
+      Alert.alert("Atenção!", "Nenhum dado foi alterado!")
+      return undefined;
+    }
+
     const [hasError, errors] = validateStandardTransactionUpdateData(data)
     if (hasError) {
       return Alert.alert("Atenção!", errors.join("\n"))
     }
+
+    console.log(realData)
+
     standardStrategies[kind]
       .update(id, realData)
       .then(() => {
-        CallToast("Transação registrada!")
+        CallToast("Transação atualizada!")
         navigation.goBack()
       })
       .catch((error) => {
         console.error(error)
-        Alert.alert("Erro!", "Erro ao registrar transação!")
+        Alert.alert("Erro!", "Erro ao atualizar transação!")
       })
-  }, [])
+  }, [lastData])
+
+  if (data === undefined || lastData === undefined) {
+    // Quer dizer que o conteúdo ainda não foi inicializado ou carregado
+    return null;
+  }
 
   return (
     <BasePage style={styles.page}>

@@ -1,3 +1,4 @@
+import { amountParseToNumber, amountParseToString } from "@components/ui/AmountInput";
 import { find_installment } from "@data/playground/installment/find";
 import { insert_installment } from "@data/playground/installment/insert";
 import { update_installment } from "@data/playground/installment/update";
@@ -12,7 +13,7 @@ export async function sharedInsert(data: InstallmentScreenInsert, kind: Kind) {
     transfer_method_code: data.transactionInstrument.transfer_method_code,
     start_date: data.startDate,
     installments_number: Number(data.installments),
-    total_amount: parseAmount(data.amountValue)
+    total_amount: amountParseToNumber(data.amountValue)
   })
 }
 export async function sharedFetch(id: string): Promise<InstallmentScreenInsert | undefined> {
@@ -31,7 +32,7 @@ export async function sharedFetch(id: string): Promise<InstallmentScreenInsert |
       nickname: installment_founded.transaction_instrument_nickname,
       transfer_method_code: installment_founded.transfer_method_code
     },
-    amountValue: installment_founded.total_amount.toFixed(2),
+    amountValue: amountParseToString(installment_founded.total_amount),
     startDate: installment_founded.start_date,
     installments: installment_founded.installments_number.toFixed(0)
   }
@@ -63,8 +64,4 @@ export const installmentStrategies: Record<
     fetchById: async (id) => await sharedFetch(id),
     update: async (id, data) => await sharedUpdate(id, data)
   }
-}
-
-function parseAmount(amountValue: string): number {
-  throw new Error("Function not implemented.");
 }

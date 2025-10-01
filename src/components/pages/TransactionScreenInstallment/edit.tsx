@@ -68,12 +68,12 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
     installmentStrategies[kind]
       .update(id, realData)
       .then(() => {
-        CallToast("Transação registrada!")
+        CallToast("Transação atualizada!")
         navigation.goBack()
       })
       .catch((error) => {
         console.error(error)
-        Alert.alert("Erro!", "Erro ao registrar transação!")
+        Alert.alert("Erro!", "Erro ao atualizar transação!")
       })
   }, [])
 

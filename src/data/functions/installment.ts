@@ -1,13 +1,13 @@
 import { type DatabaseType } from "@database/db-instance";
 import {
-  bankAccount,
-  baseTransactionType,
-  category,
-  installment,
-  installmentItemValue,
-  itemValue,
-  transactionInstrument,
-  transferMethod,
+    bankAccount,
+    baseTransactionType,
+    category,
+    installment,
+    installmentItemValue,
+    itemValue,
+    transactionInstrument,
+    transferMethod,
 } from "@database/schema";
 import { and, desc, eq, sql } from "drizzle-orm";
 
@@ -55,7 +55,7 @@ export async function get_all(db: DatabaseType){
           transactionInstrument.id
         )
       )
-      .innerJoin(bankAccount, eq(transactionInstrument.fk_id_bank_account, bankAccount.id))
+      .leftJoin(bankAccount, eq(transactionInstrument.fk_id_bank_account, bankAccount.id))
       .innerJoin(
         transferMethod,
         eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)
@@ -108,7 +108,7 @@ export async function get(
           transactionInstrument.id
         )
       )
-      .innerJoin(bankAccount, eq(transactionInstrument.fk_id_bank_account, bankAccount.id))
+      .leftJoin(bankAccount, eq(transactionInstrument.fk_id_bank_account, bankAccount.id))
       .innerJoin(
         transferMethod,
         eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)

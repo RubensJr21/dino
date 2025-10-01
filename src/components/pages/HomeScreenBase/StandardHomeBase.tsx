@@ -11,7 +11,7 @@ interface StandardHomeBaseProps {
   extras?: ReactNode;
   data: Array<StandardEntity>;
   goToRegister: () => void;
-  goToEdit: () => void;
+  goToEdit: (id: string) => void;
 }
 
 export default function StandardHomeBase({ kind, data, goToEdit, goToRegister }: StandardHomeBaseProps) {
@@ -27,7 +27,7 @@ export default function StandardHomeBase({ kind, data, goToEdit, goToRegister }:
           keyExtractor={standard => `${standard.id}`}
           style={{ marginTop: 5 }}
           contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 5 }}
-          renderItem={({ item: standard  }) => (
+          renderItem={({ item: standard }) => (
             <TransactionStandardCard
               scheduledAt={standard.scheduledAt}
               description={standard.description}
@@ -35,7 +35,7 @@ export default function StandardHomeBase({ kind, data, goToEdit, goToRegister }:
               category={standard.category}
               status={standard.wasProcessed}
               onToggleStatus={() => console.info("Toggle do Status...")}
-              onEdit={goToEdit}
+              onEdit={() => goToEdit(standard.id.toString())}
             />
           )}
           ListEmptyComponent={<Text>Nenhum {kind} encontrado.</Text>}

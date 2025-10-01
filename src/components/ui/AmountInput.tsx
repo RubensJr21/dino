@@ -1,5 +1,4 @@
 
-import { formatCurrencyString } from "@utils/formatCurrencyString";
 import { useCallback } from "react";
 import { TextInput } from "react-native-paper";
 
@@ -10,8 +9,21 @@ interface Props {
   placeholder?: string
 }
 
-export function amountParse(amountString: string) {
+export function formatCurrencyString(value: string) {
+  const onlyNumbers = Number(value.replaceAll(/\D/g, "")) / 100
+
+  return new Intl.NumberFormat('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(onlyNumbers);
+}
+
+export function amountParseToNumber(amountString: string) {
   return Number(amountString.replaceAll(/\D/g, ""))
+}
+
+export function amountParseToString(amountNumber: number) {
+  return formatCurrencyString(amountNumber.toString())
 }
 
 export function AmountInput({ amountValue, onChangeAmount, label = "Valor", placeholder = "Digite um valor..." }: Props) {

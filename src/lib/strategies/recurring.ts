@@ -1,3 +1,4 @@
+import { amountParseToNumber, amountParseToString } from "@components/ui/AmountInput";
 import { find_recurring } from "@data/playground/recurring/find";
 import { insert_recurring } from "@data/playground/recurring/insert";
 import { update_recurring } from "@data/playground/recurring/update";
@@ -8,7 +9,7 @@ export async function sharedInsert(data: RecurringScreenInsert, kind: Kind) {
     description: data.description,
     cashflow_type: getCashflowType(kind),
     category_id: data.category.id,
-    amount: parseAmount(data.amountValue),
+    amount: amountParseToNumber(data.amountValue),
     transaction_instrument_id: data.transactionInstrument.id,
     transfer_method_code: data.transactionInstrument.transfer_method_code,
     recurrence_type_id: data.recurrenceType.id,
@@ -31,7 +32,7 @@ export async function sharedFetch(id: string): Promise<RecurringScreenInsert | u
       nickname: recurring_founded.transaction_instrument_nickname,
       transfer_method_code: recurring_founded.transfer_method_code
     },
-    amountValue: recurring_founded.current_amount.toFixed(2),
+    amountValue: amountParseToString(recurring_founded.current_amount),
     recurrenceType: {
       id: recurring_founded.recurrence_type_id,
       code: recurring_founded.recurrence_type_code
@@ -66,8 +67,4 @@ export const recurringStrategies: Record<
     fetchById: async (id) => await sharedFetch(id),
     update: async (id, data) => await sharedUpdate(id, data)
   }
-}
-
-function parseAmount(amountValue: string): number {
-  throw new Error("Function not implemented.");
 }
