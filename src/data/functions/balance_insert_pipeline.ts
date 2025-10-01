@@ -64,37 +64,6 @@ export async function balance_bank_insert_pipeline(
 	}
 }
 
-export async function balance_bank_update_pipeline(
-	db: DatabaseType,
-	data: BankData
-) {
-	const { month, year, amount } = data;
-
-	const realAmount = getRealAmountValue(data.cashflow_type, amount);
-
-	// Garanto que existe, pois ele não é do tipo 'cash'
-	const bank_id = await ti.get_bank_id(db, data.transaction_instrument_id);
-
-	if (bank_id === null) {
-		throw new Error(`Erro ao obter o valor de bank_id (${bank_id})`);
-	}
-
-	const balance_bank = await bb.get_balance(db, {
-		month,
-		year,
-		bank_id,
-	});
-
-	if (balance_bank === undefined) {
-		throw new Error("Nenhum balanço bancário nesse período foi encontrado.");
-	}
-
-	await bb.apply_executed_amount(db, {
-		id: balance_bank.id,
-		updated_executed_amount: balance_bank.executed_amount + realAmount,
-	});
-}
-
 export async function balance_cash_insert_pipeline(
 	db: DatabaseType,
 	data: CashData
@@ -121,28 +90,4 @@ export async function balance_cash_insert_pipeline(
 			updated_planned_amount: balance_cash.planned_amount + realAmount,
 		});
 	}
-}
-
-
-export async function balance_cash_update_pipeline(
-	db: DatabaseType,
-	data: CashData
-) {
-	const { month, year, amount } = data;
-
-	const realAmount = getRealAmountValue(data.cashflow_type, amount);
-
-	const balance_cash = await bc.get_balance(db, {
-		month,
-		year,
-	});
-
-	if (balance_cash === undefined) {
-		throw new Error("Nenhum balanço bancário nesse período foi encontrado.");
-	}
-
-	await bc.apply_executed_amount(db, {
-		id: balance_cash.id,
-		updated_executed_amount: balance_cash.executed_amount + realAmount,
-	});
 }

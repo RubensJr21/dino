@@ -56,6 +56,10 @@ export async function balance_bank_update_pipeline(
     throw new Error("Nenhum balanço bancário nesse período foi encontrado.");
   }
 
+  // SE ESTIVER REMOVENDO PRECISA:
+  // > TIRAR DO PLANEJADO 
+  // > TIRAR DO EXECUTADO, SE TIVER SIDO EXECUTADO
+
   await bb.apply_executed_amount(db, {
     id: balance_bank.id,
     updated_executed_amount: balance_bank.executed_amount + realAmount,
@@ -162,7 +166,7 @@ export async function change_amount_and_scheduled_at_from_balance_bank(
   const newYear = new_data.scheduled_at.getFullYear()
   const newAmount = new_data.amount
 
-  // Garanto porque verifiquei o transafer_method
+  // Garanto porque verifiquei o transfer_method
   // Remove o antigo
   await balance_bank_update_pipeline(db, {
     month: oldMonth,
