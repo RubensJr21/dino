@@ -1,4 +1,6 @@
-import * as bup from "@data_functions/balance_update_pipeline";
+import { move_amount_and_date } from "@data/pipelines/balance_cash/update/move_amount_and_date";
+import { move_date } from "@data/pipelines/balance_cash/update/move_date";
+import { update_amount } from "@data/pipelines/balance_cash/update/update_amount";
 import * as btt from "@data_functions/base_transaction_type";
 import * as cat from "@data_functions/category";
 import * as iv from "@data_functions/item_value";
@@ -62,105 +64,63 @@ export async function update_standard(
       await btt.update(db, standard_founded.id, {
         description: updates.description,
         fk_id_category: updates.fk_id_category
-      });
+      }).catch(error => { throw error });
     }
 
     if (updates.amount !== undefined || updates.scheduled_at !== undefined) {
-      console.log(updates)
       await iv.update(db, standard_founded.item_value_id, {
         amount: updates.amount,
         scheduled_at: updates.scheduled_at
-      })
+      }).catch(error => { throw error })
     }
 
-    if (updates.amount !== undefined && updates.scheduled_at !== undefined) {
-      const cashflow_type = standard_founded.cashflow_type;
-      if (standard_founded.transfer_method_code === "cash") {
-        await bup.change_amount_and_scheduled_at_from_balance_cash(db, {
+    // ==============================
+    // Update Balance
+    // ==============================
+
+    const cashflow_type = standard_founded.cashflow_type;
+    if (standard_founded.transfer_method_code === "cash") {
+      // Verificar se foi processada
+      //  Se a transação foi processada:
+      //    - precisa remover do planned e executed no balanço antigo
+      //    - precisa adicionar ao planned e executed no balanço novo
+      //    - Se após a remoção o blanço ficar zerado ele irá ser removido
+      //  Se a transação não foi processada:
+      //    - precisa remover do planned no balanço antigo
+      //    - precisa adicionar ao planned no balanço novo
+      //    - Se após a remoção o blanço ficar zerado ele irá ser removido
+      if (updates.amount !== undefined && updates.scheduled_at !== undefined) {
+        // Preico mover de um balanço para o outro
+        await move_amount_and_date({
+          new_date: updates.scheduled_at,
+          new_amount: updates.amount,
+          old_date: standard_founded.scheduled_at,
+          old_amount: standard_founded.amount,
           cashflow_type,
-          new_data: {
-            amount: updates.amount,
-            scheduled_at: updates.scheduled_at
-          },
-          old_data: {
-            amount: standard_founded.amount,
-            scheduled_at: standard_founded.scheduled_at
-          }
+          was_processed: standard_founded.was_processed
         })
-      } else {
-        // Garanto porque verifiquei o transfer_method
-        const transaction_instrument_id = standard_founded.transaction_instrument_id
-        await bup.change_amount_and_scheduled_at_from_balance_bank(db, {
+      } else if (updates.amount !== undefined) {
+        const date = standard_founded.scheduled_at
+        await update_amount({
+          new_amount: updates.amount,
+          old_amount: standard_founded.amount,
+          date,
           cashflow_type,
-          new_data: {
-            amount: updates.amount,
-            scheduled_at: updates.scheduled_at
-          },
-          old_data: {
-            amount: standard_founded.amount,
-            scheduled_at: standard_founded.scheduled_at
-          },
-          transaction_instrument_id
+          was_processed: standard_founded.was_processed
         })
-      }
-    } else if (updates.amount !== undefined) {
-      const cashflow_type = standard_founded.cashflow_type;
-      const scheduled_at = standard_founded.scheduled_at
-      if (standard_founded.transfer_method_code === "cash") {
-        await bup.change_amount_from_balance_cash(db, {
-          cashflow_type,
-          scheduled_at,
-          new_data: {
-            amount: updates.amount,
-          },
-          old_data: {
-            amount: standard_founded.amount,
-          }
-        })
-      } else {
-        // Garanto porque verifiquei o transfer_method
-        const transaction_instrument_id = standard_founded.transaction_instrument_id
-        await bup.change_amount_from_balance_bank(db, {
-          cashflow_type,
-          scheduled_at,
-          new_data: {
-            amount: updates.amount,
-          },
-          old_data: {
-            amount: standard_founded.amount,
-          },
-          transaction_instrument_id
-        })
-      }
-    } else if (updates.scheduled_at !== undefined) {
-      const cashflow_type = standard_founded.cashflow_type;
-      const amount = standard_founded.amount;
-      if (standard_founded.transfer_method_code === "cash") {
-        await bup.change_scheduled_at_from_balance_cash(db, {
-          cashflow_type,
+      } else if (updates.scheduled_at !== undefined) {
+        // Amount não mudou (amount === undefined)
+        const amount = standard_founded.amount;
+        await move_date({
+          new_date: updates.scheduled_at,
+          old_date: standard_founded.scheduled_at,
           amount,
-          new_data: {
-            scheduled_at: updates.scheduled_at
-          },
-          old_data: {
-            scheduled_at: standard_founded.scheduled_at
-          }
-        })
-      } else {
-        // Garanto porque verifiquei o transfer_method
-        const transaction_instrument_id = standard_founded.transaction_instrument_id
-        await bup.change_scheduled_at_from_balance_bank(db, {
           cashflow_type,
-          amount,
-          new_data: {
-            scheduled_at: updates.scheduled_at
-          },
-          old_data: {
-            scheduled_at: standard_founded.scheduled_at
-          },
-          transaction_instrument_id
+          was_processed: standard_founded.was_processed
         })
       }
+    } else {
+
     }
 
     transactionsFn.commit();

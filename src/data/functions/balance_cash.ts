@@ -10,7 +10,7 @@ type DataType = {
 
 export async function create_balance(db: DatabaseType, data: DataType) {
 	// INSERINDO balance_cash
-	await db
+	return await db
 		.insert(balanceCash)
 		.values([
 			{

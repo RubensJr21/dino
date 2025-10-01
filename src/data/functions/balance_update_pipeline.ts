@@ -12,6 +12,7 @@ import {
   itemValue,
   transactionInstrument,
 } from "@database/schema";
+import { eq } from "drizzle-orm";
 
 type monthType = typeof balanceBank.$inferSelect.month &
   typeof balanceCash.$inferSelect.month;
@@ -33,7 +34,8 @@ type BankData = BaseData & {
 export async function balance_bank_update_pipeline(
   db: DatabaseType,
   data: BankData,
-  removing: boolean = false
+  removing: boolean = false,
+  was_processed: boolean
 ) {
   const { month, year, amount } = data;
 
@@ -56,20 +58,29 @@ export async function balance_bank_update_pipeline(
     throw new Error("Nenhum balanço bancário nesse período foi encontrado.");
   }
 
-  // SE ESTIVER REMOVENDO PRECISA:
-  // > TIRAR DO PLANEJADO 
-  // > TIRAR DO EXECUTADO, SE TIVER SIDO EXECUTADO
-
-  await bb.apply_executed_amount(db, {
-    id: balance_bank.id,
-    updated_executed_amount: balance_bank.executed_amount + realAmount,
-  });
+  if (was_processed) {
+    await db
+      .update(balanceBank)
+      .set({
+        planned_amount: balance_bank.executed_amount + realAmount,
+        executed_amount: balance_bank.executed_amount + realAmount
+      })
+      .where(eq(balanceBank.id, balance_bank.id))
+  } else {
+    await db
+      .update(balanceBank)
+      .set({
+        planned_amount: balance_bank.executed_amount + realAmount
+      })
+      .where(eq(balanceBank.id, balance_bank.id))
+  }
 }
 
 export async function balance_cash_update_pipeline(
   db: DatabaseType,
   data: CashData,
-  removing: boolean = false
+  removing: boolean = false,
+  was_processed: boolean
 ) {
   const { month, year, amount } = data;
 
@@ -84,10 +95,22 @@ export async function balance_cash_update_pipeline(
     throw new Error("Nenhum balanço bancário nesse período foi encontrado.");
   }
 
-  await bc.apply_executed_amount(db, {
-    id: balance_cash.id,
-    updated_executed_amount: balance_cash.executed_amount + realAmount,
-  });
+  if (was_processed) {
+    await db
+      .update(balanceBank)
+      .set({
+        planned_amount: balance_cash.executed_amount + realAmount,
+        executed_amount: balance_cash.executed_amount + realAmount
+      })
+      .where(eq(balanceBank.id, balance_cash.id))
+  } else {
+    await db
+      .update(balanceBank)
+      .set({
+        planned_amount: balance_cash.executed_amount + realAmount
+      })
+      .where(eq(balanceBank.id, balance_cash.id))
+  }
 }
 
 // MUDANÇAS BASEADAS EM ATRIBUTOS
@@ -103,6 +126,8 @@ interface changeAmountAndScheduledAtBalanceCashParams {
   }
 
   new_data: changeAmountAndScheduledAtBalanceCashParams["old_data"]
+
+  was_processed: iv.infer_select["was_processed"]
 }
 
 export async function change_amount_and_scheduled_at_from_balance_cash(
@@ -110,7 +135,8 @@ export async function change_amount_and_scheduled_at_from_balance_cash(
   {
     cashflow_type,
     old_data,
-    new_data
+    new_data,
+    was_processed
   }: changeAmountAndScheduledAtBalanceCashParams
 ) {
   const oldMonth = old_data.scheduled_at.getMonth()
@@ -127,14 +153,14 @@ export async function change_amount_and_scheduled_at_from_balance_cash(
     year: oldYear,
     cashflow_type,
     amount: oldAmount
-  }, true)
+  }, true, was_processed)
   // Adiciona o atualizado
   await balance_cash_update_pipeline(db, {
     month: newMonth,
     year: newYear,
     cashflow_type,
     amount: newAmount
-  }, false)
+  }, false, was_processed)
 }
 
 interface changeAmountAndScheduledAtBalanceBankParams {
@@ -148,6 +174,8 @@ interface changeAmountAndScheduledAtBalanceBankParams {
   new_data: changeAmountAndScheduledAtBalanceBankParams["old_data"]
 
   transaction_instrument_id: ti.infer_select["id"]
+
+  was_processed: iv.infer_select["was_processed"]
 }
 export async function change_amount_and_scheduled_at_from_balance_bank(
   db: DatabaseType,
@@ -155,7 +183,8 @@ export async function change_amount_and_scheduled_at_from_balance_bank(
     cashflow_type,
     old_data,
     new_data,
-    transaction_instrument_id
+    transaction_instrument_id,
+    was_processed
   }: changeAmountAndScheduledAtBalanceBankParams
 ) {
   const oldMonth = old_data.scheduled_at.getMonth()
@@ -174,7 +203,7 @@ export async function change_amount_and_scheduled_at_from_balance_bank(
     cashflow_type,
     amount: oldAmount,
     transaction_instrument_id
-  }, true)
+  }, true, was_processed)
   // Adiciona o atualizado
   await balance_bank_update_pipeline(db, {
     month: newMonth,
@@ -182,7 +211,7 @@ export async function change_amount_and_scheduled_at_from_balance_bank(
     cashflow_type,
     amount: newAmount,
     transaction_instrument_id
-  }, false)
+  }, false, was_processed)
 }
 
 // ==============================
@@ -197,6 +226,8 @@ interface changeAmountBalanceCashParams {
   }
 
   new_data: changeAmountBalanceCashParams["old_data"]
+
+  was_processed: iv.infer_select["was_processed"]
 }
 
 export async function change_amount_from_balance_cash(
@@ -205,7 +236,8 @@ export async function change_amount_from_balance_cash(
     cashflow_type,
     scheduled_at,
     old_data,
-    new_data
+    new_data,
+    was_processed
   }: changeAmountBalanceCashParams
 ) {
   const month = scheduled_at.getMonth()
@@ -220,14 +252,14 @@ export async function change_amount_from_balance_cash(
     year: year,
     cashflow_type,
     amount: oldAmount
-  }, true)
+  }, true, was_processed)
   // Adiciona o atualizado
   await balance_cash_update_pipeline(db, {
     month,
     year,
     cashflow_type,
     amount: newAmount
-  }, false)
+  }, false, was_processed)
 }
 
 interface changeAmountBalanceBankParams {
@@ -241,6 +273,8 @@ interface changeAmountBalanceBankParams {
   new_data: changeAmountBalanceBankParams["old_data"]
 
   transaction_instrument_id: ti.infer_select["id"]
+
+  was_processed: iv.infer_select["was_processed"]
 }
 
 export async function change_amount_from_balance_bank(
@@ -250,7 +284,8 @@ export async function change_amount_from_balance_bank(
     scheduled_at,
     old_data,
     new_data,
-    transaction_instrument_id
+    transaction_instrument_id,
+    was_processed
   }: changeAmountBalanceBankParams
 ) {
   const month = scheduled_at.getMonth()
@@ -267,7 +302,7 @@ export async function change_amount_from_balance_bank(
     cashflow_type,
     amount: oldAmount,
     transaction_instrument_id
-  }, true)
+  }, true, was_processed)
   // Adiciona o atualizado
   await balance_bank_update_pipeline(db, {
     month,
@@ -275,7 +310,7 @@ export async function change_amount_from_balance_bank(
     cashflow_type,
     amount: newAmount,
     transaction_instrument_id
-  }, false)
+  }, false, was_processed)
 }
 
 // ==============================
@@ -290,6 +325,8 @@ interface changeScheduledAtBalanceCashParams {
   }
 
   new_data: changeScheduledAtBalanceCashParams["old_data"]
+
+  was_processed: iv.infer_select["was_processed"]
 }
 
 export async function change_scheduled_at_from_balance_cash(
@@ -298,7 +335,8 @@ export async function change_scheduled_at_from_balance_cash(
     cashflow_type,
     amount,
     old_data,
-    new_data
+    new_data,
+    was_processed
   }: changeScheduledAtBalanceCashParams
 ) {
   const oldMonth = old_data.scheduled_at.getMonth()
@@ -313,14 +351,14 @@ export async function change_scheduled_at_from_balance_cash(
     year: oldYear,
     cashflow_type,
     amount
-  }, true)
+  }, true, was_processed)
   // Adiciona o atualizado
   await balance_cash_update_pipeline(db, {
     month: newMonth,
     year: newYear,
     cashflow_type,
     amount
-  }, false)
+  }, false, was_processed)
 }
 
 interface changeScheduledAtBalanceBankParams {
@@ -334,6 +372,8 @@ interface changeScheduledAtBalanceBankParams {
   new_data: changeScheduledAtBalanceBankParams["old_data"]
 
   transaction_instrument_id: ti.infer_select["id"]
+
+  was_processed: iv.infer_select["was_processed"]
 }
 export async function change_scheduled_at_from_balance_bank(
   db: DatabaseType,
@@ -342,7 +382,8 @@ export async function change_scheduled_at_from_balance_bank(
     amount,
     old_data,
     new_data,
-    transaction_instrument_id
+    transaction_instrument_id,
+    was_processed
   }: changeScheduledAtBalanceBankParams
 ) {
   const oldMonth = old_data.scheduled_at.getMonth()
@@ -359,7 +400,7 @@ export async function change_scheduled_at_from_balance_bank(
     cashflow_type,
     amount,
     transaction_instrument_id
-  }, true)
+  }, true, was_processed)
   // Adiciona o atualizado
   await balance_bank_update_pipeline(db, {
     month: newMonth,
@@ -367,5 +408,5 @@ export async function change_scheduled_at_from_balance_bank(
     cashflow_type,
     amount,
     transaction_instrument_id
-  }, false)
+  }, false, was_processed)
 }
