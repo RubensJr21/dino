@@ -17,7 +17,7 @@ export async function insert_bank_account(data: {
 
     const banks = await ba.get_by_nickname(db, data.nickname)
 
-    if(banks.length > 0){
+    if (banks.length > 0) {
       throw new Error(
         "Nickname já está sendo utilizado por outra conta bancária."
       )
@@ -56,10 +56,10 @@ export async function insert_bank_account(data: {
       transfer_methods.map((transfer_method) => ({
         fk_id_transfer_method: transfer_method.id,
         fk_id_bank_account: bank_account.id,
-        is_enabled: transfer_methods_candidate.findIndex(({id}) => id === transfer_method.id) !== -1
-			}))
+        is_enabled: transfer_methods_candidate.findIndex(({ id }) => id === transfer_method.id) !== -1
+      }))
     );
-
+    
     transactionsFn.commit();
   } catch (error) {
     transactionsFn.rollback();

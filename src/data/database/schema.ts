@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 // ======================
 // category
@@ -140,39 +140,39 @@ export const installmentItemValue = sqliteTable("installment_item_value", {
 		.references(() => itemValue.id),
 });
 
-// ======================
-// balance_bank
-// ======================
-export const balanceBank = sqliteTable(
-	"balance_bank",
-	{
-		id: integer("id").primaryKey({ autoIncrement: true }),
-		fk_id_bank_account: integer("fk_id_bank_account")
-			.notNull()
-			.references(() => bankAccount.id),
-		month: integer("month").notNull(),
-		year: integer("year").notNull(),
-		planned_amount: integer("planned_amount").notNull(),
-		executed_amount: integer("executed_amount").notNull(),
-	},
-	(table) => ({
-		uniq: unique().on(table.fk_id_bank_account, table.month, table.year),
-	})
-);
+// // ======================
+// // balance_bank
+// // ======================
+// export const balanceBank = sqliteTable(
+// 	"balance_bank",
+// 	{
+// 		id: integer("id").primaryKey({ autoIncrement: true }),
+// 		fk_id_bank_account: integer("fk_id_bank_account")
+// 			.notNull()
+// 			.references(() => bankAccount.id),
+// 		month: integer("month").notNull(),
+// 		year: integer("year").notNull(),
+// 		planned_amount: integer("planned_amount").notNull(),
+// 		executed_amount: integer("executed_amount").notNull(),
+// 	},
+// 	(table) => ({
+// 		uniq: unique().on(table.fk_id_bank_account, table.month, table.year),
+// 	})
+// );
 
-// ======================
-// balance_cash
-// ======================
-export const balanceCash = sqliteTable(
-	"balance_cash",
-	{
-		id: integer("id").primaryKey({ autoIncrement: true }),
-		month: integer("month").notNull(),
-		year: integer("year").notNull(),
-		planned_amount: integer("planned_amount").notNull(),
-		executed_amount: integer("executed_amount").notNull(),
-	},
-	(table) => ({
-		uniq: unique().on(table.month, table.year),
-	})
-);
+// // ======================
+// // balance_cash
+// // ======================
+// export const balanceCash = sqliteTable(
+// 	"balance_cash",
+// 	{
+// 		id: integer("id").primaryKey({ autoIncrement: true }),
+// 		month: integer("month").notNull(),
+// 		year: integer("year").notNull(),
+// 		planned_amount: integer("planned_amount").notNull(),
+// 		executed_amount: integer("executed_amount").notNull(),
+// 	},
+// 	(table) => ({
+// 		uniq: unique().on(table.month, table.year),
+// 	})
+// );

@@ -6,61 +6,103 @@ Project "Dinô" {
   Note: 'Projeto desenvolvido para o Trabalho de conclusão de curso.'
 }
 
-// TABELA PREENCHIDA PELO SISTEMA
-Table tag {
+Table category {
   id integer [pk, increment]
-  description text [not null, note: "Educação, Saúde, Lazer, Alimentação, Moradia, Transporte, Serviços, Compras, Impostos/Taxas e Outros"]
+  code text [
+    not null,
+    note: "education, health, entertainment, food, housing,\
+    transportation, services, shopping, taxes, others"
+  ]
+  note: "TABELA PREENCHIDA PELO SISTEMA DURANTE A CRIAÇÃO DO BANCO"
 }
 
 Table transfer_method {
   id integer [pk, increment]
-  method text [not null, note: "['Pix', 'Débito', 'Transferência Bancária']"]
+  code text [
+    not null,
+    note: "[pix, debit, cash]"
+  ]
+  note: '''
+    TABELA PREENCHIDA PELO SISTEMA DURANTE A CRIAÇÃO DO BANCO
+    Semelhante a um atributo type
+  '''
+}
+
+Table transaction_instrument {
+  id integer [pk, increment]
+  fk_id_transfer_method integer [not null, ref: > transfer_method.id]
+  fk_id_bank_account integer [ref: > bank_account.id]
+  is_enabled bool [not null, default: "true"]
+} 
+/*
+  HERANÇA DE TABELA DE CLASSES
+  POIS NÃO SERÃO INSERIDOS MAIS TIPOS.
+
+  Herança de tabela única:
+  https://martinfowler.com/eaaCatalog/singleTableInheritance.html
+  Herança de tabela de classes:
+  https://martinfowler.com/eaaCatalog/classTableInheritance.html
+  Herança de tabela concreta:
+  https://martinfowler.com/eaaCatalog/concreteTableInheritance.html
+*/
+Table base_transaction_type {
+  id integer [pk, increment]
+  description text [not null]
+  // 0 = Entrada, 1 = Saída; CHECK(type IN (0,1))
+  cashflow_type integer [not null]
+  fk_id_transaction_instrument integer [
+    not null,
+    ref: > transaction_instrument.id
+  ]
+  fk_id_category integer [not null, ref: > category.id]
 }
 
 Table item_value {
   id integer [pk, increment]
-  cashflow_type integer [not null, note: "0 = Entrada, 1 = Saída; CHECK(type IN (0,1))"]
-  // gasto está agendado para uma data futura específica
-  // Ao invés de data seria ideal ter hora e data, mas
-  // isso mudaria a forma de como o app funciona
   scheduled_at date [not null]
-  amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
+  amount integer [
+    not null,
+    note: "Guardado em centavos para garantir que o cálculo\
+    será feito corretamente"
+  ]
   // Indica se a transferência já foi executada.
   // Se um recebimento foi recebido e se um pagamento foi pago
-  was_processed boolean [not null, default: false, note: '''Indica se a transferência já foi executada
-  Se um recebimento foi recebido e se um pagamento foi pago''']
-  fk_id_transfer_method integer [not null, ref: > transfer_method.id]
-  fk_id_tag integer [not null, ref: > tag.id]
-  created_at date [not null, default: "(date('now','localtime'))"]
-  updated_at date [not null, default: "(date('now','localtime'))"]
+  was_processed boolean [
+    not null,
+    default: false,
+    note: '''
+      Indica se a transferência já foi executada
+      Se um recebimento foi recebido e se um pagamento foi pago
+    '''
+  ]
 }
 
 Table standard {
-  id integer [pk, increment]
-  description text [not null]
+  id integer [pk, increment, ref: > base_transaction_type.id]
   fk_id_item_value integer [not null, ref: - item_value.id]
-  created_at date [not null, default: "(date('now','localtime'))"]
-  updated_at date [not null, default: "(date('now','localtime'))"]
 }
 
-// TABELA PREENCHIDA PELO SISTEMA
 Table recurrence_type {
   id integer [pk, increment]
-  type text [not null, unique, note: "['Mensalmente', 'Anualmente']"]
+  code text [not null, unique, note: "[monthly, yearly]"]
+  note: "TABELA PREENCHIDA PELO SISTEMA DURANTE A CRIAÇÃO DO BANCO"
 }
 
 Table recurring {
-  id integer [pk, increment]
-  description text [not null]
-  is_disabled boolean [not null]
+  id integer [
+    pk,
+    increment,
+    ref: > base_transaction_type.id,
+    note: "Com isso ao buscar uma transação eu consigo 'linkar'\
+    com o tipo especializado"
+  ]
   start_date date [not null]
   end_date date
-  current_amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
-  fk_id_transfer_method integer [not null, ref: > transfer_method.id]
-  fk_id_tag integer [not null, ref: > tag.id]
+  current_amount integer [
+    not null,
+    note: "Guardado em centavos"
+  ]
   fk_id_recurrence_type integer [not null, ref: > recurrence_type.id]
-  created_at date [not null, default: "(date('now','localtime'))"]
-  updated_at date [not null, default: "(date('now','localtime'))"]
 }
 
 Table recurring_item_value {
@@ -70,15 +112,13 @@ Table recurring_item_value {
 }
 
 Table installment {
-  id integer [pk, increment]
-  description text [not null]
-  fk_id_transfer_method integer [not null, ref: > transfer_method.id]
-  fk_id_tag integer [not null, ref: > tag.id]
+  id integer [pk, increment, ref: > base_transaction_type.id]
   start_date date [not null]
   installments_number integer [not null]
-  total_amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
-  created_at date [not null, default: "(date('now','localtime'))"]
-  updated_at date [not null, default: "(date('now','localtime'))"]
+  total_amount integer [
+    not null,
+    note: "Guardado em centavos"
+  ]
 }
 
 Table installment_item_value {
@@ -90,47 +130,66 @@ Table installment_item_value {
 Table bank_account {
   id integer [pk, increment]
   nickname text [not null]
-  is_disabled boolean [not null, default: "false"]
-  balance integer [not null, note: "Saldo de uma conta bancária\nGuardado em centavos para garantir que o cálculo será feito corretamente"]
-  created_at date [not null, default: "(date('now','localtime'))"]
-  updated_at date [not null, default: "(date('now','localtime'))"]
 }
 
-Table bank_account_transfer_method {
-  id integer [pk, increment]
-  is_disabled boolean [not null, default: false ]
-  fk_id_bank_account integer [not null, ref: > bank_account.id]
-  // // Para quando a tabela bank_account_transfer_method_type estiver ativada
-  // fk_id_method_type integer [not null, ref: > bank_account_transfer_method_type.id]
-  fk_id_transfer_method integer [not null, unique, ref: > transfer_method.id]
-  created_at date [not null, default: "(date('now','localtime'))"]
-  updated_at date [not null, default: "(date('now','localtime'))"]
-}
+// Table balance_bank {
+//   id integer [pk, increment]
+//   fk_id_bank_account integer [not null, ref: > bank_account.id]
+//   month integer [not null]
+//   year date [not null]
+//   planned_amount integer [
+//     not null,
+//     note: "Guardado em centavos"
+//   ]
+//   executed_amount integer [
+//     not null,
+//     note: "Guardado em centavos"
+//   ]
+// }
 
+// Table balance_cash {
+//   id integer [pk, increment]
+//   month integer [not null]
+//   year date [not null]
+//   planned_amount integer [
+//     not null,
+//     note: "Guardado em centavos"
+//   ]
+//   executed_amount integer [
+//     not null,
+//     note: "Guardado em centavos"
+//   ]
+// }
+
+// TRABALHOS FUTUROS
 // Table credit_card {
-//   id integer [pk, increment]
-//   limit integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
-//   last_four_digits varchar(4) [not null]
-//   closing_date date [not null, note: "data de fechamento da fatura de um cartão especifico"]
-//   due_date date [not null, note: "data de vencimento da fatura de um cartão especifico"]
-//   fk_id_transfer_method integer [not null, unique, ref: > transfer_method.id]
+//   id integer [pk, ref: > transaction_instrument.id]
+//   limit integer [
+//     not null,
+//     note: "Guardado em centavos"
+//   ]
+//   closing_date date [
+//     not null,
+//     note: "data de fechamento da fatura do cartão"
+//   ]
+//   due_date date [
+//     not null,
+//     note: "data de vencimento da fatura do cartão"
+//   ]
 // }
 
-// // Funcionalidade para converter fatura em gasto
-// //  Inserir valor total no item_value com os atributos
-// // statement é extrato em inglês
-// Table credit_card_statement {
+// Table statement_credit_card {
 //   id integer [pk, increment]
-//   closing_date date [not null]
-//   due_date date [not null]
-//   created_at date [default: `now()`, not null]
-//   updated_at date [default: `now()`, not null]
 //   fk_id_credit_card integer [not null, ref: > credit_card.id]
+//   opening_statement date [not null]
+//   closing_statement date [not null]
 // }
-
-// // Talvez não seja necessário
-// Table credit_card_statement_item {
-//   id integer [pk, increment]
+ 
+// Table credit_card_transaction {
+//   id intger [pk, increment]
 //   fk_id_item_value integer [not null, ref: > item_value.id]
-//   fk_id_credit_card_statement integer [not null, ref: > credit_card_statement.id]
+//   fk_id_base_transaction_type integer [
+//     not null,
+//     ref: > base_transaction_type.id
+//   ]
 // }

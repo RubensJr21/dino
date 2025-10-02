@@ -12,12 +12,10 @@
 
 import {
   drawCashflowType,
-  getRealAmountValue,
   randomIndex,
   randomIntBetween,
-  randomRangeDate,
+  randomRangeDate
 } from "@data/playground/utils";
-import * as bip from "@data_functions/balance_insert_pipeline";
 import * as btt from "@data_functions/base_transaction_type";
 import * as cat from "@data_functions/category";
 import * as iv from "@data_functions/item_value";
@@ -69,34 +67,34 @@ export const insert_recurring = async (data: DataType) => {
       fk_id_item_value: item_value.id,
     });
 
-    // ======================================
-    // POST INSERT
-    // ======================================
-    const month = item_value.scheduled_at.getMonth();
-    const year = item_value.scheduled_at.getFullYear();
+    // // ======================================
+    // // POST INSERT
+    // // ======================================
+    // const month = item_value.scheduled_at.getMonth();
+    // const year = item_value.scheduled_at.getFullYear();
 
-    const realAmount = getRealAmountValue(
-      data.cashflow_type,
-      item_value.amount
-    );
+    // const realAmount = getRealAmountValue(
+    //   data.cashflow_type,
+    //   item_value.amount
+    // );
 
-    // VERIFICAR EM QUAL BALANÇO ESSE ITEM DEVE SER INSERIDO
-    if (data.transfer_method_code === "cash") {
-      bip.balance_cash_insert_pipeline(db, {
-        month,
-        year,
-        cashflow_type: data.cashflow_type,
-        amount: item_value.amount,
-      });
-    } else {
-      bip.balance_bank_insert_pipeline(db, {
-        month,
-        year,
-        cashflow_type: data.cashflow_type,
-        amount: item_value.amount,
-        transaction_instrument_id: data.transaction_instrument_id,
-      });
-    }
+    // // VERIFICAR EM QUAL BALANÇO ESSE ITEM DEVE SER INSERIDO
+    // if (data.transfer_method_code === "cash") {
+    //   bip.balance_cash_insert_pipeline(db, {
+    //     month,
+    //     year,
+    //     cashflow_type: data.cashflow_type,
+    //     amount: item_value.amount,
+    //   });
+    // } else {
+    //   bip.balance_bank_insert_pipeline(db, {
+    //     month,
+    //     year,
+    //     cashflow_type: data.cashflow_type,
+    //     amount: item_value.amount,
+    //     transaction_instrument_id: data.transaction_instrument_id,
+    //   });
+    // }
 
     transactionsFn.commit();
     console.log("recurring inserido!");

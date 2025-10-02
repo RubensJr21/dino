@@ -1,6 +1,3 @@
-import { move_amount_and_date } from "@data/pipelines/balance_cash/update/move_amount_and_date";
-import { move_date } from "@data/pipelines/balance_cash/update/move_date";
-import { update_amount } from "@data/pipelines/balance_cash/update/update_amount";
 import * as btt from "@data_functions/base_transaction_type";
 import * as cat from "@data_functions/category";
 import * as iv from "@data_functions/item_value";
@@ -74,54 +71,54 @@ export async function update_standard(
       }).catch(error => { throw error })
     }
 
-    // ==============================
-    // Update Balance
-    // ==============================
+    // // ==============================
+    // // Update Balance
+    // // ==============================
 
-    const cashflow_type = standard_founded.cashflow_type;
-    if (standard_founded.transfer_method_code === "cash") {
-      // Verificar se foi processada
-      //  Se a transação foi processada:
-      //    - precisa remover do planned e executed no balanço antigo
-      //    - precisa adicionar ao planned e executed no balanço novo
-      //    - Se após a remoção o blanço ficar zerado ele irá ser removido
-      //  Se a transação não foi processada:
-      //    - precisa remover do planned no balanço antigo
-      //    - precisa adicionar ao planned no balanço novo
-      //    - Se após a remoção o blanço ficar zerado ele irá ser removido
-      if (updates.amount !== undefined && updates.scheduled_at !== undefined) {
-        // Preico mover de um balanço para o outro
-        await move_amount_and_date({
-          new_date: updates.scheduled_at,
-          new_amount: updates.amount,
-          old_date: standard_founded.scheduled_at,
-          old_amount: standard_founded.amount,
-          cashflow_type,
-          was_processed: standard_founded.was_processed
-        })
-      } else if (updates.amount !== undefined) {
-        const date = standard_founded.scheduled_at
-        await update_amount({
-          new_amount: updates.amount,
-          old_amount: standard_founded.amount,
-          date,
-          cashflow_type,
-          was_processed: standard_founded.was_processed
-        })
-      } else if (updates.scheduled_at !== undefined) {
-        // Amount não mudou (amount === undefined)
-        const amount = standard_founded.amount;
-        await move_date({
-          new_date: updates.scheduled_at,
-          old_date: standard_founded.scheduled_at,
-          amount,
-          cashflow_type,
-          was_processed: standard_founded.was_processed
-        })
-      }
-    } else {
+    // const cashflow_type = standard_founded.cashflow_type;
+    // if (standard_founded.transfer_method_code === "cash") {
+    //   // Verificar se foi processada
+    //   //  Se a transação foi processada:
+    //   //    - precisa remover do planned e executed no balanço antigo
+    //   //    - precisa adicionar ao planned e executed no balanço novo
+    //   //    - Se após a remoção o blanço ficar zerado ele irá ser removido
+    //   //  Se a transação não foi processada:
+    //   //    - precisa remover do planned no balanço antigo
+    //   //    - precisa adicionar ao planned no balanço novo
+    //   //    - Se após a remoção o blanço ficar zerado ele irá ser removido
+    //   if (updates.amount !== undefined && updates.scheduled_at !== undefined) {
+    //     // Preico mover de um balanço para o outro
+    //     await move_amount_and_date({
+    //       new_date: updates.scheduled_at,
+    //       new_amount: updates.amount,
+    //       old_date: standard_founded.scheduled_at,
+    //       old_amount: standard_founded.amount,
+    //       cashflow_type,
+    //       was_processed: standard_founded.was_processed
+    //     })
+    //   } else if (updates.amount !== undefined) {
+    //     const date = standard_founded.scheduled_at
+    //     await update_amount({
+    //       new_amount: updates.amount,
+    //       old_amount: standard_founded.amount,
+    //       date,
+    //       cashflow_type,
+    //       was_processed: standard_founded.was_processed
+    //     })
+    //   } else if (updates.scheduled_at !== undefined) {
+    //     // Amount não mudou (amount === undefined)
+    //     const amount = standard_founded.amount;
+    //     await move_date({
+    //       new_date: updates.scheduled_at,
+    //       old_date: standard_founded.scheduled_at,
+    //       amount,
+    //       cashflow_type,
+    //       was_processed: standard_founded.was_processed
+    //     })
+    //   }
+    // } else {
 
-    }
+    // }
 
     transactionsFn.commit();
     console.log("standard atualizado!");

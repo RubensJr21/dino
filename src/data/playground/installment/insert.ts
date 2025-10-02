@@ -15,7 +15,6 @@ import {
   randomIntBetween,
   randomRangeDate,
 } from "@data/playground/utils";
-import * as bip from "@data_functions/balance_insert_pipeline";
 import * as btt from "@data_functions/base_transaction_type";
 import * as cat from "@data_functions/category";
 import * as imt from "@data_functions/installment";
@@ -91,26 +90,26 @@ export const insert_installment = async (data: DataType) => {
 				year,
 			});
 
-			// ======================================
-			// POST INSERT
-			// ======================================
-			// VERIFICAR EM QUAL BALANÇO ESSE ITEM DEVE SER INSERIDO
-			if (data.transfer_method_code === "cash") {
-				bip.balance_cash_insert_pipeline(db, {
-					month,
-					year,
-					cashflow_type: data.cashflow_type,
-					amount: item_value.amount,
-				});
-			} else {
-				bip.balance_bank_insert_pipeline(db, {
-					month,
-					year,
-					cashflow_type: data.cashflow_type,
-					amount: item_value.amount,
-					transaction_instrument_id: data.transaction_instrument_id,
-				});
-			}
+			// // ======================================
+			// // POST INSERT
+			// // ======================================
+			// // VERIFICAR EM QUAL BALANÇO ESSE ITEM DEVE SER INSERIDO
+			// if (data.transfer_method_code === "cash") {
+			// 	bip.balance_cash_insert_pipeline(db, {
+			// 		month,
+			// 		year,
+			// 		cashflow_type: data.cashflow_type,
+			// 		amount: item_value.amount,
+			// 	});
+			// } else {
+			// 	bip.balance_bank_insert_pipeline(db, {
+			// 		month,
+			// 		year,
+			// 		cashflow_type: data.cashflow_type,
+			// 		amount: item_value.amount,
+			// 		transaction_instrument_id: data.transaction_instrument_id,
+			// 	});
+			// }
 			console.log("installment inserido!");
 		}
 		transactionsFn.commit();

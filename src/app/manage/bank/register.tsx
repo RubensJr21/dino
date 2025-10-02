@@ -1,4 +1,3 @@
-import { AmountInput } from "@components/ui/AmountInput";
 import BasePage from "@components/ui/base/BasePage";
 import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
 import { NicknameInput } from "@components/ui/NicknameInput";
@@ -14,13 +13,11 @@ import { useTheme } from "react-native-paper";
 
 interface BankFormScreenInsert {
   nickname: string;
-  balance: string;
   transfer_methods_enable: Array<string>
 }
 
 const initialDataBank = {
   nickname: "",
-  balance: "0,00",
   transfer_methods_enable: [] as Array<string>
 } satisfies BankFormScreenInsert
 
@@ -34,15 +31,6 @@ export default function BankRegister() {
       return {
         ...prev,
         nickname
-      }
-    })
-  }, [setData])
-
-  const onChangeAmount = useCallback((amountText: string) => {
-    setData(prev => {
-      return {
-        ...prev,
-        balance: amountText
       }
     })
   }, [setData])
@@ -79,13 +67,6 @@ export default function BankRegister() {
       />
 
       <NicknameInput nickname={data.nickname} onChangeNickname={onChangeNickname} />
-
-      <AmountInput
-        label="Valor atual em conta:"
-        placeholder=""
-        amountValue={data.balance}
-        onChangeAmount={onChangeAmount}
-      />
 
       <SelectMultiTransferMethodButton
         style={{ marginTop: 5 }}

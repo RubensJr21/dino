@@ -131,6 +131,14 @@ export default function Layout() {
               tabBarIcon: (props) => <MCIcons name="wallet-outline" {...props} />
             }}
           />
+          <Tabs.Screen
+            name="reports"
+            options={{
+              headerShown: false,
+              title: 'Relatórios',
+              tabBarIcon: (props) => <MCIcons name="chart-box-outline" {...props} />
+            }}
+          />
         </Tabs>
         <StatusBar />
         {/* <SystemBars /> */}
