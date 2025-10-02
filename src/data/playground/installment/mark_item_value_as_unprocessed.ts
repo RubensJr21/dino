@@ -1,3 +1,4 @@
+import * as pl_bc_up from "@data/pipelines/balance_cash/update";
 import * as bup from "@data_functions/balance_update_pipeline";
 import * as imt from "@data_functions/installment";
 import * as iv from "@data_functions/item_value";
@@ -37,15 +38,14 @@ export async function mark_item_value_installment_as_processed(
 		const month = item_value.scheduled_at.getMonth();
 		const year = item_value.scheduled_at.getFullYear();
 		const data = {
-			month,
-			year,
+			date: item_value.scheduled_at,
 			amount: item_value.amount,
 			cashflow_type: installment_founded.cashflow_type,
 		};
 
 		if (installment_founded.transfer_method_code === "cash") {
 			// Fluxo do dinheiro
-			bup.balance_cash_update_pipeline(db, data, true);
+			await pl_bc_up.apply_executed_amount(data).catch(error => { throw error });
 		} else {
 			// Fluxo do banco
 			bup.balance_bank_update_pipeline(

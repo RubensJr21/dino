@@ -1,3 +1,4 @@
+import * as pl_bc_up from "@data/pipelines/balance_cash/update";
 import * as bup from "@data_functions/balance_update_pipeline";
 import * as iv from "@data_functions/item_value";
 import * as std from "@data_functions/standard";
@@ -26,15 +27,14 @@ export async function mark_standard_as_processed(
 		const month = standard_founded.scheduled_at.getMonth();
 		const year = standard_founded.scheduled_at.getFullYear();
 		const data = {
-			month,
-			year,
+			date: standard_founded.scheduled_at,
 			amount: standard_founded.amount,
 			cashflow_type: standard_founded.cashflow_type,
 		};
 
 		if (standard_founded.transfer_method_code === "cash") {
 			// Fluxo do dinheiro
-			bup.balance_cash_update_pipeline(db, data, false);
+			await pl_bc_up.revert_executed_amount(data).catch(error => { throw error });
 		} else {
 			// Fluxo do banco
 			bup.balance_bank_update_pipeline(
