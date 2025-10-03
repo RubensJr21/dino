@@ -39,8 +39,10 @@ export default function ReportByCategory() {
           return (
             <View key={balance_bank.category} style={{ borderWidth: 1, borderColor: "white", padding: 5 }}>
               <Text>category: {balance_bank.category}</Text>
-              <Text>planned: {balance_bank.planned}</Text>
-              <Text>executed: {balance_bank.executed}</Text>
+              <Text>paid_processed: {balance_bank.paid_processed}</Text>
+              <Text>paid_pending: {balance_bank.paid_pending}</Text>
+              <Text>received_processed: {balance_bank.received_processed}</Text>
+              <Text>received_pending: {balance_bank.received_pending}</Text>
             </View>
           )
         })

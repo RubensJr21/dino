@@ -12,9 +12,11 @@ import { eq, sql } from "drizzle-orm";
 import { coalesceWasProcessed, dateFilter, itemValueInstallment, itemValueRecurring, itemValueStandard, realAmount } from "./utils";
 
 type ReturnType = Array<{
-  category: typeof category.$inferSelect.code,
-  planned: number,
-  executed: number
+  category: typeof category.$inferSelect.code;
+  paid_processed: number;
+  paid_pending: number;
+  received_processed: number;
+  received_pending: number;
 }>
 
 export { type ReturnType as BalanceByCategoryReturn };
@@ -27,17 +29,45 @@ export async function balance_by_category(
   return db
     .select({
       category: category.code,
-      planned: sql<number>`
+
+      // pagos processados
+      paid_processed: sql<number>`
         COALESCE(SUM(
-          CASE WHEN ${coalesceWasProcessed} = 0 
-               AND ${dateFilter(year, month)} 
-          THEN ${realAmount} ELSE 0 END
+          CASE 
+            WHEN ${coalesceWasProcessed} = 1
+             AND ${dateFilter(year, month)}
+             AND ${baseTransactionType.cashflow_type} = -1
+            THEN ${realAmount} ELSE 0 END
         ), 0)`,
-      executed: sql<number>`
+
+      // pagos pendentes
+      paid_pending: sql<number>`
         COALESCE(SUM(
-          CASE WHEN ${coalesceWasProcessed} = 1 
-               AND ${dateFilter(year, month)} 
-          THEN ${realAmount} ELSE 0 END
+          CASE 
+            WHEN ${coalesceWasProcessed} = 0
+             AND ${dateFilter(year, month)}
+             AND ${baseTransactionType.cashflow_type} = -1
+            THEN ${realAmount} ELSE 0 END
+        ), 0)`,
+
+      // recebidos processados
+      received_processed: sql<number>`
+        COALESCE(SUM(
+          CASE 
+            WHEN ${coalesceWasProcessed} = 1
+             AND ${dateFilter(year, month)}
+             AND ${baseTransactionType.cashflow_type} = 1
+            THEN ${realAmount} ELSE 0 END
+        ), 0)`,
+
+      // recebidos pendentes
+      received_pending: sql<number>`
+        COALESCE(SUM(
+          CASE 
+            WHEN ${coalesceWasProcessed} = 0
+             AND ${dateFilter(year, month)}
+             AND ${baseTransactionType.cashflow_type} = 1
+            THEN ${realAmount} ELSE 0 END
         ), 0)`,
     })
     .from(category)

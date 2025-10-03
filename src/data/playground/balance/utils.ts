@@ -19,7 +19,6 @@ export function dateFilter(year: number, month: number) {
   );
 }
 
-
 const amount = sql<number>`
   COALESCE(${itemValueStandard.amount}, ${itemValueInstallment.amount}, ${itemValueRecurring.amount})
 `;
