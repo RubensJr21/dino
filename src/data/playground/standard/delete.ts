@@ -4,6 +4,7 @@
 -- ======================
 */
 
+import { canBeModified } from "@data/playground/utils";
 import * as btt from "@data_functions/base_transaction_type";
 import * as iv from "@data_functions/item_value";
 import * as std from "@data_functions/standard";
@@ -20,6 +21,10 @@ export const delete_standard = async (
 		if (standard_for_delete === undefined) {
 			throw new Error("standard_id inexistente.");
 		}
+
+    if(!canBeModified(standard_for_delete.scheduled_at)) {
+      throw new Error("Não é possível modificar itens de saldos já fechados!")
+    }
 
 		await std.remove(db, standard_for_delete.id);
 		await btt.remove(db, standard_for_delete.id);

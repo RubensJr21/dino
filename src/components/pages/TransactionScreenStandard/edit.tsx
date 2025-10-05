@@ -1,8 +1,8 @@
 import { AmountInput } from "@components/ui/AmountInput";
 import BasePage from "@components/ui/base/BasePage";
 import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
+import { DatePickerButton } from "@components/ui/base/DatePickerButton";
 import ScrollView from "@components/ui/base/ScrollView";
-import { DatePicker } from "@components/ui/DatePicker";
 import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { TransactionStandardCardRegister } from "@components/ui/TransactionCardRegister/TransactionStandardCardRegister";
@@ -135,7 +135,7 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
       <ScrollView contentContainerStyle={{ rowGap: 5 }}>
         <DescriptionInput description={data.description} onChangeDescription={onChangeDescription} />
         <AmountInput amountValue={data.amountValue} onChangeAmount={onChangeAmount} />
-        <DatePicker date={data.scheduledAt} onDateConfirm={onConfirmDate} />
+        <DatePickerButton date={data.scheduledAt} onDateConfirm={onConfirmDate} />
 
         <SelectCategoryButton
           category={data.category}

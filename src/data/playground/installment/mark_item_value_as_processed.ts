@@ -1,3 +1,4 @@
+import { canBeModified } from "@data/playground/utils";
 import * as imt from "@data_functions/installment";
 import * as iv from "@data_functions/item_value";
 import { db, transactionsFn } from "@database/db-instance";
@@ -14,6 +15,10 @@ export async function mark_item_value_installment_as_processed(
       throw new Error(
         `Nenhuma transação parcelada encontrada (${installment_founded})`
       );
+    }
+
+    if (!canBeModified(installment_founded.start_date)) {
+      throw new Error("Não é possível modificar itens de saldos fechados!")
     }
 
     const item_value = await imt.get_item_value(

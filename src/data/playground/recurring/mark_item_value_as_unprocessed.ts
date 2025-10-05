@@ -1,3 +1,4 @@
+import { canBeModified } from "@data/playground/utils";
 import * as iv from "@data_functions/item_value";
 import * as rec from "@data_functions/recurring";
 import { db, transactionsFn } from "@database/db-instance";
@@ -14,6 +15,10 @@ export async function mark_item_value_from_recurring_as_processed(
       throw new Error(
         `Nenhuma transação parcelada encontrada (${recurring_founded})`
       );
+    }
+
+    if (!canBeModified(recurring_founded.start_date)) {
+      throw new Error("Não é possível modificar itens de saldos fechados!")
     }
 
     const item_value = await rec.get_item_value(

@@ -1,3 +1,4 @@
+import { canBeModified } from "@data/playground/utils";
 import * as btt from "@data_functions/base_transaction_type";
 import * as cat from "@data_functions/category";
 import * as iv from "@data_functions/item_value";
@@ -20,6 +21,10 @@ export async function update_standard(
       throw new Error(
         `Nenhuma transação padrão encontrada (${standard_founded})`
       );
+    }
+
+    if (!canBeModified(standard_founded.scheduled_at)) {
+      throw new Error("Não é possível modificar itens de saldos fechados!")
     }
 
     const updates: {

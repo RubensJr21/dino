@@ -11,6 +11,7 @@
 */
 
 import {
+  canBeModified,
   drawCashflowType,
   randomIndex,
   randomIntBetween,
@@ -40,6 +41,10 @@ interface DataType {
 export const insert_recurring = async (data: DataType) => {
   transactionsFn.begin();
   try {
+    if (!canBeModified(data.start_date)) {
+      throw new Error("Não é possível adicionar itens à saldos já fechados!")
+    }
+
     const base_transaction_type = await btt.insert(db, {
       description: data.description,
       cashflow_type: data.cashflow_type,

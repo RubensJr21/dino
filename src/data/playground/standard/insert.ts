@@ -10,6 +10,7 @@
 */
 
 import {
+  canBeModified,
   drawCashflowType,
   randomFutureDate,
   randomIndex,
@@ -36,6 +37,10 @@ interface DataType {
 export const insert_standard = async (data: DataType) => {
   transactionsFn.begin();
   try {
+    if (!canBeModified(data.scheduled_at)) {
+      throw new Error("Não é possível adicionar itens à saldos já fechados!")
+    }
+    
     const base_transaction_type = await btt.insert(db, {
       description: data.description,
       cashflow_type: data.cashflow_type,

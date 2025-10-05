@@ -5,12 +5,18 @@ import { useEffect, useState } from "react";
 interface Props {
   date?: Date;
   onDateConfirm: (date: Date) => void;
-  label: string
-  selectedLabel: string
+  label?: string
+  selectedLabel?: string
   style?: React.ComponentProps<typeof Button>["style"]
 }
 
-export default function SelectDateButton({ date: dateDefault, onDateConfirm, label, selectedLabel, style }: Props) {
+export function DatePickerButton({
+  date: dateDefault,
+  onDateConfirm,
+  label = "Selecionar data",
+  selectedLabel = "Mudar data",
+  style
+}: Props) {
   const [date, setDate] = useState<Date | undefined>(dateDefault);
 
   useEffect(() => {
@@ -20,18 +26,20 @@ export default function SelectDateButton({ date: dateDefault, onDateConfirm, lab
   }, [date])
 
   const onChange: AndroidNativeProps["onChange"] = (event, selectedDate) => {
-    if (selectedDate) {
+    if (selectedDate !== undefined) {
       setDate(selectedDate);
     }
   }
 
   const showMode = (currentMode?: AndroidNativeProps["mode"]) => {
+    const today = new Date()
     DateTimePickerAndroid.open({
-      value: date ?? new Date(),
+      value: date ?? today,
       onChange,
       mode: currentMode,
       is24Hour: true,
       timeZoneName: "America/Sao_Paulo",
+      minimumDate: new Date(today.getFullYear(), today.getMonth()+1, 1)
     });
   };
 
