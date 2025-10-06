@@ -191,3 +191,24 @@ export async function getBankBalances(db: DatabaseType, year: number, month: num
 
   return reports_bank;
 }
+
+export function build_balance(
+  db: DatabaseType,
+  bank_id: typeof bankAccount.$inferSelect.id,
+  year: number,
+  month: number
+) {
+  const balance = buildBaseQuery(db, dateFilter(year, month))
+    .where(eq(balanceBank.id, bank_id))
+    .get()!;
+
+  db.insert(balanceBank).values({
+    fk_id_bank_account: bank_id,
+    year,
+    month,
+    planned_receipts: balance.planned_receipts,
+    planned_payments: balance.planned_payments,
+    executed_receipts: balance.executed_receipts,
+    executed_payments: balance.executed_payments
+  })
+}

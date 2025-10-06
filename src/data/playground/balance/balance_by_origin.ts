@@ -1,6 +1,6 @@
 import { BankReport, getBankBalances } from "@data/playground/balance/functions/bank";
 import { CashReport, getCashBalance } from "@data/playground/balance/functions/cash";
-import { type DatabaseType } from "@database/db-instance";
+import { db } from "@database/db-instance";
 
 type ReturnReportsType = {
   balance_banks: Array<BankReport>
@@ -10,7 +10,6 @@ type ReturnReportsType = {
 export { type ReturnReportsType as BalanceByOriginReturn };
 
 export async function balance_by_origin(
-  db: DatabaseType,
   month: number,
   year: number,
 ): Promise<ReturnReportsType> {

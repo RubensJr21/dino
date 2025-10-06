@@ -11,13 +11,6 @@ export default function LayoutReports() {
           drawerIcon: (props) => <MCIcons name="bank-outline" {...props} />
         }}
       />
-      <Drawer.Screen name="by-category"
-        options={{
-          headerShown: true,
-          title: "Categorias",
-          drawerIcon: (props) => <MCIcons name="bank-outline" {...props} />
-        }}
-      />
     </Drawer>
   )
 }

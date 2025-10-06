@@ -9,6 +9,14 @@ import { eq } from "drizzle-orm";
 type DataInsert = typeof bankAccount.$inferInsert;
 type DataSelect = typeof bankAccount.$inferSelect;
 
+export async function get_all(db: DatabaseType){
+  return db.query.bankAccount.findMany()
+}
+
+export function get_all_sync(db: DatabaseType){
+  return db.query.bankAccount.findMany().sync()
+}
+
 export async function insert(db: DatabaseType, data: DataInsert) {
   return (await db.insert(bankAccount).values(data).returning()).shift();
 }

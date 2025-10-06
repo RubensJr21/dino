@@ -1,5 +1,5 @@
 import { populate_database } from "@configs/start_configs";
-import { db } from "@database/db-instance";
+import { db, transactionsFn } from "@database/db-instance";
 import { CallToast } from "@lib/call-toast";
 import { MCIcons } from "@lib/icons.lib";
 import {
@@ -16,7 +16,12 @@ import { ActivityIndicator, StatusBar, Text, useColorScheme, View } from "react-
 import { SystemBars } from "react-native-edge-to-edge";
 import { PaperProvider, useTheme } from 'react-native-paper';
 
+import * as blc from "@data/playground/balance";
+import * as bd_fns from "@data_functions/balance_data";
+import * as ba_fns from "@data_functions/bank_account";
+
 // Configurar os componentes do pacote: react-native-paper-dates
+import { addMonthsKeepingDay, diffInMonths } from "@data/playground/utils";
 import { pt, registerTranslation } from 'react-native-paper-dates';
 registerTranslation('pt', pt)
 
@@ -30,17 +35,19 @@ export default function Layout() {
   const scheme = useColorScheme();
   const theme = useTheme()
 
-  // console.info('Nativewind color scheme:', );
-  // console.info('React Native color scheme:', useNativeColorScheme());
-
   const _ = useMemo(() => {
     if (success) {
-      populate_database()
+      Promise.all([
+        populate_database(),
+        validate_balances()
+      ])
         .then(() => {
           setStarted(true)
         })
-        .catch(() => {
-          CallToast("Algum erro aconteceu durante o povoamento do banco de dados!")
+        .catch((error) => {
+          CallToast("Algum erro aconteceu durante o povoamento\
+          do banco de dados ou na validação dos balaços")
+          console.error(error)
         })
     }
   }, [success])
@@ -145,4 +152,45 @@ export default function Layout() {
       </NavigationThemeProvider >
     </PaperProvider>
   )
+}
+
+async function validate_balances() {
+  // ====================================
+  // ALGORITMO DE COMPILAÇÃO DE SALDOS
+  // ====================================
+  // recupera o último mês que foi gerado o saldo
+  const record = await bd_fns.get_last_compilation_date(db)
+  let today = new Date()
+  const base_date = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+  // Se for retornado um valor undefined quer dizer que nenhum compilado foi feito, ou seja, está no início da aplicação;
+  transactionsFn.begin();
+  try {
+    if (record === undefined) {
+      // Gera balanço para cash com valores zerados
+      // inicializa o last_compilation_date com o valore de base_date
+      await blc.generate_balance_cash(base_date.getFullYear(), base_date.getMonth())
+      await bd_fns.initialize_last_compilation_date(db, base_date)
+    } else {
+      // Caso seja retornada a data, será calculada a diferença de meses para verificar se tem saldos desatualizados:
+      const diff_months = diffInMonths(record.last_compilation_date, base_date)
+      if (diff_months === 0) {
+        // Significa que os balanços já estão registrados
+      } else if (diff_months >= 1) {
+        // Significa que os balanços precisam ser gerados
+        const banks_list = await ba_fns.get_all(db)
+        for (let i = 0; i < diff_months; i++) {
+          const date = addMonthsKeepingDay(record.last_compilation_date, i)
+          // criar balanço do cash
+          await blc.generate_balance_cash(date.getFullYear(), date.getMonth())
+          for (const bank of banks_list) {
+            await blc.generate_balance_bank(bank.id, date.getFullYear(), date.getMonth())
+          }
+        }
+      }
+    }
+    transactionsFn.commit()
+  } catch (error) {
+    transactionsFn.rollback()
+    throw error;
+  }
 }

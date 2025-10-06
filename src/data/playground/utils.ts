@@ -8,6 +8,37 @@ export function getRealAmountValue(
   return cashflow_type * amount * multiplyFactor;
 }
 
+export function canBeModified(date: Date) {
+  const today = new Date()
+  const limit_date = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+  return date >= limit_date
+}
+
+export function addMonthsKeepingDay(date: Date, monthsToAdd: number) {
+  const year = date.getFullYear();
+  const month = date.getMonth() + monthsToAdd;
+  const lastDayOfTargetMonth = new Date(year, month + 1, 0).getDate(); // dia 0 do mês seguinte = último dia do mês anterior
+  const targetDay = Math.min(date.getDate(), lastDayOfTargetMonth);
+  return new Date(year, month, targetDay);
+}
+
+export function diffInMonths(date1: Date, date2: Date): number {
+  const [start, end] = date1 < date2 ? [date1, date2] : [date2, date1];
+
+  let months =
+    (end.getFullYear() - start.getFullYear()) * 12 +
+    (end.getMonth() - start.getMonth());
+
+  // Se o dia final for menor que o inicial, ainda não completou o mês
+  if (end.getDate() < start.getDate()) {
+    months--;
+  }
+
+  return months;
+}
+
+// FUNÇÕES PARA TESTE
+
 // Sortear o cashflow_type (-1 = saída, 1 = entrada)
 export function drawCashflowType(): Cashflow_Type {
   return Math.random() > 0.5 ? -1 : 1;
@@ -49,18 +80,4 @@ export function randomRangeDate() {
       ? randomFutureDate(start_date.getDate() + 60)
       : null,
   };
-}
-
-export function canBeModified(date: Date) {
-  const today = new Date()
-  const limit_date = new Date(today.getFullYear(), today.getMonth() + 1, 1)
-  return date >= limit_date
-}
-
-export function addMonthsKeepingDay(date: Date, monthsToAdd: number) {
-  const year = date.getFullYear();
-  const month = date.getMonth() + monthsToAdd;
-  const lastDayOfTargetMonth = new Date(year, month + 1, 0).getDate(); // dia 0 do mês seguinte = último dia do mês anterior
-  const targetDay = Math.min(date.getDate(), lastDayOfTargetMonth);
-  return new Date(year, month, targetDay);
 }

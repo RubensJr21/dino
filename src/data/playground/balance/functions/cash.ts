@@ -172,3 +172,20 @@ export async function getCashBalance(db: DatabaseType, year: number, month: numb
     final_balance
   }
 }
+
+export async function build_balance(
+  db: DatabaseType,
+  year: number,
+  month: number
+) {
+  const balance = buildBaseQuery(db, dateFilter(year, month)).get()!;
+
+  db.insert(balanceCash).values({
+    year,
+    month,
+    planned_receipts: balance.planned_receipts,
+    planned_payments: balance.planned_payments,
+    executed_receipts: balance.executed_receipts,
+    executed_payments: balance.executed_payments
+  })
+}
