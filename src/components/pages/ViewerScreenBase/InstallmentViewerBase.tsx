@@ -1,7 +1,7 @@
 import BasePage from "@components/ui/base/BasePage";
 import ScrollView from "@components/ui/base/ScrollView";
 import { TransactionInstallmentCardViewer } from "@components/ui/TransactionCardViewer/TransactionInstallmentCardViewer";
-import { ItemValue } from "@domain/entities/item_value.entity";
+import { ItemValueEntity } from "@lib/types";
 import { ComponentProps, useEffect, useState } from "react";
 import { List, useTheme } from "react-native-paper";
 import { Items } from "./Items";
@@ -12,8 +12,8 @@ interface InstallmentViewerBaseProps {
 }
 
 interface InstallmentsState {
-  processed: ItemValue[];
-  unprocessed: ItemValue[];
+  processed: ItemValueEntity[];
+  unprocessed: ItemValueEntity[];
 }
 
 // Temporário
@@ -33,7 +33,7 @@ export function InstallmentViewerBase({
 
   // Buscar baseado no ID
   useEffect(() => {
-    const itemValueArray: ItemValue[] = []
+    const itemValueArray = new Array<ItemValueEntity>()
     // for (let i = 1; i <= ITEM_POR_PAGINA; i++) {
     //   itemValueArray.push()
     // }

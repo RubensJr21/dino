@@ -33,7 +33,8 @@ export default function InstallmentView() {
         transactionInstrument: {
           id: 1,
           nickname: "Cartão Teste",
-          transfer_method_code: "banco-teste-cartaoteste"
+          transfer_method_code: "banco-teste-cartaoteste",
+          bank_nickname: null
         }
       }}
     />

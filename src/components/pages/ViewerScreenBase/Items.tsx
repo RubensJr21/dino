@@ -1,9 +1,10 @@
-import { ItemValue } from "@domain/entities/item_value.entity";
+import { amountParseToString } from "@components/ui/AmountInput";
+import { ItemValueEntity } from "@lib/types";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 
 interface ItemsProps {
-  data: ItemValue[];
+  data: ItemValueEntity[];
   labelButton: string;
   colorButton: string;
 }
@@ -24,7 +25,7 @@ export function Items({
                 {item_value.scheduled_at.toLocaleDateString()}
               </Text>
               <Text variant="titleMedium" style={[styles.text]} >
-                {item_value.amount.toFixed(2)}
+                {amountParseToString(item_value.amount)}
               </Text>
 
               <TouchableOpacity

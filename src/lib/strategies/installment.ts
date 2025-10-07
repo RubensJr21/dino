@@ -30,7 +30,8 @@ export async function sharedFetch(id: string): Promise<InstallmentScreenInsert |
     transactionInstrument: {
       id: installment_founded.transaction_instrument_id,
       nickname: installment_founded.transaction_instrument_nickname,
-      transfer_method_code: installment_founded.transfer_method_code
+      transfer_method_code: installment_founded.transfer_method_code,
+      bank_nickname: installment_founded.bank_nickname
     },
     amountValue: amountParseToString(installment_founded.total_amount),
     startDate: installment_founded.start_date,

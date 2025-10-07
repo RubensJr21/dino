@@ -67,6 +67,7 @@ export async function get_all_enable_filtered_by_transfer_method(
     .select({
       id: transactionInstrument.id,
       transfer_method_code: transferMethod.code,
+      bank_nickname: bankAccount.nickname,
       nickname: sql<string>`
         CASE
           WHEN ${bankAccount.id} IS NULL

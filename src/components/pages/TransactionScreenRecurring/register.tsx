@@ -83,7 +83,8 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
             transactionInstrument: {
               id: transaction_instrument_cash.id,
               nickname: transaction_instrument_cash.nickname,
-              transfer_method_code: transferMethodCode
+              transfer_method_code: transferMethodCode,
+              bank_nickname: null
             }
           }
         })

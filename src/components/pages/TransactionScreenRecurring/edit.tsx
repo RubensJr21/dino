@@ -40,7 +40,8 @@ export function TransactionRecurringEditScreen({ id, kind }: TransactionRecurrin
           transactionInstrument: {
             id: fetchData.transactionInstrument.id,
             nickname: fetchData.transactionInstrument.nickname,
-            transfer_method_code: fetchData.transactionInstrument.transfer_method_code
+            transfer_method_code: fetchData.transactionInstrument.transfer_method_code,
+            bank_nickname: fetchData.transactionInstrument.bank_nickname
           },
           category: {
             id: fetchData.category.id,

@@ -30,7 +30,8 @@ export async function sharedFetch(id: string): Promise<RecurringScreenInsert | u
     transactionInstrument: {
       id: recurring_founded.transaction_instrument_id,
       nickname: recurring_founded.transaction_instrument_nickname,
-      transfer_method_code: recurring_founded.transfer_method_code
+      transfer_method_code: recurring_founded.transfer_method_code,
+      bank_nickname: recurring_founded.bank_nickname
     },
     amountValue: amountParseToString(recurring_founded.current_amount),
     recurrenceType: {

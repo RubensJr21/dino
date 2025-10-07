@@ -34,6 +34,7 @@ export async function get_all(db: DatabaseType, cashflow_type: Cashflow_Type) {
           END
         `.as("transaction_instrument_nickname"),
         bank_account_id: transactionInstrument.fk_id_bank_account,
+        bank_nickname: bankAccount.nickname,
 
         transfer_method_code: transferMethod.code,
 
@@ -87,7 +88,8 @@ export async function get(
           END
         `.as("transaction_instrument_nickname"),
         bank_account_id: transactionInstrument.fk_id_bank_account,
-
+        bank_nickname: bankAccount.nickname,
+        
         transfer_method_code: transferMethod.code,
 
         item_value_id: standard.fk_id_item_value,

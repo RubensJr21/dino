@@ -21,7 +21,8 @@ function mapperStandard(standard: StandardReturn) {
     transactionInstrument: {
       id: standard.transaction_instrument_id,
       nickname: standard.transaction_instrument_nickname,
-      transfer_method_code: standard.transfer_method_code
+      transfer_method_code: standard.transfer_method_code,
+      bank_nickname: standard.bank_nickname
     },
     scheduledAt: standard.scheduled_at,
   }

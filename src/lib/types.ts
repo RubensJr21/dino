@@ -1,6 +1,7 @@
 export interface TransactionInstrument {
   id: number;
   nickname: string;
+  bank_nickname: string | null;
   transfer_method_code: string;
 }
 
@@ -82,6 +83,13 @@ export interface StandardEntity extends StandardScreenInsert {
 
 export interface InstallmentEntity extends InstallmentScreenInsert {
   id: number
+}
+
+export interface ItemValueEntity {
+  id: number;
+  was_processed: boolean;
+  scheduled_at: Date;
+  amount: number;
 }
 
 export interface TransferMethodEntity {

@@ -1,14 +1,14 @@
 import { type DatabaseType } from "@database/db-instance";
 import {
-    bankAccount,
-    baseTransactionType,
-    category,
-    itemValue,
-    recurrenceType,
-    recurring,
-    recurringItemValue,
-    transactionInstrument,
-    transferMethod,
+  bankAccount,
+  baseTransactionType,
+  category,
+  itemValue,
+  recurrenceType,
+  recurring,
+  recurringItemValue,
+  transactionInstrument,
+  transferMethod,
 } from "@database/schema";
 import { and, desc, eq, sql } from "drizzle-orm";
 
@@ -93,6 +93,7 @@ export async function get(
           END
         `.as("transaction_instrument_nickname"),
         bank_account_id: transactionInstrument.fk_id_bank_account,
+        bank_nickname: bankAccount.nickname,
 
         start_date: recurring.start_date,
         end_date: recurring.end_date,

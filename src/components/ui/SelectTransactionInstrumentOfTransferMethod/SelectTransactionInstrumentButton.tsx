@@ -2,7 +2,7 @@ import Button from "@components/ui/base/Button";
 import { CustomModal } from "@components/ui/base/CustomModal";
 import * as ti_fns from "@data/playground/transaction_instrument";
 import { TransactionInstrument, TransactionInstrumentEntity } from "@lib/types";
-import { useUpdateEffect } from "@utils/useUpdateEffect";
+import { useUpdateEffect } from "@lib/useUpdateEffect";
 import React, { useEffect, useMemo, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
@@ -20,7 +20,8 @@ interface SelectTransactionInstrumentButtonProps {
 export const INITIAL_TRANSACTION_INSTRUMENT: TransactionInstrument = {
   id: -1,
   nickname: "",
-  transfer_method_code: ""
+  transfer_method_code: "",
+  bank_nickname: null
 }
 
 export function SelectTransactionInstrumentButton({ transferMethod, transactionInstrumentSelected, onSelected, style }: SelectTransactionInstrumentButtonProps) {
@@ -101,7 +102,7 @@ export function SelectTransactionInstrumentButton({ transferMethod, transactionI
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{item.nickname}</Text>
+              <Text>{[item.transfer_method_code, item.bank_nickname].filter(v => v != null).join(" - ")}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}
