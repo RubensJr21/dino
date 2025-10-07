@@ -1,6 +1,5 @@
 export interface BankFormData {
   nickname: string;
-  balance?: string;
   transfer_methods_enable: Array<string>
 }
 
@@ -9,10 +8,6 @@ export const validateBankAccountData = (data: BankFormData): [hasError: boolean,
   let hasError = false
   if (data.nickname.length === 0) {
     errors.push("> O apelido da conta não pode ser vazio!")
-    hasError = true
-  }
-  if (data.balance !== undefined && !(Number(data.balance.replace(/\D/, "")) >= 0)) {
-    errors.push("> Valor atual em conta é inválido!")
     hasError = true
   }
   if (data.transfer_methods_enable.length === 0) {
