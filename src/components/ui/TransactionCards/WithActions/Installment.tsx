@@ -13,7 +13,6 @@ interface TransactionInstallmentCardProps {
   category: Category;
   installmentsNumber: number;
   totalAmount: number;
-  onToggleIsDisabled: () => void;
   onEdit: () => void
   goToDetails: () => void
 }
@@ -25,7 +24,6 @@ export function TransactionInstallmentCard({
   category,
   installmentsNumber,
   totalAmount,
-  onToggleIsDisabled,
   onEdit,
   goToDetails
 }: TransactionInstallmentCardProps) {

@@ -35,7 +35,6 @@ export default function InstallmentHomeHomeBase({ kind, data, goToEdit, goToRegi
               category={installment.category}
               installmentsNumber={Number(installment.installments)}
               totalAmount={Number(installment.amountValue)}
-              onToggleIsDisabled={() => console.info("Toggle do isDisabled...")}
               onEdit={goToEdit}
               goToDetails={goToDetails}
             />
