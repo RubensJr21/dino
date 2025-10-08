@@ -186,8 +186,8 @@ async function validate_balances() {
             await blc.generate_balance_bank(bank.id, date.getFullYear(), date.getMonth())
           }
         }
+        await bd_fns.update_last_compilation_date(db, base_date)
       }
-      await bd_fns.update_last_compilation_date(db, base_date)
     }
     transactionsFn.commit()
   } catch (error) {

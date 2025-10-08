@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
+import { getTransferMethodsLabel } from "start_configs";
 
 interface SelectTransferMethodButtonProps {
   transferMethodCode?: string
@@ -72,7 +73,7 @@ export function SelectTransferMethodButton({ transferMethodCode, onSelected, sty
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{method.code}</Text>
+              <Text>{getTransferMethodsLabel(method.code)}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}
