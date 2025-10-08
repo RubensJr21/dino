@@ -1,4 +1,5 @@
 import Button from "@components/ui/base/Button";
+import ScrollView from "@components/ui/base/ScrollView";
 import * as blc from "@data/playground/balance";
 import { type BalanceByOriginReturn } from "@data/playground/balance";
 import { useCallback, useEffect, useState } from "react";
@@ -33,8 +34,19 @@ export default function ReportByOrigin() {
   return (
     <>
       <Text>ReportByOrigin</Text>
-      <View>
-        <View style={{ borderWidth: 1, borderColor: "green", padding: 5 }}>
+      <ScrollView
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap"
+        }}
+      >
+        <View style={{
+          borderWidth: 1,
+          borderColor: "green",
+          padding: 5,
+          flexGrow: 1,          // ocupa o máximo possível
+          flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
+        }}>
           <Text>Origem: {balance.balance_cash.nickname}</Text>
           <Text>Saldo até o momento: {balance.balance_cash.partial_balance}</Text>
           <Text>Valores a receber: {balance.balance_cash.planned_receipts}</Text>
@@ -45,7 +57,15 @@ export default function ReportByOrigin() {
         {
           balance.balance_banks.map(balance_bank => {
             return (
-              <View key={balance_bank.nickname} style={{ borderWidth: 1, borderColor: "white", padding: 5 }}>
+              <View
+                key={balance_bank.nickname}
+                style={{
+                  borderWidth: 1,
+                  borderColor: "white",
+                  padding: 5,
+                  flexGrow: 1,          // ocupa o máximo possível
+                  flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
+                }}>
                 <Text>Origem: {balance_bank.nickname}</Text>
                 <Text>Saldo até o momento: {balance_bank.partial_balance}</Text>
                 <Text>Valores a receber: {balance_bank.planned_receipts}</Text>
@@ -55,7 +75,7 @@ export default function ReportByOrigin() {
             )
           })
         }
-      </View>
+      </ScrollView>
       <Button onPress={load_balance}>Chamar Report</Button>
     </>
   )
