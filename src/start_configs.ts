@@ -1,16 +1,4 @@
-
-// REVIEW: Na inicialização preciso:
-
 import { expoDb } from "@database/db-instance";
-
-/**
- * 1. Tentar registrar
- * 2. Pode dar um erro da clausula de unique
- * 3. Caso o erro aconteça quer dizer que a tag já está cadastrada
- */
-type CategoriesAvailableType = {
-  [key: string]: string
-}
 
 export const categories_available = {
   education: 'Educação',
@@ -26,9 +14,6 @@ export const categories_available = {
 } as Record<string, string>
 
 export type CategoriesAvailable = (keyof typeof categories_available)
-
-// REVIEW: Essas são os métodos de transferência disponíveis:
-// TODO: Usar migration para registrar transfer_methods_available
 
 interface Recurrence {
   displayText: string;
@@ -81,14 +66,12 @@ export async function populate_database() {
       `INSERT OR IGNORE INTO ${table_name} VALUES ${placeholders}`,
       values
     );
-    // console.info(`INSERT OR IGNORE INTO ${table_name} VALUES ${placeholders}`, values)
     console.info(`${table_name} populada!`)
   }
   try {
     populate_table("category", categories_available);
     populate_table("recurrence_type", recurrence_types_available);
     populate_table("transfer_method", transfer_methods_available);
-    // populate_table("transaction_instrument", {})
     expoDb.runSync("INSERT OR IGNORE INTO transaction_instrument (id, fk_id_transfer_method) VALUES (1,1)")
 
   } catch (error) {
