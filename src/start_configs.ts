@@ -59,7 +59,7 @@ export const transfer_methods_available = {
   cash: "Dinheiro",
   pix: "Pix",
   debit: "Débito",
-}
+} as Record<string, string>
 
 export type TypeOfTransferMethods = (keyof typeof transfer_methods_available)
 
