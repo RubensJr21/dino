@@ -7,35 +7,32 @@ import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton";
 import { SelectTransferMethodButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransferMethodButton";
-import { TransactionInstallmentCardRegister } from "@components/ui/TransactionCards/Register/Installment";
+import { TransactionStandardCardRegister } from "@components/ui/TransactionCards/Register/Standard";
 import * as ti_fns from "@data/playground/transaction_instrument";
 import { CallToast } from "@lib/call-toast";
-import { installmentStrategies } from "@lib/strategies";
-import { Category, InstallmentScreenInsert, Kind, TransactionInstrument } from "@lib/types";
-import { validateInstallmentTransactionInsertData } from "@lib/validations/inserts/installment_transaction";
-import { initialDataBase } from "@pages/TransactionScreenDefaultData";
-import { DEFAULT_MIN_INSTALLMENT, InstallmentInput } from "@pages/TransactionScreenInstallment/InstallmentInput";
-import { useNavigation } from "expo-router";
+import { standardStrategies } from "@lib/strategies";
+import { Category, Kind, StandardScreenInsert, TransactionInstrument } from "@lib/types";
+import { validateStandardTransactionInsertData } from "@lib/validations/inserts/standard_transaction";
+import { useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
+import { initialDataBase } from "../../TransactionScreenDefaultData";
 
-interface TransactionInstallmentRegisterScreenProps {
+type Props = {
   kind: Kind;
 }
 
-const initialDataInstallment = {
+const initialDataStandard = {
   ...initialDataBase,
-  startDate: new Date(),
-  installments: DEFAULT_MIN_INSTALLMENT,
-} satisfies InstallmentScreenInsert;
+  scheduledAt: new Date()
+} satisfies StandardScreenInsert
 
-export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstallmentRegisterScreenProps) {
-  const [data, setData] = useState<InstallmentScreenInsert>(initialDataInstallment)
-    const navigation = useNavigation()
+export function TransactionStandardRegisterScreen({ kind }: Props) {
+  const [data, setData] = useState<StandardScreenInsert>(initialDataStandard)
+  const router = useRouter();
 
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
-      if (prev === undefined) return prev
       return {
         ...prev,
         description: text
@@ -45,7 +42,6 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
 
   const onChangeAmount = useCallback((amountText: string) => {
     setData(prev => {
-      if (prev === undefined) return prev
       return {
         ...prev,
         amountValue: amountText
@@ -53,9 +49,8 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
     })
   }, [setData])
 
-  const onConfirmStartDate = useCallback((date: Date) => {
+  const onConfirmDate = useCallback((date: Date) => {
     setData(prev => {
-      if (prev === undefined) return prev
       return {
         ...prev,
         scheduledAt: date
@@ -65,7 +60,6 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
 
   const onConfirmCategory = useCallback((category: Category) => {
     setData(prev => {
-      if (prev === undefined) return prev
       return {
         ...prev,
         category,
@@ -87,7 +81,7 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
               id: transaction_instrument_cash.id,
               nickname: transaction_instrument_cash.nickname,
               transfer_method_code: transferMethodCode,
-              bank_nickname: null,
+              bank_nickname: null
             }
           }
         })
@@ -113,23 +107,25 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
     })
   }, [setData])
 
-  const onEndEditingInstallmentInput = useCallback((installments: string) => {
-    setData(prev => ({
-      ...prev,
-      installments
-    }))
-  }, [setData])
+  const toShowTransactionInstrument = useMemo(() => {
+    return (data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code)
+  }, [data.transactionInstrument])
 
-  const handleSubmit = useCallback((data: InstallmentScreenInsert) => {
-    const [hasError, errors] = validateInstallmentTransactionInsertData(data)
+  const handleSubmit = useCallback((data: StandardScreenInsert) => {
+    const [hasError, errors] = validateStandardTransactionInsertData(data)
     if (hasError) {
       return Alert.alert("Atenção!", errors.join("\n"))
     }
-    installmentStrategies[kind]
+    standardStrategies[kind]
       .insert(data)
       .then(() => {
         CallToast("Transação registrada!")
-        navigation.goBack()
+        router.navigate({
+          pathname: "/payments/standard",
+          params: {
+            reload: data.scheduledAt.toISOString()
+          }
+        })
       })
       .catch((error) => {
         console.error(error)
@@ -137,26 +133,13 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
       })
   }, [])
 
-  const toShowTransactionInstrument = useMemo(() => {
-    return (data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code)
-  }, [data.transactionInstrument])
-
   return (
     <BasePage style={styles.page}>
-      <TransactionInstallmentCardRegister data={data} />
+      <TransactionStandardCardRegister data={data} />
       <ScrollView contentContainerStyle={{ rowGap: 5 }}>
         <DescriptionInput description={data.description} onChangeDescription={onChangeDescription} />
         <AmountInput amountValue={data.amountValue} onChangeAmount={onChangeAmount} />
-        <InstallmentInput
-          installments={data.installments}
-          onEndEditing={onEndEditingInstallmentInput}
-        />
-        <DatePickerButton
-          label="Selecionar data de início"
-          selectedLabel="Mudar data de início"
-          date={data.startDate}
-          onDateConfirm={onConfirmStartDate}
-        />
+        <DatePickerButton date={data.scheduledAt} onDateConfirm={onConfirmDate} />
 
         <SelectCategoryButton
           category={data.category}
@@ -177,7 +160,7 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
             />
             :
             null
-        }s
+        }
       </ScrollView>
       <ButtonSubmit onSubmit={() => handleSubmit(data)} />
     </BasePage>

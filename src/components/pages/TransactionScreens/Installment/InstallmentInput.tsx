@@ -1,4 +1,4 @@
-import { ButtonStepper } from "@pages/TransactionScreenInstallment/ButtonStepper";
+import { ButtonStepper } from "@pages/TransactionScreens/Installment/ButtonStepper";
 import { useCallback, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-paper";
