@@ -46,6 +46,7 @@ export default function ReportByOrigin() {
           padding: 5,
           flexGrow: 1,          // ocupa o máximo possível
           flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
+          aspectRatio: 1
         }}>
           <Text>Origem: {balance.balance_cash.nickname}</Text>
           <Text>Saldo até o momento: {balance.balance_cash.partial_balance}</Text>
@@ -65,6 +66,7 @@ export default function ReportByOrigin() {
                   padding: 5,
                   flexGrow: 1,          // ocupa o máximo possível
                   flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
+                  aspectRatio: 1
                 }}>
                 <Text>Origem: {balance_bank.nickname}</Text>
                 <Text>Saldo até o momento: {balance_bank.partial_balance}</Text>
