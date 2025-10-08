@@ -1,4 +1,3 @@
-import { populate_database } from "@configs/start_configs";
 import { db, transactionsFn } from "@database/db-instance";
 import { CallToast } from "@lib/call-toast";
 import { MCIcons } from "@lib/icons.lib";
@@ -15,6 +14,7 @@ import React, { useMemo, useState } from "react";
 import { ActivityIndicator, StatusBar, Text, useColorScheme, View } from "react-native";
 import { SystemBars } from "react-native-edge-to-edge";
 import { PaperProvider, useTheme } from 'react-native-paper';
+import { populate_database } from "start_configs";
 
 import * as blc from "@data/playground/balance";
 import * as bd_fns from "@data_functions/balance_data";
@@ -187,6 +187,7 @@ async function validate_balances() {
           }
         }
       }
+      await bd_fns.update_last_compilation_date(db, base_date)
     }
     transactionsFn.commit()
   } catch (error) {
