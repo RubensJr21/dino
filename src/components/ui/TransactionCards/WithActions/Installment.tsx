@@ -1,34 +1,35 @@
 import Button from '@components/ui/base/Button';
-import { CallToast } from '@lib/call-toast';
 import { MCIcons } from '@lib/icons.lib';
 import { Category, TransactionInstrument } from '@lib/types';
-import React, { useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React from "react";
+import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
+import { getTransferMethodsLabel } from 'start_configs';
 
-interface TransactionRecurringCardProps {
+interface TransactionInstallmentCardProps {
   startDate: Date;
   description: string;
   transactionInstrument: TransactionInstrument;
   category: Category;
-  isDisabled: boolean;
+  installmentsNumber: number;
+  totalAmount: number;
   onToggleIsDisabled: () => void;
   onEdit: () => void
   goToDetails: () => void
 }
 
-export function TransactionRecurringCard({
+export function TransactionInstallmentCard({
   startDate,
   description,
   transactionInstrument,
   category,
-  isDisabled: defaultIsDisabled,
+  installmentsNumber,
+  totalAmount,
   onToggleIsDisabled,
   onEdit,
   goToDetails
-}: TransactionRecurringCardProps) {
+}: TransactionInstallmentCardProps) {
   const theme = useTheme()
-  const [isDisabled, setIsDisabled] = useState(defaultIsDisabled)
 
   return (
     <Card style={[
@@ -71,43 +72,35 @@ export function TransactionRecurringCard({
       />
       <Card.Content>
         <View style={{ flexDirection: "row", columnGap: 5 }}>
-          <Text variant='titleSmall' style={[styles.description, { color: theme.colors.onSurface }]}>
-            {transactionInstrument.nickname}
+          <Text variant='titleSmall' style={[styles.transactionInstrument, { color: theme.colors.onSurface }]}>
+            {
+              [
+                getTransferMethodsLabel(transactionInstrument.transfer_method_code),
+                transactionInstrument.bank_nickname
+              ].filter(v => v != null).join(" - ")
+            }
           </Text>
         </View>
       </Card.Content>
       <Card.Actions style={{ paddingRight: 15, marginBottom: 5, justifyContent: "space-between" }}>
-        <TouchableOpacity
-          style={[styles.isDisabledRow]}
-          onPress={() => setIsDisabled((prev) => !prev)}
+        <View
+          style={[styles.valuesAndCurrency]}
         >
-          <MCIcons
-            name={!isDisabled ? "calendar-refresh" : "calendar-remove"}
-            size={theme.fonts.titleLarge.fontSize}
-            color={
-              !isDisabled
-                ? theme.colors.primary
-                : theme.colors.tertiary
-            }
-          />
           <Text variant='titleLarge' style={[styles.isDisabledText, { color: theme.colors.onSurface }]}>
-            {`${!isDisabled ? "HABILITADO" : "DESABILITADO"}`}
+            Nº Parcelas {installmentsNumber}
           </Text>
-          <MCIcons
-            name={"information"}
-            size={theme.fonts.titleLarge.fontSize * .75}
-            color={theme.colors.inverseSurface}
-            onPress={() => CallToast(`Pressione em ${!isDisabled ? "HABILITADO" : "DESABILITADO"} ou no ícone para mudar o isDisabled`)}
-          />
-        </TouchableOpacity>
+          <Text variant='titleLarge' style={[styles.isDisabledText, { color: theme.colors.onSurface }]}>
+            Valor Total {totalAmount}
+          </Text>
+        </View>
 
         <Button
           // Precisa por que o Card.Actions injeta a prop
           mode='contained-tonal'
-          style={{ alignSelf: "flex-start" }}
+          style={{ alignSelf: "flex-end" }}
           onPress={goToDetails}
         >
-          Detalhes
+          Acessar parcelas
         </Button>
 
       </Card.Actions>
@@ -140,10 +133,8 @@ const styles = StyleSheet.create({
   transactionInstrument: {
     fontSize: 14,
   },
-  isDisabledRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    columnGap: 2
+  valuesAndCurrency: {
+    alignItems: "flex-start",
   },
   isDisabledText: {
     fontSize: 14,

@@ -7,7 +7,7 @@ import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton";
 import { SelectTransferMethodButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransferMethodButton";
-import { TransactionInstallmentCardRegister } from "@components/ui/TransactionCardRegister/TransactionInstallmentCardRegister";
+import { TransactionInstallmentCardRegister } from "@components/ui/TransactionCards/Register/Installment";
 import * as ti_fns from "@data/playground/transaction_instrument";
 import { CallToast } from "@lib/call-toast";
 import { installmentStrategies } from "@lib/strategies";

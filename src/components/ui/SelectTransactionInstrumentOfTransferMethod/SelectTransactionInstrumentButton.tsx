@@ -7,6 +7,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
+import { getTransferMethodsLabel } from "start_configs";
 
 type onSelectedType = (transactionInstrumentSelected: TransactionInstrument) => void
 
@@ -55,12 +56,12 @@ export function SelectTransactionInstrumentButton({ transferMethod, transactionI
   }
 
   useUpdateEffect(() => {
-    if(isDisabled) return;
+    if (isDisabled) return;
     onSelected(selection)
   }, [selection])
 
   useUpdateEffect(() => {
-    if(isDisabled) return;
+    if (isDisabled) return;
     setSelection({
       ...INITIAL_TRANSACTION_INSTRUMENT,
       transfer_method_code: transferMethod
@@ -102,7 +103,10 @@ export function SelectTransactionInstrumentButton({ transferMethod, transactionI
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{[item.transfer_method_code, item.bank_nickname].filter(v => v != null).join(" - ")}</Text>
+              <Text>{[
+                getTransferMethodsLabel(item.transfer_method_code),
+                item.bank_nickname
+              ].filter(v => v != null).join(" - ")}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}

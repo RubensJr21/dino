@@ -4,6 +4,7 @@ import { Category, TransactionInstrument } from '@lib/types';
 import React, { useState } from "react";
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
+import { getTransferMethodsLabel } from 'start_configs';
 
 interface TransactionStandardCardProps {
   scheduledAt: Date;
@@ -67,7 +68,7 @@ export function TransactionStandardCard({
         }}
       />
       <Card.Content>
-        <View style={{flexDirection: "row", columnGap: 5}}>
+        <View style={{ flexDirection: "row", columnGap: 5 }}>
           {/* <MCIcons
             name={"arrow-left-right"}
             size={theme.fonts.titleSmall.fontSize}
@@ -75,8 +76,13 @@ export function TransactionStandardCard({
             color={theme.colors.inverseSurface}
             onPress={() => CallToast(`Pressione em ${status ? "CONCLUÍDO" : "PENDENTE"} ou no ícone para mudar o status`)}
           /> */}
-          <Text variant='titleSmall' style={[styles.description, { color: theme.colors.onSurface }]}>
-            {transactionInstrument.nickname}
+          <Text variant='titleSmall' style={[styles.transactionInstrument, { color: theme.colors.onSurface }]}>
+            {
+              [
+                getTransferMethodsLabel(transactionInstrument.transfer_method_code),
+                transactionInstrument.bank_nickname
+              ].filter(v => v != null).join(" - ")
+            }
           </Text>
         </View>
       </Card.Content>

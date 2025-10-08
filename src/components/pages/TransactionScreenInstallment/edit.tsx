@@ -3,7 +3,7 @@ import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
 import ScrollView from "@components/ui/base/ScrollView";
 import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
-import { TransactionInstallmentCardRegister } from "@components/ui/TransactionCardRegister/TransactionInstallmentCardRegister";
+import { TransactionInstallmentCardRegister } from "@components/ui/TransactionCards/Register/Installment";
 import { CallToast } from "@lib/call-toast";
 import { installmentStrategies } from "@lib/strategies";
 import { Category, InstallmentScreenInsert, Kind } from "@lib/types";

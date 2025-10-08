@@ -1,6 +1,6 @@
 import BasePage from "@components/ui/base/BasePage";
 import ScrollView from "@components/ui/base/ScrollView";
-import { TransactionInstallmentCardViewer } from "@components/ui/TransactionCardViewer/TransactionInstallmentCardViewer";
+import { TransactionInstallmentCardViewer } from "@components/ui/TransactionCards/Viewer/Installment";
 import { ItemValueEntity } from "@lib/types";
 import { ComponentProps, useEffect, useState } from "react";
 import { List, useTheme } from "react-native-paper";

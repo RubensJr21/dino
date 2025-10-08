@@ -1,22 +1,23 @@
-import { MCIcons } from '@lib/icons.lib';
-import { StandardScreenInsert } from '@lib/types';
+import { InstallmentScreenInsert } from '@lib/types';
 import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
+import { getTransferMethodsLabel } from 'start_configs';
 
-interface TransactionStandardCardRegisterProps {
-  data: StandardScreenInsert
+interface TransactionInstallmentCardRegisterProps {
+  data: InstallmentScreenInsert
 }
 
-export function TransactionStandardCardRegister({
+export function TransactionInstallmentCardRegister({
   data: {
-    category,
+    category: category,
     description,
-    scheduledAt,
+    startDate,
     transactionInstrument,
-    amountValue
+    amountValue,
+    installments
   }
-}: TransactionStandardCardRegisterProps) {
+}: TransactionInstallmentCardRegisterProps) {
   const theme = useTheme()
 
   const categoryIsEmpty = category.id === -1
@@ -45,32 +46,37 @@ export function TransactionStandardCardRegister({
         titleNumberOfLines={2}
         titleStyle={{ marginTop: 10, color: descriptionIsEmpty ? theme.colors.outline : theme.colors.onSurface }}
 
-        subtitle={`Agendado para: ${scheduledAt.toLocaleDateString()}`}
+        subtitle={`Data de início: ${startDate.toLocaleDateString()}`}
         subtitleVariant='bodySmall'
       />
       <Card.Content>
         <Text variant='titleSmall' style={[styles.transactionInstrument, { color: transferMethodIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {transferMethodIsEmpty ? "Selecione um método de transferência..." : transactionInstrument.transfer_method_code}
+          {transferMethodIsEmpty ? "Selecione um método de transferência..." : getTransferMethodsLabel(transactionInstrument.transfer_method_code)}
         </Text>
         <Text variant='titleSmall' style={[styles.transactionInstrument, { color: transactionInstrumentIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {transactionInstrumentIsEmpty ? "Selecione um instrumento de transferência..." : transactionInstrument.nickname}
+          {transactionInstrumentIsEmpty ? "Selecione um instrumento de transferência..." :
+            [
+              getTransferMethodsLabel(transactionInstrument.transfer_method_code),
+              transactionInstrument.bank_nickname
+            ].filter(v => v != null).join(" - ")
+          }
         </Text>
-        <Text variant='headlineSmall' style={[styles.currencyValue, { color: amountValueIsZero ? theme.colors.outline : theme.colors.onSurface }]}>
-          {amountValue}
-        </Text>
-      </Card.Content>
-      <Card.Actions style={{ paddingRight: 15, marginBottom: 5, }}>
-        <View style={[styles.statusRow]} >
-          <MCIcons
-            name="clock-outline"
-            size={theme.fonts.titleLarge.fontSize}
-            color={theme.colors.tertiary}
-          />
-          <Text variant='titleLarge' style={[styles.statusText, { color: theme.colors.onSurface }]}>
-            PENDENTE
+        <View style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: 5,
+        }}>
+          <Text variant='titleMedium' style={[styles.isDisabledText, styles.gridCell, { color: theme.colors.onSurface }]}>
+            Nº Parcelas: {installments}
+          </Text>
+          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: amountValueIsZero ? theme.colors.outline : theme.colors.onSurface }]}>
+            Valor Total:
+          </Text>
+          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: amountValueIsZero ? theme.colors.outline : theme.colors.onSurface }]}>
+            {amountValue}
           </Text>
         </View>
-      </Card.Actions>
+      </Card.Content>
     </Card>
   );
 }
@@ -85,28 +91,36 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  scheduledAt: {
+  startDate: {
     fontSize: 14,
     fontWeight: "600",
   },
   transactionInstrument: {
     fontWeight: "bold",
   },
-  currencyValue: {
+  description: {
     fontWeight: "bold",
-    textAlign: "right",
   },
   row: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
   },
-  statusRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  statusText: {
+  method: {
     fontSize: 14,
-    marginLeft: 4,
   },
+  currencyValue: {
+    fontWeight: "bold",
+    textAlign: "right",
+  },
+  valuesAndCurrency: {
+    alignItems: "flex-start",
+  },
+  isDisabledText: {
+    marginRight: 4,
+  },
+  gridCell: {
+    flexGrow: 1,          // ocupa o máximo possível
+    flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
+  }
 });

@@ -5,7 +5,7 @@ import ScrollView from "@components/ui/base/ScrollView";
 import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_RECURRENCE_TYPE } from "@components/ui/SelectRecurrenceButton";
-import { TransactionRecurringCardRegister } from "@components/ui/TransactionCardRegister/TransactionRecurringCardRegister";
+import { TransactionRecurringCardRegister } from "@components/ui/TransactionCards/Register/Recurring";
 import { CallToast } from "@lib/call-toast";
 import { recurringStrategies } from "@lib/strategies";
 import { Category, Kind, RecurringScreenInsert } from "@lib/types";

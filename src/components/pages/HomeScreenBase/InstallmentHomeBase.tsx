@@ -1,4 +1,4 @@
-import { TransactionInstallmentCard } from '@components/ui/TransactionInstallmentCard';
+import { TransactionInstallmentCard } from '@components/ui/TransactionCards/WithActions/Installment';
 import { InstallmentEntity, Kind } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase';
 import { ReactNode, useRef } from 'react';

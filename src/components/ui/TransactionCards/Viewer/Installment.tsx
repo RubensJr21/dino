@@ -2,12 +2,13 @@ import { InstallmentScreenInsert } from '@lib/types';
 import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
+import { getTransferMethodsLabel } from 'start_configs';
 
-interface TransactionInstallmentCardRegisterProps {
+interface TransactionInstallmentCardViewerProps {
   data: InstallmentScreenInsert
 }
 
-export function TransactionInstallmentCardRegister({
+export function TransactionInstallmentCardViewer({
   data: {
     category: category,
     description,
@@ -16,14 +17,8 @@ export function TransactionInstallmentCardRegister({
     amountValue,
     installments
   }
-}: TransactionInstallmentCardRegisterProps) {
+}: TransactionInstallmentCardViewerProps) {
   const theme = useTheme()
-
-  const categoryIsEmpty = category.id === -1
-  const descriptionIsEmpty = description.trim() === ""
-  const transferMethodIsEmpty = transactionInstrument.transfer_method_code === ""
-  const transactionInstrumentIsEmpty = transactionInstrument.id === -1
-  const amountValueIsZero = Number(amountValue.replace(/\D/, "")) === 0
 
   return (
     <Card style={[
@@ -35,25 +30,27 @@ export function TransactionInstallmentCardRegister({
     ]}>
       <Chip
         style={{ backgroundColor: theme.colors.primaryContainer, borderRadius: 0 }}
-        textStyle={{ color: categoryIsEmpty ? theme.colors.outline : theme.colors.onPrimaryContainer }}
+        textStyle={{ color: theme.colors.onPrimaryContainer }}
       >
-        {categoryIsEmpty ? "Selecione uma categoria..." : category.code}
+        {category.code}
       </Chip>
       <Card.Title
-        title={descriptionIsEmpty ? "Escreva uma descrição..." : description}
+        title={description}
         titleVariant='titleLarge'
         titleNumberOfLines={2}
-        titleStyle={{ marginTop: 10, color: descriptionIsEmpty ? theme.colors.outline : theme.colors.onSurface }}
+        titleStyle={{ marginTop: 10, color: theme.colors.onSurface }}
 
         subtitle={`Data de início: ${startDate.toLocaleDateString()}`}
         subtitleVariant='bodySmall'
       />
       <Card.Content>
-        <Text variant='titleSmall' style={[styles.transactionInstrument, { color: transferMethodIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {transferMethodIsEmpty ? "Selecione um método de transferência..." : transactionInstrument.transfer_method_code}
-        </Text>
-        <Text variant='titleSmall' style={[styles.transactionInstrument, { color: transactionInstrumentIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-          {transactionInstrumentIsEmpty ? "Selecione um instrumento de transferência..." : transactionInstrument.nickname}
+        <Text variant='titleSmall' style={[styles.transactionInstrument, { color: theme.colors.onSurface }]}>
+          {
+            [
+              getTransferMethodsLabel(transactionInstrument.transfer_method_code),
+              transactionInstrument.bank_nickname
+            ].filter(v => v != null).join(" - ")
+          }
         </Text>
         <View style={{
           flexDirection: "row",
@@ -63,10 +60,10 @@ export function TransactionInstallmentCardRegister({
           <Text variant='titleMedium' style={[styles.isDisabledText, styles.gridCell, { color: theme.colors.onSurface }]}>
             Nº Parcelas: {installments}
           </Text>
-          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: amountValueIsZero ? theme.colors.outline : theme.colors.onSurface }]}>
+          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: theme.colors.onSurface }]}>
             Valor Total:
           </Text>
-          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: amountValueIsZero ? theme.colors.outline : theme.colors.onSurface }]}>
+          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: theme.colors.onSurface }]}>
             {amountValue}
           </Text>
         </View>
@@ -89,9 +86,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
   },
-  transactionInstrument: {
-    fontWeight: "bold",
-  },
   description: {
     fontWeight: "bold",
   },
@@ -100,7 +94,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
-  method: {
+  transactionInstrument: {
     fontSize: 14,
   },
   currencyValue: {

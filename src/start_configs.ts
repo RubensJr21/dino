@@ -61,6 +61,10 @@ export const transfer_methods_available = {
   debit: "Débito",
 } as Record<string, string>
 
+export function getTransferMethodsLabel(key: string) {
+  return transfer_methods_available[key]
+}
+
 export type TypeOfTransferMethods = (keyof typeof transfer_methods_available)
 
 export async function populate_database() {

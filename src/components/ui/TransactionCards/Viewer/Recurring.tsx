@@ -3,6 +3,7 @@ import { RecurringScreenInsert } from '@lib/types';
 import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
+import { getTransferMethodsLabel } from 'start_configs';
 
 interface TransactionRecurringCardRegisterProps {
   data: RecurringScreenInsert
@@ -44,8 +45,13 @@ export function TransactionRecurringCardRegister({
         subtitleVariant='bodySmall'
       />
       <Card.Content>
-        <Text variant='titleSmall' style={[styles.method, { color: theme.colors.onSurface }]}>
-          {transactionInstrument.nickname}
+        <Text variant='titleSmall' style={[styles.transactionInstrument, { color: theme.colors.onSurface }]}>
+          {
+            [
+              getTransferMethodsLabel(transactionInstrument.transfer_method_code),
+              transactionInstrument.bank_nickname
+            ].filter(v => v != null).join(" - ")
+          }
         </Text>
         <View style={{
           flexDirection: "row",
@@ -105,7 +111,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 8,
   },
-  method: {
+  transactionInstrument: {
     fontSize: 14,
   },
   isDisabledRow: {

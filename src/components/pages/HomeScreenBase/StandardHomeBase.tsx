@@ -1,4 +1,4 @@
-import { TransactionStandardCard } from '@components/ui/TransactionStandardCard';
+import { TransactionStandardCard } from '@components/ui/TransactionCards/WithActions/Standard';
 import { Kind, StandardEntity } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase';
 import { ReactNode, useRef } from 'react';

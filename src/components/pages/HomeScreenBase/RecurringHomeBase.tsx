@@ -1,4 +1,4 @@
-import { TransactionRecurringCard } from '@components/ui/TransactionRecurringCard';
+import { TransactionRecurringCard } from '@components/ui/TransactionCards/WithActions/Recurring';
 import { Kind, RecurringEntity } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase';
 import { ReactNode, useRef } from 'react';
