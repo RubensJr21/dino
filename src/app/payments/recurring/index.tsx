@@ -25,7 +25,6 @@ export default function RecurringHome() {
         console.error(error)
         Alert.alert("Erro ao carregar transações!")
       })
-    setData([])
   }, [isFocused])
 
   const goToRegister = () => {
