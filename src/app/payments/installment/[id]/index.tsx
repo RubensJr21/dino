@@ -1,4 +1,4 @@
-import { InstallmentViewerBase } from "@pages/ViewerScreenBase/InstallmentViewerBase";
+import { InstallmentViewerBase } from "@pages/DetailScreens/Installment/Page";
 import { Redirect, useLocalSearchParams } from "expo-router";
 
 export default function InstallmentView() {
@@ -8,8 +8,6 @@ export default function InstallmentView() {
     return <Redirect href={"/payments/installment"} />
   }
 
-  // const handlePress = () => setExpanded(!expanded);
-
   // TELA GERAL:
   // Card
 
@@ -17,6 +15,8 @@ export default function InstallmentView() {
   // Qual parcela (mês ou data)
   // Valor
   // Processado ou não (opção de marcar como processado)
+
+  // TODO: Remover mock
 
   return (
     <InstallmentViewerBase

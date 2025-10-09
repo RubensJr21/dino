@@ -1,5 +1,5 @@
-import InstallmentHomeBase from "@components/pages/HomeScreenBase/InstallmentHomeBase";
 import { InstallmentEntity } from "@lib/types";
+import InstallmentHomeBase from "@pages/HomeScreenBase/Installment";
 import { useIsFocused } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";

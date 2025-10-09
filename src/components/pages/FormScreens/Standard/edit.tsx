@@ -5,7 +5,6 @@ import { DatePickerButton } from "@components/ui/base/DatePickerButton";
 import ScrollView from "@components/ui/base/ScrollView";
 import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
-import { TransactionStandardCardRegister } from "@components/ui/TransactionCards/Register/Standard";
 import { CallToast } from "@lib/call-toast";
 import { standardStrategies } from "@lib/strategies";
 import { Category, Kind, StandardScreenInsert } from "@lib/types";
@@ -13,6 +12,7 @@ import { validateStandardTransactionUpdateData } from "@lib/validations/updates/
 import { useNavigation } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
+import { TransactionStandardCardRegister } from "./components/Card";
 
 type Props = {
   id: string;

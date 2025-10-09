@@ -1,6 +1,6 @@
-import { TransactionInstallmentCard } from '@components/ui/TransactionCards/WithActions/Installment';
 import { InstallmentEntity, Kind } from '@lib/types';
-import HomeScreenBase from '@pages/HomeScreenBase';
+import HomeScreenBase from '@pages/HomeScreenBase/base';
+import { TransactionInstallmentCard } from '@pages/HomeScreenBase/Installment/components/Card';
 import { ReactNode, useRef } from 'react';
 import { Animated, FlatList } from 'react-native';
 import { Text } from "react-native-paper";
@@ -14,7 +14,7 @@ interface InstallmentHomeProps {
   goToDetails: () => void;
 }
 
-export default function InstallmentHomeHomeBase({ kind, data, goToEdit, goToRegister, goToDetails }: InstallmentHomeProps) {
+export default function InstallmentHome({ kind, data, goToEdit, goToRegister, goToDetails }: InstallmentHomeProps) {
   const scrollY = useRef(new Animated.Value(0));
 
   return (

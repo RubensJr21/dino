@@ -1,20 +1,20 @@
-import { TransactionStandardCard } from '@components/ui/TransactionCards/WithActions/Standard';
-import { Kind, StandardEntity } from '@lib/types';
-import HomeScreenBase from '@pages/HomeScreenBase';
+import { Kind, RecurringEntity } from '@lib/types';
+import HomeScreenBase from '@pages/HomeScreenBase/base';
+import { TransactionRecurringCard } from '@pages/HomeScreenBase/Recurring/components/Card';
 import { ReactNode, useRef } from 'react';
 import { Animated } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Text } from "react-native-paper";
 
-interface StandardHomeBaseProps {
+interface RecurringHomeProps {
   kind: Kind;
   extras?: ReactNode;
-  data: Array<StandardEntity>;
+  data: Array<RecurringEntity>;
   goToRegister: () => void;
-  goToEdit: (id: string) => void;
+  goToEdit: () => void;
 }
 
-export default function StandardHomeBase({ kind, data, goToEdit, goToRegister }: StandardHomeBaseProps) {
+export default function RecurringHome({ kind, data, goToEdit, goToRegister }: RecurringHomeProps) {
   const scrollY = useRef(new Animated.Value(0));
 
   return (
@@ -27,15 +27,16 @@ export default function StandardHomeBase({ kind, data, goToEdit, goToRegister }:
           keyExtractor={standard => `${standard.id}`}
           style={{ marginTop: 5 }}
           contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 5 }}
-          renderItem={({ item: standard }) => (
-            <TransactionStandardCard
-              scheduledAt={standard.scheduledAt}
-              description={standard.description}
-              transactionInstrument={standard.transactionInstrument}
-              category={standard.category}
-              status={standard.wasProcessed}
-              onToggleStatus={() => console.info("Toggle do Status...")}
-              onEdit={() => goToEdit(standard.id.toString())}
+          renderItem={({ item: recurring }) => (
+            <TransactionRecurringCard
+              startDate={recurring.startDate}
+              description={recurring.description}
+              transactionInstrument={recurring.transactionInstrument}
+              category={recurring.category}
+              isDisabled={recurring.endDate !== null}
+              onToggleIsDisabled={() => console.info("Toggle do isDisabled...")}
+              onEdit={goToEdit}
+              goToDetails={() => console.info("Navegando para a tela de detalhes...")}
             />
           )}
           ListEmptyComponent={<Text>Nenhum {kind} encontrado.</Text>}

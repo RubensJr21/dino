@@ -1,6 +1,6 @@
-import StandardHomeBase from "@components/pages/HomeScreenBase/StandardHomeBase";
 import { standardStrategies } from "@lib/strategies";
 import { StandardEntity } from "@lib/types";
+import StandardHomeBase from "@pages/HomeScreenBase/Standard";
 import { useIsFocused } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useLocalSearchParams } from "expo-router/build/hooks";

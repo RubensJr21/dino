@@ -5,11 +5,11 @@ import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
 import { getTransferMethodsLabel } from 'start_configs';
 
-interface TransactionRecurringCardRegisterProps {
+interface TransactionRecurringCardViewerProps {
   data: RecurringScreenInsert
 }
 
-export function TransactionRecurringCardRegister({
+export function TransactionRecurringCardViewer({
   data: {
     startDate,
     description,
@@ -18,7 +18,7 @@ export function TransactionRecurringCardRegister({
     amountValue,
     recurrenceType
   },
-}: TransactionRecurringCardRegisterProps) {
+}: TransactionRecurringCardViewerProps) {
   const theme = useTheme()
 
   return (

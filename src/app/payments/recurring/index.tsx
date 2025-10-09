@@ -1,5 +1,5 @@
-import RecurringHomeBase from "@components/pages/HomeScreenBase/RecurringHomeBase";
 import { RecurringEntity } from "@lib/types";
+import RecurringHomeBase from "@pages/HomeScreenBase/Recurring";
 import { useIsFocused } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";

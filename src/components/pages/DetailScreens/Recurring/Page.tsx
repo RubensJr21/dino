@@ -1,30 +1,27 @@
 import BasePage from "@components/ui/base/BasePage";
 import ScrollView from "@components/ui/base/ScrollView";
-import { TransactionInstallmentCardViewer } from "@components/ui/TransactionCards/Viewer/Installment";
 import { ItemValueEntity } from "@lib/types";
 import { ComponentProps, useEffect, useState } from "react";
 import { List, useTheme } from "react-native-paper";
-import { Items } from "./Items";
+import { Items } from "../Items";
+import { TransactionRecurringCardViewer } from "./Card";
 
-interface InstallmentViewerBaseProps {
+interface RecurringViewerBaseProps {
   id: number;
-  dataCard: ComponentProps<typeof TransactionInstallmentCardViewer>["data"]
+  dataCard: ComponentProps<typeof TransactionRecurringCardViewer>["data"]
 }
 
-interface InstallmentsState {
+interface RecurringsState {
   processed: ItemValueEntity[];
   unprocessed: ItemValueEntity[];
 }
 
-// Temporário
-const ITEM_POR_PAGINA = 5
-
-export function InstallmentViewerBase({
+export function RecurringViewerBase({
   id,
   dataCard
-}: InstallmentViewerBaseProps) {
+}: RecurringViewerBaseProps) {
   const theme = useTheme()
-  const [installments, setInstallments] = useState<InstallmentsState>({ processed: [], unprocessed: [] })
+  const [installments, setRecurrings] = useState<RecurringsState>({ processed: [], unprocessed: [] })
   const [processedExpanded, setProcessedExpanded] = useState(false)
   const [unprocessedExpanded, setUnprocessedExpanded] = useState(false)
 
@@ -34,10 +31,7 @@ export function InstallmentViewerBase({
   // Buscar baseado no ID
   useEffect(() => {
     const itemValueArray = new Array<ItemValueEntity>()
-    // for (let i = 1; i <= ITEM_POR_PAGINA; i++) {
-    //   itemValueArray.push()
-    // }
-    setInstallments({
+    setRecurrings({
       processed: itemValueArray.filter((item_value) => item_value.was_processed),
       unprocessed: itemValueArray.filter((item_value) => !item_value.was_processed)
     })
@@ -50,7 +44,7 @@ export function InstallmentViewerBase({
 
   return (
     <BasePage>
-      <TransactionInstallmentCardViewer data={dataCard} />
+      <TransactionRecurringCardViewer data={dataCard} />
       <ScrollView>
         <List.Section>
           <List.Accordion

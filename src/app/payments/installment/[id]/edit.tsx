@@ -1,4 +1,4 @@
-import { TransactionInstallmentEditScreen } from "@pages/TransactionScreens/Installment/edit";
+import { TransactionInstallmentEditScreen } from "@pages/FormScreens/Installment/edit";
 import { Redirect, useLocalSearchParams } from "expo-router";
 
 export default function InstallmentEdit() {

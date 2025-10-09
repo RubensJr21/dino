@@ -5,31 +5,34 @@ import { DatePickerButton } from "@components/ui/base/DatePickerButton";
 import ScrollView from "@components/ui/base/ScrollView";
 import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
+import { INITIAL_RECURRENCE_TYPE, SelectRecurrenceButton } from "@components/ui/SelectRecurrenceButton";
 import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton";
 import { SelectTransferMethodButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransferMethodButton";
-import { TransactionStandardCardRegister } from "@components/ui/TransactionCards/Register/Standard";
 import * as ti_fns from "@data/playground/transaction_instrument";
 import { CallToast } from "@lib/call-toast";
-import { standardStrategies } from "@lib/strategies";
-import { Category, Kind, StandardScreenInsert, TransactionInstrument } from "@lib/types";
-import { validateStandardTransactionInsertData } from "@lib/validations/inserts/standard_transaction";
-import { useRouter } from "expo-router";
+import { recurringStrategies } from "@lib/strategies";
+import { Category, Kind, RecurrenceType, RecurringScreenInsert, TransactionInstrument } from "@lib/types";
+import { validateRecurringTransactionInsertData } from "@lib/validations/inserts/recurring_transaction";
+import { initialDataBase } from "@pages/TransactionScreenDefaultData";
+import { useNavigation } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
-import { initialDataBase } from "../../TransactionScreenDefaultData";
+import { TransactionRecurringCardRegister } from "./components/Card";
 
-type Props = {
-  kind: Kind;
+interface TransactionRecurringRegisterScreenProps {
+  kind: Kind
 }
 
-const initialDataStandard = {
+const initialDataRecurring = {
   ...initialDataBase,
-  scheduledAt: new Date()
-} satisfies StandardScreenInsert
+  recurrenceType: INITIAL_RECURRENCE_TYPE,
+  startDate: new Date(),
+  endDate: null
+} satisfies RecurringScreenInsert
 
-export function TransactionStandardRegisterScreen({ kind }: Props) {
-  const [data, setData] = useState<StandardScreenInsert>(initialDataStandard)
-  const router = useRouter();
+export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurringRegisterScreenProps) {
+  const [data, setData] = useState<RecurringScreenInsert>(initialDataRecurring)
+  const navigation = useNavigation()
 
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
@@ -107,25 +110,27 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
     })
   }, [setData])
 
+  const onConfirmRecurrence = useCallback((recurrenceType: RecurrenceType) => {
+    setData(prev => ({
+      ...prev,
+      recurrenceType
+    }))
+  }, [])
+
   const toShowTransactionInstrument = useMemo(() => {
     return (data.transactionInstrument.transfer_method_code !== INITIAL_TRANSACTION_INSTRUMENT.transfer_method_code)
   }, [data.transactionInstrument])
 
-  const handleSubmit = useCallback((data: StandardScreenInsert) => {
-    const [hasError, errors] = validateStandardTransactionInsertData(data)
+  const handleSubmit = useCallback((data: RecurringScreenInsert) => {
+    const [hasError, errors] = validateRecurringTransactionInsertData(data)
     if (hasError) {
       return Alert.alert("Atenção!", errors.join("\n"))
     }
-    standardStrategies[kind]
+    recurringStrategies[kind]
       .insert(data)
       .then(() => {
         CallToast("Transação registrada!")
-        router.navigate({
-          pathname: "/payments/standard",
-          params: {
-            reload: data.scheduledAt.toISOString()
-          }
-        })
+        navigation.goBack()
       })
       .catch((error) => {
         console.error(error)
@@ -135,11 +140,15 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
 
   return (
     <BasePage style={styles.page}>
-      <TransactionStandardCardRegister data={data} />
+      <TransactionRecurringCardRegister data={data} />
       <ScrollView contentContainerStyle={{ rowGap: 5 }}>
         <DescriptionInput description={data.description} onChangeDescription={onChangeDescription} />
         <AmountInput amountValue={data.amountValue} onChangeAmount={onChangeAmount} />
-        <DatePickerButton date={data.scheduledAt} onDateConfirm={onConfirmDate} />
+        <DatePickerButton date={data.startDate} onDateConfirm={onConfirmDate} />
+        <SelectRecurrenceButton
+          recurrenceSelected={data.recurrenceType}
+          onSelected={onConfirmRecurrence}
+        />
 
         <SelectCategoryButton
           category={data.category}

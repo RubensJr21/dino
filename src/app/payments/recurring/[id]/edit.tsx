@@ -1,4 +1,4 @@
-import { TransactionRecurringEditScreen } from "@pages/TransactionScreens/Recurring/edit";
+import { TransactionRecurringEditScreen } from "@pages/FormScreens/Recurring/edit";
 import { Redirect, useLocalSearchParams } from "expo-router";
 
 export default function RecurringEdit() {

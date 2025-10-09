@@ -5,7 +5,6 @@ import ScrollView from "@components/ui/base/ScrollView";
 import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_RECURRENCE_TYPE } from "@components/ui/SelectRecurrenceButton";
-import { TransactionRecurringCardRegister } from "@components/ui/TransactionCards/Register/Recurring";
 import { CallToast } from "@lib/call-toast";
 import { recurringStrategies } from "@lib/strategies";
 import { Category, Kind, RecurringScreenInsert } from "@lib/types";
@@ -14,6 +13,7 @@ import { initialDataBase } from "@pages/TransactionScreenDefaultData";
 import { useNavigation } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, StyleSheet } from "react-native";
+import { TransactionRecurringCardRegister } from "./components/Card";
 
 interface TransactionRecurringEditScreenProps {
   id: string;
