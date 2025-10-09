@@ -7,17 +7,19 @@ import { Card, Chip, Text, useTheme } from "react-native-paper";
 import { getTransferMethodsLabel } from 'start_configs';
 
 interface TransactionInstallmentCardProps {
+  id: string;
   startDate: Date;
   description: string;
   transactionInstrument: TransactionInstrument;
   category: Category;
   installmentsNumber: number;
   totalAmount: number;
-  onEdit: () => void
-  goToDetails: () => void
+  onEdit: (id: string) => void
+  goToDetails: (id: string) => void
 }
 
 export function TransactionInstallmentCard({
+  id,
   startDate,
   description,
   transactionInstrument,
@@ -54,7 +56,7 @@ export function TransactionInstallmentCard({
           ({ size }) =>
             <MCIcons
               name='pencil-box'
-              onPress={onEdit}
+              onPress={() => onEdit(id)}
               color={theme.colors.primary}
               style={{
                 flex: 1,
@@ -96,7 +98,7 @@ export function TransactionInstallmentCard({
           // Precisa por que o Card.Actions injeta a prop
           mode='contained-tonal'
           style={{ alignSelf: "flex-end" }}
-          onPress={goToDetails}
+          onPress={() => goToDetails(id)}
         >
           Acessar parcelas
         </Button>

@@ -14,7 +14,7 @@ import { and, desc, eq, sql } from "drizzle-orm";
 type DataInsert = typeof installment.$inferInsert;
 type DataSelect = typeof installment.$inferSelect;
 
-export async function get_all(db: DatabaseType){
+export async function get_all(db: DatabaseType, cashflow_type: Cashflow_Type) {
   return (
     await db
       .select({
@@ -35,6 +35,7 @@ export async function get_all(db: DatabaseType){
           END
         `.as("transaction_instrument_nickname"),
         bank_account_id: transactionInstrument.fk_id_bank_account,
+        bank_nickname: bankAccount.nickname,
 
         transfer_method_code: transferMethod.code,
 
@@ -60,6 +61,7 @@ export async function get_all(db: DatabaseType){
         transferMethod,
         eq(transactionInstrument.fk_id_transfer_method, transferMethod.id)
       )
+      .where(eq(baseTransactionType.cashflow_type, cashflow_type))
       .orderBy(desc(installment.start_date))
   )
 }

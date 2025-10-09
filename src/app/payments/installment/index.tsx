@@ -1,8 +1,10 @@
+import { installmentStrategies } from "@lib/strategies";
 import { InstallmentEntity } from "@lib/types";
 import InstallmentHomeBase from "@pages/HomeScreenBase/Installment";
 import { useIsFocused } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+import { Alert } from "react-native";
 
 // ALERT: Colocar aqui dados fictícios. Gerar com o chat GPT
 
@@ -15,24 +17,31 @@ export default function InstallmentHome() {
   useEffect(() => {
     if (isFocused === false) return;
     // Lógica para recuperar os dados. Usar CallToast para alertar!
-    setData([])
+    installmentStrategies
+      .payment
+      .list_all()
+      .then(recurrings => setData(recurrings))
+      .catch(error => {
+        console.error(error)
+        Alert.alert("Erro ao carregar transações!")
+      })
   }, [isFocused])
 
   const goToRegister = () => {
     route.navigate('/payments/installment/register')
   }
 
-  const goToEdit = () => {
+  const goToEdit = (id: string) => {
     route.navigate({
       pathname: '/payments/installment/[id]/edit',
-      params: { id: '123' }
+      params: { id }
     })
   }
 
-  const goToDetails = () => {
+  const goToDetails = (id: string) => {
     route.navigate({
       pathname: '/payments/installment/[id]',
-      params: { id: '123' }
+      params: { id }
     })
   }
 

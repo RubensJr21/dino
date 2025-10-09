@@ -10,8 +10,8 @@ interface InstallmentHomeProps {
   data: Array<InstallmentEntity>,
   extras?: ReactNode;
   goToRegister: () => void;
-  goToEdit: () => void;
-  goToDetails: () => void;
+  goToEdit: (id: string) => void;
+  goToDetails: (id: string) => void;
 }
 
 export default function InstallmentHome({ kind, data, goToEdit, goToRegister, goToDetails }: InstallmentHomeProps) {
@@ -29,6 +29,7 @@ export default function InstallmentHome({ kind, data, goToEdit, goToRegister, go
           contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 5 }}
           renderItem={({ item: installment }) => (
             <TransactionInstallmentCard
+              id={installment.id.toString()}
               startDate={installment.startDate}
               description={installment.description}
               transactionInstrument={installment.transactionInstrument}
