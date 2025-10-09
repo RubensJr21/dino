@@ -8,21 +8,25 @@ import { Card, Chip, Text, useTheme } from "react-native-paper";
 import { getTransferMethodsLabel } from 'start_configs';
 
 interface TransactionRecurringCardProps {
+  id: string,
   startDate: Date;
   description: string;
   transactionInstrument: TransactionInstrument;
   category: Category;
+  currentAmount: string;
   isDisabled: boolean;
   onToggleIsDisabled: () => void;
-  onEdit: () => void
+  onEdit: (id: string) => void
   goToDetails: () => void
 }
 
 export function TransactionRecurringCard({
+  id,
   startDate,
   description,
   transactionInstrument,
   category,
+  currentAmount,
   isDisabled: defaultIsDisabled,
   onToggleIsDisabled,
   onEdit,
@@ -56,7 +60,7 @@ export function TransactionRecurringCard({
           ({ size }) =>
             <MCIcons
               name='pencil-box'
-              onPress={onEdit}
+              onPress={() => onEdit(id)}
               color={theme.colors.primary}
               style={{
                 flex: 1,
@@ -79,6 +83,15 @@ export function TransactionRecurringCard({
                 transactionInstrument.bank_nickname
               ].filter(v => v != null).join(" - ")
             }
+          </Text>
+        </View>
+        <View style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: 5,
+        }}>
+          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: theme.colors.onSurface }]}>
+            {currentAmount}
           </Text>
         </View>
       </Card.Content>
@@ -155,4 +168,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginRight: 4,
   },
+  currencyValue: {
+    fontWeight: "bold",
+    textAlign: "right",
+  },
+  gridCell: {
+    flexGrow: 1,          // ocupa o máximo possível
+    flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
+  }
 });

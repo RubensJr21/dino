@@ -1,14 +1,29 @@
 import BasePage from "@components/ui/base/BasePage";
-import Button from "@components/ui/base/Button";
 import { Fab } from "@components/ui/Fab";
+import { list_all_banks } from "@data/playground/bank_account/list_all";
+import { MCIcons } from "@lib/icons.lib";
+import { BankAccountEntity } from "@lib/types";
 import { useRouter } from "expo-router";
-import { useRef } from "react";
-import { Animated } from "react-native";
-import { Text } from "react-native-paper";
+import { useEffect, useRef, useState } from "react";
+import { Alert, Animated, TouchableOpacity, View } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
+import { Text, useTheme } from "react-native-paper";
 
 export default function Bank() {
   const route = useRouter()
   const scrollY = useRef(new Animated.Value(0));
+  const theme = useTheme()
+
+  const [banks, setBanks] = useState<BankAccountEntity[]>()
+
+  useEffect(() => {
+    list_all_banks()
+      .then(banks => setBanks(banks))
+      .catch(error => {
+        console.error(error)
+        Alert.alert("Erro ao carregar contas bancárias!")
+      })
+  }, [])
 
   // interpolação para desaparecer o FAB próximo ao fim da lista
   const fabTranslateY = scrollY.current.interpolate({
@@ -27,19 +42,50 @@ export default function Bank() {
     route.navigate('/banks/register')
   }
 
-  const goToEdit = () => {
+  const goToEdit = (id: string) => {
     route.navigate({
       pathname: '/banks/[id]/edit',
-      params: { id: '1' }
+      params: { id }
     })
+  }
+
+  if (banks === undefined) {
+    return null;
   }
 
   return (
     <BasePage>
-      <Text>Bank</Text>
-      <Button onPress={goToEdit}>
-        Navegar para edição
-      </Button>
+      <FlatList
+        data={banks}
+        contentContainerStyle={{
+          rowGap: 10
+        }}
+        renderItem={({ item: bank }) => {
+          return (
+            <TouchableOpacity onPress={() => goToEdit(bank.id.toString())}>
+              <View key={bank.id}
+                style={{
+                  backgroundColor: theme.colors.onPrimary,
+                  paddingHorizontal: 10,
+                  paddingVertical: 15,
+                  borderRadius: 5,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center"
+                }}
+              >
+                <Text>{bank.nickname}</Text>
+                <MCIcons
+                  name='pencil-box'
+                  onPress={() => goToEdit(bank.id.toString())}
+                  color={theme.colors.primary}
+                  size={30}
+                />
+              </View>
+            </TouchableOpacity>
+          )
+        }}
+      />
 
       <Animated.View
         style={{

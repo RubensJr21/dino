@@ -73,7 +73,7 @@ export function getCashflowType(kind: Kind): Cashflow_Type {
 // ======================
 
 export interface RecurringEntity extends RecurringScreenInsert {
-  id: number
+  id: number;
 }
 
 export interface StandardEntity extends StandardScreenInsert {
@@ -102,3 +102,8 @@ export type RecurrenceTypeEntity = RecurrenceType
 export type TransactionInstrumentEntity = TransactionInstrument
 
 export type CategoryEntity = Category
+
+export type BankAccountEntity = {
+  id: number;
+  nickname: string;
+}

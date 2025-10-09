@@ -29,13 +29,15 @@ export default function StandardHome({ kind, data, goToEdit, goToRegister }: Sta
           contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 5 }}
           renderItem={({ item: standard }) => (
             <TransactionStandardCard
+              id={standard.id.toString()}
               scheduledAt={standard.scheduledAt}
               description={standard.description}
               transactionInstrument={standard.transactionInstrument}
               category={standard.category}
+              amountValue={standard.amountValue}
               status={standard.wasProcessed}
               onToggleStatus={() => console.info("Toggle do Status...")}
-              onEdit={() => goToEdit(standard.id.toString())}
+              onEdit={goToEdit}
             />
           )}
           ListEmptyComponent={<Text>Nenhum {kind} encontrado.</Text>}

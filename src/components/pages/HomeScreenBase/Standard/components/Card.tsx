@@ -7,21 +7,25 @@ import { Card, Chip, Text, useTheme } from "react-native-paper";
 import { getTransferMethodsLabel } from 'start_configs';
 
 interface TransactionStandardCardProps {
+  id: string,
   scheduledAt: Date;
   description: string;
   transactionInstrument: TransactionInstrument;
   category: Category;
   status: boolean;
+  amountValue: string;
   onToggleStatus: () => void;
-  onEdit: () => void
+  onEdit: (id: string) => void
 }
 
 export function TransactionStandardCard({
+  id,
   scheduledAt,
   description,
   transactionInstrument,
   category,
   status: defaultStatus,
+  amountValue,
   onToggleStatus,
   onEdit,
 }: TransactionStandardCardProps) {
@@ -53,7 +57,7 @@ export function TransactionStandardCard({
           ({ size }) =>
             <MCIcons
               name='pencil-box'
-              onPress={onEdit}
+              onPress={() => onEdit(id)}
               color={theme.colors.primary}
               style={{
                 flex: 1,
@@ -69,13 +73,6 @@ export function TransactionStandardCard({
       />
       <Card.Content>
         <View style={{ flexDirection: "row", columnGap: 5 }}>
-          {/* <MCIcons
-            name={"arrow-left-right"}
-            size={theme.fonts.titleSmall.fontSize}
-            style={{ alignSelf: "center" }}
-            color={theme.colors.inverseSurface}
-            onPress={() => CallToast(`Pressione em ${status ? "CONCLUÍDO" : "PENDENTE"} ou no ícone para mudar o status`)}
-          /> */}
           <Text variant='titleSmall' style={[styles.transactionInstrument, { color: theme.colors.onSurface }]}>
             {
               [
@@ -83,6 +80,15 @@ export function TransactionStandardCard({
                 transactionInstrument.bank_nickname
               ].filter(v => v != null).join(" - ")
             }
+          </Text>
+        </View>
+        <View style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: 5,
+        }}>
+          <Text variant='headlineSmall' style={[styles.currencyValue, styles.gridCell, { color: theme.colors.onSurface }]}>
+            {amountValue}
           </Text>
         </View>
       </Card.Content>
@@ -155,4 +161,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 4,
   },
+  currencyValue: {
+    fontWeight: "bold",
+    textAlign: "right",
+  },
+  gridCell: {
+    flexGrow: 1,          // ocupa o máximo possível
+    flexBasis: "45%",     // base de ~metade do espaço (2 por linha)
+  }
 });

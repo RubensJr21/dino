@@ -15,7 +15,7 @@ import { and, desc, eq, sql } from "drizzle-orm";
 type DataInsert = typeof recurring.$inferInsert;
 type DataSelect = typeof recurring.$inferSelect;
 
-export async function get_all(db: DatabaseType) {
+export async function get_all(db: DatabaseType, cashflow_type: Cashflow_Type) {
   return (
     await db
       .select({
@@ -36,6 +36,7 @@ export async function get_all(db: DatabaseType) {
           END
         `.as("transaction_instrument_nickname"),
         bank_account_id: transactionInstrument.fk_id_bank_account,
+        bank_nickname: bankAccount.nickname,
 
         start_date: recurring.start_date,
         end_date: recurring.end_date,
@@ -65,6 +66,7 @@ export async function get_all(db: DatabaseType) {
         recurrenceType,
         eq(recurring.fk_id_recurrence_type, recurrenceType.id)
       )
+      .where(eq(baseTransactionType.cashflow_type, cashflow_type))
       .orderBy(desc(recurring.start_date))
   )
 }

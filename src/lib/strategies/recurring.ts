@@ -1,8 +1,41 @@
 import { amountParseToNumber, amountParseToString } from "@components/ui/AmountInput";
 import { find_recurring } from "@data/playground/recurring/find";
 import { insert_recurring } from "@data/playground/recurring/insert";
+import { list_all_recurrings } from "@data/playground/recurring/list_all";
 import { update_recurring } from "@data/playground/recurring/update";
 import { getCashflowType, Kind, RecurringScreenInsert, RecurringScreenUpdate } from "../types";
+
+type RecurringReturn = NonNullable<Awaited<ReturnType<typeof find_recurring>>>
+
+function mapperRecurring(recurring: RecurringReturn) {
+  return {
+    id: recurring.id,
+    description: recurring.description,
+    category: {
+      id: recurring.category_id,
+      code: recurring.category_code
+    },
+    amountValue: amountParseToString(recurring.current_amount),
+    transactionInstrument: {
+      id: recurring.transaction_instrument_id,
+      nickname: recurring.transaction_instrument_nickname,
+      transfer_method_code: recurring.transfer_method_code,
+      bank_nickname: recurring.bank_nickname
+    },
+    startDate: recurring.start_date,
+    endDate: recurring.end_date,
+    recurrenceType: {
+      id: recurring.recurrence_type_id,
+      code: recurring.recurrence_type_code
+    },
+  }
+}
+
+export async function sharedListAll(kind: Kind) {
+  return await list_all_recurrings(getCashflowType(kind)).then(recurrings =>
+    recurrings.map(mapperRecurring)
+  )
+}
 
 export async function sharedInsert(data: RecurringScreenInsert, kind: Kind) {
   return await insert_recurring({
@@ -53,17 +86,20 @@ export async function sharedUpdate(id: string, data: RecurringScreenUpdate): Pro
 export const recurringStrategies: Record<
   Kind,
   {
+    list_all: () => ReturnType<typeof sharedListAll>
     insert: (data: RecurringScreenInsert) => Promise<void>
     fetchById: (id: string) => Promise<RecurringScreenInsert | undefined>
     update: (id: string, data: RecurringScreenUpdate) => Promise<undefined>
   }
 > = {
   payment: {
+    list_all: async () => await sharedListAll("payment"),
     insert: async (data) => await sharedInsert(data, "payment"),
     fetchById: async (id) => await sharedFetch(id),
     update: async (id, data) => await sharedUpdate(id, data)
   },
   receipt: {
+    list_all: async () => await sharedListAll("receipt"),
     insert: async (data) => await sharedInsert(data, "receipt"),
     fetchById: async (id) => await sharedFetch(id),
     update: async (id, data) => await sharedUpdate(id, data)

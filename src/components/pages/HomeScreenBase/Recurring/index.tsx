@@ -11,7 +11,7 @@ interface RecurringHomeProps {
   extras?: ReactNode;
   data: Array<RecurringEntity>;
   goToRegister: () => void;
-  goToEdit: () => void;
+  goToEdit: (id: string) => void;
 }
 
 export default function RecurringHome({ kind, data, goToEdit, goToRegister }: RecurringHomeProps) {
@@ -29,10 +29,12 @@ export default function RecurringHome({ kind, data, goToEdit, goToRegister }: Re
           contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 5 }}
           renderItem={({ item: recurring }) => (
             <TransactionRecurringCard
+              id={recurring.id.toString()}
               startDate={recurring.startDate}
               description={recurring.description}
               transactionInstrument={recurring.transactionInstrument}
               category={recurring.category}
+              currentAmount={recurring.amountValue}
               isDisabled={recurring.endDate !== null}
               onToggleIsDisabled={() => console.info("Toggle do isDisabled...")}
               onEdit={goToEdit}
