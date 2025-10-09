@@ -24,13 +24,13 @@ export default function Bank() {
   });
 
   const goToRegister = () => {
-    route.navigate('/manage/bank/register')
+    route.navigate('/banks/register')
   }
 
   const goToEdit = () => {
     route.navigate({
-      pathname: '/manage/bank/[id]/edit',
-      params: { id: '123' }
+      pathname: '/banks/[id]/edit',
+      params: { id: '1' }
     })
   }
 

@@ -1,3 +1,4 @@
+import BasePage from "@components/ui/base/BasePage";
 import Button from "@components/ui/base/Button";
 import { TextInput } from "@components/ui/base/TextInput";
 import * as blc from "@data/playground/balance";
@@ -46,8 +47,8 @@ export default function ReportByOrigin() {
   }
 
   return (
-    <>
-      <View style={{ flexDirection: "row", marginHorizontal: 5, marginBottom: 10, columnGap: 7 }}>
+    <BasePage>
+      <View style={{ flexDirection: "row", marginBottom: 10, columnGap: 7 }}>
         <TextInput
           label="Mês"
           onChangeText={setMonthText}
@@ -66,8 +67,8 @@ export default function ReportByOrigin() {
       </View>
       <FlatList
         data={[balance.balance_cash, ...balance.balance_banks]}
-        contentContainerStyle={{ gap: 7 }}
-        columnWrapperStyle={{ gap: 7 }}
+        contentContainerStyle={{ rowGap: 7 }}
+        columnWrapperStyle={{ columnGap: 7 }}
         renderItem={({ item: balance }) => {
           return (
             <View key={balance.nickname} style={styles.square_view}>
@@ -89,7 +90,7 @@ export default function ReportByOrigin() {
         }}
         numColumns={2}
       />
-    </>
+    </BasePage>
   )
 }
 
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     borderColor: "white",
     padding: 15,
     flex: 1,
-    maxWidth: "48%",
+    maxWidth: "49%",
     aspectRatio: 1,   // mantém quadrado
     backgroundColor: "green",
     borderRadius: 7

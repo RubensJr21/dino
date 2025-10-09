@@ -22,21 +22,17 @@ export default function BankEdit() {
   const [data, setData] = useState<BankFormScreenEdit>()
 
   useEffect(() => {
-    if(id) {
+    if (id) {
       ba_fns.find_by_id(id)
         .then((bank_account) => {
-          if(bank_account === undefined) return;
+          if (bank_account === undefined) return;
           setData(bank_account)
         })
     }
   })
 
   if (!id) {
-    <Redirect href={"/manage/bank"} />
-  }
-
-  if (data === undefined) {
-    return null;
+    <Redirect href={"/banks"} />
   }
 
   const onChangeNickname = useCallback((nickname: string) => {
@@ -61,11 +57,16 @@ export default function BankEdit() {
   }, [])
 
   const handleSubmit = useCallback(() => {
+    if (data === undefined) return;
     const [hasError, errors] = validateBankAccountData(data)
     if (hasError) {
       return Alert.alert("Atenção!", errors.join("\n"))
     }
   }, [data])
+
+  if (data === undefined) {
+    return null;
+  }
 
   return (
     <BasePage style={{ rowGap: 5 }}>

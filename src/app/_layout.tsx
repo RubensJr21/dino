@@ -22,6 +22,7 @@ import * as ba_fns from "@data_functions/bank_account";
 
 // Configurar os componentes do pacote: react-native-paper-dates
 import { addMonthsKeepingDay, diffInMonths } from "@data/playground/utils";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { pt, registerTranslation } from 'react-native-paper-dates';
 registerTranslation('pt', pt)
 
@@ -100,56 +101,51 @@ export default function Layout() {
         icon: (props) => <MCIcons {...props} />,
       }}
     >
-      <NavigationThemeProvider
-        value={scheme === "dark" ? NavigationDarkThemeCustom : NavigationDefaultThemeCustom}
-      >
-        <Tabs
-          initialRouteName="index"
-          screenOptions={{
-            // tabBarHideOnKeyboard: true,
-          }}
+      <GestureHandlerRootView>
+
+        <NavigationThemeProvider
+          value={scheme === "dark" ? NavigationDarkThemeCustom : NavigationDefaultThemeCustom}
         >
-          <Tabs.Screen
-            name="index"
-            options={{
-              title: 'Início',
-              tabBarIcon: (props) => <MCIcons name="home" {...props} />
+          <Tabs
+            initialRouteName="reports"
+            screenOptions={{
+              // tabBarHideOnKeyboard: true,
             }}
-          />
-          {/* <Tabs.Screen
+          >
+            <Tabs.Screen
+              name="reports"
+              options={{
+                title: 'Relatórios',
+                tabBarIcon: (props) => <MCIcons name="chart-box-outline" {...props} />
+              }}
+            />
+            {/* <Tabs.Screen
         name="receipts"
         options={{
           headerShown: false
           }}
           /> */}
-          <Tabs.Screen
-            name="payments"
-            options={{
-              headerShown: false,
-              title: "Pagamentos",
-              tabBarIcon: (props) => <MCIcons name="cash-minus" {...props} />
-            }}
-          />
-          <Tabs.Screen
-            name="manage"
-            options={{
-              headerShown: false,
-              title: 'Gerenciar',
-              tabBarIcon: (props) => <MCIcons name="wallet-outline" {...props} />
-            }}
-          />
-          <Tabs.Screen
-            name="reports"
-            options={{
-              headerShown: false,
-              title: 'Relatórios',
-              tabBarIcon: (props) => <MCIcons name="chart-box-outline" {...props} />
-            }}
-          />
-        </Tabs>
-        <StatusBar />
-        {/* <SystemBars /> */}
-      </NavigationThemeProvider >
+            <Tabs.Screen
+              name="payments"
+              options={{
+                headerShown: false,
+                title: "Pagamentos",
+                tabBarIcon: (props) => <MCIcons name="cash-minus" {...props} />
+              }}
+            />
+            <Tabs.Screen
+              name="banks"
+              options={{
+                headerShown: false,
+                title: 'Bancos',
+                tabBarIcon: (props) => <MCIcons name="bank-outline" {...props} />
+              }}
+            />
+          </Tabs>
+          <StatusBar />
+          {/* <SystemBars /> */}
+        </NavigationThemeProvider >
+      </GestureHandlerRootView>
     </PaperProvider>
   )
 }
