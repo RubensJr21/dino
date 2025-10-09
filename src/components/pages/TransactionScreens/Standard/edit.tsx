@@ -45,7 +45,6 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
         setData(data)
         setLastData(data)
       } else {
-        console.log(id)
         Alert.alert("Erro", "ID inválido fornecido para edição.");
       }
     })
@@ -110,8 +109,6 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
     if (hasError) {
       return Alert.alert("Atenção!", errors.join("\n"))
     }
-
-    console.log(realData)
 
     standardStrategies[kind]
       .update(id, realData)

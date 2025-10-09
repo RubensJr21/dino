@@ -26,7 +26,7 @@ export function TransactionRecurringCardRegister({
   const transferMethodIsEmpty = transactionInstrument.transfer_method_code === ""
   const transactionInstrumentIsEmpty = transactionInstrument.id === -1
   const recurrenceTypeIsEmpty = recurrenceType.id === -1
-  const amountValueIsZero = Number(amountValue.replace(/\D/, "")) === 0
+  const amountValueIsZero = Number(amountValue.replaceAll(/\D/g, "")) === 0
 
   return (
     <Card style={[

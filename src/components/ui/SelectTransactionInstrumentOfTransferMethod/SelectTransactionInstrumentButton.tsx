@@ -41,7 +41,7 @@ export function SelectTransactionInstrumentButton({ transferMethod, transactionI
     ti_fns
       .find_all_enable_for_transfer_method(transferMethod)
       .then(transfer_methods => setData(transfer_methods))
-      .catch((error) => { console.log(error) })
+      .catch((error) => { console.error(error) })
   }, [transferMethod, isDisabled])
 
   // Abri quando nenhum transaction_instrument tiver sido selecionado

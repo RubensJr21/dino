@@ -10,7 +10,7 @@ export function getRealAmountValue(
 
 export function canBeModified(date: Date) {
   const today = new Date()
-  const limit_date = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+  const limit_date = new Date(today.getFullYear(), today.getMonth(), 1)
   return date >= limit_date
 }
 

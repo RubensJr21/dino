@@ -11,7 +11,7 @@ export function validateBaseTransactionInsertData(data: TransactionScreenBaseIns
     errors.push("> Descrição não pode ser vazia!")
   }
 
-  const amountAsNumber = Number(data.amountValue.replace(/\D/, ""))
+  const amountAsNumber = Number(data.amountValue.replaceAll(/\D/g, ""))
   if (Number.isNaN(amountAsNumber) || amountAsNumber <= 0) {
     hasError = true;
     errors.push("> Valor inválido! (Precisa ser maior que zero)")

@@ -55,7 +55,6 @@ export async function update_standard(
       updates.amount = data.amount
     }
     if (data.scheduled_at !== undefined) {
-      console.log("Vou atualizar a data!")
       updates.scheduled_at = data.scheduled_at
     }
 
@@ -126,7 +125,6 @@ export async function update_standard(
     // }
 
     transactionsFn.commit();
-    console.log("standard atualizado!");
   } catch (error) {
     transactionsFn.rollback();
     throw error;

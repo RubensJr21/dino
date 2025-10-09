@@ -98,7 +98,6 @@ export const delete_standard = async (
 		// }
 
 		transactionsFn.commit();
-		console.log("standard removido!");
 	} catch (error) {
 		transactionsFn.rollback();
 		throw error;

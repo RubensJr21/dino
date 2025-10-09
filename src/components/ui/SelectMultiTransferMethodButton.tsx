@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Chip, Text, useTheme } from "react-native-paper";
+import { getTransferMethodsLabel } from "start_configs";
 
 interface SelectMultiTransferMethodButtonProps {
   transferMethodsSelected: Array<string>
@@ -53,7 +54,7 @@ export function SelectMultiTransferMethodButton({ transferMethodsSelected, onSel
               style={{ backgroundColor: theme.colors.inversePrimary }}
               textStyle={{ textAlign: "center" }}
             >
-              {transferMethod}
+              {getTransferMethodsLabel(transferMethod)}
             </Chip>
           ))
         }
@@ -96,7 +97,7 @@ export function SelectMultiTransferMethodButton({ transferMethodsSelected, onSel
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{method.code}</Text>
+              <Text>{getTransferMethodsLabel(method.code)}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}

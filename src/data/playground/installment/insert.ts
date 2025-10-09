@@ -45,7 +45,7 @@ export const insert_installment = async (data: DataType) => {
   transactionsFn.begin();
   try {
     if (!canBeModified(data.start_date)) {
-      throw new Error("Não é possível adicionar itens à saldos fechados!")
+      throw new Error("Não é possível adicionar itens à saldos já fechados!")
     }
 
     if(data.installments_number <= 2){
@@ -118,7 +118,6 @@ export const insert_installment = async (data: DataType) => {
       // 		transaction_instrument_id: data.transaction_instrument_id,
       // 	});
       // }
-      console.log("installment inserido!");
     }
     transactionsFn.commit();
   } catch (error) {

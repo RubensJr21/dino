@@ -53,7 +53,6 @@ export async function update_installment(
       await btt.update(db, installment_founded.id, updates);
     }
     transactionsFn.commit();
-    console.log("installment atualizado!");
   } catch (error) {
     transactionsFn.rollback();
     throw error;

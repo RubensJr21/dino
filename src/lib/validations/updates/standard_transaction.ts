@@ -13,7 +13,7 @@ export function validateStandardTransactionUpdateData(data: StandardScreenUpdate
   let hasError = baseHasError
 
   if(amountValue !== undefined){
-    const amountAsNumber = Number(amountValue.replace(/\D/, ""))
+    const amountAsNumber = Number(amountValue.replaceAll(/\D/g, ""))
     if (Number.isNaN(amountAsNumber) || amountAsNumber <= 0) {
       hasError = true;
       errors.push("> Valor inválido! (Precisa ser maior que zero)")

@@ -85,7 +85,6 @@ export const insert_standard = async (data: DataType) => {
     // // throw new Error("teste de rollback");
 
     transactionsFn.commit();
-    console.log("standard inserido!");
     return standard.id;
   } catch (error) {
     transactionsFn.rollback();

@@ -102,7 +102,6 @@ export const insert_recurring = async (data: DataType) => {
     // }
 
     transactionsFn.commit();
-    console.log("recurring inserido!");
   } catch (error) {
     transactionsFn.rollback();
     throw error;

@@ -27,6 +27,7 @@ async function getLastCalculatedBalanceForBank(db: DatabaseType, bank_id: typeof
     })
     .from(balanceBank)
     .where(eq(bankAccount.id, bank_id))
+    .innerJoin(bankAccount, eq(balanceBank.fk_id_bank_account, bankAccount.nickname))
     .orderBy(
       desc(balanceBank.year),
       desc(balanceBank.month)
@@ -95,7 +96,7 @@ function getBalanceOfBank(
   dateCondition: SQL<boolean>
 ) {
   return buildBaseQuery(db, dateCondition)
-    .where(eq(balanceBank.id, bank_id))
+    .where(eq(bankAccount.id, bank_id))
     .execute()
     .then(list => list[0]);
 }
@@ -121,7 +122,7 @@ export async function getBankBalances(db: DatabaseType, year: number, month: num
 
   const reports_bank = new Array<BankReport>()
 
-  const lastDate = new Date(year, month - 1, 0)
+  const lastDate = new Date(year, month - 1, 1)
   const lastYear = lastDate.getFullYear()
   const lastMonth = lastDate.getMonth()
 
