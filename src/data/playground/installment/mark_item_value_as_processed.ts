@@ -33,28 +33,6 @@ export async function mark_item_value_installment_as_processed(
 
     await iv.mark_as_processed(db, item_value.id);
 
-    // // ======================================
-    // // POST MARKED
-    // // ======================================
-    // // atualizar saldo
-
-    // const data = {
-    //   date: item_value.scheduled_at,
-    //   amount: item_value.amount,
-    //   cashflow_type: installment_founded.cashflow_type,
-    // };
-
-    // if (installment_founded.transfer_method_code === "cash") {
-    //   // Fluxo do dinheiro
-    //   await pl_bc_up.apply_executed_amount(data).catch(error => { throw error });
-    // } else {
-    //   // Fluxo do banco
-    //   bup.balance_bank_update_pipeline(db, {
-    //     ...data,
-    //     transaction_instrument_id:
-    //       installment_founded.transaction_instrument_id,
-    //   });
-    // }
     transactionsFn.commit();
     console.log("item value marcado como processado!");
   } catch (error) {

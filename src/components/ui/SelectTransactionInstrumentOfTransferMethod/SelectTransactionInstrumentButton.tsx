@@ -44,7 +44,6 @@ export function SelectTransactionInstrumentButton({ transferMethod, transactionI
       .catch((error) => { console.error(error) })
   }, [transferMethod, isDisabled])
 
-  // Abri quando nenhum transaction_instrument tiver sido selecionado
   const [open, setOpen] = useState(transactionInstrumentSelected.nickname === INITIAL_TRANSACTION_INSTRUMENT.nickname)
   const [selection, setSelection] = useState<TransactionInstrument>(transactionInstrumentSelected)
 

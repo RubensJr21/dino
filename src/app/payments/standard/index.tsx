@@ -7,8 +7,6 @@ import { useLocalSearchParams } from "expo-router/build/hooks";
 import { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-native";
 
-// ALERT: Colocar aqui dados fictícios. Gerar com o chat GPT
-
 export default function StandardHome() {
   const [data, setData] = useState<StandardEntity[]>([])
   const { reload = "false" } = useLocalSearchParams<{ reload?: string }>()

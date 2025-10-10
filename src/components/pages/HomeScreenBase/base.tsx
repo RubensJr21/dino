@@ -33,7 +33,6 @@ export default function HomeScreenBase<T>({ refFab: scrollY ,flatlist, goToRegis
       <Animated.View
         style={{
           position: 'absolute',
-          // Torna desnecessário o right e bottom que Fab já tinha
           right: 16,
           bottom: 16,
           transform: [{ translateY: fabTranslateY }],

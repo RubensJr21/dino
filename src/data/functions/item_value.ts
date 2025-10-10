@@ -9,7 +9,6 @@ export async function insert(
   db: DatabaseType,
   data: DataInsert | DataInsert[]
 ) {
-  // Feito assim para permitir a inserção de vários ou apenas 1
   if (Array.isArray(data)) {
     return await db.insert(itemValue).values(data).returning();
   } else {

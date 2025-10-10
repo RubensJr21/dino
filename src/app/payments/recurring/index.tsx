@@ -6,8 +6,6 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 
-// ALERT: Colocar aqui dados fictícios. Gerar com o chat GPT
-
 export default function RecurringHome() {
   const [data, setData] = useState<RecurringEntity[]>([])
   const isFocused = useIsFocused()
@@ -16,7 +14,6 @@ export default function RecurringHome() {
 
   useEffect(() => {
     if (isFocused === false) return;
-    // Lógica para recuperar os dados. Usar CallToast para alertar!
     recurringStrategies
       .payment
       .list_all()

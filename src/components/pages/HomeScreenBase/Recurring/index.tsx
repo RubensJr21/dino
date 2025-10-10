@@ -47,7 +47,6 @@ export default function RecurringHome({ kind, data, goToEdit, goToRegister, goTo
             [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
             { useNativeDriver: false }
           )}
-        // estimatedItemSize={116}
         />
       }
     />

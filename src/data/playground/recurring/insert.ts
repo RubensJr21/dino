@@ -72,35 +72,6 @@ export const insert_recurring = async (data: DataType) => {
       fk_id_item_value: item_value.id,
     });
 
-    // // ======================================
-    // // POST INSERT
-    // // ======================================
-    // const month = item_value.scheduled_at.getMonth();
-    // const year = item_value.scheduled_at.getFullYear();
-
-    // const realAmount = getRealAmountValue(
-    //   data.cashflow_type,
-    //   item_value.amount
-    // );
-
-    // // VERIFICAR EM QUAL BALANÇO ESSE ITEM DEVE SER INSERIDO
-    // if (data.transfer_method_code === "cash") {
-    //   bip.balance_cash_insert_pipeline(db, {
-    //     month,
-    //     year,
-    //     cashflow_type: data.cashflow_type,
-    //     amount: item_value.amount,
-    //   });
-    // } else {
-    //   bip.balance_bank_insert_pipeline(db, {
-    //     month,
-    //     year,
-    //     cashflow_type: data.cashflow_type,
-    //     amount: item_value.amount,
-    //     transaction_instrument_id: data.transaction_instrument_id,
-    //   });
-    // }
-
     transactionsFn.commit();
   } catch (error) {
     transactionsFn.rollback();
@@ -111,7 +82,7 @@ export const insert_recurring = async (data: DataType) => {
 async function main() {
   // ESCOLHENDO TRANSFER_METHOD
   const transfer_methods = await tm.get_all(db);
-  const indexTM = randomIndex(transfer_methods.length); // Adicionar lógica interativa
+  const indexTM = randomIndex(transfer_methods.length);
   const method_choose = transfer_methods[indexTM];
 
   // ESCOLHENDO TRANSACTION_INSTRUMENT
@@ -119,21 +90,21 @@ async function main() {
     db,
     method_choose.code
   );
-  const indexTI = randomIndex(transaction_instruments.length); // Adicionar lógica interativa
+  const indexTI = randomIndex(transaction_instruments.length);
   const selected_transaction_instrument = transaction_instruments[indexTI];
 
   // ESCOLHENDO CATEGORY
   const categories = await cat.get_all(db);
-  const indexC = randomIndex(categories.length); // Adicionar lógica interativa
+  const indexC = randomIndex(categories.length);
   const selected_category = categories[indexC];
 
   // ESCOLHENDO RECURRENCE_TYPE
   const recurrence_types = await rt.get_all(db);
-  const indexRT = randomIndex(recurrence_types.length); // Adicionar lógica interativa
+  const indexRT = randomIndex(recurrence_types.length);
   const selected_recurrence_type = recurrence_types[indexRT];
 
-  const description = "Minha descrição de teste"; // Adicionar lógica interativa
-  const cashflow_type = drawCashflowType(); // Adicionar lógica interativa
+  const description = "Minha descrição de teste";
+  const cashflow_type = drawCashflowType();
 
   const rangeDate = randomRangeDate();
 

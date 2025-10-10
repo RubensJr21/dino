@@ -27,8 +27,6 @@ export const delete_recurring = async (
 
     await imt.remove(db, installment_for_delete.id);
     await btt.remove(db, installment_for_delete.id);
-
-    // Para cada item
     const item_values = await imt.get_all_item_values(
       db,
       installment_for_delete.id
@@ -48,75 +46,6 @@ export const delete_recurring = async (
       ]
     );
 
-    // // ======================================
-    // // POST REMOVE
-    // // ======================================
-    // // Para cada item_value a ser removido é necessário remover o valor no mês do ano
-    // item_values.forEach(async (item_value) => {
-    // 	const month = item_value.scheduled_at.getMonth();
-    // 	const year = item_value.scheduled_at.getFullYear();
-
-    // 	const realAmount = getRealAmountValue(
-    // 		installment_for_delete.cashflow_type,
-    // 		item_value.amount,
-    // 		true
-    // 	);
-
-    // 	if (item_value.transfer_method_code === "cash") {
-    // 		const balance_cash = await bc.get_balance(db, {
-    // 			month,
-    // 			year,
-    // 		});
-
-    // 		if (balance_cash === undefined) {
-    // 			throw new Error(
-    // 				"Nenhum balanço de dinheiro foi encontrado para o período especificado."
-    // 			);
-    // 		}
-
-    // 		// remover do balanço de balance_cash
-    // 		if (item_value.was_processed) {
-    // 			await bc.remove_amount_processed(db, {
-    // 				balance_id: balance_cash.id,
-    // 				updated_planned_amount: balance_cash.planned_amount + realAmount,
-    // 				updated_executed_amount: balance_cash.executed_amount + realAmount,
-    // 			});
-    // 		} else {
-    // 			await bc.remove_amount_unprocessed(db, {
-    // 				balance_id: balance_cash.id,
-    // 				updated_planned_amount: balance_cash.planned_amount + realAmount,
-    // 			});
-    // 		}
-    // 	} else {
-    // 		// Garanto que existe, pois ele não é do tipo 'cash'
-    // 		const bank_id = item_value.bank_account_id!;
-
-    // 		const balance_bank = await bb.get_balance(db, {
-    // 			bank_id,
-    // 			month,
-    // 			year,
-    // 		});
-
-    // 		if (balance_bank === undefined) {
-    // 			throw new Error(
-    // 				"Nenhum balanço desta conta bancária foi encontrado para o período especificado."
-    // 			);
-    // 		}
-
-    // 		if (item_value.was_processed) {
-    // 			await bb.remove_amount_processed(db, {
-    // 				balance_id: balance_bank.id,
-    // 				updated_planned_amount: balance_bank.planned_amount + realAmount,
-    // 				updated_executed_amount: balance_bank.executed_amount + realAmount,
-    // 			});
-    // 		} else {
-    // 			await bb.remove_amount_unprocessed(db, {
-    // 				balance_id: balance_bank.id,
-    // 				updated_planned_amount: balance_bank.planned_amount + realAmount,
-    // 			});
-    // 		}
-    // 	}
-    // });
     transactionsFn.commit();
     console.log("installment removido!");
   } catch (error) {

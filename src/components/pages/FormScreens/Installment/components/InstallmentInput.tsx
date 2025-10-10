@@ -35,7 +35,6 @@ export function InstallmentInput({ installments, onEndEditing }: Props) {
           setData(textOnlyNumbers)
         }}
         onEndEditing={() => {
-          // aqui você valida depois que o usuário terminou
           setData(prev => {
             const installmentsNumber = Number(prev)
             const maxInstallment = Math.max(installmentsNumber, DEFAULT_MIN_INSTALLMENT_NUMBER)

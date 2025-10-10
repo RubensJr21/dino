@@ -24,8 +24,6 @@ export const Fab = ({ iconName, style, ...props }: Props) => {
 const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
-    // Não é mais necessário pois ele será animado nas telas de home
-    // margin: 10,
     right: 0,
     bottom: 0,
   },

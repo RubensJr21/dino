@@ -2,7 +2,7 @@ import BasePage from "@components/ui/base/BasePage";
 import ScrollView from "@components/ui/base/ScrollView";
 import { list_all_item_value_installments } from "@data/playground/installment/list_all_item_value";
 import { ItemValueEntity } from "@lib/types";
-import { ComponentProps, useEffect, useState } from "react";
+import { ComponentProps, useEffect, useMemo, useState } from "react";
 import { List, useTheme } from "react-native-paper";
 import { Items } from "../Items";
 import { TransactionInstallmentCardViewer } from "./Card";
@@ -29,7 +29,10 @@ export function InstallmentViewerBase({
   const handlePressProcessed = () => setProcessedExpanded(expanded => !expanded);
   const handlePressUnprocessed = () => setUnprocessedExpanded(expanded => !expanded);
 
-  // Buscar baseado no ID
+  const isUnloaded = useMemo(() => {
+    return installments.processed.length === 0 && installments.unprocessed.length === 0
+  }, [installments])
+
   useEffect(() => {
     list_all_item_value_installments(id)
       .then(items_value => {
@@ -40,8 +43,7 @@ export function InstallmentViewerBase({
       })
   }, [id])
 
-  // Ainda não carregou
-  if (installments.processed.length === 0 && installments.unprocessed.length === 0) {
+  if (isUnloaded) {
     return null;
   }
 

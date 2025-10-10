@@ -3,7 +3,6 @@ export function getRealAmountValue(
   amount: number,
   inverse: boolean = false
 ) {
-  // para não precisar verificar se tem que somar ou subtrair do saldo
   const multiplyFactor = inverse ? -1 : 1;
   return cashflow_type * amount * multiplyFactor;
 }
@@ -17,7 +16,8 @@ export function canBeModified(date: Date) {
 export function addMonthsKeepingDay(date: Date, monthsToAdd: number) {
   const year = date.getFullYear();
   const month = date.getMonth() + monthsToAdd;
-  const lastDayOfTargetMonth = new Date(year, month + 1, 0).getDate(); // dia 0 do mês seguinte = último dia do mês anterior
+  // dia 0 do mês seguinte = último dia do mês anterior
+  const lastDayOfTargetMonth = new Date(year, month + 1, 0).getDate();
   const targetDay = Math.min(date.getDate(), lastDayOfTargetMonth);
   return new Date(year, month, targetDay);
 }

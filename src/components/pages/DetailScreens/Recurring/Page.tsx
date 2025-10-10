@@ -2,7 +2,7 @@ import BasePage from "@components/ui/base/BasePage";
 import ScrollView from "@components/ui/base/ScrollView";
 import { list_all_item_value_recurrings } from "@data/playground/recurring/list_all_item_value";
 import { ItemValueEntity } from "@lib/types";
-import { ComponentProps, useEffect, useState } from "react";
+import { ComponentProps, useEffect, useMemo, useState } from "react";
 import { List, useTheme } from "react-native-paper";
 import { Items } from "../Items";
 import { TransactionRecurringCardViewer } from "./Card";
@@ -22,14 +22,17 @@ export function RecurringViewerBase({
   dataCard
 }: RecurringViewerBaseProps) {
   const theme = useTheme()
-  const [installments, setRecurrings] = useState<RecurringsState>({ processed: [], unprocessed: [] })
+  const [recurrings, setRecurrings] = useState<RecurringsState>({ processed: [], unprocessed: [] })
   const [processedExpanded, setProcessedExpanded] = useState(false)
   const [unprocessedExpanded, setUnprocessedExpanded] = useState(false)
 
   const handlePressProcessed = () => setProcessedExpanded(expanded => !expanded);
   const handlePressUnprocessed = () => setUnprocessedExpanded(expanded => !expanded);
 
-  // Buscar baseado no ID
+  const isUnloaded = useMemo(() => {
+    return recurrings.processed.length === 0 && recurrings.unprocessed.length === 0
+  }, [recurrings])
+
   useEffect(() => {
     list_all_item_value_recurrings(id)
       .then(items_value => {
@@ -40,8 +43,7 @@ export function RecurringViewerBase({
       })
   }, [id])
 
-  // Ainda não carregou
-  if (installments.processed.length === 0 && installments.unprocessed.length === 0) {
+  if (isUnloaded) {
     return null;
   }
 
@@ -56,7 +58,7 @@ export function RecurringViewerBase({
             expanded={unprocessedExpanded}
             onPress={handlePressUnprocessed}
           >
-            <Items data={installments.unprocessed} labelButton="Efetivar" colorButton={theme.colors.onPrimary} />
+            <Items data={recurrings.unprocessed} labelButton="Efetivar" colorButton={theme.colors.onPrimary} />
           </List.Accordion>
 
           <List.Accordion
@@ -65,7 +67,7 @@ export function RecurringViewerBase({
             expanded={processedExpanded}
             onPress={handlePressProcessed}
           >
-            <Items data={installments.processed} labelButton="Reverter" colorButton={theme.colors.onTertiary} />
+            <Items data={recurrings.processed} labelButton="Reverter" colorButton={theme.colors.onTertiary} />
           </List.Accordion>
         </List.Section>
       </ScrollView>

@@ -117,7 +117,6 @@ export type BankReport = {
 }
 
 export async function getBankBalances(db: DatabaseType, year: number, month: number) {
-  // Obter balancos dos bancos para mês solicitado:
   const balance_banks = await getBalanceBank(db, dateFilter(year, month))
 
   const reports_bank = new Array<BankReport>()

@@ -48,7 +48,7 @@ export const insert_installment = async (data: DataType) => {
       throw new Error("Não é possível adicionar itens à saldos já fechados!")
     }
 
-    if(data.installments_number < 2){
+    if (data.installments_number < 2) {
       throw new Error(`Valor ${data.installments_number} menor que 2!`)
     }
 
@@ -79,7 +79,7 @@ export const insert_installment = async (data: DataType) => {
 
     for (let i = 0; i < data.installments_number; i++) {
       const scheduled_at = addMonthsKeepingDay(data.start_date, i)
-      
+
       const [item_value] = await iv.insert(db, {
         scheduled_at,
         // Fazendo assim o primeiro item terá o valor dele
@@ -97,27 +97,6 @@ export const insert_installment = async (data: DataType) => {
         month: item_value.scheduled_at.getMonth(),
         year: item_value.scheduled_at.getFullYear(),
       });
-
-      // // ======================================
-      // // POST INSERT
-      // // ======================================
-      // // VERIFICAR EM QUAL BALANÇO ESSE ITEM DEVE SER INSERIDO
-      // if (data.transfer_method_code === "cash") {
-      // 	bip.balance_cash_insert_pipeline(db, {
-      // 		month,
-      // 		year,
-      // 		cashflow_type: data.cashflow_type,
-      // 		amount: item_value.amount,
-      // 	});
-      // } else {
-      // 	bip.balance_bank_insert_pipeline(db, {
-      // 		month,
-      // 		year,
-      // 		cashflow_type: data.cashflow_type,
-      // 		amount: item_value.amount,
-      // 		transaction_instrument_id: data.transaction_instrument_id,
-      // 	});
-      // }
     }
     transactionsFn.commit();
   } catch (error) {
@@ -129,7 +108,7 @@ export const insert_installment = async (data: DataType) => {
 async function main() {
   // ESCOLHENDO TRANSFER_METHOD
   const transfer_methods = await tm.get_all(db);
-  const indexTM = randomIndex(transfer_methods.length); // Adicionar lógica interativa
+  const indexTM = randomIndex(transfer_methods.length);
   const method_choose = transfer_methods[indexTM];
 
   // ESCOLHENDO TRANSACTION_INSTRUMENT
@@ -137,21 +116,21 @@ async function main() {
     db,
     method_choose.code
   );
-  const indexTI = randomIndex(transaction_instruments.length); // Adicionar lógica interativa
+  const indexTI = randomIndex(transaction_instruments.length);
   const selected_transaction_instrument = transaction_instruments[indexTI];
 
   // ESCOLHENDO CATEGORY
   const categories = await cat.get_all(db);
-  const indexC = randomIndex(categories.length); // Adicionar lógica interativa
+  const indexC = randomIndex(categories.length);
   const selected_category = categories[indexC];
 
   // ESCOLHENDO RECURRENCE_TYPE
   const recurrence_types = await rt.get_all(db);
-  const indexRT = randomIndex(recurrence_types.length); // Adicionar lógica interativa
+  const indexRT = randomIndex(recurrence_types.length);
   const selected_recurrence_type = recurrence_types[indexRT];
 
-  const description = "Minha descrição de teste"; // Adicionar lógica interativa
-  const cashflow_type = drawCashflowType(); // Adicionar lógica interativa
+  const description = "Minha descrição de teste";
+  const cashflow_type = drawCashflowType();
 
   const rangeDate = randomRangeDate();
 

@@ -75,7 +75,6 @@ export async function sharedUpdate(id: string, data: InstallmentScreenUpdate): P
   })
 }
 
-// Parcelados
 export const installmentStrategies: Record<
   Kind,
   {

@@ -99,8 +99,9 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
       scheduledAt: lastData.scheduledAt === data.scheduledAt ? undefined : data.scheduledAt
     }
 
-    if (Object.values(realData).every(value => value === undefined)) {
-      // Não tem nada pra atualizar
+    const needUpdate = Object.values(realData).every(value => value === undefined)
+
+    if (needUpdate) {
       Alert.alert("Atenção!", "Nenhum dado foi alterado!")
       return undefined;
     }
@@ -122,8 +123,9 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
       })
   }, [lastData])
 
-  if (data === undefined || lastData === undefined) {
-    // Quer dizer que o conteúdo ainda não foi inicializado ou carregado
+  const isNotReady = data === undefined || lastData === undefined
+
+  if (isNotReady) {
     return null;
   }
 

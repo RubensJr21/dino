@@ -77,7 +77,7 @@ export function buildBaseQuery(db: DatabaseType, dateCondition: SQL<boolean>) {
     .leftJoin(transactionInstrument, eq(transactionInstrument.fk_id_transfer_method, transferMethod.id))
     .leftJoin(baseTransactionType, eq(baseTransactionType.fk_id_transaction_instrument, transactionInstrument.id))
 
-    // joins para os 3 tipos
+    // 👇 conecta cada subtipo
     .leftJoin(standard, eq(standard.id, baseTransactionType.id))
     .leftJoin(itemValueStandard, eq(itemValueStandard.id, standard.fk_id_item_value))
 
@@ -103,7 +103,6 @@ function getBalanceOfCash(
 }
 
 export async function getCashBalance(db: DatabaseType, year: number, month: number) {
-  // Se não tiver gasto irá mostrar nos valores
   const balance_cash = (await buildBaseQuery(db, dateFilter(year, month)).execute())[0]
 
   const lastDate = new Date(year, month - 1, 0)

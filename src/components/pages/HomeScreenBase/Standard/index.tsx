@@ -45,7 +45,6 @@ export default function StandardHome({ kind, data, goToEdit, goToRegister }: Sta
             [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
             { useNativeDriver: false }
           )}
-        // estimatedItemSize={116}
         />
       }
     />

@@ -73,8 +73,9 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
       })
   }, [])
 
-  if (data === undefined || lastData === undefined) {
-    // Quer dizer que o conteúdo ainda não foi inicializado ou carregado
+  const isNotReady = data === undefined || lastData === undefined
+
+  if (isNotReady) {
     return null;
   }
 

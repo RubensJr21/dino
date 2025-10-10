@@ -151,7 +151,6 @@ export async function register_transfer_methods(
   db: DatabaseType,
   data: DataInsert | DataInsert[]
 ) {
-  // Feito assim para permitir a inserção de vários ou apenas 1
   if (Array.isArray(data)) {
     return await db.insert(transactionInstrument).values(data).returning();
   } else {
@@ -165,7 +164,6 @@ export async function disable_transfer_methods(
   db: DatabaseType,
   data: TransactionInstrumentId | TransactionInstrumentId[]
 ) {
-  // Feito assim para permitir a inserção de vários ou apenas 1
   if (Array.isArray(data)) {
     return await db
       .update(transactionInstrument)

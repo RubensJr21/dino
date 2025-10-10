@@ -43,7 +43,6 @@ export function SelectMultiTransferMethodButton({ transferMethodsSelected, onSel
         {selection.length === 0 ? "Selecionar método de transferência" : `Mudar método de transferência`}
       </Button>
       <ScrollView
-        // horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ gap: 5, flexDirection: "row", flexWrap: "wrap" }}
       >

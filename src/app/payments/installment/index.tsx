@@ -14,7 +14,6 @@ export default function InstallmentHome() {
 
   useEffect(() => {
     if (isFocused === false) return;
-    // Lógica para recuperar os dados. Usar CallToast para alertar!
     installmentStrategies
       .payment
       .list_all()
