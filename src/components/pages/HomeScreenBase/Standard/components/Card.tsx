@@ -16,7 +16,6 @@ interface TransactionStandardCardProps {
   category: Category;
   status: boolean;
   amountValue: string;
-  onToggleStatus: () => void;
   onEdit: (id: string) => void
 }
 
@@ -28,7 +27,6 @@ export function TransactionStandardCard({
   category,
   status: defaultStatus,
   amountValue,
-  onToggleStatus,
   onEdit,
 }: TransactionStandardCardProps) {
   const theme = useTheme()

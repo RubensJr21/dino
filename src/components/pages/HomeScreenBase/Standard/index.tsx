@@ -36,7 +36,6 @@ export default function StandardHome({ kind, data, goToEdit, goToRegister }: Sta
               category={standard.category}
               amountValue={standard.amountValue}
               status={standard.wasProcessed}
-              onToggleStatus={() => console.info("Toggle do Status...")}
               onEdit={goToEdit}
             />
           )}
