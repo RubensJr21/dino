@@ -2,7 +2,6 @@ import { AmountInput } from "@components/ui/AmountInput";
 import BasePage from "@components/ui/base/BasePage";
 import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
 import { DatePickerButton } from "@components/ui/base/DatePickerButton";
-import ScrollView from "@components/ui/base/ScrollView";
 import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton";
@@ -16,7 +15,7 @@ import { DEFAULT_MIN_INSTALLMENT, InstallmentInput } from "@pages/FormScreens/In
 import { initialDataBase } from "@pages/TransactionScreenDefaultData";
 import { useNavigation } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
-import { Alert, StyleSheet } from "react-native";
+import { Alert, ScrollView, StyleSheet } from "react-native";
 import { TransactionInstallmentCardRegister } from "./components/Card";
 
 interface TransactionInstallmentRegisterScreenProps {

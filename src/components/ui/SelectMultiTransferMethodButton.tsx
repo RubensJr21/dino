@@ -1,10 +1,9 @@
 import Button from "@components/ui/base/Button";
 import { CustomModal } from "@components/ui/base/CustomModal";
-import ScrollView from "@components/ui/base/ScrollView";
 import * as tm_fns from "@data/playground/transfer_method";
 import { TransferMethodEntity } from "@lib/types";
 import React, { useEffect, useState } from "react";
-import { TouchableHighlight } from "react-native";
+import { ScrollView, TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Chip, Text, useTheme } from "react-native-paper";
 import { getTransferMethodsLabel } from "start_configs";

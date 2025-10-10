@@ -3,7 +3,6 @@ import { AmountInput } from "@components/ui/AmountInput";
 import BasePage from "@components/ui/base/BasePage";
 import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
 import { DatePickerButton } from "@components/ui/base/DatePickerButton";
-import ScrollView from "@components/ui/base/ScrollView";
 import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_TRANSACTION_INSTRUMENT, SelectTransactionInstrumentButton } from "@components/ui/SelectTransactionInstrumentOfTransferMethod/SelectTransactionInstrumentButton";
@@ -15,7 +14,7 @@ import { Category, Kind, StandardScreenInsert, TransactionInstrument } from "@li
 import { validateStandardTransactionInsertData } from "@lib/validations/inserts/standard_transaction";
 import { useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
-import { Alert, StyleSheet } from "react-native";
+import { Alert, ScrollView, StyleSheet } from "react-native";
 import { TransactionStandardCardRegister } from "./components/Card";
 
 type Props = {

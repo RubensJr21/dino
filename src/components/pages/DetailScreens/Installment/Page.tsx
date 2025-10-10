@@ -1,8 +1,8 @@
 import BasePage from "@components/ui/base/BasePage";
-import ScrollView from "@components/ui/base/ScrollView";
 import { list_all_item_value_installments } from "@data/playground/installment/list_all_item_value";
 import { ItemValueEntity } from "@lib/types";
 import { ComponentProps, useEffect, useMemo, useState } from "react";
+import { ScrollView } from "react-native";
 import { List, useTheme } from "react-native-paper";
 import { Items } from "../Items";
 import { TransactionInstallmentCardViewer } from "./Card";

@@ -1,6 +1,5 @@
 import BasePage from "@components/ui/base/BasePage";
 import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
-import ScrollView from "@components/ui/base/ScrollView";
 import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { CallToast } from "@lib/call-toast";
@@ -9,7 +8,7 @@ import { Category, InstallmentScreenInsert, Kind } from "@lib/types";
 import { validateInstallmentTransactionUpdateData } from "@lib/validations/updates/installment_transaction";
 import { useNavigation } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Alert, StyleSheet } from "react-native";
+import { Alert, ScrollView, StyleSheet } from "react-native";
 import { TransactionInstallmentCardRegister } from "./components/Card";
 
 interface TransactionInstallmentEditScreenProps {

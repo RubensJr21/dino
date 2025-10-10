@@ -1,7 +1,6 @@
 import { AmountInput } from "@components/ui/AmountInput";
 import BasePage from "@components/ui/base/BasePage";
 import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
-import ScrollView from "@components/ui/base/ScrollView";
 import { DescriptionInput } from "@components/ui/DescriptionInput";
 import { SelectCategoryButton } from "@components/ui/SelectCategoryButton";
 import { INITIAL_RECURRENCE_TYPE } from "@components/ui/SelectRecurrenceButton";
@@ -12,7 +11,7 @@ import { validateRecurringTransactionUpdateData } from "@lib/validations/updates
 import { initialDataBase } from "@pages/TransactionScreenDefaultData";
 import { useNavigation } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { Alert, StyleSheet } from "react-native";
+import { Alert, ScrollView, StyleSheet } from "react-native";
 import { TransactionRecurringCardRegister } from "./components/Card";
 
 interface TransactionRecurringEditScreenProps {
