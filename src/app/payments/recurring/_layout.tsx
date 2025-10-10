@@ -2,10 +2,10 @@ import { Stack, useNavigation } from "expo-router";
 import { useCallback } from "react";
 
 const headerTitles = {
-  "index": "Pagamentos Recorrentes",
-  "register": "Registrar Pagamento Recorrente",
-  "[id]/index": "Visualizar Pagamento Recorrente",
-  "[id]/edit": "Editar Pagamento Recorrente"
+  "index": "Pagamentos recorrentes",
+  "register": "Registrar pagamento recorrente",
+  "[id]/index": "Detalhes do pagamento recorrente",
+  "[id]/edit": "Editar pagamento recorrente"
 }
 
 export default function RecurringLayout() {
