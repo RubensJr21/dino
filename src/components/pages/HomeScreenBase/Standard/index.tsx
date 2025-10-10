@@ -1,4 +1,4 @@
-import { Kind, StandardEntity } from '@lib/types';
+import { getKindLabel, Kind, StandardEntity } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase/base';
 import { TransactionStandardCard } from '@pages/HomeScreenBase/Standard/components/Card';
 import { ReactNode, useRef } from 'react';
@@ -40,7 +40,7 @@ export default function StandardHome({ kind, data, goToEdit, goToRegister }: Sta
               onEdit={goToEdit}
             />
           )}
-          ListEmptyComponent={<Text>Nenhum {kind} encontrado.</Text>}
+          ListEmptyComponent={<Text>Nenhum {getKindLabel(kind)} encontrado.</Text>}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
             { useNativeDriver: false }
