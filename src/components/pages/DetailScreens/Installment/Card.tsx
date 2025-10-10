@@ -2,7 +2,7 @@ import { InstallmentScreenInsert } from '@lib/types';
 import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
-import { getTransferMethodsLabel } from 'start_configs';
+import { getCategoryLabel, getTransferMethodsLabel } from 'start_configs';
 
 interface TransactionInstallmentCardViewerProps {
   data: InstallmentScreenInsert
@@ -32,7 +32,7 @@ export function TransactionInstallmentCardViewer({
         style={{ backgroundColor: theme.colors.primaryContainer, borderRadius: 0 }}
         textStyle={{ color: theme.colors.onPrimaryContainer }}
       >
-        {category.code}
+        {getCategoryLabel(category.code)}
       </Chip>
       <Card.Title
         title={description}
