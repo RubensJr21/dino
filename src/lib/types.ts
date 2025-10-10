@@ -68,6 +68,15 @@ export function getCashflowType(kind: Kind): Cashflow_Type {
   }
 }
 
+export function getKindLabel(kind: Kind): string {
+  switch (kind) {
+    case "payment":
+      return "pagamento";
+    case "receipt":
+      return "recebimento";
+  }
+}
+
 // ======================
 // ENTITIES
 // ======================
