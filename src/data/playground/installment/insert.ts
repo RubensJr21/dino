@@ -48,7 +48,7 @@ export const insert_installment = async (data: DataType) => {
       throw new Error("Não é possível adicionar itens à saldos já fechados!")
     }
 
-    if(data.installments_number <= 2){
+    if(data.installments_number < 2){
       throw new Error(`Valor ${data.installments_number} menor que 2!`)
     }
 

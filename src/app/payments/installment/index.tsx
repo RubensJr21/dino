@@ -6,8 +6,6 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 
-// ALERT: Colocar aqui dados fictícios. Gerar com o chat GPT
-
 export default function InstallmentHome() {
   const [data, setData] = useState<InstallmentEntity[]>([])
   const isFocused = useIsFocused()

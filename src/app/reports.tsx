@@ -42,10 +42,6 @@ export default function ReportByOrigin() {
     load_balance()
   }, [])
 
-  if (balance === undefined) {
-    return null;
-  }
-
   return (
     <BasePage>
       <View style={{ flexDirection: "row", marginBottom: 10, columnGap: 7 }}>
@@ -65,31 +61,35 @@ export default function ReportByOrigin() {
         />
         <Button style={{ marginTop: 7 }} onPress={load_balance}>Gerar Relatório</Button>
       </View>
-      <FlatList
-        data={[balance.balance_cash, ...balance.balance_banks]}
-        contentContainerStyle={{ rowGap: 7 }}
-        columnWrapperStyle={{ columnGap: 7 }}
-        renderItem={({ item: balance }) => {
-          return (
-            <View key={balance.nickname} style={styles.square_view}>
-              <Text variant="titleMedium" style={{fontWeight: "bold"}} >{balance.nickname}</Text>
-              <View style={{ alignSelf: "flex-end" }}>
-                <Text variant="titleSmall">Saldo atual</Text>
-                <Text style={{ textAlign: "right" }}>R$ {balance.partial_balance}</Text>
-              </View>
+      {
+        balance !== undefined &&
+        <FlatList
+          data={[balance.balance_cash, ...balance.balance_banks]}
+          contentContainerStyle={{ rowGap: 7 }}
+          columnWrapperStyle={{ columnGap: 7 }}
+          renderItem={({ item: balance }) => {
+            return (
+              <View key={balance.nickname} style={styles.square_view}>
+                <Text variant="titleMedium" style={{ fontWeight: "bold" }} >{balance.nickname}</Text>
+                <View style={{ alignSelf: "flex-end" }}>
+                  <Text variant="titleSmall">Saldo atual</Text>
+                  <Text style={{ textAlign: "right" }}>R$ {balance.partial_balance}</Text>
+                </View>
 
-              <Text>A receber: R$ {balance.planned_receipts}</Text>
-              <Text>A pagar: R$ {balance.planned_payments}</Text>
+                <Text>A receber: R$ {balance.planned_receipts}</Text>
+                <Text>A pagar: R$ {balance.planned_payments}</Text>
 
-              <View style={{ position: "absolute", bottom: 10, right: 10, alignSelf: "flex-end" }}>
-                <Text variant="titleSmall">Saldo ao final do mês</Text>
-                <Text style={{ textAlign: "right" }}>R$ {balance.final_balance}</Text>
+                <View style={{ position: "absolute", bottom: 10, right: 10, alignSelf: "flex-end" }}>
+                  <Text variant="titleSmall">Saldo ao final do mês</Text>
+                  <Text style={{ textAlign: "right" }}>R$ {balance.final_balance}</Text>
+                </View>
               </View>
-            </View>
-          )
-        }}
-        numColumns={2}
-      />
+            )
+          }}
+          numColumns={2}
+        />
+      }
+
     </BasePage>
   )
 }

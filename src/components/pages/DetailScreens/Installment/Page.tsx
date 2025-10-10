@@ -1,5 +1,6 @@
 import BasePage from "@components/ui/base/BasePage";
 import ScrollView from "@components/ui/base/ScrollView";
+import { list_all_item_value_installments } from "@data/playground/installment/list_all_item_value";
 import { ItemValueEntity } from "@lib/types";
 import { ComponentProps, useEffect, useState } from "react";
 import { List, useTheme } from "react-native-paper";
@@ -30,11 +31,13 @@ export function InstallmentViewerBase({
 
   // Buscar baseado no ID
   useEffect(() => {
-    const itemValueArray = new Array<ItemValueEntity>()
-    setInstallments({
-      processed: itemValueArray.filter((item_value) => item_value.was_processed),
-      unprocessed: itemValueArray.filter((item_value) => !item_value.was_processed)
-    })
+    list_all_item_value_installments(id)
+      .then(items_value => {
+        setInstallments({
+          processed: items_value.filter((item_value) => item_value.was_processed),
+          unprocessed: items_value.filter((item_value) => !item_value.was_processed)
+        })
+      })
   }, [id])
 
   // Ainda não carregou
@@ -50,19 +53,19 @@ export function InstallmentViewerBase({
           <List.Accordion
             title="Não Concluídos"
             left={props => <List.Icon {...props} icon="clock" />}
-            expanded={processedExpanded}
-            onPress={handlePressProcessed}
+            expanded={unprocessedExpanded}
+            onPress={handlePressUnprocessed}
           >
-            <Items data={installments.processed} labelButton="Efetivar" colorButton={theme.colors.onPrimary} />
+            <Items data={installments.unprocessed} labelButton="Efetivar" colorButton={theme.colors.onPrimary} />
           </List.Accordion>
 
           <List.Accordion
             title="Concluídos"
             left={({ color, ...props }) => <List.Icon {...props} icon="check" />}
-            expanded={unprocessedExpanded}
-            onPress={handlePressUnprocessed}
+            expanded={processedExpanded}
+            onPress={handlePressProcessed}
           >
-            <Items data={installments.unprocessed} labelButton="Reverter" colorButton={theme.colors.onTertiary} />
+            <Items data={installments.processed} labelButton="Reverter" colorButton={theme.colors.onTertiary} />
           </List.Accordion>
         </List.Section>
       </ScrollView>

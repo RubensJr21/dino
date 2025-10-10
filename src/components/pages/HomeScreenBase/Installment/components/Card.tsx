@@ -83,9 +83,7 @@ export function TransactionInstallmentCard({
         </View>
       </Card.Content>
       <Card.Actions style={{ paddingRight: 15, marginBottom: 5, justifyContent: "space-between" }}>
-        <View
-          style={[styles.valuesAndCurrency]}
-        >
+        <View style={[styles.valuesAndCurrency]}>
           <Text variant='titleLarge' style={[styles.isDisabledText, { color: theme.colors.onSurface }]}>
             Nº Parcelas {installmentsNumber}
           </Text>

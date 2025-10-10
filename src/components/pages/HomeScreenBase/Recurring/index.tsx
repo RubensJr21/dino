@@ -1,10 +1,10 @@
 import { Kind, RecurringEntity } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase/base';
-import { TransactionRecurringCard } from '@pages/HomeScreenBase/Recurring/components/Card';
 import { ReactNode, useRef } from 'react';
 import { Animated } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Text } from "react-native-paper";
+import { TransactionRecurringCard } from './components/Card';
 
 interface RecurringHomeProps {
   kind: Kind;
@@ -12,9 +12,10 @@ interface RecurringHomeProps {
   data: Array<RecurringEntity>;
   goToRegister: () => void;
   goToEdit: (id: string) => void;
+  goToDetails: (id: string) => void;
 }
 
-export default function RecurringHome({ kind, data, goToEdit, goToRegister }: RecurringHomeProps) {
+export default function RecurringHome({ kind, data, goToEdit, goToRegister, goToDetails }: RecurringHomeProps) {
   const scrollY = useRef(new Animated.Value(0));
 
   return (
@@ -38,7 +39,7 @@ export default function RecurringHome({ kind, data, goToEdit, goToRegister }: Re
               isDisabled={recurring.endDate !== null}
               onToggleIsDisabled={() => console.info("Toggle do isDisabled...")}
               onEdit={goToEdit}
-              goToDetails={() => console.info("Navegando para a tela de detalhes...")}
+              goToDetails={goToDetails}
             />
           )}
           ListEmptyComponent={<Text>Nenhum {kind} encontrado.</Text>}

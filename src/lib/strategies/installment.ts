@@ -7,7 +7,7 @@ import { getCashflowType, InstallmentScreenInsert, InstallmentScreenUpdate, Kind
 
 type InstallmentReturn = NonNullable<Awaited<ReturnType<typeof find_installment>>>
 
-function mapperInstallment(installment: InstallmentReturn) {
+export function mapperInstallment(installment: InstallmentReturn) {
   return {
     id: installment.id,
     description: installment.description,

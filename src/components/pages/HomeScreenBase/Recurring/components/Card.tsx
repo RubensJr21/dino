@@ -17,7 +17,7 @@ interface TransactionRecurringCardProps {
   isDisabled: boolean;
   onToggleIsDisabled: () => void;
   onEdit: (id: string) => void
-  goToDetails: () => void
+  goToDetails: (id: string) => void
 }
 
 export function TransactionRecurringCard({
@@ -124,7 +124,7 @@ export function TransactionRecurringCard({
           // Precisa por que o Card.Actions injeta a prop
           mode='contained-tonal'
           style={{ alignSelf: "flex-start" }}
-          onPress={goToDetails}
+          onPress={() => goToDetails(id)}
         >
           Detalhes
         </Button>

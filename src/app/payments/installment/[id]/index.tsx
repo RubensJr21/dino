@@ -1,42 +1,44 @@
+import { find_installment } from "@data/playground/installment/find";
+import { CallToast } from "@lib/call-toast";
+import { mapperInstallment } from "@lib/strategies/installment";
+import { InstallmentEntity } from "@lib/types";
 import { InstallmentViewerBase } from "@pages/DetailScreens/Installment/Page";
-import { Redirect, useLocalSearchParams } from "expo-router";
+import { Redirect, useLocalSearchParams, useNavigation } from "expo-router";
+import { useEffect, useState } from "react";
 
-export default function InstallmentView() {
+export default function InstallmentDetails() {
   const { id } = useLocalSearchParams<{ id?: string }>()
+  const navigation = useNavigation()
+  const [installment, setInstallment] = useState<InstallmentEntity>()
 
-  if (!id) {
+  useEffect(() => {
+    const idAsNumber = Number(id)
+    if (Number.isNaN(idAsNumber)) {
+      CallToast("Valor de id inválido!")
+      return navigation.goBack()
+    }
+    find_installment(idAsNumber)
+      .then((installment => {
+        if (installment === undefined) {
+          CallToast("Erro ao obter transação parcelada!")
+          return;
+        }
+        setInstallment(mapperInstallment(installment))
+      }))
+  }, [])
+
+  if (id === undefined) {
     return <Redirect href={"/payments/installment"} />
   }
 
-  // TELA GERAL:
-  // Card
-
-  // CADA ITEM:
-  // Qual parcela (mês ou data)
-  // Valor
-  // Processado ou não (opção de marcar como processado)
-
-  // TODO: Remover mock
+  if (installment === undefined) {
+    return null;
+  }
 
   return (
     <InstallmentViewerBase
-      id={5}
-      dataCard={{
-        description: "Minha descrição",
-        startDate: new Date(),
-        amountValue: "500,00",
-        installments: "5",
-        category: {
-          id: 1,
-          code: "alimentação",
-        },
-        transactionInstrument: {
-          id: 1,
-          nickname: "Cartão Teste",
-          transfer_method_code: "banco-teste-cartaoteste",
-          bank_nickname: null
-        }
-      }}
+      id={installment.id}
+      dataCard={installment}
     />
   );
 };

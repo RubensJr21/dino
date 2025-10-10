@@ -31,11 +31,6 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
     })
   }, [id])
 
-  if (data === undefined || lastData === undefined) {
-    // Quer dizer que o conteúdo ainda não foi inicializado ou carregado
-    return null;
-  }
-
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
       if (prev === undefined) return prev
@@ -57,6 +52,7 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
   }, [setData])
 
   const handleSubmit = useCallback((data: InstallmentScreenInsert) => {
+    if (data === undefined || lastData === undefined) return;
     const realData = {
       category: lastData.category.id === data.category.id ? undefined : data.category,
       description: lastData.description === data.description ? undefined : data.description,
@@ -76,6 +72,11 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
         Alert.alert("Erro!", "Erro ao atualizar transação!")
       })
   }, [])
+
+  if (data === undefined || lastData === undefined) {
+    // Quer dizer que o conteúdo ainda não foi inicializado ou carregado
+    return null;
+  }
 
   return (
     <BasePage style={styles.page}>

@@ -37,12 +37,21 @@ export default function RecurringHome() {
       params: { id }
     })
   }
+
+  const goToDetails = (id: string) => {
+    route.navigate({
+      pathname: '/payments/recurring/[id]',
+      params: { id }
+    })
+  }
+
   return (
     <RecurringHomeBase
       kind="payment"
       data={data}
       goToRegister={goToRegister}
       goToEdit={goToEdit}
+      goToDetails={goToDetails}
     />
   )
 }

@@ -7,7 +7,7 @@ import { getCashflowType, Kind, RecurringScreenInsert, RecurringScreenUpdate } f
 
 type RecurringReturn = NonNullable<Awaited<ReturnType<typeof find_recurring>>>
 
-function mapperRecurring(recurring: RecurringReturn) {
+export function mapperRecurring(recurring: RecurringReturn) {
   return {
     id: recurring.id,
     description: recurring.description,

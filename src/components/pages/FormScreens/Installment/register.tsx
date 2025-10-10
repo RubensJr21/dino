@@ -31,7 +31,7 @@ const initialDataInstallment = {
 
 export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstallmentRegisterScreenProps) {
   const [data, setData] = useState<InstallmentScreenInsert>(initialDataInstallment)
-    const navigation = useNavigation()
+  const navigation = useNavigation()
 
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
@@ -177,7 +177,7 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
             />
             :
             null
-        }s
+        }
       </ScrollView>
       <ButtonSubmit onSubmit={() => handleSubmit(data)} />
     </BasePage>
