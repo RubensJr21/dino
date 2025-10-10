@@ -1,4 +1,4 @@
-import { Kind, RecurringEntity } from '@lib/types';
+import { getKindLabel, Kind, RecurringEntity } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase/base';
 import { ReactNode, useRef } from 'react';
 import { Animated } from 'react-native';
@@ -42,7 +42,7 @@ export default function RecurringHome({ kind, data, goToEdit, goToRegister, goTo
               goToDetails={goToDetails}
             />
           )}
-          ListEmptyComponent={<Text>Nenhum {kind} encontrado.</Text>}
+          ListEmptyComponent={<Text>Nenhum {getKindLabel(kind)} recorrente encontrado.</Text>}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
             { useNativeDriver: false }
