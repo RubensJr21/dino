@@ -3,7 +3,7 @@ import { RecurringScreenInsert } from '@lib/types';
 import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
-import { getTransferMethodsLabel } from 'start_configs';
+import { getCategoryLabel, getTransferMethodsLabel } from 'start_configs';
 
 interface TransactionRecurringCardRegisterProps {
   data: RecurringScreenInsert
@@ -40,7 +40,7 @@ export function TransactionRecurringCardRegister({
         style={{ backgroundColor: theme.colors.primaryContainer, borderRadius: 0 }}
         textStyle={{ color: categoryIsEmpty ? theme.colors.outline : theme.colors.onPrimaryContainer }}
       >
-        {categoryIsEmpty ? "Selecione uma categoria..." : category.code}
+        {categoryIsEmpty ? "Selecione uma categoria..." : getCategoryLabel(category.code)}
       </Chip>
       <Card.Title
         title={descriptionIsEmpty ? "Escreva uma descrição..." : description}
