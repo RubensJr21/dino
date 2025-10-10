@@ -2,10 +2,10 @@ import { Stack, useNavigation } from "expo-router";
 import { useCallback } from "react";
 
 const headerTitles = {
-  "index": "Pagamentos Parcelados",
-  "register": "Registrar Pagamento Parcelado",
-  "[id]/index": "Visualizar Pagamento Parcelado",
-  "[id]/edit": "Editar Pagamento Parcelado"
+  "index": "Pagamentos parcelados",
+  "register": "Registrar pagamento parcelado",
+  "[id]/index": "Detalhes do pagamento parcelado",
+  "[id]/edit": "Editar pagamento parcelado"
 }
 
 export default function InstallmentLayout() {
