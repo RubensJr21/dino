@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
+import { getCategoryLabel } from "start_configs";
 
 interface SelectCategoryButtonProps {
   category: Category
@@ -71,7 +72,7 @@ export function SelectCategoryButton({ category, onSelected, style }: SelectCate
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{cat.code}</Text>
+              <Text>{getCategoryLabel(cat.code)}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}
