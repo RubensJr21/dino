@@ -5,6 +5,18 @@ import { eq, inArray } from "drizzle-orm";
 type DataInsert = typeof itemValue.$inferInsert;
 type DataSelect = typeof itemValue.$inferSelect;
 
+export async function get(
+  db: DatabaseType,
+  item_value_id: typeof itemValue.$inferSelect.id
+) {
+  return (
+    await db
+      .select()
+      .from(itemValue)
+      .where(eq(itemValue.id, item_value_id))
+  ).shift();
+}
+
 export async function insert(
   db: DatabaseType,
   data: DataInsert | DataInsert[]
