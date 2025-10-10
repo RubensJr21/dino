@@ -37,22 +37,12 @@ export function TransactionStandardCard({
   const toggleStatus = useCallback((processed: boolean) => {
     if (processed) {
       mark_standard_as_unprocessed(Number(id))
-        .then(() => {
-          setStatus(false)
-          console.log("Desmarcou...")
-        })
-        .catch(error => {
-          console.error("Erro ao marcar standard como processado!")
-        })
+        .then(() => setStatus(false))
+        .catch(error => console.error("Erro ao desmarcar standard como processado!", error))
       } else {
         mark_standard_as_processed(Number(id))
-        .then(() => {
-          setStatus(true)
-          console.log("Marcou...")
-        })
-        .catch(error => {
-          console.error("Erro ao marcar standard como processado!")
-        })
+        .then(() => setStatus(true))
+        .catch(error => console.error("Erro ao marcar standard como processado!", error))
     }
   }, [id, setStatus])
 
