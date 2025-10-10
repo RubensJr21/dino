@@ -32,17 +32,17 @@ export function TransactionStandardCard({
   const theme = useTheme()
   const [status, setStatus] = useState(defaultStatus)
 
-  const toggleStatus = useCallback((processed: boolean) => {
-    if (processed) {
+  const toggleStatus = useCallback(() => {
+    if (status) {
       mark_standard_as_unprocessed(Number(id))
         .then(() => setStatus(false))
         .catch(error => console.error("Erro ao desmarcar standard como processado!", error))
-      } else {
-        mark_standard_as_processed(Number(id))
+    } else {
+      mark_standard_as_processed(Number(id))
         .then(() => setStatus(true))
         .catch(error => console.error("Erro ao marcar standard como processado!", error))
     }
-  }, [id, setStatus])
+  }, [id, setStatus, status])
 
   return (
     <Card style={[
@@ -112,7 +112,7 @@ export function TransactionStandardCard({
       >
         <Pressable
           style={[styles.statusRow]}
-          onPress={() => toggleStatus(status === true)}
+          onPress={toggleStatus}
         >
           <MCIcons
             name={status ? "check-circle" : "clock-outline"}
