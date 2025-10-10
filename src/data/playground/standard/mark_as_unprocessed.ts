@@ -4,7 +4,7 @@ import * as std from "@data_functions/standard";
 import { db, transactionsFn } from "@database/db-instance";
 import { standard } from "@database/schema";
 
-export async function mark_standard_as_processed(
+export async function mark_standard_as_unprocessed(
   standard_id: typeof standard.$inferSelect.id
 ) {
   transactionsFn.begin();

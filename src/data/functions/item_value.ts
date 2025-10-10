@@ -45,7 +45,7 @@ export async function mark_as_unprocessed(
 ) {
   await db
     .update(itemValue)
-    .set({ was_processed: true })
+    .set({ was_processed: false })
     .where(eq(itemValue.id, item_value_id));
 }
 

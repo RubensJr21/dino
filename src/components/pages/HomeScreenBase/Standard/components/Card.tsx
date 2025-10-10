@@ -1,7 +1,9 @@
+import { mark_standard_as_processed } from '@data/playground/standard/mark_as_processed';
+import { mark_standard_as_unprocessed } from '@data/playground/standard/mark_as_unprocessed';
 import { CallToast } from '@lib/call-toast';
 import { MCIcons } from '@lib/icons.lib';
 import { Category, TransactionInstrument } from '@lib/types';
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
 import { getTransferMethodsLabel } from 'start_configs';
@@ -31,6 +33,28 @@ export function TransactionStandardCard({
 }: TransactionStandardCardProps) {
   const theme = useTheme()
   const [status, setStatus] = useState(defaultStatus)
+
+  const toggleStatus = useCallback((processed: boolean) => {
+    if (processed) {
+      mark_standard_as_unprocessed(Number(id))
+        .then(() => {
+          setStatus(false)
+          console.log("Desmarcou...")
+        })
+        .catch(error => {
+          console.error("Erro ao marcar standard como processado!")
+        })
+      } else {
+        mark_standard_as_processed(Number(id))
+        .then(() => {
+          setStatus(true)
+          console.log("Marcou...")
+        })
+        .catch(error => {
+          console.error("Erro ao marcar standard como processado!")
+        })
+    }
+  }, [id, setStatus])
 
   return (
     <Card style={[
@@ -100,7 +124,7 @@ export function TransactionStandardCard({
       >
         <Pressable
           style={[styles.statusRow]}
-          onPress={() => setStatus((prev) => !prev)}
+          onPress={() => toggleStatus(status === true)}
         >
           <MCIcons
             name={status ? "check-circle" : "clock-outline"}
