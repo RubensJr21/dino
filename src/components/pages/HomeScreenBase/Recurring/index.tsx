@@ -37,7 +37,6 @@ export default function RecurringHome({ kind, data, goToEdit, goToRegister, goTo
               category={recurring.category}
               currentAmount={recurring.amountValue}
               isDisabled={recurring.endDate !== null}
-              onToggleIsDisabled={() => console.info("Toggle do isDisabled...")}
               onEdit={goToEdit}
               goToDetails={goToDetails}
             />

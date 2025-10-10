@@ -1,8 +1,10 @@
 import Button from '@components/ui/base/Button';
+import { disable_recurring } from '@data/playground/recurring/disable';
+import { enable_recurring } from '@data/playground/recurring/enable';
 import { CallToast } from '@lib/call-toast';
 import { MCIcons } from '@lib/icons.lib';
 import { Category, TransactionInstrument } from '@lib/types';
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
 import { getCategoryLabel, getTransferMethodsLabel } from 'start_configs';
@@ -15,7 +17,6 @@ interface TransactionRecurringCardProps {
   category: Category;
   currentAmount: string;
   isDisabled: boolean;
-  onToggleIsDisabled: () => void;
   onEdit: (id: string) => void
   goToDetails: (id: string) => void
 }
@@ -28,12 +29,23 @@ export function TransactionRecurringCard({
   category,
   currentAmount,
   isDisabled: defaultIsDisabled,
-  onToggleIsDisabled,
   onEdit,
   goToDetails
 }: TransactionRecurringCardProps) {
   const theme = useTheme()
   const [isDisabled, setIsDisabled] = useState(defaultIsDisabled)
+
+  const toggleIsDisabled = useCallback(() => {
+    if (isDisabled) {
+      disable_recurring(Number(id))
+        .then(() => setIsDisabled(false))
+        .catch(error => console.error("Erro ao desmarcar standard como processado!", error))
+    } else {
+      enable_recurring(Number(id))
+        .then(() => setIsDisabled(true))
+        .catch(error => console.error("Erro ao marcar standard como processado!", error))
+    }
+  }, [id, setIsDisabled, isDisabled])
 
   return (
     <Card style={[
@@ -98,7 +110,7 @@ export function TransactionRecurringCard({
       <Card.Actions style={{ paddingRight: 15, marginBottom: 5, justifyContent: "space-between" }}>
         <TouchableOpacity
           style={[styles.isDisabledRow]}
-          onPress={() => setIsDisabled((prev) => !prev)}
+          onPress={toggleIsDisabled}
         >
           <MCIcons
             name={!isDisabled ? "calendar-refresh" : "calendar-remove"}
