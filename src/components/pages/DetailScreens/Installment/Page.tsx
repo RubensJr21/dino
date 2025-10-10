@@ -1,7 +1,7 @@
 import BasePage from "@components/ui/base/BasePage";
 import { list_all_item_value_installments } from "@data/playground/installment/list_all_item_value";
-import { mark_item_value_installment_as_processed } from "@data/playground/installment/mark_item_value_as_processed";
-import { mark_item_value_installment_as_unprocessed } from "@data/playground/installment/mark_item_value_as_unprocessed";
+import { mark_item_value_as_processed } from "@data/playground/item_value/mark_as_processed";
+import { mark_item_value_as_unprocessed } from "@data/playground/item_value/mark_as_unprocessed";
 import { CallToast } from "@lib/call-toast";
 import { ItemValueEntity } from "@lib/types";
 import { ComponentProps, useCallback, useEffect, useMemo, useState } from "react";
@@ -47,7 +47,7 @@ export function InstallmentViewerBase({
   }, [id])
 
   const moveProcessedToUnprocessed = useCallback(async (item_value: ItemValueEntity) => {
-    mark_item_value_installment_as_processed(id, item_value.id)
+    mark_item_value_as_unprocessed(item_value.id)
       .then(() => {
         setInstallments(prev => {
           return {
@@ -63,7 +63,7 @@ export function InstallmentViewerBase({
   }, [setInstallments])
 
   const moveUnprocessedToProcessed = useCallback(async (item_value: ItemValueEntity) => {
-    mark_item_value_installment_as_unprocessed(id, item_value.id)
+    mark_item_value_as_processed(item_value.id)
       .then(() => {
         setInstallments(prev => {
           return {
@@ -94,10 +94,10 @@ export function InstallmentViewerBase({
             onPress={handlePressUnprocessed}
           >
             <Items
-            data={installments.unprocessed}
-            labelButton="Efetivar"
-            colorButton={theme.colors.onPrimary}
-            changeStatus={moveUnprocessedToProcessed}
+              data={installments.unprocessed}
+              labelButton="Efetivar"
+              colorButton={theme.colors.onPrimary}
+              changeStatus={moveUnprocessedToProcessed}
             />
           </List.Accordion>
 
@@ -108,10 +108,10 @@ export function InstallmentViewerBase({
             onPress={handlePressProcessed}
           >
             <Items
-            data={installments.processed}
-            labelButton="Reverter"
-            colorButton={theme.colors.onTertiary}
-            changeStatus={moveProcessedToUnprocessed}
+              data={installments.processed}
+              labelButton="Reverter"
+              colorButton={theme.colors.onTertiary}
+              changeStatus={moveProcessedToUnprocessed}
             />
           </List.Accordion>
         </List.Section>
