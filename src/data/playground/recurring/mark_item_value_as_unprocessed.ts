@@ -4,7 +4,7 @@ import * as rec from "@data_functions/recurring";
 import { db, transactionsFn } from "@database/db-instance";
 import { itemValue, recurring } from "@database/schema";
 
-export async function mark_item_value_from_recurring_as_processed(
+export async function mark_item_value_recurring_as_unprocessed(
   recurring_id: typeof recurring.$inferSelect.id,
   item_value_id: typeof itemValue.$inferSelect.id
 ) {
