@@ -1,7 +1,10 @@
 import BasePage from "@components/ui/base/BasePage";
 import { list_all_item_value_installments } from "@data/playground/installment/list_all_item_value";
+import { mark_item_value_installment_as_processed } from "@data/playground/installment/mark_item_value_as_processed";
+import { mark_item_value_installment_as_unprocessed } from "@data/playground/installment/mark_item_value_as_unprocessed";
+import { CallToast } from "@lib/call-toast";
 import { ItemValueEntity } from "@lib/types";
-import { ComponentProps, useEffect, useMemo, useState } from "react";
+import { ComponentProps, useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView } from "react-native";
 import { List, useTheme } from "react-native-paper";
 import { Items } from "../Items";
@@ -43,6 +46,38 @@ export function InstallmentViewerBase({
       })
   }, [id])
 
+  const moveProcessedToUnprocessed = useCallback(async (item_value: ItemValueEntity) => {
+    mark_item_value_installment_as_processed(id, item_value.id)
+      .then(() => {
+        setInstallments(prev => {
+          return {
+            processed: prev.processed.filter((iv) => iv.id !== item_value.id),
+            unprocessed: [item_value, ...prev.unprocessed]
+          }
+        })
+      })
+      .catch(error => {
+        console.error(error)
+        CallToast("Ocorreu um erro ao marcar um item dessa transação parcelada como não processado!")
+      })
+  }, [setInstallments])
+
+  const moveUnprocessedToProcessed = useCallback(async (item_value: ItemValueEntity) => {
+    mark_item_value_installment_as_unprocessed(id, item_value.id)
+      .then(() => {
+        setInstallments(prev => {
+          return {
+            unprocessed: prev.unprocessed.filter((iv) => iv.id !== item_value.id),
+            processed: [item_value, ...prev.processed]
+          }
+        })
+      })
+      .catch(error => {
+        console.error(error)
+        CallToast("Ocorreu um erro ao marcar um item dessa transação parcelada como processado!")
+      })
+  }, [setInstallments])
+
   if (isUnloaded) {
     return null;
   }
@@ -58,7 +93,12 @@ export function InstallmentViewerBase({
             expanded={unprocessedExpanded}
             onPress={handlePressUnprocessed}
           >
-            <Items data={installments.unprocessed} labelButton="Efetivar" colorButton={theme.colors.onPrimary} />
+            <Items
+            data={installments.unprocessed}
+            labelButton="Efetivar"
+            colorButton={theme.colors.onPrimary}
+            changeStatus={moveUnprocessedToProcessed}
+            />
           </List.Accordion>
 
           <List.Accordion
@@ -67,7 +107,12 @@ export function InstallmentViewerBase({
             expanded={processedExpanded}
             onPress={handlePressProcessed}
           >
-            <Items data={installments.processed} labelButton="Reverter" colorButton={theme.colors.onTertiary} />
+            <Items
+            data={installments.processed}
+            labelButton="Reverter"
+            colorButton={theme.colors.onTertiary}
+            changeStatus={moveProcessedToUnprocessed}
+            />
           </List.Accordion>
         </List.Section>
       </ScrollView>

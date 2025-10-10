@@ -34,7 +34,6 @@ export async function mark_item_value_installment_as_processed(
     await iv.mark_as_processed(db, item_value.id);
 
     transactionsFn.commit();
-    console.log("item value marcado como processado!");
   } catch (error) {
     transactionsFn.rollback();
     throw error;

@@ -4,7 +4,7 @@ import * as iv from "@data_functions/item_value";
 import { db, transactionsFn } from "@database/db-instance";
 import { installment, itemValue } from "@database/schema";
 
-export async function mark_item_value_installment_as_processed(
+export async function mark_item_value_installment_as_unprocessed(
   installment_id: typeof installment.$inferSelect.id,
   item_value_id: typeof itemValue.$inferSelect.id
 ) {
@@ -34,7 +34,6 @@ export async function mark_item_value_installment_as_processed(
     await iv.mark_as_unprocessed(db, item_value.id);
 
     transactionsFn.commit();
-    console.log("item value marcado como não processado!");
   } catch (error) {
     transactionsFn.rollback();
     throw error;

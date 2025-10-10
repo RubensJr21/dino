@@ -7,12 +7,14 @@ interface ItemsProps {
   data: ItemValueEntity[];
   labelButton: string;
   colorButton: string;
+  changeStatus(item_value: ItemValueEntity): Promise<void>
 }
 
 export function Items({
   data,
   labelButton,
-  colorButton
+  colorButton,
+  changeStatus
 }: ItemsProps) {
   const theme = useTheme()
   return (
@@ -29,9 +31,7 @@ export function Items({
               </Text>
 
               <TouchableOpacity
-                onPress={() => {
-                  console.log("Informando que foi executado....")
-                }}
+                onPress={() => changeStatus(item_value)}
                 style={{
                   backgroundColor: colorButton,
                   borderRadius: theme.roundness,
