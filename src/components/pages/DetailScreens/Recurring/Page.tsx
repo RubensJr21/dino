@@ -1,7 +1,7 @@
 import BasePage from "@components/ui/base/BasePage";
+import { mark_item_value_as_processed } from "@data/playground/item_value/mark_as_processed";
+import { mark_item_value_as_unprocessed } from "@data/playground/item_value/mark_as_unprocessed";
 import { list_all_item_value_recurrings } from "@data/playground/recurring/list_all_item_value";
-import { mark_item_value_recurring_as_processed } from "@data/playground/recurring/mark_item_value_as_processed";
-import { mark_item_value_recurring_as_unprocessed } from "@data/playground/recurring/mark_item_value_as_unprocessed";
 import { CallToast } from "@lib/call-toast";
 import { ItemValueEntity } from "@lib/types";
 import { ComponentProps, useCallback, useEffect, useMemo, useState } from "react";
@@ -47,7 +47,7 @@ export function RecurringViewerBase({
   }, [id])
 
   const moveProcessedToUnprocessed = useCallback(async (item_value: ItemValueEntity) => {
-    mark_item_value_recurring_as_processed(id, item_value.id)
+    mark_item_value_as_unprocessed(item_value.id)
       .then(() => {
         setRecurrings(prev => {
           return {
@@ -63,7 +63,7 @@ export function RecurringViewerBase({
   }, [setRecurrings])
 
   const moveUnprocessedToProcessed = useCallback(async (item_value: ItemValueEntity) => {
-    mark_item_value_recurring_as_unprocessed(id, item_value.id)
+    mark_item_value_as_processed(item_value.id)
       .then(() => {
         setRecurrings(prev => {
           return {
