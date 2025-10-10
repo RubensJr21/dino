@@ -13,6 +13,10 @@ export const categories_available = {
   others: 'Outros'
 } as Record<string, string>
 
+export function getCategoryLabel(key: string): string {
+  return categories_available[key]
+}
+
 export type CategoriesAvailable = (keyof typeof categories_available)
 
 interface Recurrence {
