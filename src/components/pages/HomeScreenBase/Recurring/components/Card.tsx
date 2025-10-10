@@ -5,7 +5,7 @@ import { Category, TransactionInstrument } from '@lib/types';
 import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
-import { getTransferMethodsLabel } from 'start_configs';
+import { getCategoryLabel, getTransferMethodsLabel } from 'start_configs';
 
 interface TransactionRecurringCardProps {
   id: string,
@@ -47,7 +47,7 @@ export function TransactionRecurringCard({
         style={{ backgroundColor: theme.colors.primaryContainer, borderRadius: 0 }}
         textStyle={{ color: theme.colors.onPrimaryContainer }}
       >
-        {category.code}
+        {getCategoryLabel(category.code)}
       </Chip>
       <Card.Title
         title={description}
