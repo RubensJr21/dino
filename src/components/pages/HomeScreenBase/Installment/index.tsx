@@ -1,4 +1,4 @@
-import { InstallmentEntity, Kind } from '@lib/types';
+import { getKindLabel, InstallmentEntity, Kind } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase/base';
 import { TransactionInstallmentCard } from '@pages/HomeScreenBase/Installment/components/Card';
 import { ReactNode, useRef } from 'react';
@@ -40,7 +40,7 @@ export default function InstallmentHome({ kind, data, goToEdit, goToRegister, go
               goToDetails={goToDetails}
             />
           )}
-          ListEmptyComponent={<Text>Nenhum {kind} encontrado.</Text>}
+          ListEmptyComponent={<Text>Nenhum {getKindLabel(kind)} parcelado encontrado.</Text>}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
             { useNativeDriver: false }
