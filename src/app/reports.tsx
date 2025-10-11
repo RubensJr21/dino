@@ -6,9 +6,23 @@ import { type BalanceByOriginReturn } from "@data/playground/balance";
 import { CallToast } from "@lib/call-toast";
 import { useCallback, useEffect, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
+
+function formatCurrencyString(value: string) {
+  const onlyNumbers = Number(value.replaceAll(/[^\d-]/g, "")) / 100
+
+  return new Intl.NumberFormat('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(onlyNumbers);
+}
+
+export function amountParseToString(amountNumber: number) {
+  return formatCurrencyString(amountNumber.toString())
+}
 
 export default function ReportByOrigin() {
+  const theme = useTheme()
   const [balance, setBalance] = useState<BalanceByOriginReturn>()
 
   const [monthText, setMonthText] = useState<string>((new Date().getMonth() + 1).toString())
@@ -42,8 +56,8 @@ export default function ReportByOrigin() {
     load_balance()
   }, [])
 
-  return (
-    <BasePage>
+  const Controls = useCallback(() => {
+    return (
       <View style={{ flexDirection: "row", marginBottom: 10, columnGap: 7 }}>
         <TextInput
           label="Mês"
@@ -61,6 +75,12 @@ export default function ReportByOrigin() {
         />
         <Button style={{ marginTop: 7 }} onPress={load_balance}>Gerar Relatório</Button>
       </View>
+    )
+  }, [monthText, yearText, load_balance])
+
+  return (
+    <BasePage>
+      <Controls />
       {
         balance !== undefined &&
         <FlatList
@@ -69,19 +89,19 @@ export default function ReportByOrigin() {
           columnWrapperStyle={{ columnGap: 7 }}
           renderItem={({ item: balance }) => {
             return (
-              <View key={balance.nickname} style={styles.square_view}>
-                <Text variant="titleMedium" style={{ fontWeight: "bold" }} >{balance.nickname}</Text>
-                <View style={{ alignSelf: "flex-end" }}>
-                  <Text variant="titleSmall">Saldo atual</Text>
-                  <Text style={{ textAlign: "right" }}>R$ {balance.partial_balance}</Text>
+              <View key={balance.nickname} style={[styles.square_view, { backgroundColor: theme.colors.inversePrimary }]}>
+                <Text variant="titleMedium" style={styles.square_title}>{balance.nickname}</Text>
+                <View style={[styles.balance_chip, { backgroundColor: theme.colors.backdrop, borderColor: theme.colors.inverseSurface }]}>
+                  <Text style={{ textAlign: "center" }} variant="titleSmall">Saldo atual</Text>
+                  <Text style={{ textAlign: "center" }}>R$ {amountParseToString(balance.partial_balance)}</Text>
                 </View>
 
-                <Text>A receber: R$ {balance.planned_receipts}</Text>
-                <Text>A pagar: R$ {balance.planned_payments}</Text>
+                <Text style={{ textAlign: "center" }}>A receber: R$ {amountParseToString(balance.planned_receipts)}</Text>
+                <Text style={{ textAlign: "center" }}>A pagar: R$ {amountParseToString(balance.planned_payments)}</Text>
 
-                <View style={{ position: "absolute", bottom: 10, right: 10, alignSelf: "flex-end" }}>
-                  <Text variant="titleSmall">Saldo ao final do mês</Text>
-                  <Text style={{ textAlign: "right" }}>R$ {balance.final_balance}</Text>
+                <View style={[styles.balance_chip, { backgroundColor: theme.colors.backdrop, borderColor: theme.colors.inverseSurface }]}>
+                  <Text style={{ textAlign: "center" }} variant="titleSmall">Saldo ao final do mês</Text>
+                  <Text style={{ textAlign: "center" }}>R$ {amountParseToString(balance.final_balance)}</Text>
                 </View>
               </View>
             )
@@ -112,7 +132,16 @@ const styles = StyleSheet.create({
     flex: 1,
     maxWidth: "49%",
     aspectRatio: 1,   // mantém quadrado
-    backgroundColor: "green",
     borderRadius: 7
   },
+  square_title: {
+    textAlign: "center",
+    fontWeight: "bold"
+  },
+  balance_chip: {
+    alignSelf: "center",
+    borderWidth: 1,
+    width: "100%",
+    borderRadius: 5,
+  }
 })
