@@ -119,12 +119,14 @@ export default function Layout() {
                 tabBarIcon: (props) => <MCIcons name="chart-box-outline" {...props} />
               }}
             />
-            {/* <Tabs.Screen
-        name="receipts"
-        options={{
-          headerShown: false
-          }}
-          /> */}
+            <Tabs.Screen
+              name="receipts"
+              options={{
+                headerShown: false,
+                title: "Recebimentos",
+                tabBarIcon: (props) => <MCIcons name="cash-plus" {...props} />
+              }}
+            />
             <Tabs.Screen
               name="payments"
               options={{
