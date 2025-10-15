@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { TouchableHighlight } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
+import { getRecurrenceLabel } from "start_configs";
 
 export const INITIAL_RECURRENCE_TYPE: RecurrenceType = {
   id: -1,
@@ -76,7 +77,7 @@ export function SelectRecurrenceButton({ recurrenceSelected, onSelected, style }
               }}
               underlayColor={theme.colors.inverseOnSurface}
             >
-              <Text>{recurrence_type.code}</Text>
+              <Text>{getRecurrenceLabel(recurrence_type.code)}</Text>
             </TouchableHighlight>
           )}
           ListEmptyComponent={<Text>Nenhum item encontrado.</Text>}

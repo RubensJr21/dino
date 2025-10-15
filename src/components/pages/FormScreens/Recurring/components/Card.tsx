@@ -3,7 +3,7 @@ import { RecurringScreenInsert } from '@lib/types';
 import React from "react";
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, Text, useTheme } from "react-native-paper";
-import { getCategoryLabel, getTransferMethodsLabel } from 'start_configs';
+import { getCategoryLabel, getRecurrenceLabel, getTransferMethodsLabel } from 'start_configs';
 
 interface TransactionRecurringCardRegisterProps {
   data: RecurringScreenInsert
@@ -85,7 +85,7 @@ export function TransactionRecurringCardRegister({
             }
           />
           <Text variant='titleLarge' style={[styles.isDisabledText, { color: recurrenceTypeIsEmpty ? theme.colors.outline : theme.colors.onSurface }]}>
-            {recurrenceTypeIsEmpty ? "..." : recurrenceType.code}
+            {recurrenceTypeIsEmpty ? "..." : getRecurrenceLabel(recurrenceType.code)}
           </Text>
         </View>
         <View style={[styles.isDisabledRow]}>
