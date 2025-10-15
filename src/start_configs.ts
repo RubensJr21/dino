@@ -23,9 +23,7 @@ interface Recurrence {
   displayText: string;
   calculation_method: (date: Date) => boolean
 }
-type RecurrencesAvailableType = {
-  [key: string]: Recurrence
-}
+type RecurrencesAvailableType = Record<string, Recurrence>
 
 export const recurrence_types_available = {
   monthly: {
@@ -40,7 +38,11 @@ export const recurrence_types_available = {
       new Date().getFullYear() !== date.getFullYear()
     )
   },
-} satisfies RecurrencesAvailableType
+} as RecurrencesAvailableType
+
+export function getRecurrenceLabel(key: string){
+  return recurrence_types_available[key].displayText
+}
 
 export type RecurrencesAvailable = (keyof typeof recurrence_types_available)
 
