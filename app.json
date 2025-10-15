@@ -5,7 +5,8 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    // para dino://{rota}
+    "scheme": "dino",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -18,7 +19,11 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png"
-      }
+      },
+      // https://docs.expo.dev/guides/keyboard-handling/#:~:text=%22softwareKeyboardLayoutMode%22%3A%20%22pan%22
+      "softwareKeyboardLayoutMode": "pan",
+      // https://expo.dev/blog/edge-to-edge-display-now-streamlined-for-android#how-to-enable-edge-to-edge-in-your-app
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "bundler": "metro",
@@ -26,8 +31,17 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "expo-sqlite",
       "expo-router",
-      "expo-sqlite"
+      [
+        "react-native-edge-to-edge",
+        {
+          "android": {
+            "parentTheme": "Default",
+            "enforceNavigationBarContrast": false
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

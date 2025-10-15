@@ -1,0 +1,1 @@
+"react-native-circular-progress": "^1.4.1" # Usado no Chart

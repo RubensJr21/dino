@@ -1,118 +1,195 @@
-import { usePathname } from "expo-router";
-import { Tabs } from "expo-router/tabs";
-import { useEffect } from "react";
-import { ColorSchemeName, StatusBar, useColorScheme } from "react-native";
-
+import { db, transactionsFn } from "@database/db-instance";
+import { CallToast } from "@lib/call-toast";
+import { MCIcons } from "@lib/icons.lib";
 import {
-	DarkTheme,
-	DefaultTheme,
-	ThemeProvider,
+  DarkTheme as NavigationDarkTheme,
+  DefaultTheme as NavigationDefaultTheme,
+  ThemeProvider as NavigationThemeProvider,
 } from "@react-navigation/native";
-import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import migrations from "@root-project/drizzle/migrations";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+import { Tabs } from "expo-router";
+import React, { useMemo, useState } from "react";
+import { ActivityIndicator, StatusBar, Text, useColorScheme, View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
+import { PaperProvider, useTheme } from 'react-native-paper';
+import { populate_database } from "start_configs";
 
-import { MdiIcons, MdiNamesIcon } from "@/components/ChooseIcon";
+import * as blc from "@data/playground/balance";
+import * as bd_fns from "@data_functions/balance_data";
+import * as ba_fns from "@data_functions/bank_account";
+
+// Configurar os componentes do pacote: react-native-paper-dates
+import { addMonthsKeepingDay, diffInMonths } from "@data/playground/utils";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { pt, registerTranslation } from 'react-native-paper-dates';
+registerTranslation('pt', pt)
 
-const TabScreens = () => {
-	return (
-		<Tabs
-			initialRouteName="index"
-			screenOptions={{
-				tabBarHideOnKeyboard: true,
-				headerShown: false,
-			}}
-		>
-			<Tabs.Screen
-				name="index"
-				options={{
-					title: "Home",
-					tabBarIcon: (props) => (
-						<MdiIcons
-							name="home"
-							{...props}
-						/>
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="incomes"
-				options={{
-					title: "Recebimentos",
-					tabBarIcon: (props) => (
-						<MdiIcons
-							name="cash-plus"
-							{...props}
-						/>
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="expenses"
-				options={{
-					title: "Pagamentos",
-					tabBarIcon: (props) => (
-						<MdiIcons
-							name="cash-minus"
-							{...props}
-						/>
-					),
-				}}
-			/>
+export default function Layout() {
+  const { success, error } = useMigrations(db, migrations);
+  const [started, setStarted] = useState<boolean>(false)
+  useDrizzleStudio(db.$client);
 
-			<Tabs.Screen
-				name="manage"
-				options={{
-					title: "Gerenciar",
-					tabBarIcon: (props) => (
-						<MdiIcons
-							// name="collage"
-							// name="land-plots"
-							// name="cogs"
-							name="view-dashboard-edit"
-							{...props}
-						/>
-					),
-				}}
-			/>
-		</Tabs>
-	);
-};
+  // verifyInstallation();
 
-export default function LayoutRoot() {
-	const scheme: ColorSchemeName = useColorScheme();
-	const isDark: boolean = scheme === "dark";
+  const scheme = useColorScheme();
+  const theme = useTheme()
 
-	const pathname = usePathname();
+  const _ = useMemo(() => {
+    if (success) {
+      Promise.all([
+        populate_database(),
+        validate_balances()
+      ])
+        .then(() => {
+          setStarted(true)
+        })
+        .catch((error) => {
+          CallToast("Algum erro aconteceu durante o povoamento\
+          do banco de dados ou na validação dos balaços")
+          console.error(error)
+        })
+    }
+  }, [success])
 
-	useEffect(() => {
-		setTimeout(() => {
-			StatusBar.setBarStyle("light-content");
-		}, 0);
-	}, [pathname]);
+  if (error) {
+    return (
+      <View>
+        <Text>{error.message}</Text>
+      </View>
+    )
+  }
 
-	return (
-		<ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
-			<SafeAreaProvider>
-				<GestureHandlerRootView>
-					<PaperProvider
-						theme={isDark ? MD3DarkTheme : MD3LightTheme}
-						settings={{
-							icon: ({ name, color, size, direction, testID }) => (
-								<MdiIcons
-									name={name as MdiNamesIcon}
-									color={color}
-									size={size}
-									testID={testID}
-								/>
-							),
-						}}
-					>
-						<TabScreens />
-					</PaperProvider>
-					<StatusBar barStyle={"default"} />
-				</GestureHandlerRootView>
-			</SafeAreaProvider>
-		</ThemeProvider>
-	);
+  if (!success) {
+    return (
+      <ActivityIndicator />
+    )
+  } else if (!started) {
+    return (
+      <>
+        <Text>Iniciando o aplicativo...</Text>
+        <ActivityIndicator size={50} />
+        <StatusBar />
+        <SystemBars />
+      </>
+    )
+  }
+
+  const NavigationDarkThemeCustom = {
+    ...NavigationDarkTheme,
+    colors: {
+      ...NavigationDarkTheme.colors,
+      // Cor dos botões e usada como cor do 'tabBarActiveTintColor'
+      primary: theme.colors.secondaryContainer
+    }
+  } satisfies typeof NavigationDarkTheme
+
+  const NavigationDefaultThemeCustom = {
+    ...NavigationDefaultTheme,
+    colors: {
+      ...NavigationDefaultTheme.colors,
+      // Cor dos botões e usada como cor do 'tabBarActiveTintColor'
+      primary: theme.colors.secondaryContainer
+    }
+  } satisfies typeof NavigationDefaultTheme
+
+  return (
+    <PaperProvider
+      settings={{
+        rippleEffectEnabled: true,
+        icon: (props) => <MCIcons {...props} />,
+      }}
+    >
+      <GestureHandlerRootView>
+
+        <NavigationThemeProvider
+          value={scheme === "dark" ? NavigationDarkThemeCustom : NavigationDefaultThemeCustom}
+        >
+          <Tabs
+            initialRouteName="reports"
+            screenOptions={{
+              // tabBarHideOnKeyboard: true,
+            }}
+          >
+            <Tabs.Screen
+              name="reports"
+              options={{
+                title: 'Relatórios',
+                tabBarIcon: (props) => <MCIcons name="chart-box-outline" {...props} />
+              }}
+            />
+            <Tabs.Screen
+              name="receipts"
+              options={{
+                headerShown: false,
+                title: "Recebimentos",
+                tabBarIcon: (props) => <MCIcons name="cash-plus" {...props} />
+              }}
+            />
+            <Tabs.Screen
+              name="payments"
+              options={{
+                headerShown: false,
+                title: "Pagamentos",
+                tabBarIcon: (props) => <MCIcons name="cash-minus" {...props} />
+              }}
+            />
+            <Tabs.Screen
+              name="banks"
+              options={{
+                headerShown: false,
+                title: 'Bancos',
+                tabBarIcon: (props) => <MCIcons name="bank-outline" {...props} />
+              }}
+            />
+          </Tabs>
+          <StatusBar />
+          {/* <SystemBars /> */}
+        </NavigationThemeProvider >
+      </GestureHandlerRootView>
+    </PaperProvider>
+  )
+}
+
+async function validate_balances() {
+  // ====================================
+  // ALGORITMO DE COMPILAÇÃO DE SALDOS
+  // ====================================
+  // recupera o último mês que foi gerado o saldo
+  const record = await bd_fns.get_last_compilation_date(db)
+  let today = new Date()
+  const base_date = new Date(today.getFullYear(), today.getMonth() - 1, 1)
+  // Se for retornado um valor undefined quer dizer que nenhum compilado foi feito, ou seja, está no início da aplicação;
+  transactionsFn.begin();
+  try {
+    if (record === undefined) {
+      // Gera balanço para cash com valores zerados
+      // inicializa o last_compilation_date com o valore de base_date
+      await blc.generate_balance_cash(base_date.getFullYear(), base_date.getMonth())
+      await bd_fns.initialize_last_compilation_date(db, base_date)
+    } else {
+      // Caso seja retornada a data, será calculada a diferença de meses para verificar se tem saldos desatualizados:
+      const diff_months = diffInMonths(record.last_compilation_date, base_date)
+      if (diff_months === 0) {
+        // Significa que os balanços já estão registrados
+      } else if (diff_months >= 1) {
+        // Significa que os balanços precisam ser gerados
+        const banks_list = await ba_fns.get_all(db)
+        for (let i = 0; i < diff_months; i++) {
+          const date = addMonthsKeepingDay(record.last_compilation_date, i)
+          // criar balanço do cash
+          await blc.generate_balance_cash(date.getFullYear(), date.getMonth())
+          for (const bank of banks_list) {
+            await blc.generate_balance_bank(bank.id, date.getFullYear(), date.getMonth())
+          }
+        }
+        await bd_fns.update_last_compilation_date(db, base_date)
+      }
+    }
+    transactionsFn.commit()
+  } catch (error) {
+    transactionsFn.rollback()
+    throw error;
+  }
 }

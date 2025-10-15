@@ -1,0 +1,75 @@
+import { type DatabaseType } from "@database/db-instance";
+import { itemValue } from "@database/schema";
+import { eq, inArray } from "drizzle-orm";
+
+type DataInsert = typeof itemValue.$inferInsert;
+type DataSelect = typeof itemValue.$inferSelect;
+
+export async function get(
+  db: DatabaseType,
+  item_value_id: typeof itemValue.$inferSelect.id
+) {
+  return (
+    await db
+      .select()
+      .from(itemValue)
+      .where(eq(itemValue.id, item_value_id))
+  ).shift();
+}
+
+export async function insert(
+  db: DatabaseType,
+  data: DataInsert | DataInsert[]
+) {
+  if (Array.isArray(data)) {
+    return await db.insert(itemValue).values(data).returning();
+  } else {
+    return await db.insert(itemValue).values(data).returning();
+  }
+}
+
+type ArrayNotEmpty<T> = [T, ...T[]];
+
+export async function remove(
+  db: DatabaseType,
+  item_value_ids: ArrayNotEmpty<typeof itemValue.$inferSelect.id>
+) {
+  if (item_value_ids.length === 0) {
+    throw new Error("É necessário pelo menos 1 id para remover");
+  }
+  await db.delete(itemValue).where(inArray(itemValue.id, item_value_ids));
+}
+
+export async function mark_as_processed(
+  db: DatabaseType,
+  item_value_id: typeof itemValue.$inferSelect.id
+) {
+  await db
+    .update(itemValue)
+    .set({ was_processed: true })
+    .where(eq(itemValue.id, item_value_id));
+}
+
+export async function mark_as_unprocessed(
+  db: DatabaseType,
+  item_value_id: typeof itemValue.$inferSelect.id
+) {
+  await db
+    .update(itemValue)
+    .set({ was_processed: false })
+    .where(eq(itemValue.id, item_value_id));
+}
+
+export async function update(
+  db: DatabaseType,
+  item_value_id: typeof itemValue.$inferSelect.id,
+  data: {
+    scheduled_at?: typeof itemValue.$inferSelect.scheduled_at;
+    amount?: typeof itemValue.$inferSelect.amount
+  }
+) {
+  await db.update(itemValue).set(data).where(eq(itemValue.id, item_value_id));
+}
+
+export type { DataInsert as infer_insert, DataSelect as infer_select };
+

@@ -1,28 +1,77 @@
 {
-	"extends": "expo/tsconfig.base",
-	"compilerOptions": {
-		"target": "ES5",
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
-
-		"allowJs": true,
-		"strict": true,
-		"baseUrl": "./src",
-		"paths": {
-			"@root/*": ["../*"],
-			"@/*": ["./*"],
-			"@components/*": ["./components/*"],
-			"@app/*": ["./app/*"],
-			"@decorators/*": ["./decorators/*"],
-			"@api/*": ["./api/*"],
-			"@core/*": ["./api/core/*"]
-		}
-	},
-	"include": [
-		"**/*.d.ts",
-		"**/*.ts",
-		"**/*.tsx",
-		".expo/types/**/*.ts",
-		"expo-env.d.ts"
-	]
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "types": [
+      "expo-router",
+      "react-native",
+      "react"
+    ],
+    "allowJs": true,
+    "baseUrl": "./src/",
+    "paths": {
+      "@root-project/*": [
+        "../*"
+      ],
+      "@app/*": [
+        "./app/*"
+      ],
+      "@configs/*": [
+        "./_configs/*"
+      ],
+      "@core-types/*": [
+        "./_core/types/*"
+      ],
+      "@core-utils/*": [
+        "./_core/utils/*"
+      ],
+      "@core/*": [
+        "./_core/*"
+      ],
+      "@domain/*": [
+        "./_domain/*"
+      ],
+      "@pages/*": [
+        "./components/pages/*"
+      ],
+      // Components
+      "@components/*": [
+        "./components/*"
+      ],
+      "@utils/*": [
+        "./_utils/*"
+      ],
+      "@src-types/*": [
+        "./@types/*"
+      ],
+      "@lib/*": [
+        "./lib/*"
+      ],
+      "@server/*": [
+        "./server/*"
+      ],
+      "@data_functions/*": [
+        "./data/functions/*"
+      ],
+      "@database/*": [
+        "./data/database/*"
+      ],
+      "@data/*": [
+        "./data/*"
+      ]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+  ],
+  "exclude": [
+    "node_modules",
+    "eslint.config.cjs"
+  ]
 }

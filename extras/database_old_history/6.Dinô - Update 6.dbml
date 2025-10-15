@@ -1,0 +1,146 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Project "Dinô - Update 6" {
+  datatype: 'SQLITE'
+  Note: 'Projeto desenvolvido para o Trabalho de conclusão de curso.'
+}
+
+// TABELA PREENCHIDA PELO SISTEMA
+Table tag {
+  id integer [pk, increment, not null, unique]
+  description text [not null, note: "Educação, Saúde, Lazer, Alimentação, Moradia, Transporte, Serviços, Compras, Impostos/Taxas e Outros"]
+}
+
+// TABELA PREENCHIDA PELO SISTEMA
+Table transfer_method_type {
+  id integer [pk, increment, not null, unique]
+  name text [not null, note: "Ex.: Pix, Débito, Boleto, Transferência Bancária"]
+}
+
+Table item_value {
+  id integer [pk, increment, not null, unique]
+  description text [not null]
+  cashflow_type integer [not null, note: "0 = Entrada, 1 = Saída; CHECK(type IN (0,1))"]
+  // gasto está agendado para uma data futura específica
+  // Ao invés de data seria ideal ter hora e data, mas
+  // isso mudaria a forma de como o app funciona
+  scheduled_at date [not null]
+  amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
+  // Indica se a transferência já foi executada.
+  // Se um recebimento foi recebido e se um pagamento foi pago
+  was_processed boolean [not null, note: '''default = false
+  Indica se a transferência já foi executada
+  Se um recebimento foi recebido e se um pagamento foi pago''']
+  fk_id_transfer_method_type integer [not null, ref: > transfer_method_type.id]
+  fk_id_tag integer [not null, ref: > tag.id]
+  created_at date [not null, note: "default = date('now','localtime')"]
+  updated_at date [not null, note: "default = date('now','localtime')"]
+}
+
+Table standard_item_value {
+  id integer [pk, increment, not null, unique]
+  fk_id_item_value integer [not null, ref: - item_value.id]
+  created_at date [not null, note: "default = date('now','localtime')"]
+  updated_at date [not null, note: "default = date('now','localtime')"]
+}
+
+// TABELA PREENCHIDA PELO SISTEMA
+Table recurrence_type {
+  id integer [pk, increment, not null, unique]
+  type text [not null, unique, note: "['Mensalmente', 'Anualmente']"]
+}
+
+Table recurring {
+  id integer [pk, increment, not null, unique]
+  is_disabled boolean [not null, note: "default = false"]
+  current_amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
+  fk_id_recurrence_type integer [not null, ref: > recurrence_type.id]
+  created_at date [not null, note: "default = date('now','localtime')"]
+  updated_at date [not null, note: "default = date('now','localtime')"]
+}
+
+Table recurring_item_value {
+  id integer [pk, increment, not null, unique]
+  fk_id_recurring_item_value integer [not null, ref: > recurring.id]
+  fk_id_item_value integer [not null, ref: - item_value.id]
+}
+
+Table installment {
+  id integer [pk, increment, not null, unique]
+  installments_number integer [not null]
+  total_amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
+  created_at date [not null, note: "default = date('now','localtime')"]
+  updated_at date [not null, note: "default = date('now','localtime')"]
+}
+
+Table installment_item_value {
+  id integer [pk, increment, not null, unique]
+  fk_id_installment integer [not null, ref: > installment.id]
+  fk_id_item_value integer [not null, ref: - item_value.id]
+}
+
+Table bank_account {
+  id integer [pk, increment, not null, unique]
+  nickname text [not null]
+  is_disabled boolean [not null, note: "default = false"]
+  // Saldo de uma conta bancária
+  balance integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
+  created_at date [not null, note: "default = date('now','localtime')"]
+  updated_at date [not null, note: "default = date('now','localtime')"]
+}
+
+// TABELA PREENCHIDA PELO SISTEMA
+Table bank_account_transfer_method {
+  id integer [pk, increment, not null, unique]
+  type text [not null, note: "['Pix', 'Débito', 'Transferência Bancária']"]
+  is_enable boolean [not null]
+  fk_id_bank_account integer [not null, ref: > bank_account.id]
+  created_at date [not null, note: "default = date('now','localtime')"]
+  updated_at date [not null, note: "default = date('now','localtime')"]
+}
+
+Table item_value_pivot_bank_account_transfer_method {
+  id integer [pk, increment, not null, unique]
+  fk_id_item_value integer [not null, ref: - item_value.id]
+  fk_id_bank_account_transfer_method integer [not null, ref: > bank_account_transfer_method.id]
+}
+
+Table credit_card {
+  id integer [pk, increment]
+  nickname text [not null]
+  last_four_digits varchar(4) [not null]
+  limit integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
+  // data de fechamento da fatura de um cartão especifico
+  closing_date date [not null]
+  // data de vencimento da fatura de um cartão especifico
+  due_date date [not null]
+  is_disabled bool [default: false, not null]
+  created_at date [default: `now()`, not null]
+  updated_at date [default: `now()`, not null]
+}
+
+Table item_value_pivot_credit_card_method {
+  id integer [pk]
+  fk_id_item_value integer [not null, ref: - item_value.id]
+  fk_id_credit_card integer [not null, ref: - credit_card.id]
+}
+
+// // Funcionalidade para converter fatura em gasto
+// //  Inserir valor total no item_value com os atributos
+// // statement é extrato em inglês
+// Table credit_card_statement {
+//   id integer [pk, increment]
+//   closing_date date [not null]
+//   due_date date [not null]
+//   created_at date [default: `now()`, not null]
+//   updated_at date [default: `now()`, not null]
+//   fk_id_credit_card integer [not null, ref: > credit_card.id]
+// }
+
+// // Talvez não seja necessário
+// Table credit_card_statement_item {
+//   id integer [pk, increment]
+//   fk_id_item_value integer [not null, ref: > item_value.id]
+//   fk_id_credit_card_statement integer [not null, ref: > credit_card_statement.id]
+// }

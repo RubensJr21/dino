@@ -14,5 +14,51 @@
 	},
 	"todo-tree.tree.showBadges": true,
 	"todo-tree.tree.showCountsInTree": true,
-	"todo-tree.tree.disableCompactFolders": false
+	"todo-tree.tree.disableCompactFolders": false,
+	"typescript.tsdk": "node_modules\\typescript\\lib",
+	"explorer.sortOrder": "default",
+
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "eslint.validate": ["typescript", "typescriptreact"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  },
+  "eslint.run": "onType",
+  "eslint.debug": true,
+  "eslint.trace.server": "messages",
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // Sempre usar alias (quando existir)
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+
+  // Opcional: força caminho curto
+  "typescript.preferences.importModuleSpecifierEnding": "minimal",
+  "javascript.preferences.importModuleSpecifierEnding": "minimal",
+
+  "explorer.fileNesting.enabled": true,
+	"explorer.fileNesting.expand": false,
+
+  "explorer.fileNesting.patterns": {
+    "config.files": "app.json, babel.config.js, drizzle.config.ts, metro.config.js"
+  },
+
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "headerClassName"
+  ],
 }

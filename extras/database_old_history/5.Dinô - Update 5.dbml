@@ -1,0 +1,95 @@
+Table tag {
+  id integer [pk, increment, not null, unique]
+  description text [not null, note: "Educação, Saúde, Lazer, Alimentação, Moradia, Transporte, Serviços, Compras, Impostos/Taxas e Outros"]
+  
+  Note: "TABELA PREENCHIDA PELO SISTEMA"
+}
+
+Table transfer_method_type {
+  id integer [pk, increment, not null, unique]
+  name text [not null, note: "Ex.: Pix, Débito, Boleto, Transferência Bancária"]
+  
+  Note: "TABELA PREENCHIDA PELO SISTEMA"
+}
+
+Table item_value {
+  id integer [pk, increment, not null, unique]
+  description text [not null]
+  cashflow_type integer [not null, note: "0 = Entrada, 1 = Saída; CHECK(type IN (0,1))"]
+  scheduled_at date [not null]
+  amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
+  was_processed boolean [not null, default: false, note: "Indica se a transferência já foi executada\nSe um recebimento foi recebido e se um pagamento foi pago"]
+  fk_id_transfer_method_type integer [not null, ref: > transfer_method_type.id]
+  fk_id_tag integer [not null, ref: > tag.id]
+  created_at date [not null, default: `date('now','localtime')`]
+  updated_at date [not null, default: `date('now','localtime')`]
+}
+
+Table standard_item_value {
+  id integer [pk, increment, not null, unique]
+  fk_id_item_value integer [not null, ref: - item_value.id]
+  created_at date [not null, default: `date('now','localtime')`]
+  updated_at date [not null, default: `date('now','localtime')`]
+}
+
+Table recurrence_type {
+  id integer [pk, increment, not null, unique]
+  type text [not null, unique, note: "Mensalmente, Anualmente"]
+  
+  Note: "TABELA PREENCHIDA PELO SISTEMA"
+}
+
+Table recurring {
+  id integer [pk, increment, not null, unique]
+  is_disabled boolean [not null, default: false]
+  current_amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
+  fk_id_recurrence_type integer [not null, ref: > recurrence_type.id]
+  created_at date [not null, default: `date('now','localtime')`]
+  updated_at date [not null, default: `date('now','localtime')`]
+}
+
+Table recurring_item_value {
+  id integer [pk, increment, not null, unique]
+  fk_id_recurring_item_value integer [not null, ref: > recurring.id]
+  fk_id_item_value integer [not null, ref: - item_value.id]
+}
+
+Table installment {
+  id integer [pk, increment, not null, unique]
+  installments_number integer [not null]
+  total_amount integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
+  created_at date [not null, default: `date('now','localtime')`]
+  updated_at date [not null, default: `date('now','localtime')`]
+}
+
+Table installment_item_value {
+  id integer [pk, increment, not null, unique]
+  fk_id_installment integer [not null, ref: > installment.id]
+  fk_id_item_value integer [not null, ref: - item_value.id]
+}
+
+Table bank_account {
+  id integer [pk, increment, not null, unique]
+  nickname text [not null]
+  is_disabled boolean [not null, default: false]
+  balance integer [not null, note: "Guardado em centavos para garantir que o cálculo será feito corretamente"]
+  created_at date [not null, default: `date('now','localtime')`]
+  updated_at date [not null, default: `date('now','localtime')`]
+}
+
+Table bank_account_transfer_method {
+  id integer [pk, increment, not null, unique]
+  type text [not null, note: "Pix, Débito, Transferência Bancária"]
+  is_enable boolean [not null]
+  fk_id_bank_account integer [not null, ref: > bank_account.id]
+  created_at date [not null, default: `date('now','localtime')`]
+  updated_at date [not null, default: `date('now','localtime')`]
+  
+  Note: "TABELA PREENCHIDA PELO SISTEMA"
+}
+
+Table item_value_pivot_bank_account_transfer_method {
+  id integer [pk, increment, not null, unique]
+  fk_id_item_value integer [not null, ref: - item_value.id]
+  fk_id_bank_account_transfer_method integer [not null, ref: > bank_account_transfer_method.id]
+}
