@@ -39,7 +39,7 @@ export function DatePickerButton({
       mode: currentMode,
       is24Hour: true,
       timeZoneName: "America/Sao_Paulo",
-      minimumDate: new Date(today.getFullYear(), today.getMonth()+1, 1)
+      minimumDate: new Date(today.getFullYear(), today.getMonth(), 1)
     });
   };
 
