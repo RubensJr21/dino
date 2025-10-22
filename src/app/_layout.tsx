@@ -20,11 +20,8 @@ import * as blc from "@data/playground/balance";
 import * as bd_fns from "@data_functions/balance_data";
 import * as ba_fns from "@data_functions/bank_account";
 
-// Configurar os componentes do pacote: react-native-paper-dates
 import { addMonthsKeepingDay, diffInMonths } from "@data/playground/utils";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { pt, registerTranslation } from 'react-native-paper-dates';
-registerTranslation('pt', pt)
 
 export default function Layout() {
   const { success, error } = useMigrations(db, migrations);
