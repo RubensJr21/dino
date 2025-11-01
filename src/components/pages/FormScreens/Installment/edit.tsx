@@ -6,7 +6,7 @@ import { CallToast } from "@lib/call-toast";
 import { installmentStrategies } from "@lib/strategies";
 import { Category, InstallmentScreenInsert, Kind } from "@lib/types";
 import { validateInstallmentTransactionUpdateData } from "@lib/validations/updates/installment_transaction";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import { TransactionInstallmentCardRegister } from "./components/Card";
@@ -19,13 +19,22 @@ interface TransactionInstallmentEditScreenProps {
 export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstallmentEditScreenProps) {
   const [data, setData] = useState<InstallmentScreenInsert>()
   const [lastData, setLastData] = useState<InstallmentScreenInsert>()
-  const navigation = useNavigation()
+  const router = useRouter()
 
   useEffect(() => {
     installmentStrategies[kind].fetchById(id).then((fetchData) => {
       if (fetchData !== undefined) {
         setData(fetchData)
         setLastData(fetchData)
+      } else {
+        Alert.alert("Erro", "ID inválido fornecido para edição.");
+        
+        const timestamp = Date.now().toString();
+        // Retorna para home passando o parâmetro de atualização
+        router.replace({
+          pathname: '../',
+          params: { update: timestamp }
+        });
       }
     })
   }, [id])
@@ -64,7 +73,12 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
       .update(id, realData)
       .then(() => {
         CallToast("Transação atualizada!")
-        navigation.goBack()
+        const timestamp = Date.now().toString();
+        // Retorna para home passando o parâmetro de atualização
+        router.replace({
+          pathname: '../',
+          params: { update: timestamp }
+        });
       })
       .catch((error) => {
         console.error(error)

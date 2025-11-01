@@ -1,21 +1,39 @@
+import { installmentStrategies } from '@lib/strategies';
 import { getKindLabel, InstallmentEntity, Kind } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase/base';
 import { TransactionInstallmentCard } from '@pages/HomeScreenBase/Installment/components/Card';
-import { ReactNode, useRef } from 'react';
-import { Animated, FlatList } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { Alert, Animated, FlatList } from 'react-native';
 import { Text } from "react-native-paper";
 
 interface InstallmentHomeProps {
   kind: Kind,
-  data: Array<InstallmentEntity>,
   extras?: ReactNode;
   goToRegister: () => void;
   goToEdit: (id: string) => void;
   goToDetails: (id: string) => void;
 }
 
-export default function InstallmentHome({ kind, data, goToEdit, goToRegister, goToDetails }: InstallmentHomeProps) {
+export default function InstallmentHome({ kind, goToEdit, goToRegister, goToDetails }: InstallmentHomeProps) {
   const scrollY = useRef(new Animated.Value(0));
+
+  const { update } = useLocalSearchParams<{ update?: string }>()
+  const [data, setData] = useState<InstallmentEntity[]>([])
+
+  const fetchData = useCallback(() => {
+    installmentStrategies[kind]
+      .list_all()
+      .then(installments => setData(installments))
+      .catch(error => {
+        console.error(error)
+        Alert.alert("Erro ao carregar transações!")
+      })
+  }, [setData])
+
+  useEffect(() => {
+    fetchData()
+  }, [update])
 
   return (
     <HomeScreenBase

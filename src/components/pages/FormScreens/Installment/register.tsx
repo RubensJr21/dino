@@ -13,7 +13,7 @@ import { Category, InstallmentScreenInsert, Kind, TransactionInstrument } from "
 import { validateInstallmentTransactionInsertData } from "@lib/validations/inserts/installment_transaction";
 import { DEFAULT_MIN_INSTALLMENT, InstallmentInput } from "@pages/FormScreens/Installment/components/InstallmentInput";
 import { initialDataBase } from "@pages/TransactionScreenDefaultData";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import { TransactionInstallmentCardRegister } from "./components/Card";
@@ -30,7 +30,7 @@ const initialDataInstallment = {
 
 export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstallmentRegisterScreenProps) {
   const [data, setData] = useState<InstallmentScreenInsert>(initialDataInstallment)
-  const navigation = useNavigation()
+  const router = useRouter()
 
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
@@ -128,7 +128,12 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
       .insert(data)
       .then(() => {
         CallToast("Transação registrada!")
-        navigation.goBack()
+        const timestamp = Date.now().toString();
+        // Retorna para home passando o parâmetro de atualização
+        router.replace({
+          pathname: '../',
+          params: { update: timestamp }
+        });
       })
       .catch((error) => {
         console.error(error)
