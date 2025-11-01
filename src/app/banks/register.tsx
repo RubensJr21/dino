@@ -6,7 +6,7 @@ import { insert_bank_account } from "@data/playground/bank_account";
 import { CallToast } from "@lib/call-toast";
 import { MCIcons } from "@lib/icons.lib";
 import { validateBankAccountData } from "@lib/validations/bank_account";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { Alert } from "react-native";
 import { useTheme } from "react-native-paper";
@@ -24,7 +24,7 @@ const initialDataBank = {
 export default function BankRegister() {
   const theme = useTheme()
   const [data, setData] = useState<BankFormScreenInsert>(initialDataBank)
-  const navigation = useNavigation()
+  const router = useRouter()
 
   const onChangeNickname = useCallback((nickname: string) => {
     setData(prev => {
@@ -44,17 +44,19 @@ export default function BankRegister() {
 
   const handleSubmit = useCallback(() => {
     const [hasError, errors] = validateBankAccountData(data)
-    if(hasError){
+    if (hasError) {
       return Alert.alert("Atenção!", errors.join("\n"))
     }
     insert_bank_account(data)
-    .then(() => {
-      CallToast("Conta bancária registrada!")
-      navigation.goBack()
-    })
-    .catch(() => {
-      Alert.alert("Erro!", "Erro ao registrar conta bancária!")
-    })
+      .then(() => {
+        CallToast("Conta bancária registrada!")
+        const timestamp = Date.now().toString();
+        // Retorna para home passando o parâmetro de atualização
+        router.replace({ pathname: '/banks', params: { update: timestamp } });
+      })
+      .catch(() => {
+        Alert.alert("Erro!", "Erro ao registrar conta bancária!")
+      })
   }, [data])
 
   return (

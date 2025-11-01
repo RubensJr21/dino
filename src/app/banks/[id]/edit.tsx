@@ -3,9 +3,11 @@ import { ButtonSubmit } from "@components/ui/base/ButtonSubmit";
 import { NicknameInput } from "@components/ui/NicknameInput";
 import { SelectMultiTransferMethodButton } from "@components/ui/SelectMultiTransferMethodButton";
 import * as ba_fns from "@data/playground/bank_account";
+import { update_bank_account } from "@data/playground/bank_account";
+import { CallToast } from "@lib/call-toast";
 import { MCIcons } from "@lib/icons.lib";
 import { validateBankAccountData } from "@lib/validations/bank_account";
-import { Redirect, useLocalSearchParams } from "expo-router";
+import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { useTheme } from "react-native-paper";
@@ -20,6 +22,7 @@ export default function BankEdit() {
   const { id } = useLocalSearchParams<{ id?: string }>()
   const theme = useTheme()
   const [data, setData] = useState<BankFormScreenEdit>()
+  const router = useRouter()
 
   useEffect(() => {
     if (id) {
@@ -29,7 +32,7 @@ export default function BankEdit() {
           setData(bank_account)
         })
     }
-  })
+  }, [])
 
   if (!id) {
     <Redirect href={"/banks"} />
@@ -44,7 +47,6 @@ export default function BankEdit() {
       }
     })
   }, [setData])
-
 
   const onChangeMultiTransferMethod = useCallback((selection: string[]) => {
     setData(prev => {
@@ -62,6 +64,20 @@ export default function BankEdit() {
     if (hasError) {
       return Alert.alert("Atenção!", errors.join("\n"))
     }
+    update_bank_account({
+      id: data.id,
+      new_nickname: data.nickname,
+      methods_enable: data.transfer_methods_enable
+    })
+      .then(() => {
+        CallToast("Conta bancária atualizada!")
+        const timestamp = Date.now().toString();
+        // Retorna para home passando o parâmetro de atualização
+        router.replace({ pathname: '/banks', params: { update: timestamp } });
+      })
+      .catch(() => {
+        CallToast("Erro ao atualizar conta bancária!")
+      })
   }, [data])
 
   if (data === undefined) {
@@ -77,7 +93,10 @@ export default function BankEdit() {
         size={245}
       />
 
-      <NicknameInput nickname={data.nickname} onChangeNickname={onChangeNickname} />
+      <NicknameInput
+        nickname={data.nickname}
+        onChangeNickname={onChangeNickname}
+      />
 
       <SelectMultiTransferMethodButton
         style={{ marginTop: 5 }}

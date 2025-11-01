@@ -3,27 +3,32 @@ import { Fab } from "@components/ui/Fab";
 import { list_all_banks } from "@data/playground/bank_account/list_all";
 import { MCIcons } from "@lib/icons.lib";
 import { BankAccountEntity } from "@lib/types";
-import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Animated, TouchableOpacity, View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { Text, useTheme } from "react-native-paper";
 
 export default function Bank() {
-  const route = useRouter()
+  const router = useRouter()
   const scrollY = useRef(new Animated.Value(0));
   const theme = useTheme()
+  const { update } = useLocalSearchParams<{ update?: string }>();
 
   const [banks, setBanks] = useState<BankAccountEntity[]>()
 
-  useEffect(() => {
+  const fetchBanks = useCallback(() => {
     list_all_banks()
       .then(banks => setBanks(banks))
       .catch(error => {
         console.error(error)
         Alert.alert("Erro ao carregar contas bancárias!")
       })
-  }, [])
+  }, [setBanks])
+
+  useEffect(() => {
+    fetchBanks()
+  }, [update])
 
   // interpolação para desaparecer o FAB próximo ao fim da lista
   const fabTranslateY = scrollY.current.interpolate({
@@ -39,11 +44,11 @@ export default function Bank() {
   });
 
   const goToRegister = () => {
-    route.navigate('/banks/register')
+    router.push('/banks/register')
   }
 
   const goToEdit = (id: string) => {
-    route.navigate({
+    router.push({
       pathname: '/banks/[id]/edit',
       params: { id }
     })
