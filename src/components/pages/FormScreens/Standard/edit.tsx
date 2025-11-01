@@ -8,7 +8,7 @@ import { CallToast } from "@lib/call-toast";
 import { standardStrategies } from "@lib/strategies";
 import { Category, Kind, StandardScreenInsert } from "@lib/types";
 import { validateStandardTransactionUpdateData } from "@lib/validations/updates/standard_transaction";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import { TransactionStandardCardRegister } from "./components/Card";
@@ -21,7 +21,7 @@ type Props = {
 export function TransactionStandardEditScreen({ id, kind }: Props) {
   const [data, setData] = useState<StandardScreenInsert>()
   const [lastData, setLastData] = useState<StandardScreenInsert>()
-  const navigation = useNavigation()
+  const router = useRouter()
 
   useEffect(() => {
     standardStrategies[kind].fetchById(id).then((fetchData) => {
@@ -45,6 +45,13 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
         setLastData(data)
       } else {
         Alert.alert("Erro", "ID inválido fornecido para edição.");
+
+        const timestamp = Date.now().toString();
+        // Retorna para home passando o parâmetro de atualização
+        router.replace({
+          pathname: '../',
+          params: { update: timestamp }
+        });
       }
     })
   }, [id])
@@ -114,7 +121,12 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
       .update(id, realData)
       .then(() => {
         CallToast("Transação atualizada!")
-        navigation.goBack()
+        const timestamp = Date.now().toString();
+        // Retorna para home passando o parâmetro de atualização
+        router.replace({
+          pathname: '/payments/standard',
+          params: { update: timestamp }
+        });
       })
       .catch((error) => {
         console.error(error)

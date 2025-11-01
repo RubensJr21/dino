@@ -119,12 +119,12 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
       .insert(data)
       .then(() => {
         CallToast("Transação registrada!")
-        router.navigate({
-          pathname: "/payments/standard",
-          params: {
-            reload: data.scheduledAt.toISOString()
-          }
-        })
+        const timestamp = Date.now().toString();
+        // Retorna para home passando o parâmetro de atualização
+        router.replace({
+          pathname: '../',
+          params: { update: timestamp }
+        });
       })
       .catch((error) => {
         console.error(error)

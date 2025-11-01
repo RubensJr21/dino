@@ -1,21 +1,39 @@
+import { standardStrategies } from '@lib/strategies';
 import { getKindLabel, Kind, StandardEntity } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase/base';
 import { TransactionStandardCard } from '@pages/HomeScreenBase/Standard/components/Card';
-import { ReactNode, useRef } from 'react';
-import { Animated } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { Alert, Animated } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Text } from "react-native-paper";
 
 interface StandardHomeProps {
   kind: Kind;
   extras?: ReactNode;
-  data: Array<StandardEntity>;
   goToRegister: () => void;
   goToEdit: (id: string) => void;
 }
 
-export default function StandardHome({ kind, data, goToEdit, goToRegister }: StandardHomeProps) {
+export default function StandardHome({ kind, goToEdit, goToRegister }: StandardHomeProps) {
   const scrollY = useRef(new Animated.Value(0));
+
+  const { update } = useLocalSearchParams<{ update?: string }>()
+  const [data, setData] = useState<StandardEntity[]>([])
+
+  const fetchData = useCallback(() => {
+    standardStrategies[kind]
+      .list_all()
+      .then(standards => setData(standards))
+      .catch(error => {
+        console.error(error)
+        Alert.alert("Erro ao carregar transações!")
+      })
+  }, [setData])
+
+  useEffect(() => {
+    fetchData()
+  }, [update])
 
   return (
     <HomeScreenBase
