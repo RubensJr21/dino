@@ -13,7 +13,7 @@ import { recurringStrategies } from "@lib/strategies";
 import { Category, Kind, RecurrenceType, RecurringScreenInsert, TransactionInstrument } from "@lib/types";
 import { validateRecurringTransactionInsertData } from "@lib/validations/inserts/recurring_transaction";
 import { initialDataBase } from "@pages/TransactionScreenDefaultData";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import { TransactionRecurringCardRegister } from "./components/Card";
@@ -31,7 +31,7 @@ const initialDataRecurring = {
 
 export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurringRegisterScreenProps) {
   const [data, setData] = useState<RecurringScreenInsert>(initialDataRecurring)
-  const navigation = useNavigation()
+  const router = useRouter()
 
   const onChangeDescription = useCallback((text: string) => {
     setData(prev => {
@@ -129,7 +129,12 @@ export function TransactionRecurringRegisterScreen({ kind }: TransactionRecurrin
       .insert(data)
       .then(() => {
         CallToast("Transação registrada!")
-        navigation.goBack()
+        const timestamp = Date.now().toString();
+        // Retorna para home passando o parâmetro de atualização
+        router.replace({
+          pathname: '../',
+          params: { update: timestamp }
+        });
       })
       .catch((error) => {
         console.error(error)

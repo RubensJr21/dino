@@ -1,7 +1,9 @@
+import { recurringStrategies } from '@lib/strategies';
 import { getKindLabel, Kind, RecurringEntity } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase/base';
-import { ReactNode, useRef } from 'react';
-import { Animated } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { Alert, Animated } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { Text } from "react-native-paper";
 import { TransactionRecurringCard } from './components/Card';
@@ -9,14 +11,30 @@ import { TransactionRecurringCard } from './components/Card';
 interface RecurringHomeProps {
   kind: Kind;
   extras?: ReactNode;
-  data: Array<RecurringEntity>;
   goToRegister: () => void;
   goToEdit: (id: string) => void;
   goToDetails: (id: string) => void;
 }
 
-export default function RecurringHome({ kind, data, goToEdit, goToRegister, goToDetails }: RecurringHomeProps) {
+export default function RecurringHome({ kind, goToEdit, goToRegister, goToDetails }: RecurringHomeProps) {
   const scrollY = useRef(new Animated.Value(0));
+
+  const { update } = useLocalSearchParams<{ update?: string }>()
+  const [data, setData] = useState<RecurringEntity[]>([])
+
+  const fetchData = useCallback(() => {
+    recurringStrategies[kind]
+      .list_all()
+      .then(recurrings => setData(recurrings))
+      .catch(error => {
+        console.error(error)
+        Alert.alert("Erro ao carregar transações!")
+      })
+  }, [setData])
+
+  useEffect(() => {
+    fetchData()
+  }, [update])
 
   return (
     <HomeScreenBase

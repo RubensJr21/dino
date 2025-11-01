@@ -9,7 +9,7 @@ import { recurringStrategies } from "@lib/strategies";
 import { Category, Kind, RecurringScreenInsert } from "@lib/types";
 import { validateRecurringTransactionUpdateData } from "@lib/validations/updates/recurring_transaction";
 import { initialDataBase } from "@pages/TransactionScreenDefaultData";
-import { useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import { TransactionRecurringCardRegister } from "./components/Card";
@@ -29,7 +29,7 @@ const initialDataRecurring = {
 export function TransactionRecurringEditScreen({ id, kind }: TransactionRecurringEditScreenProps) {
   const [data, setData] = useState<RecurringScreenInsert>(initialDataRecurring)
   const [lastData, setLastData] = useState<RecurringScreenInsert>()
-  const navigation = useNavigation();
+  const router = useRouter();
 
   useEffect(() => {
     recurringStrategies[kind].fetchById(id).then((fetchData) => {
@@ -55,6 +55,13 @@ export function TransactionRecurringEditScreen({ id, kind }: TransactionRecurrin
         setLastData(data)
       } else {
         Alert.alert("Erro", "ID inválido fornecido para edição.");
+
+        const timestamp = Date.now().toString();
+        // Retorna para home passando o parâmetro de atualização
+        router.replace({
+          pathname: '../',
+          params: { update: timestamp }
+        });
       }
     })
   }, [id])
@@ -104,7 +111,12 @@ export function TransactionRecurringEditScreen({ id, kind }: TransactionRecurrin
       .update(id, realData)
       .then(() => {
         CallToast("Transação atualizada!")
-        navigation.goBack()
+        const timestamp = Date.now().toString();
+        // Retorna para home passando o parâmetro de atualização
+        router.replace({
+          pathname: '../',
+          params: { update: timestamp }
+        });
       })
       .catch((error) => {
         console.error(error)
