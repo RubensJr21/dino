@@ -124,7 +124,7 @@ export function TransactionStandardEditScreen({ id, kind }: Props) {
         const timestamp = Date.now().toString();
         // Retorna para home passando o parâmetro de atualização
         router.replace({
-          pathname: '/payments/standard',
+          pathname: '../',
           params: { update: timestamp }
         });
       })
