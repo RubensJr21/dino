@@ -104,8 +104,8 @@ function getBalanceOfCash(
 
 export async function getCashBalance(db: DatabaseType, year: number, month: number) {
   const balance_cash = (await buildBaseQuery(db, dateFilter(year, month)).execute())[0]
-
-  const lastDate = new Date(year, month - 1, 0)
+  // new Date(year, month, 0) resulta no último dia do mês anterior
+  const lastDate = new Date(year, month, 0)
   const lastYear = lastDate.getFullYear()
   const lastMonth = lastDate.getMonth()
 
