@@ -120,6 +120,7 @@ export function TransactionStandardRegisterScreen({ kind }: Props) {
       .then(() => {
         CallToast("Transação registrada!")
         const timestamp = Date.now().toString();
+        router.dismissAll();
         // Retorna para home passando o parâmetro de atualização
         router.replace({
           pathname: `/${kind}s/standard`,

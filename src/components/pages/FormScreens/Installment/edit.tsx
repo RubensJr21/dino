@@ -28,13 +28,7 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
         setLastData(fetchData)
       } else {
         Alert.alert("Erro", "ID inválido fornecido para edição.");
-        
-        const timestamp = Date.now().toString();
-        // Retorna para home passando o parâmetro de atualização
-        router.replace({
-          pathname: `/${kind}s/installment`,
-          params: { update: timestamp }
-        });
+        router.back();
       }
     })
   }, [id])
@@ -74,6 +68,7 @@ export function TransactionInstallmentEditScreen({ id, kind }: TransactionInstal
       .then(() => {
         CallToast("Transação atualizada!")
         const timestamp = Date.now().toString();
+        router.dismissAll();
         // Retorna para home passando o parâmetro de atualização
         router.replace({
           pathname: `/${kind}s/installment`,

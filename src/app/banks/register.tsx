@@ -51,8 +51,12 @@ export default function BankRegister() {
       .then(() => {
         CallToast("Conta bancária registrada!")
         const timestamp = Date.now().toString();
+        router.dismissAll();
         // Retorna para home passando o parâmetro de atualização
-        router.replace({ pathname: '/banks', params: { update: timestamp } });
+        router.replace({
+          pathname: '/banks',
+          params: { update: timestamp }
+        });
       })
       .catch(() => {
         Alert.alert("Erro!", "Erro ao registrar conta bancária!")
