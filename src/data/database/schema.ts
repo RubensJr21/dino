@@ -157,9 +157,9 @@ export const balanceBank = sqliteTable(
     planned_payments: integer("planned_payments").notNull(),
     executed_payments: integer("executed_payments").notNull(),
   },
-  (table) => ({
-    uniq: unique().on(table.fk_id_bank_account, table.month, table.year),
-  })
+  (table) => [
+    unique().on(table.fk_id_bank_account, table.month, table.year)
+  ]
 );
 
 // ======================
@@ -176,9 +176,9 @@ export const balanceCash = sqliteTable(
     planned_payments: integer("planned_payments").notNull(),
     executed_payments: integer("executed_payments").notNull(),
   },
-  (table) => ({
-    uniq: unique().on(table.month, table.year),
-  })
+  (table) => [
+    unique().on(table.month, table.year)
+  ]
 );
 
 // ======================
