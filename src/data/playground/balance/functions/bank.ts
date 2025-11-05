@@ -199,7 +199,7 @@ export function build_balance(
   month: number
 ) {
   const balance = buildBaseQuery(db, dateFilter(year, month))
-    .where(eq(balanceBank.id, bank_id))
+    .where(eq(balanceBank.fk_id_bank_account, bank_id))
     .get()!;
 
   db.insert(balanceBank).values({
