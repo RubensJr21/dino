@@ -1,11 +1,11 @@
+import { EmptyListAlert } from '@components/ui/EmptyListAlert';
 import { installmentStrategies } from '@lib/strategies';
-import { getKindLabel, InstallmentEntity, Kind } from '@lib/types';
+import { getKindIconName, getKindLabel, InstallmentEntity, Kind } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase/base';
 import { TransactionInstallmentCard } from '@pages/HomeScreenBase/Installment/components/Card';
 import { useLocalSearchParams } from 'expo-router';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, FlatList } from 'react-native';
-import { Text } from "react-native-paper";
 
 interface InstallmentHomeProps {
   kind: Kind,
@@ -58,7 +58,12 @@ export default function InstallmentHome({ kind, goToEdit, goToRegister, goToDeta
               goToDetails={goToDetails}
             />
           )}
-          ListEmptyComponent={<Text>Nenhum {getKindLabel(kind)} parcelado encontrado.</Text>}
+          ListEmptyComponent={
+            <EmptyListAlert
+              iconName={getKindIconName(kind)}
+              message={`Nenhum ${getKindLabel(kind)} parcelado encontrado.`}
+            />
+          }
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
             { useNativeDriver: false }

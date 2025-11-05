@@ -1,11 +1,11 @@
+import { EmptyListAlert } from '@components/ui/EmptyListAlert';
 import { recurringStrategies } from '@lib/strategies';
-import { getKindLabel, Kind, RecurringEntity } from '@lib/types';
+import { getKindIconName, getKindLabel, Kind, RecurringEntity } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase/base';
 import { useLocalSearchParams } from 'expo-router';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { Text } from "react-native-paper";
 import { TransactionRecurringCard } from './components/Card';
 
 interface RecurringHomeProps {
@@ -59,7 +59,12 @@ export default function RecurringHome({ kind, goToEdit, goToRegister, goToDetail
               goToDetails={goToDetails}
             />
           )}
-          ListEmptyComponent={<Text>Nenhum {getKindLabel(kind)} recorrente encontrado.</Text>}
+          ListEmptyComponent={
+            <EmptyListAlert
+              iconName={getKindIconName(kind)}
+              message={`Nenhum ${getKindLabel(kind)} recorrente encontrado.`}
+            />
+          }
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
             { useNativeDriver: false }

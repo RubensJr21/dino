@@ -1,3 +1,5 @@
+import { IconNames, MCIcons } from "@lib/icons.lib";
+
 export interface TransactionInstrument {
   id: number;
   nickname: string;
@@ -75,6 +77,13 @@ export function getKindLabel(kind: Kind): string {
     case "receipt":
       return "recebimento";
   }
+}
+
+export function getKindIconName(kind: Kind): IconNames<typeof MCIcons> {
+  if (kind === 'payment') {
+    return "cash-minus"
+  }
+  return "cash-plus"
 }
 
 // ======================

@@ -1,4 +1,5 @@
 import BasePage from "@components/ui/base/BasePage";
+import { EmptyListAlert } from "@components/ui/EmptyListAlert";
 import { Fab } from "@components/ui/Fab";
 import { list_all_banks } from "@data/playground/bank_account/list_all";
 import { MCIcons } from "@lib/icons.lib";
@@ -90,6 +91,13 @@ export default function Bank() {
             </TouchableOpacity>
           )
         }}
+        keyExtractor={(item) => item.id.toString()}
+        ListEmptyComponent={
+        <EmptyListAlert
+          iconName="bank-outline"
+          message="Nenhuma conta bancária registrada."
+        />
+      }
       />
 
       <Animated.View

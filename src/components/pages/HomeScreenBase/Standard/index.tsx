@@ -1,12 +1,12 @@
+import { EmptyListAlert } from '@components/ui/EmptyListAlert';
 import { standardStrategies } from '@lib/strategies';
-import { getKindLabel, Kind, StandardEntity } from '@lib/types';
+import { getKindIconName, getKindLabel, Kind, StandardEntity } from '@lib/types';
 import HomeScreenBase from '@pages/HomeScreenBase/base';
 import { TransactionStandardCard } from '@pages/HomeScreenBase/Standard/components/Card';
 import { useLocalSearchParams } from 'expo-router';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { Text } from "react-native-paper";
 
 interface StandardHomeProps {
   kind: Kind;
@@ -57,7 +57,12 @@ export default function StandardHome({ kind, goToEdit, goToRegister }: StandardH
               onEdit={goToEdit}
             />
           )}
-          ListEmptyComponent={<Text>Nenhum {getKindLabel(kind)} encontrado.</Text>}
+          ListEmptyComponent={
+            <EmptyListAlert
+              iconName={getKindIconName(kind)}
+              message={`Nenhum ${getKindLabel(kind)} encontrado.`}
+            />
+          }
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY.current } } }],
             { useNativeDriver: false }
