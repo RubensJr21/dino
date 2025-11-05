@@ -120,8 +120,8 @@ export async function getBankBalances(db: DatabaseType, year: number, month: num
   const balance_banks = await getBalanceBank(db, dateFilter(year, month))
 
   const reports_bank = new Array<BankReport>()
-
-  const lastDate = new Date(year, month - 1, 1)
+  // new Date(year, month, 0) resulta no último dia do mês anterior
+  const lastDate = new Date(year, month, 0)
   const lastYear = lastDate.getFullYear()
   const lastMonth = lastDate.getMonth()
 
