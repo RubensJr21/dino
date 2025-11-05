@@ -132,8 +132,10 @@ export async function getBankBalances(db: DatabaseType, year: number, month: num
       // De todos os meses até antes do mês atual
       const balance_until_date = await getBalanceOfBank(db, balance_bank.bank_id, dateUntilFilter(lastYear, lastMonth))
 
+      const partial_balance_until_date = calculatePartialBalance(balance_until_date)
+
       const partial_balance = calculatePartialBalance(balance_until_date, balance_bank)
-      const final_balance = calculateFinalBalance(balance_until_date, balance_bank)
+      const final_balance = calculateFinalBalance(balance_bank) + partial_balance_until_date
 
       reports_bank.push({
         bank_id: balance_bank.bank_id,
@@ -147,8 +149,10 @@ export async function getBankBalances(db: DatabaseType, year: number, month: num
       })
     } else if (lastYear === last_calculated_balance.year && lastMonth === last_calculated_balance.month) {
       // Quer dizer que encontrei o anterior imediato
+      const partial_balance_until_last_calculated = calculatePartialBalance(last_calculated_balance)
+
       const partial_balance = calculatePartialBalance(last_calculated_balance, balance_bank)
-      const final_balance = calculateFinalBalance(last_calculated_balance, balance_bank)
+      const final_balance = calculateFinalBalance(balance_bank) + partial_balance_until_last_calculated
 
       reports_bank.push({
         bank_id: balance_bank.bank_id,
@@ -170,11 +174,11 @@ export async function getBankBalances(db: DatabaseType, year: number, month: num
       const dateCondition = dateRangeFilter(startYear, startMonth, lastYear, lastMonth)
 
       const balance_until_date = await getBalanceOfBank(db, balance_bank.bank_id, dateCondition)
-
+      
+      const partial_balance_of_last_calculated_util_date = calculatePartialBalance(last_calculated_balance, balance_until_date)
 
       const partial_balance = calculatePartialBalance(balance_until_date, last_calculated_balance, balance_bank)
-      const final_balance = calculateFinalBalance(balance_until_date, last_calculated_balance, balance_bank)
-
+      const final_balance = calculateFinalBalance(balance_bank) + partial_balance_of_last_calculated_util_date
 
       reports_bank.push({
         bank_id: balance_bank.bank_id,

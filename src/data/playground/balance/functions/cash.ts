@@ -116,8 +116,10 @@ export async function getCashBalance(db: DatabaseType, year: number, month: numb
     // De todos os meses até antes do mês atual
     const balance_until_date = await getBalanceOfCash(db, dateUntilFilter(lastYear, lastMonth))
 
+    const partial_balance_until_date = calculatePartialBalance(balance_until_date)
+
     const partial_balance = calculatePartialBalance(balance_until_date, balance_cash)
-    const final_balance = calculateFinalBalance(balance_until_date, balance_cash)
+    const final_balance = calculateFinalBalance(balance_cash) + partial_balance_until_date
 
     return {
       nickname: "cash",
@@ -132,8 +134,10 @@ export async function getCashBalance(db: DatabaseType, year: number, month: numb
 
   if (lastYear === last_calculated_balance.year && lastMonth === last_calculated_balance.month) {
     // Quer dizer que encontrei o anterior imediato
+    const partial_balance_until_last_calculated = calculatePartialBalance(last_calculated_balance)
+
     const partial_balance = calculatePartialBalance(last_calculated_balance, balance_cash)
-    const final_balance = calculateFinalBalance(last_calculated_balance, balance_cash)
+    const final_balance = calculateFinalBalance(balance_cash) + partial_balance_until_last_calculated
 
     return {
       nickname: "cash",
@@ -156,9 +160,10 @@ export async function getCashBalance(db: DatabaseType, year: number, month: numb
 
   const balance_until_date = await getBalanceOfCash(db, dateCondition)
 
+  const partial_balance_of_last_calculated_util_date = calculatePartialBalance(last_calculated_balance, balance_until_date)
 
   const partial_balance = calculatePartialBalance(balance_until_date, last_calculated_balance, balance_cash)
-  const final_balance = calculateFinalBalance(balance_until_date, last_calculated_balance, balance_cash)
+  const final_balance = calculateFinalBalance(balance_cash) + partial_balance_of_last_calculated_util_date
 
 
   return {
