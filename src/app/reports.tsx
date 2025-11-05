@@ -56,8 +56,9 @@ export default function ReportByOrigin() {
     load_balance()
   }, [])
 
-  const Controls = useCallback(() => {
-    return (
+  return (
+    <BasePage>
+
       <View style={{ flexDirection: "row", marginBottom: 10, columnGap: 7 }}>
         <TextInput
           label="Mês"
@@ -75,12 +76,8 @@ export default function ReportByOrigin() {
         />
         <Button style={{ marginTop: 7 }} onPress={load_balance}>Gerar Relatório</Button>
       </View>
-    )
-  }, [monthText, yearText, load_balance])
 
-  return (
-    <BasePage>
-      <Controls />
+
       {
         balance !== undefined &&
         <FlatList
