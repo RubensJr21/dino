@@ -71,12 +71,8 @@ export function calculatePartialBalance(...balances: Balance[]) {
 export function calculateFinalBalance(...balances: Balance[]) {
   return balances.reduce((prev, current_balance) => {
     return prev +
-      (
-        current_balance.planned_receipts - current_balance.planned_payments
-      )
+      (current_balance.planned_receipts - current_balance.planned_payments)
       +
-      (
-        current_balance.executed_receipts - current_balance.executed_payments
-      )
+      (current_balance.executed_receipts - current_balance.executed_payments)
   }, 0)
 }
