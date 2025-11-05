@@ -131,7 +131,7 @@ export function TransactionInstallmentRegisterScreen({ kind }: TransactionInstal
         const timestamp = Date.now().toString();
         // Retorna para home passando o parâmetro de atualização
         router.replace({
-          pathname: '../',
+          pathname: `/${kind}s/installment`,
           params: { update: timestamp }
         });
       })
