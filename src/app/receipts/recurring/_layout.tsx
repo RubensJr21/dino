@@ -3,9 +3,9 @@ import { useCallback } from "react";
 
 const headerTitles = {
   "index": "Recebimentos recorrentes",
-  "register": "Registrar pagamento recorrente",
-  "[id]/index": "Detalhes do pagamento recorrente",
-  "[id]/edit": "Editar pagamento recorrente"
+  "register": "Registrar recebimento recorrente",
+  "[id]/index": "Detalhes do recebimento recorrente",
+  "[id]/edit": "Editar recebimento recorrente"
 }
 
 export default function RecurringLayout() {
