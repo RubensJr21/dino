@@ -132,34 +132,50 @@ Table bank_account {
   nickname text [not null]
 }
 
-// Table balance_bank {
-//   id integer [pk, increment]
-//   fk_id_bank_account integer [not null, ref: > bank_account.id]
-//   month integer [not null]
-//   year date [not null]
-//   planned_amount integer [
-//     not null,
-//     note: "Guardado em centavos"
-//   ]
-//   executed_amount integer [
-//     not null,
-//     note: "Guardado em centavos"
-//   ]
-// }
+Table balance_bank {
+  id integer [pk, increment]
+  fk_id_bank_account integer [not null, ref: > bank_account.id]
+  month integer [not null]
+  year date [not null]
+  planned_receipts integer [
+    not null,
+    note: "Guardado em centavos"
+  ]
+  executed_receipts integer [
+    not null,
+    note: "Guardado em centavos"
+  ]
+  planned_payments integer [
+    not null,
+    note: "Guardado em centavos"
+  ]
+  executed_payments integer [
+    not null,
+    note: "Guardado em centavos"
+  ]
+}
 
-// Table balance_cash {
-//   id integer [pk, increment]
-//   month integer [not null]
-//   year date [not null]
-//   planned_amount integer [
-//     not null,
-//     note: "Guardado em centavos"
-//   ]
-//   executed_amount integer [
-//     not null,
-//     note: "Guardado em centavos"
-//   ]
-// }
+Table balance_cash {
+  id integer [pk, increment]
+  month integer [not null]
+  year date [not null]
+  planned_receipts integer [
+    not null,
+    note: "Guardado em centavos"
+  ]
+  executed_receipts integer [
+    not null,
+    note: "Guardado em centavos"
+  ]
+  planned_payments integer [
+    not null,
+    note: "Guardado em centavos"
+  ]
+  executed_payments integer [
+    not null,
+    note: "Guardado em centavos"
+  ]
+}
 
 // TRABALHOS FUTUROS
 // Table credit_card {
