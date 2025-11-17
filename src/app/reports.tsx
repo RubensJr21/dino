@@ -4,7 +4,8 @@ import { TextInput } from "@components/ui/base/TextInput";
 import * as blc from "@data/playground/balance";
 import { type BalanceByOriginReturn } from "@data/playground/balance";
 import { CallToast } from "@lib/call-toast";
-import { useCallback, useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 
@@ -52,9 +53,22 @@ export default function ReportByOrigin() {
       })
   }, [monthText, yearText])
 
-  useEffect(() => {
-    load_balance()
-  }, [])
+  // useEffect(() => {
+  //   load_balance()
+  // }, [])
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log("Recarregando dados da tela de relatório por origem.");
+      load_balance()
+      console.log("Dados recarregados com sucesso!");
+
+      // O retorno serve para cleanup quando a tela perder o foco
+      return () => {
+        // console.log("Tela perdeu o foco!");
+      };
+    }, [])
+  );
 
   return (
     <BasePage>
