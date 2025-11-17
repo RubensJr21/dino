@@ -53,20 +53,9 @@ export default function ReportByOrigin() {
       })
   }, [monthText, yearText])
 
-  // useEffect(() => {
-  //   load_balance()
-  // }, [])
-
   useFocusEffect(
     useCallback(() => {
-      console.log("Recarregando dados da tela de relatório por origem.");
       load_balance()
-      console.log("Dados recarregados com sucesso!");
-
-      // O retorno serve para cleanup quando a tela perder o foco
-      return () => {
-        // console.log("Tela perdeu o foco!");
-      };
     }, [])
   );
 
