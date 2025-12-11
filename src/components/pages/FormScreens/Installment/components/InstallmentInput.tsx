@@ -1,5 +1,5 @@
 import { ButtonStepper } from "@pages/FormScreens/Installment/components/ButtonStepper";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-paper";
 
@@ -13,16 +13,32 @@ interface Props {
 
 export function InstallmentInput({ installments, onEndEditing }: Props) {
   const [data, setData] = useState(installments ?? DEFAULT_MIN_INSTALLMENT)
+
+  useEffect(() => {
+    onEndEditing(data)
+  }, [data])
+
   const decrement = useCallback(() => {
     setData(prev => {
-      const updatedInstallment = Math.max(Number(prev) - 1, DEFAULT_MIN_INSTALLMENT_NUMBER)
-      return updatedInstallment.toString()
+      const updatedInstallment = (Math.max(Number(prev) - 1, DEFAULT_MIN_INSTALLMENT_NUMBER)).toString()
+      return updatedInstallment
     })
-
   }, [setData])
 
   const increment = useCallback(() => {
-    setData(prev => ((Number(prev) + 1).toString()))
+    setData(prev => {
+      const updatedInstallment = (Number(prev) + 1).toString()
+      return updatedInstallment
+    })
+  }, [setData])
+
+  const endEditing = useCallback(() => {
+    setData(prev => {
+      const installmentsNumber = Number(prev)
+      const maxInstallment = Math.max(installmentsNumber, DEFAULT_MIN_INSTALLMENT_NUMBER)
+      const updatedInstallment = maxInstallment.toString()
+      return updatedInstallment
+    })
   }, [setData])
 
   return (
@@ -34,15 +50,7 @@ export function InstallmentInput({ installments, onEndEditing }: Props) {
           const textOnlyNumbers = text.replaceAll(/\D/g, "")
           setData(textOnlyNumbers)
         }}
-        onEndEditing={() => {
-          setData(prev => {
-            const installmentsNumber = Number(prev)
-            const maxInstallment = Math.max(installmentsNumber, DEFAULT_MIN_INSTALLMENT_NUMBER)
-            const updatedInstallment = maxInstallment.toString()
-            onEndEditing(updatedInstallment)
-            return updatedInstallment
-          })
-        }}
+        onEndEditing={endEditing}
         style={styles.textInputValue}
         maxLength={6}
         contentStyle={{ textAlign: "center" }}
